@@ -7,6 +7,26 @@ import { lazyRoute, provideRoute } from '../src/account/pages';
 import PrivacyRoute from '../src/account/PrivacyPage';
 import { setLocale } from '../src/i18n/i18n';
 
+// Every React root the site mounts, so each test can unmount it: a root left running keeps React's scheduler busy
+// after the test environment is gone and throws "window is not defined".
+const roots = vi.hoisted(() => [] as { unmount(): void }[]);
+vi.mock('react-dom/client', async (original) => {
+  const m = await original<typeof import('react-dom/client')>();
+  return {
+    ...m,
+    createRoot: (...args: Parameters<typeof m.createRoot>) => {
+      const r = m.createRoot(...args);
+      roots.push(r);
+      return r;
+    },
+    hydrateRoot: (...args: Parameters<typeof m.hydrateRoot>) => {
+      const r = m.hydrateRoot(...args);
+      roots.push(r);
+      return r;
+    },
+  };
+});
+
 const guest = { id: 9, username: 'Player_fox', isAdmin: false, isGuest: true, locale: 'en' };
 let me: () => Response;
 let root: HTMLElement;
@@ -22,6 +42,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  act(() => roots.splice(0).forEach((r) => r.unmount()));
   root.remove();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
