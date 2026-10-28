@@ -15,7 +15,11 @@ updates:
       go:
         patterns: ["*"]
   - package-ecosystem: docker
-    directories: ["/", "/deploy"]
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker-compose
+    directories: ["/deploy", "/server"]
     schedule:
       interval: weekly
   - package-ecosystem: github-actions

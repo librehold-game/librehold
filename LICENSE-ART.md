@@ -8,6 +8,7 @@ The artwork is every image, animation and video in:
 
 - `src/assets/pixel/` (village, map, armies, interface, icons, front-page screenshots and clips)
 - `public/account/og/` (link preview images)
+- `docs/media/` (the gameplay clip shown in the README)
 
 ## Permission to use the artwork with LibreHold
 

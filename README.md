@@ -9,6 +9,10 @@
 </p>
 
 <p align="center">
+  <a href="https://librehold.org"><b>▶ Play now in your browser</b></a> — no download, no sign-up
+</p>
+
+<p align="center">
   <a href="https://librehold.org">Website</a> ·
   <a href="docs/development.md">Development</a> ·
   <a href="deploy/README.md">Self-hosting</a> ·
@@ -21,6 +25,10 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/code-AGPL--3.0-blue" alt="Code licence: AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/server-Go-00ADD8" alt="Server: Go">
   <img src="https://img.shields.io/badge/client-React-61DAFB" alt="Client: React">
+</p>
+
+<p align="center">
+  <img src="docs/media/gameplay.gif" alt="Gameplay: a village growing inside its palisade, then an army marching across the map" width="720">
 </p>
 
 ## About
@@ -137,7 +145,7 @@ from it. Details:
   modified version must show "© 2026 Szymon Kocur and contributors" (or the same notice in its language), say that it
   is a modified version, and use its own name, logo and domain. Anyone who offers a modified version over a network
   must also share its code.
-- **Artwork** (`src/assets/pixel/`, `public/account/og/`) — © Szymon Kocur, all rights reserved
+- **Artwork** (`src/assets/pixel/`, `public/account/og/`, `docs/media/`) — © Szymon Kocur, all rights reserved
   ([`LICENSE-ART.md`](LICENSE-ART.md)). You may use it unchanged to run LibreHold or a modified version of it, as long
   as nobody pays to play and the server shows no advertising.
 - **Fonts** — their authors' licence (SIL OFL 1.1), described in [`ASSETS.md`](ASSETS.md).
