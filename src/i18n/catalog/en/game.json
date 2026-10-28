@@ -1,0 +1,1302 @@
+{
+  "building": {
+    "main": "Town Hall",
+    "barracks": "Barracks",
+    "stable": "Stable",
+    "workshop": "Workshop",
+    "academy": "Academy",
+    "smithy": "Smithy",
+    "statue": "Pedestal",
+    "market": "Market",
+    "wood": "Lumber Mill",
+    "clay": "Brickworks",
+    "iron": "Ironworks",
+    "farm": "Farmstead",
+    "storage": "Storehouse",
+    "hide": "Hideout",
+    "wall": "Wall"
+  },
+  "unit": {
+    "spear": "Spearman",
+    "sword": "Swordsman",
+    "axe": "Axeman",
+    "archer": "Archer",
+    "scout": "Scout",
+    "lightCav": "Light cavalryman",
+    "mountedArcher": "Mounted archer",
+    "heavyCav": "Heavy cavalryman",
+    "ram": "Ram",
+    "catapult": "Catapult",
+    "paladin": "Knight",
+    "noble": "Hetman"
+  },
+  "unitPlural": {
+    "spear": {
+      "one": "Spearman",
+      "other": "Spearmen"
+    },
+    "sword": {
+      "one": "Swordsman",
+      "other": "Swordsmen"
+    },
+    "axe": {
+      "one": "Axeman",
+      "other": "Axemen"
+    },
+    "archer": {
+      "one": "Archer",
+      "other": "Archers"
+    },
+    "scout": {
+      "one": "Scout",
+      "other": "Scouts"
+    },
+    "lightCav": {
+      "one": "Light cavalryman",
+      "other": "Light cavalry"
+    },
+    "mountedArcher": {
+      "one": "Mounted archer",
+      "other": "Mounted archers"
+    },
+    "heavyCav": {
+      "one": "Heavy cavalryman",
+      "other": "Heavy cavalry"
+    },
+    "ram": {
+      "one": "Ram",
+      "other": "Rams"
+    },
+    "catapult": {
+      "one": "Catapult",
+      "other": "Catapults"
+    },
+    "paladin": {
+      "one": "Knight",
+      "other": "Knight"
+    },
+    "noble": {
+      "one": "Hetman",
+      "other": "Hetmans"
+    }
+  },
+  "resource": {
+    "wood": "Wood",
+    "clay": "Clay",
+    "iron": "Iron"
+  },
+  "quest": {
+    "wood1": {
+      "title": "First timber",
+      "description": "Upgrade the Lumber Mill to level 1."
+    },
+    "clay1": {
+      "title": "Brickworks",
+      "description": "Upgrade the Brickworks to level 1."
+    },
+    "iron1": {
+      "title": "Ironworks",
+      "description": "Upgrade the Ironworks to level 1."
+    },
+    "main3": {
+      "title": "A growing town hall",
+      "description": "Upgrade the Town Hall to level 3 — it speeds up construction."
+    },
+    "storage3": {
+      "title": "A bigger storehouse",
+      "description": "Upgrade the Storehouse to level 3."
+    },
+    "wood5": {
+      "title": "Woodcutters",
+      "description": "Upgrade the Lumber Mill to level 5."
+    },
+    "clay5": {
+      "title": "Brickmakers",
+      "description": "Upgrade the Brickworks to level 5."
+    },
+    "iron5": {
+      "title": "Smelters",
+      "description": "Upgrade the Ironworks to level 5."
+    },
+    "farm5": {
+      "title": "Room for people",
+      "description": "Upgrade the Farmstead to level 5."
+    },
+    "barracks1": {
+      "title": "Barracks",
+      "description": "Build the Barracks (needs Town Hall 3)."
+    },
+    "spear10": {
+      "title": "The first watch",
+      "description": "Recruit 10 spearmen."
+    },
+    "hide3": {
+      "title": "Hideout",
+      "description": "Upgrade the Hideout to level 3 — it hides resources from raiders."
+    },
+    "smithy1": {
+      "title": "Smithy",
+      "description": "Build the Smithy (needs Town Hall 5 and Barracks 1)."
+    },
+    "research_sword": {
+      "title": "First research",
+      "description": "Research the swordsman in the Smithy."
+    },
+    "wall1": {
+      "title": "Palisade",
+      "description": "Build the Wall (needs Barracks 1)."
+    },
+    "first_attack": {
+      "title": "Off to raid!",
+      "description": "Send your first attack from the Rally Point at a barbarian village."
+    },
+    "first_battle": {
+      "title": "First victory",
+      "description": "Win your first battle."
+    },
+    "loot5000": {
+      "title": "Raider",
+      "description": "Loot 5,000 resources in total — the reward unlocks auto-farming."
+    },
+    "template_a": {
+      "title": "Farm template",
+      "description": "Set up template A at the Rally Point — farming in one click."
+    },
+    "main10": {
+      "title": "Seat of power",
+      "description": "Upgrade the Town Hall to level 10."
+    },
+    "stable1": {
+      "title": "Stable",
+      "description": "Build the Stable (needs Town Hall 10, Barracks 5, Smithy 5)."
+    },
+    "scout": {
+      "title": "Eyes and ears",
+      "description": "Send scouts to a foreign village."
+    },
+    "light_cav10": {
+      "title": "Light cavalry",
+      "description": "Recruit 10 light cavalry."
+    },
+    "market1": {
+      "title": "Market",
+      "description": "Build the Market (needs Town Hall 3, Storehouse 2)."
+    },
+    "trade": {
+      "title": "Merchants on the road",
+      "description": "Send resources to another village with merchants, or accept a trader's offer."
+    },
+    "resources10": {
+      "title": "Economy",
+      "description": "Lumber Mill, Brickworks and Ironworks at level 10."
+    },
+    "points1000": {
+      "title": "A thousand points",
+      "description": "Reach 1,000 points."
+    },
+    "workshop1": {
+      "title": "Workshop",
+      "description": "Build the Workshop (needs Town Hall 10, Smithy 10)."
+    },
+    "rams5": {
+      "title": "Ram the gate",
+      "description": "Build 5 rams."
+    },
+    "wall10": {
+      "title": "Stronghold",
+      "description": "Upgrade the Wall to level 10."
+    },
+    "loot100k": {
+      "title": "Lord of the farms",
+      "description": "Loot 100,000 resources in total."
+    },
+    "main20": {
+      "title": "A great town hall",
+      "description": "Upgrade the Town Hall to level 20."
+    },
+    "smithy20": {
+      "title": "Master smith",
+      "description": "Upgrade the Smithy to level 20."
+    },
+    "academy1": {
+      "title": "Academy",
+      "description": "Build the Academy (Town Hall 20, Smithy 20, Market 10)."
+    },
+    "coin": {
+      "title": "First coin",
+      "description": "Mint a hetman coin."
+    },
+    "noble": {
+      "title": "Hetman",
+      "description": "Train your first hetman."
+    },
+    "conquest1": {
+      "title": "First conquest",
+      "description": "Conquer your first village."
+    },
+    "villages3": {
+      "title": "Three villages",
+      "description": "Hold 3 villages."
+    },
+    "villages5": {
+      "title": "Five villages",
+      "description": "Hold 5 villages."
+    },
+    "points10000": {
+      "title": "Ten thousand",
+      "description": "Reach 10,000 points."
+    },
+    "kills10000": {
+      "title": "Slayer",
+      "description": "Defeat 10,000 enemy units."
+    },
+    "villages10": {
+      "title": "Empire",
+      "description": "Hold 10 villages."
+    }
+  },
+  "template": {
+    "tpl_start": "Start (economy 1–10)",
+    "tpl_def": "Defensive (barracks + wall)",
+    "tpl_off": "Offensive (smithy + stable)"
+  },
+  "blocker": {
+    "maxLevel": "maximum level reached",
+    "queueFull": "the queue is full",
+    "requirements": "required buildings are missing",
+    "research": "the unit is not researched in the Smithy",
+    "resources": "not enough resources",
+    "population": "no room left in the Farmstead",
+    "busy": "another research is already running",
+    "limit": "limit reached",
+    "coins": "not enough coins",
+    "count": "invalid number",
+    "noUnits": "no troops selected",
+    "notEnough": "not enough troops in the village",
+    "noTarget": "there is no village on this field",
+    "self": "you can't send troops to yourself",
+    "noAttackPower": "this group has no attack power",
+    "supportTargetBarbarian": "barbarian villages can't be supported",
+    "attackOwnVillage": "that's your own village — the attack won't go",
+    "nobleUnescorted": "the hetman has no escort",
+    "nobleTooFar": "the hetman can't travel that far",
+    "merchants": "not enough merchants",
+    "storage": "not enough room in the target's storehouse",
+    "sameVillage": "it's the same village",
+    "academy": "no Academy",
+    "targetProtected": "the player is under beginner protection",
+    "selfProtected": "you're under beginner protection — you may attack barbarians only",
+    "notOwner": "that's not your village",
+    "noMarket": "there is no Market",
+    "empty": "nothing to send",
+    "tooLate": "Too late: your troops cannot reach that army before it arrives.",
+    "notInterceptable": "That army cannot be met on the road.",
+    "notVisible": "You cannot see that army any more.",
+    "fieldBattlesOff": "Field battles are switched off in this world.",
+    "scoutsOnly": "Send only scouts to scout an army."
+  },
+  "news": {
+    "scheduledFailed": "A planned send didn't go out: {reasons}.",
+    "scheduledLostVillage": "A planned send didn't go out: the village is no longer yours.",
+    "respawn": "Your last villages fell. You start again at {x}|{y}.",
+    "newPlayer": "New player {player} settled near {x}|{y}.",
+    "title": "Rumours",
+    "protection": "🛡 Beginner protection: {time} left",
+    "empty": "Quiet. Nothing is heard in the taverns yet."
+  },
+  "gossip": {
+    "conquest": {
+      "0": "{a} took {place} from {b}.",
+      "1": "The banners of {a} fly over {place} — {b} couldn't hold it.",
+      "2": "They say {place} belongs to {a} now. {b} held it before."
+    },
+    "topConqueror": {
+      "0": "{a} took the most villages last week ({n}).",
+      "1": "{a} grows fastest — {n} villages taken in a week."
+    },
+    "inactive": {
+      "0": "Nobody has seen {a} for days.",
+      "1": "The villages of {a} have stood empty for days. They probably won't be back.",
+      "2": "{a} vanished without a word — the neighbours are sharpening their axes."
+    },
+    "topFarmer": {
+      "0": "Farmer of the day: {a} — {n} resources from barbarian villages.",
+      "1": "{a} gave the barbarians no rest yesterday: {n} resources of loot."
+    },
+    "topAttacker": {
+      "0": "{a} was the most dangerous yesterday — defeated troops worth {n} points.",
+      "1": "The taverns talk about {a}: {n} enemies beaten in a single day."
+    },
+    "barbarians": "the barbarians",
+    "unknown": "someone unknown"
+  },
+  "village": {
+    "barbarian": "Barbarian village",
+    "of": "{owner}'s village",
+    "mine": "My village",
+    "inactive": " (inactive)",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "production": "Production",
+    "perHour": "per hour",
+    "levelTitle": "{building} level {n}",
+    "boostProduction": "» Increase production",
+    "params": "Current parameters",
+    "worldSpeed": "World speed",
+    "unitsSpeed": " · units ×{n}",
+    "population": "Population",
+    "storage": "Storehouse",
+    "loyalty": "Loyalty",
+    "loyaltyRising": "{n} (rising)",
+    "bonus": "Village bonus",
+    "protection": "Protection",
+    "protectionLeft": "{time} left",
+    "battleLosses": "Battle losses",
+    "reduced": "reduced",
+    "villages": "Villages",
+    "points": {
+      "one": "# point",
+      "other": "# points"
+    },
+    "hideScene": "Collapse the illustration",
+    "showScene": "Show the illustration",
+    "units": "Units"
+  },
+  "player": {
+    "bot": "bot",
+    "former": "former player"
+  },
+  "app": {
+    "loadingWorld": "Loading the world…",
+    "paused": "The world is paused by the administrator"
+  },
+  "header": {
+    "village": "Village:",
+    "rename": "Click to rename",
+    "bonus": "Bonus village",
+    "prevVillage": "Previous village (,)",
+    "nextVillage": "Next village (.)",
+    "villageCount": {
+      "one": "# village",
+      "other": "# villages"
+    },
+    "coins": "Hetman coins (shared by all your villages)",
+    "population": "Population: used / Farmstead limit",
+    "points": "Village points",
+    "pointsShort": "{n} pts"
+  },
+  "nav": {
+    "more": "More",
+    "label": "Navigation",
+    "lobby": "← Lobby",
+    "shortcut": "Shortcut: {key}",
+    "village": {
+      "label": "Village",
+      "short": "Village"
+    },
+    "map": {
+      "label": "Map",
+      "short": "Map"
+    },
+    "rally": {
+      "label": "Rally Point",
+      "short": "Rally"
+    },
+    "farm": {
+      "label": "Assistant",
+      "short": "Assistant"
+    },
+    "reports": {
+      "label": "Reports",
+      "short": "Reports"
+    },
+    "overview": {
+      "label": "Overview",
+      "short": "Overview"
+    },
+    "news": {
+      "label": "Rumours",
+      "short": "Rumours"
+    },
+    "quests": {
+      "label": "Quests",
+      "short": "Quests"
+    },
+    "ranking": {
+      "label": "Ranking",
+      "short": "Ranking"
+    },
+    "settings": {
+      "label": "Settings",
+      "short": "Settings"
+    }
+  },
+  "resourceBar": {
+    "tooltip": "{name}: {amount} / {cap}\nProduction: {perHour}/h\n{full}",
+    "full": "Storehouse full — the surplus is lost!",
+    "fullIn": "Storehouse full in {time}",
+    "nearlyFull": "Storehouse nearly full"
+  },
+  "clock": {
+    "title": "Server time",
+    "paused": "PAUSED"
+  },
+  "errorBoundary": {
+    "title": "Interface error",
+    "safe": "Your game is safe on the server. Reload the page.",
+    "reload": "Reload"
+  },
+  "incoming": {
+    "title": "Incoming attacks",
+    "from": "From",
+    "kind": "Kind",
+    "arrival": "Arrival",
+    "defence": "Defence",
+    "train": "train ({n})",
+    "dodge": "Dodge",
+    "dodgeTitle": "Move all troops out before the hit — they come back a second after it",
+    "snipe": "Snipe",
+    "snipeTitle": "Support that lands between the 1st and the 2nd hetman",
+    "noneInTime": "No village gets there in time."
+  },
+  "incomingLabel": {
+    "scout": "scouts",
+    "cavalry": "light cavalry",
+    "heavyCav": "heavy cavalry",
+    "infantry": "infantry",
+    "sword": "swordsmen",
+    "siege": "rams/catapults",
+    "noble": "hetman?"
+  },
+  "profile": {
+    "tooFewData": "not enough data",
+    "sparkline": "Points day by day",
+    "statusQuit": "inactive",
+    "statusEliminated": "eliminated",
+    "from": "from: {name}",
+    "barbarians": "the barbarians",
+    "took": "taken by: {name}",
+    "dialog": "Profile: {name}",
+    "you": " (you)",
+    "rank": "Rank",
+    "points": "points",
+    "villages": "villages",
+    "villagesTitle": "Villages",
+    "none": "none",
+    "colVillage": "Village",
+    "colCoords": "Coordinates",
+    "colPoints": "Points",
+    "conquests": "Conquests",
+    "othersSee": "This is how other players see you."
+  },
+  "mapCard": {
+    "points": "Points",
+    "player": "Player",
+    "you": "You",
+    "resources": "Resources",
+    "farm": "Farmstead",
+    "army": "Troops",
+    "incoming": "Incoming attacks",
+    "firstAt": " · first {at}",
+    "support": "Support",
+    "village": "Village",
+    "barbarians": "barbarians",
+    "ownerPoints": "{name} ({points} pts)",
+    "bonus": "Bonus",
+    "lastAttack": "Last attack",
+    "loot": " · loot {haul}",
+    "scouted": "Troops (scouted {day})",
+    "none": "none",
+    "wall": "Wall",
+    "wallLevel": "level {n}",
+    "distance": "Distance",
+    "fields": "{n} fields",
+    "attack": "Attack",
+    "scout": "Scout",
+    "actions": "Actions"
+  },
+  "bonus": {
+    "wood": "+100% wood",
+    "clay": "+100% clay",
+    "iron": "+100% iron",
+    "allResources": "+30% all resources",
+    "infantry": "−20% time in the Barracks",
+    "cavalry": "−20% time in the Stable",
+    "farm": "+20% population",
+    "storage": "+50% storehouse"
+  },
+  "scene": {
+    "level": "level {n}",
+    "notBuilt": "(not built)",
+    "building": " — building {pct} %",
+    "queued": " — queued",
+    "rallyPoint": "Rally Point",
+    "label": "Illustration of the village",
+    "wall": "Wall {level}"
+  },
+  "notice": {
+    "conquered": "🏰 New village conquered!",
+    "questDone": "📜 Quest complete — collect the reward",
+    "notLoaded": "The game is not loaded",
+    "dodge": "🏃 Dodge planned — the troops leave and come back right after the hit.",
+    "snipe": "🎯 Snipe planned — the support lands between the 1st and the 2nd hetman."
+  },
+  "map": {
+    "bonusVillage": "Bonus village: {bonus}",
+    "cmd": {
+      "attack": "our attack",
+      "support": "support",
+      "return": "return",
+      "trade": "merchants"
+    },
+    "pts": "{n} pts",
+    "active": " · active",
+    "barbarians": "barbarians",
+    "close": "Close (Esc)",
+    "population": "Population",
+    "queued": " (+{n} queued)",
+    "queueEmpty": "build queue empty",
+    "troops": "Troops:",
+    "noTroops": "no troops in the village",
+    "commandsOnWay": {
+      "one": "· # command on the way",
+      "other": "· # commands on the way"
+    },
+    "incomingAttacks": {
+      "one": "⚠ # attack incoming — the first in",
+      "other": "⚠ # attacks incoming — the first in"
+    },
+    "village": "Village",
+    "switch": "Switch",
+    "support": "Support",
+    "reports": "Reports",
+    "more": "More…",
+    "travel": "Distance {d} · LC {lc} · axe {axe}",
+    "garrison": "Garrison ({ago} ago):",
+    "wallLoyalty": " · wall {wall} · loyalty ~{loyalty}",
+    "noIntel": "No intel — send scouts or an attack.",
+    "lastAttack": "Last attack {ago} ago",
+    "loot": " · loot {n}",
+    "losses": " · losses {n}",
+    "noLosses": " · no losses",
+    "threat": "⚠ Attack from here on {target} ({units}) in",
+    "arrivesIn": "arrives in",
+    "reportsCount": "Reports ({n})",
+    "allReports": "all →",
+    "noReports": "none — this village hasn't been in any report yet",
+    "r": {
+      "scout": "scouting",
+      "conquest": "conquest",
+      "support": "support",
+      "ours": "our attack",
+      "theirs": "attack on us"
+    },
+    "attack": "Attack",
+    "scout": "Scout",
+    "sendA": "Send template A",
+    "defineA": "Set up template A at the Rally Point",
+    "templateA": "Template A",
+    "emptyField": "An empty field — forest and meadows.",
+    "owner": "Owner:",
+    "you": "You",
+    "points": "Points: {n}",
+    "distance": "Distance: {n} fields",
+    "intelFrom": "Intel ({source})",
+    "intelAttack": "last attack {ago} ago",
+    "intelScout": "from scouting",
+    "garrisonShort": "Garrison:",
+    "wallLoyaltyNobles": "Wall: {wall} · Loyalty: ~{loyalty}",
+    "noblesLeft": "(about {n} more hetmans)",
+    "lastLoot": "Last loot: {n} / {cap}",
+    "title": "Map",
+    "myVillage": "My village",
+    "go": "Go",
+    "playerColors": "Player colours",
+    "hideOver": "Hide villages >",
+    "ptsShort": "pts",
+    "help1": "Click a village to open its menu (Esc closes it). Drag the map with the mouse or a finger; zoom with the wheel or a two-finger pinch.",
+    "help2": "A settlement grows with its points: hut (< 300) → fenced settlement (300) → palisade (1,000) → stone wall (3,000) → stronghold (9,000) → castle (11,000).",
+    "help3": "Dark slate roofs = barbarians · red roofs = you · roofs in a player's colour = other players · grey roofs = inactive (abandoned accounts) · gold outline and blue banner = active · gold banner = bonus · a dot in the corner = a command on the way.",
+    "army": {
+      "ownAttack": "Your attack",
+      "ownSupport": "Your support",
+      "ownReturn": "Your army returning",
+      "incomingAttack": "Incoming attack",
+      "incomingSupport": "Incoming support",
+      "trade": "Merchants",
+      "ownIntercept": "Your army sent to meet another",
+      "threat": "Coming at your army",
+      "passingAttack": "Passing attack",
+      "passingSupport": "Passing support",
+      "passingReturn": "Army on its way home"
+    }
+  },
+  "queue": {
+    "demolish": "Demolish: ",
+    "toLevel": " → level {n}",
+    "progress": "Progress",
+    "left": "Remaining",
+    "refund90": "Refunds 90% of the resources",
+    "refund100": "Refunds 100% of the resources",
+    "stopDemolish": "Stop demolishing",
+    "cancel": "Cancel",
+    "title": "Build queue",
+    "slots": "({used}/{slots} slots)",
+    "empty": "The queue is empty — the building site is idle.",
+    "colBuild": "Construction",
+    "colAction": "Action"
+  },
+  "resourceAmount": {
+    "wood": "{n} wood",
+    "clay": "{n} clay",
+    "iron": "{n} iron"
+  },
+  "buildings": {
+    "notBuilt": "not built",
+    "perHour": "{n}/h",
+    "capacity": "capacity {n}",
+    "population": "population {n}",
+    "hides": "hides {n} of each resource",
+    "buildTime": "build time ×{n}",
+    "defence": "defence ×{n}",
+    "merchants": "{n} merchants",
+    "nobles": "up to {n} hetmans",
+    "maxLevel": "Maximum level",
+    "queueFull": "Queue full ({slots} slots)",
+    "requires": "Requires: {list}",
+    "never": "never (the storehouse is too small)",
+    "in": "in {time}",
+    "missing": "Missing {list} — available {eta}",
+    "noPopulation": "No population: {needed} needed, {free} free",
+    "storageTooSmall": "the storehouse is too small",
+    "resourcesIn": "resources in {time}",
+    "upgradeTitle": "Upgrade {building} to level {n}",
+    "max": "Max.",
+    "upgradeTo": "Upgrade to {n}",
+    "demolishTitle": "Demolish level {n} (no refund)",
+    "title": "Buildings",
+    "colBuilding": "Building",
+    "colLevel": "Level",
+    "colCost": "Cost",
+    "colPop": "Pop.",
+    "colPopulation": "Population",
+    "colTime": "Time",
+    "colAction": "Action"
+  },
+  "plan": {
+    "title": "Build plan",
+    "hint": "(the template feeds buildings into the queue when a slot frees up and there are enough resources)",
+    "apply": "Load into the queue",
+    "edit": "Edit / new",
+    "copy": "{name} (copy)",
+    "newTemplate": "New template",
+    "delete": "Delete template",
+    "inPlan": "In the plan: {n} steps · next: {next}",
+    "clear": "Clear",
+    "clickToRemove": "Click to remove",
+    "addSteps": "Add steps with the buttons above.",
+    "save": "Save template",
+    "cancel": "Cancel"
+  },
+  "unitsPanel": {
+    "none": "No troops.",
+    "recruitHint": "Recruit spearmen in the Barracks.",
+    "buildHint": "Build the Barracks.",
+    "queued": "in the recruitment queue",
+    "away": "away from the village (on the move / as support)",
+    "awayCount": "[{n} away]",
+    "recruit": "» recruit",
+    "support": "Support",
+    "arriving": "+{n} arriving",
+    "supportComing": "Support is on its way"
+  },
+  "buildingScreen": {
+    "notBuilt": "This building isn't built yet.",
+    "back": "← Village",
+    "level": "(level {n})"
+  },
+  "academy": {
+    "needsAcademy": "Requires the Academy",
+    "noResources": "Not enough resources",
+    "coinsTitle": "Hetman coins",
+    "youHave": "You have <b>🪙 {coins}</b> coins (shared by all your villages). Hetmans trained so far: {minted}.",
+    "coinCost": "Coin cost:",
+    "mint": "Mint a coin",
+    "nextNoble": "The next hetman needs <b>{coins}</b> coins (villages: {villages} + hetmans you own) plus 40,000 / 50,000 / 50,000 resources and 100 population. Limit in this village: {nobles}/{limit} (Academy level).",
+    "noble": "Hetman",
+    "rulesNoCoins": "No coins in this world: a hetman costs only resources and population. Each surviving hetman in a winning attack lowers the loyalty of a barbarian village by 20–35 and of a village with an owner by {min}–{max}. At loyalty ≤ 0 the village becomes yours (loyalty 25, buildings lose 1–3 levels, research resets). The hetman is used up in the conquest and can attack at most 70 fields away.",
+    "rules": "Each surviving hetman in a winning attack lowers the target's loyalty by 20–35. At loyalty ≤ 0 the village becomes yours (loyalty 25, buildings lose 1–3 levels, research resets). The hetman is used up in the conquest and can attack at most 70 fields away. A coin always costs {wood}/{clay}/{iron}."
+  },
+  "quests": {
+    "slot": "+1 build queue slot",
+    "autoFarm": "auto-farming unlocked",
+    "title": "Quests",
+    "rewardsTo": "Rewards go to the active village:",
+    "claimable": "Ready to collect",
+    "reward": "Reward:",
+    "claim": "Collect the reward",
+    "active": "Active",
+    "allDone": "All quests are done — the empire stands.",
+    "showDone": "Show completed ({n})",
+    "hideDone": "Hide completed ({n})"
+  },
+  "buildingDescription": {
+    "main": "In the Town Hall you raise and upgrade every other building. The higher its level, the faster construction goes.",
+    "wood": "Woodcutters at the Lumber Mill fell timber in the nearby forests. The higher its level, the more wood per hour.",
+    "clay": "The Brickworks digs the clay you need for building. The higher its level, the more clay per hour.",
+    "iron": "The Ironworks smelts iron for weapons and armour. The higher its level, the more iron per hour.",
+    "storage": "The Storehouse keeps your resources. Once it is full, any more production of that resource is lost.",
+    "farm": "The Farmstead feeds your people and your army. Every building and every soldier takes up room in it.",
+    "hide": "The Hideout keeps part of your resources out of sight — raiders can't take what is inside.",
+    "wall": "The Wall strengthens the village's defenders and gives a basic defence even without troops."
+  },
+  "info": {
+    "now": "Now",
+    "next": "Next level",
+    "production": "Production (per hour)",
+    "capacity": "Capacity",
+    "resource": "Resource",
+    "inStorage": "In the storehouse",
+    "fullIn": "Full in",
+    "full": "full",
+    "maxPopulation": "Maximum population",
+    "used": "Used",
+    "free": "Free",
+    "hidden": "Hidden from raiders (of each resource)",
+    "defenceBonus": "Defence bonus",
+    "baseDefence": "Basic defence"
+  },
+  "recruit": {
+    "requires": "Requires: {list}",
+    "needsResearch": "Needs unlocking in the Smithy",
+    "noResources": "Not enough resources",
+    "noPopulation": "No population ({needed} needed, {free} free)",
+    "limit": "At most {max} per village (counting the queue and troops sent out)",
+    "coins": "Not enough coins: you have {have}, {needed} needed",
+    "count": "Enter a number ≥ 1",
+    "stats": "attack {attack} · def. {def}/{defCav}/{defArch} · {speed} min/field · carry {haul}",
+    "colCost": "Cost",
+    "colPopulation": "Population",
+    "colTimeEach": "Time / unit",
+    "colInVillage": "In the village",
+    "max": "Max. {n}",
+    "recruitTitle": "Recruit {count}× {unit}",
+    "recruit": "Recruit",
+    "colDone": "Done",
+    "colProgress": "Progress",
+    "colNext": "Next",
+    "colEnd": "Finishes",
+    "refund": "Refunds 100% for units not yet trained",
+    "cancel": "Cancel",
+    "colUnit": "Unit",
+    "colPop": "Pop.",
+    "colRecruitment": "Recruitment",
+    "colAction": "Action",
+    "queueTitle": "Recruitment queue",
+    "queueEmpty": "The training ground is empty."
+  },
+  "research": {
+    "maxLevel": "Maximum level",
+    "busy": "The Smithy is busy — one research at a time",
+    "noResources": "Not enough resources",
+    "free": "unlocked without research",
+    "colLevel": "Level",
+    "colCost": "Cost",
+    "colTime": "Time",
+    "researchTitle": "Research level {n} (+{pct} % attack and defence)",
+    "max": "Max.",
+    "unlock": "Unlock",
+    "upgradeTo": "Upgrade to {n}",
+    "idle": "The forge is cold — no research is running.",
+    "colResearch": "Research",
+    "colProgress": "Progress",
+    "colLeft": "Remaining",
+    "colAction": "Action",
+    "toLevel": "{unit} → level {n}",
+    "refund": "Refunds 100% of the cost",
+    "cancel": "Cancel",
+    "colUnit": "Unit",
+    "running": "Research in progress"
+  },
+  "market": {
+    "noMarket": "No Market",
+    "notOwned": "The target must be your own village",
+    "self": "Pick another village",
+    "empty": "Enter the amounts",
+    "noResources": "Not enough resources",
+    "merchantsShort": "Not enough merchants: {needed} needed, {available} free",
+    "merchants": "Merchants: {free} / {total} free",
+    "merchantHint": "(1 merchant = 1000 resources, 6 min/field)",
+    "ownOnly": "Trading works between your own villages — conquer a second village.",
+    "toVillage": "To village:",
+    "surplusTitle": "Resources above 80% of the storehouse",
+    "surplus": "Surplus",
+    "balanceTitle": "Half the difference between the villages",
+    "balance": "Split evenly",
+    "clear": "Clear",
+    "sendInfo": "merchants: {merchants} · time: {time}",
+    "send": "Send resources",
+    "trader": "Travelling trader",
+    "nextOffer": "(new offer in",
+    "give": "Give",
+    "get": "→ you get",
+    "used": "The offer was already used",
+    "exchange": "Exchange",
+    "cannotExchange": "Not enough resources (or no Market)",
+    "usedShort": "Used"
+  },
+  "settings": {
+    "interface": "Interface",
+    "language": "Language",
+    "animations": "Village animations",
+    "animFull": "full",
+    "animLimited": "limited (status markers only)",
+    "animOff": "off",
+    "reducedMotion": "limited by default with \"prefers-reduced-motion\"",
+    "scene": "Village illustration",
+    "sound": "Sounds",
+    "testBuild": "Test: building",
+    "testAlarm": "Test: alarm",
+    "shortcuts": "Shortcuts: <b>1</b>–<b>9</b> views, <b>,</b> / <b>.</b> previous / next village.",
+    "credits": "Art: our own pixel art; fonts MedievalSharp and Cinzel (SIL OFL 1.1). The full list is in ASSETS.md.",
+    "legal": "© 2026 {author} and contributors. LibreHold is free software under the GNU AGPL 3.0 and comes without any warranty.",
+    "source": "Source code (AGPL-3.0)",
+    "licence": "Licence",
+    "chartEmpty": "Not enough data — the chart appears after a few finished buildings.",
+    "stats": "Statistics",
+    "points": "Points",
+    "villages": "Villages",
+    "worldTime": "World time",
+    "worldAge": "World age",
+    "coins": "Hetman coins",
+    "coinsValue": "{coins} ({minted} minted)",
+    "conquered": "Villages conquered",
+    "research": "Research completed",
+    "attacks": "Attacks sent",
+    "battlesWon": "Battles won",
+    "scoutsEtc": "Scouts / support / transports",
+    "killed": "Units killed",
+    "lost": "Units lost",
+    "looted": "Resources looted",
+    "today": "Today: attacks / loot",
+    "title": "Settings",
+    "lobby": "Lobby",
+    "logout": "Log out"
+  },
+  "ranking": {
+    "tab": {
+      "points": "Points",
+      "villages": "Villages",
+      "od": "Defeated",
+      "daily": "Daily",
+      "conquests": "Conquests"
+    },
+    "page": "page {n} / {pages}",
+    "player": "Player",
+    "points": "Points",
+    "villages": "Villages",
+    "od": {
+      "att": "As attacker",
+      "def": "As defender",
+      "sup": "As supporter"
+    },
+    "inactive": " (inactive)",
+    "daily": {
+      "att": "Attacker of the day",
+      "def": "Defender of the day",
+      "loot": "Looter of the day",
+      "farm": "Farmer of the day"
+    },
+    "nobodyToday": "Nobody yet today.",
+    "noConquests": "Nobody has conquered a village yet.",
+    "when": "When",
+    "village": "Village",
+    "newOwner": "New owner",
+    "previous": "Previous",
+    "from": "from",
+    "barbarian": "barbarian",
+    "title": "Ranking",
+    "odKind": {
+      "att": "attacker",
+      "def": "defender",
+      "sup": "supporter"
+    },
+    "dailyKind": {
+      "att": "attacker",
+      "def": "defender",
+      "loot": "looter",
+      "farm": "farmer of the day"
+    },
+    "refresh": "Points and places refresh every full world hour."
+  },
+  "overview": {
+    "addEverywhere": "Add {building} +1 in all ({n})",
+    "village": "Village",
+    "queue": "Queue",
+    "plan": "Plan",
+    "level": "Level",
+    "empty": "empty",
+    "steps": {
+      "one": "# step",
+      "other": "# steps"
+    },
+    "total": "Total",
+    "recruitUpTo": "top up to",
+    "eachVillage": "in every village",
+    "ordered": "{n} units ordered",
+    "massRecruit": "Recruit in bulk ({n} villages)",
+    "recruitHint": "Counts troops present and queued; villages lacking requirements, resources or population are skipped.",
+    "storage": "Storehouse",
+    "production": "Production /h",
+    "population": "Population",
+    "noMoves": "No movements.",
+    "type": "Type",
+    "route": "Route",
+    "unitsLoot": "Units / loot",
+    "units": "Units",
+    "arrival": "Arrival",
+    "tradeHaul": "{n} resources ({m} merchants)",
+    "merchantsBack": "{m} merchants returning",
+    "groupName": "Group name",
+    "addGroup": "Add group",
+    "delete": "Delete",
+    "title": "Overview",
+    "tab": {
+      "build": "Construction",
+      "units": "Units",
+      "recruit": "Recruitment",
+      "resources": "Resources",
+      "commands": "Commands",
+      "groups": "Groups"
+    },
+    "allVillages": "all villages"
+  },
+  "reports": {
+    "noUnits": "no units",
+    "count": "Count",
+    "losses": "Losses",
+    "missing": "This report doesn't exist.",
+    "back": "← List",
+    "retry": "Repeat the attack (same troops)",
+    "sendA": "Send template A",
+    "delete": "Delete",
+    "result": "Result:",
+    "conquered": "Village conquered!",
+    "scoutOk": "Scouting succeeded",
+    "scoutFail": "Scouting failed",
+    "attackerWon": "The attacker won",
+    "defenderWon": "The defender won",
+    "morale": "Morale: {n} %",
+    "attacker": "Attacker",
+    "defender": "Defender",
+    "wall": "Wall:",
+    "loot": "Loot:",
+    "fullLoad": "— full load",
+    "partialLoot": "— partial loot",
+    "loyalty": "Loyalty:",
+    "villageTaken": " — village taken",
+    "resources": "Resources:",
+    "troops": "Troops:",
+    "none": "none",
+    "title": "Reports",
+    "filter": {
+      "all": "all",
+      "unread": "unread",
+      "attack": "attacks",
+      "scout": "scouting",
+      "conquest": "conquests",
+      "support": "support"
+    },
+    "villageFilter": "village:",
+    "allVillages": "Show all villages",
+    "markAll": "Mark all as read",
+    "deleteRead": "Delete read",
+    "empty": "No reports. Send an attack from the map or the Rally Point.",
+    "colReport": "Report",
+    "colLoot": "Loot",
+    "colTime": "Time",
+    "field": {
+      "at": "Field battle at {at}",
+      "place": "the road at {at}",
+      "missed": "your troops found nothing: the army was gone.",
+      "scouted": "Scouted army:"
+    }
+  },
+  "farm": {
+    "status": {
+      "untouched": "untouched",
+      "full": "full loot",
+      "partial": "partial loot",
+      "losses": "losses in the last attack",
+      "inbound": "attack on the way"
+    },
+    "title": "Farm assistant",
+    "today": "Sent today: <b>{count}</b> attacks · Looted today: <b>{looted}</b>",
+    "templates": "Templates:",
+    "edit": "edit",
+    "radius": "Radius",
+    "hideAttacked": "Hide attacked <",
+    "wall": "Wall ≤",
+    "hideLosses": "hide ones with losses",
+    "hideInbound": "hide ones with an attack on the way",
+    "sort": "Sort",
+    "sortBy": {
+      "distance": "distance",
+      "lastAttackAt": "last attack",
+      "estimatedLoot": "estimated loot",
+      "points": "points"
+    },
+    "autoOn": "Auto-farming sends template A at the filtered targets every 15 world minutes",
+    "autoLocked": "Unlocks at {at} villages (you have {n}) or with the \"Raider\" quest",
+    "auto": "Auto-farming",
+    "keys": "Keys: ↑↓ to choose, A/B/C to send at the highlighted row. Clicking a button sends right away.",
+    "none": "No targets match the filter within {n} fields.",
+    "col": {
+      "coords": "Coordinates",
+      "distance": "Distance",
+      "pts": "Pts",
+      "lastAttack": "Last attack",
+      "lastLoot": "Last loot",
+      "estLoot": "Est. loot",
+      "defenceTitle": "Garrison and wall last seen",
+      "defence": "Defence",
+      "status": "Status",
+      "target": "Target",
+      "points": "Points"
+    },
+    "never": "never",
+    "ago": "{time} ago",
+    "wallValue": " · wall {n}",
+    "defineTemplate": "Set up template {k}",
+    "sendTemplate": "Send template {k}",
+    "defineC": "Set up template C (the pack)",
+    "sendC": "Send as many C packs as needed for ~{n} resources",
+    "min": "min"
+  },
+  "rally": {
+    "b": {
+      "noUnits": "Pick some units",
+      "notEnough": "Not enough: {unit} (you have {have})",
+      "noTarget": "There is no village on this field",
+      "self": "You can't send troops to the village they leave from",
+      "noAttackPower": "An attack needs a unit with attack > 0 (scouts alone = scouting)",
+      "supportTargetNotOwned": "Support can only go to your own village",
+      "supportTargetBarbarian": "Barbarian villages can't be supported",
+      "attackOwnVillage": "That's your village — send support instead of an attack",
+      "nobleUnescorted": "A hetman without an escort will die!",
+      "nobleTooFar": "A hetman can attack at most {max} fields away",
+      "targetProtected": "The player is under beginner protection for another {time}",
+      "selfProtected": "You're under beginner protection — you may attack barbarians only"
+    },
+    "scheduled": "Planned",
+    "col": {
+      "from": "From",
+      "target": "Target",
+      "kind": "Kind",
+      "leaves": "Leaves",
+      "arrives": "Arrives",
+      "troops": "Troops",
+      "route": "Route",
+      "units": "Units",
+      "type": "Type",
+      "action": "Action",
+      "unit": "Unit"
+    },
+    "attack": "attack",
+    "support": "support",
+    "recall": "Recall",
+    "needTime": "Enter the date and time, e.g. 14:05:30.250",
+    "planned": "Planned an {kind} on {coords}.",
+    "sent": "Sent an {kind} to {coords}.",
+    "target": "Target",
+    "from": "from {coords}",
+    "units": "Units",
+    "noTroops": "No troops in the village.",
+    "all": "All",
+    "none": "None",
+    "catTarget": "Catapult target:",
+    "randomBuilding": "a random building",
+    "preview": "Preview",
+    "distance": "Distance: <b>{n}</b> fields",
+    "travel": "Travel time:",
+    "arrival": "Arrival:",
+    "scoutMission": "A scouting mission (scouts only).",
+    "when": "When:",
+    "mode": {
+      "now": "Send now",
+      "sendAt": "Send at",
+      "arriveAt": "Arrive at"
+    },
+    "on": "on",
+    "at": "at",
+    "leavesArrives": "Leaves {leave} · arrives {arrive}",
+    "attackBtn": "⚔ Attack",
+    "supportBtn": "🛡 Support",
+    "enterTarget": "Enter the target's coordinates (or pick a village on the map).",
+    "cmd": {
+      "attack": "Attack",
+      "support": "Support",
+      "return": "Return",
+      "trade": "Trade",
+      "intercept": "Interception"
+    },
+    "incoming": "INCOMING ",
+    "turnBack": "Turn the troops back",
+    "cancelWindow": "Recall is possible only within 10 minutes of sending",
+    "onlyActive": "active village only",
+    "noneMoving": "No troops are on the move.",
+    "stationed": "Support stationed in this village",
+    "sendBack": "Send back",
+    "templatesHint": "Templates are saved troop sets you send with one click (map → \"Template A\", and the farm assistant).",
+    "template": "Template {k}",
+    "save": "Save {k}",
+    "title": "Rally Point",
+    "tab": {
+      "send": "Send troops",
+      "commands": "Commands ({n})",
+      "templates": "Templates"
+    }
+  },
+  "biome": {
+    "grass": "meadow",
+    "water": "lake",
+    "forest": "forest",
+    "mountain": "mountains"
+  },
+  "villageSize": {
+    "0": "hut",
+    "1": "settlement",
+    "2": "palisade",
+    "3": "stone wall",
+    "4": "stronghold",
+    "5": "castle"
+  },
+  "instant": {
+    "timeLeft": "Time left",
+    "renameHint": "Change your nickname",
+    "nickname": "Nickname",
+    "createAccount": "Create account",
+    "leave": "Leave world",
+    "leaveConfirm": "Leave this game? Your villages go to the barbarians.",
+    "leaveYes": "Yes, leave",
+    "leaveNo": "Stay",
+    "results": "Results"
+  },
+  "claimDialog": {
+    "title": "Keep this village",
+    "text": "Pick a name and a password. You keep this village and this game, and long worlds open up for you.",
+    "username": "Username",
+    "password": "Password",
+    "confirm": "Repeat the password",
+    "submit": "Create account",
+    "later": "Not now"
+  },
+  "tutorial": {
+    "label": "Tutorial",
+    "army": {
+      "title": "Your army",
+      "text": "Your village starts grown, with axemen, light cavalry, scouts and a hetman. You will find them in the rally point."
+    },
+    "barbarian": {
+      "title": "The barbarian next door",
+      "text": "Grey villages on the map belong to nobody. Their loyalty is low in this game, so one hetman takes them. Open the map and pick the nearest one."
+    },
+    "noble": {
+      "title": "Send the hetman",
+      "text": "In the rally point, send one attack with axemen and the hetman together: the axemen clear the way, the hetman takes the village."
+    },
+    "yours": {
+      "title": "The village is yours",
+      "text": "When the hetman arrives, the village joins you. Keep going: the game ends after an hour, or sooner if someone holds most of the map."
+    },
+    "step": "{n} of {total}",
+    "next": "Next",
+    "skip": "Skip tutorial",
+    "done": "Got it"
+  },
+  "results": {
+    "title": "The game is over",
+    "reason": {
+      "time": "Time ran out. {winner} finished with the most points.",
+      "domination": "{winner} won early by holding most of the map.",
+      "host": "The host ended the game. {winner} finished with the most points."
+    },
+    "leaderboard": "Leaderboard",
+    "col": {
+      "player": "Player",
+      "points": "Points",
+      "villages": "Villages",
+      "conquered": "Conquered"
+    },
+    "details": "Full results",
+    "watch": "Watch the map",
+    "createAccount": "Create account",
+    "longWorld": "Join a long world",
+    "playAgain": "Play again",
+    "close": "Back to the village"
+  },
+  "armyCard": {
+    "from": "From",
+    "to": "To",
+    "arrival": "Arrival",
+    "threat": "Looks like",
+    "cancel": "Cancel",
+    "openRally": "Open in rally point",
+    "openTarget": "Open the attacked village",
+    "scout": "Scout",
+    "attackField": "Attack in the field",
+    "turnBack": "Turn back",
+    "meetsAt": "Meets it at {at}",
+    "tooLate": "Too late: your troops cannot catch it",
+    "send": "Send"
+  },
+  "waiting": {
+    "title": "Waiting for the start",
+    "text": {
+      "one": "Waiting for {host} to start · # player here",
+      "other": "Waiting for {host} to start · # players here"
+    },
+    "left": "The game will last",
+    "hostPause": "Paused by {host} · resumes in {time}"
+  },
+  "watch": {
+    "loading": "Loading the game…",
+    "failed": "The game could not be loaded. Trying again…",
+    "clock": "Game time",
+    "waiting": "Waiting for the start",
+    "paused": "Paused",
+    "wholeMap": "The whole map",
+    "showWhole": "Whole map",
+    "showNormal": "Normal map",
+    "normalMap": "Normal map",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "ranking": "Ranking",
+    "col": {
+      "player": "Player",
+      "points": "Points",
+      "villages": "Villages"
+    },
+    "armies": "Armies on the map",
+    "noArmies": "No armies on the road.",
+    "route": "{owner} → {target}",
+    "arrives": "arrives {time}",
+    "army": "Army",
+    "village": "Village",
+    "owner": "Owner",
+    "target": "Target",
+    "arrival": "Arrives at",
+    "troops": "Troops",
+    "troopsHome": "Troops at home",
+    "noTroops": "none",
+    "buildings": "Buildings",
+    "points": "Points",
+    "close": "Close",
+    "kind": {
+      "attack": "Attack",
+      "support": "Support",
+      "return": "Return",
+      "intercept": "Interception"
+    }
+  }
+}

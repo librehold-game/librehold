@@ -1,0 +1,204 @@
+{
+  "guides": {
+    "breadcrumb": "Jak grać",
+    "pageTitle": "{title} — jak grać — {app}",
+    "related": "Czytaj dalej",
+    "next": "Następny poradnik: {title}",
+    "howToPlay": {
+      "title": "Jak grać: wioski, najazdy i podboje — LibreHold",
+      "description": "Czym jest LibreHold, czym szybka partia różni się od długiego świata i jak z jednej wioski robi się wiele. Zacznij tutaj, potem czytaj poradniki.",
+      "heading": "Jak grać",
+      "lead": "LibreHold to darmowa strategia o jednej wiosce, z której z czasem robi się wiele. Ta strona tłumaczy, czym różnią się dwa rodzaje światów i wokół jakiej pętli kręci się każda gra. Poradniki niżej wchodzą w szczegóły.",
+      "sections": {
+        "what": {
+          "title": "Czym jest ta gra",
+          "body": "LibreHold to darmowa gra strategiczna w przeglądarce, na komputerze i na telefonie. Niczego nie trzeba instalować i nie da się kupić przewagi nad innymi.\n\nZaczynasz od wioski. Jej budynki wydobywają drewno, glinę i żelazo, szkolą wojsko i chronią to, co masz. Wojsko łupi okoliczne wioski barbarzyńców, broni cię przed innymi graczami, a kiedy stać cię już na hetmanów, zdobywa dla ciebie nowe wioski.\n\nMapa jest wspólna. Pozostałe wioski należą do prawdziwych graczy, do botów wyraźnie oznaczonych jako boty albo do barbarzyńców, czyli do nikogo. Wszystko dzieje się w czasie rzeczywistym: budowa trochę trwa, armia potrzebuje czasu na marsz, a gra toczy się dalej, kiedy cię nie ma."
+        },
+        "worlds": {
+          "title": "Szybka partia i długi świat",
+          "body": "Szybka partia trwa {instantDurationMin} min. Ma miejsca dla graczy (jest ich {instantSeats}) i dla botów (jest ich {instantBots}), mapę {instantMapSize}×{instantMapSize} pól i prędkość ×{instantSpeed}. Dołączyć można w ciągu pierwszych {instantJoinWindowMin} min. Nikt nie zaczyna od zera: wioska jest już rozbudowana, a w niej czeka armia z hetmanem. Przycisk Graj teraz wrzuca cię do partii od razu, bez zakładania konta.\n\nDługi świat toczy się tygodniami. Domyślnie ma prędkość ×{longDefaultSpeed}, a start jest klasyczny: Ratusz na pierwszym poziomie, po {longStartResources} każdego surowca i garstka pikinierów (w liczbie {longStartSpear}). Nowi gracze dostają ochronę początkującego, domyślnie na {longProtectionDays} dni, i dopóki trwa, nikt nie może ich zaatakować. Do długich światów potrzebne jest konto; gość zakłada je, wybierając nazwę i hasło.\n\nJeśli to twoja pierwsza gra tego rodzaju, zacznij od szybkiej partii. Jedna partia pokazuje całą pętlę, a poradnik o pierwszej godzinie przeprowadzi cię przez nią krok po kroku."
+        },
+        "loop": {
+          "title": "Pętla: od surowców do nowych wiosek",
+          "body": "Każda gra kręci się wokół tej samej pętli.\n\nNajpierw surowce. Tartak, Cegielnia i Huta żelaza pracują bez przerwy, a Spichlerz decyduje, ile z tego możesz zatrzymać.\n\nSurowce zamieniają się w budynki. Wyższy Ratusz buduje szybciej, Koszary i Stajnia szkolą wojsko, Kuźnia je ulepsza, Zagroda je wyżywi, a Mur obronny pomaga mu się utrzymać.\n\nBudynki dają wojsko, a wojsko rusza po łupy. Pobliskie wioski barbarzyńców mają surowce i zwykle niewielu obrońców albo żadnych, więc lekka kawaleria i topornicy przynoszą znacznie więcej, niż twoja wioska wyprodukuje sama.\n\nŁupy płacą za hetmanów. Hetman potrzebuje Akademii, monet i silnej eskorty. Każdy, który przeżyje wygrany atak, obniża lojalność celu, a kiedy spadnie ona do zera, wioska należy do ciebie.\n\nWięcej wiosek to więcej surowców i pętla rusza od nowa, tylko na większą skalę. Inni gracze robią dokładnie to samo i patrzą na twoją wioskę jak na kolejny cel, więc obrona też jest częścią tej pętli."
+        }
+      },
+      "guidesTitle": "Poradniki",
+      "readGuide": "Czytaj poradnik",
+      "lookUp": "Sprawdź w encyklopedii",
+      "unitsLink": "Wszystkie jednostki",
+      "buildingsLink": "Wszystkie budynki"
+    },
+    "guide": {
+      "firstHour": {
+        "title": "Pierwsza godzina: szybka partia od początku do końca",
+        "description": "Co dostajesz po kliknięciu Graj teraz, jak jednym hetmanem przejąć pierwszą wioskę barbarzyńców i jak kończy się szybka partia.",
+        "lead": "Szybka partia to najkrótsza droga do poznania Osad. Dostajesz rozbudowaną wioskę, gotową armię i krótką, szybką grę, w której sprawdzisz, jak daleko cię zaprowadzą.",
+        "sections": {
+          "start": {
+            "title": "Z czym zaczynasz",
+            "body": "Kliknij Graj teraz, a gra założy ci konto gościa z losowym pseudonimem. Bez e-maila i bez hasła. Pseudonim zmienisz przyciskiem na górze ekranu.\n\nWioska jest już rozbudowana: Ratusz na poziomie {instantStartMain}, Koszary na {instantStartBarracks}, Stajnia na {instantStartStable}, Kuźnia na {instantStartSmithy} i Mur obronny na {instantStartWall}, do tego Akademia, Rynek i mocne budynki surowcowe. W magazynach leży po {instantStartResources} drewna, gliny i żelaza, a wszystkie jednostki, które bada Kuźnia, są już zbadane.\n\nArmia czeka w domu. Stan wojska: pikinierzy {instantStartSpear}, topornicy {instantStartAxe}, lekka kawaleria {instantStartLightCav}, zwiadowcy {instantStartScout}, hetman {instantStartNoble}. Krótki samouczek pokaże, gdzie ich szukać. Przez pierwsze {instantProtectionMin} min działa ochrona początkującego: żaden gracz nie może cię zaatakować, a ty możesz atakować tylko barbarzyńców."
+          },
+          "firstConquest": {
+            "title": "Pierwszy podbój",
+            "body": "Szare wioski na mapie należą do barbarzyńców. W szybkiej partii ich lojalność zaczyna się od {instantBarbarianLoyalty}, a każdy hetman, który przeżyje wygrany atak, obniża ją o {nobleDropMin}–{nobleDropMax}. Jeden hetman w zupełności wystarczy, żeby taką wioskę przejąć.\n\nOtwórz mapę, kliknij najbliższą wioskę barbarzyńców i sprawdź odległość. Potem na Punkcie zbiórki wyślij jeden atak: hetmana razem z solidną eskortą toporników. Topornicy walczą, hetman przeżywa za ich plecami, a wioska zmienia właściciela w chwili, gdy atak dociera na miejsce.\n\nNajpierw trzeba pozbyć się obrońców. Większość wiosek barbarzyńców nie ma żadnego wojska, ale wioska porzucona przez gracza zachowuje jego armię i mur, a hetman w przegranej bitwie ginie razem z resztą. Jeśli mapa nic nie mówi o danej wiosce, najpierw wyślij zwiadowców.\n\nNie zwlekaj między pierwszą wizytą a hetmanem. Lojalność zaczyna odrastać od chwili, gdy do wioski barbarzyńców dotrze czyjekolwiek wojsko, a przy tej prędkości rośnie szybko. Hetman, który przychodzi z pierwszym atakiem, trafia na najniższą możliwą lojalność."
+          },
+          "growing": {
+            "title": "Reszta godziny",
+            "body": "Hetman zużywa się przy podboju, więc następnego trzeba wyszkolić w Akademii. Każdy hetman wymaga monet: tylu, ile masz wiosek, plus tylu, ilu hetmanów już posiadasz. Moneta kosztuje {coinWood} drewna, {coinClay} gliny i {coinIron} żelaza, a sam hetman ma jeszcze własną cenę.\n\nGłówna wioska produkuje dużo, ale nie tyle, żeby wybijać monety co chwilę. Lukę wypełnia lekka kawaleria: wysyłaj ją na okoliczne wioski barbarzyńców, a Asystent pozwoli szybko powtarzać najazdy. Łupy płacą za monety, monety za hetmanów, a hetmani przynoszą nowe wioski.\n\nPoziom Akademii ogranicza, ilu hetmanów wioska może mieć naraz, łącznie z tymi w drodze. Rozbuduj ją, jeśli chcesz wysyłać więcej niż jednego naraz.\n\nZaglądaj też na Punkt zbiórki. Gdy skończy się ochrona, gracze i boty mogą cię atakować, a przejęte wioski startują słabo: każdy budynek traci poziomy i nie ma w nich wojska."
+          },
+          "ending": {
+            "title": "Jak kończy się partia",
+            "body": "Szybka partia kończy się po {instantDurationMin} min albo wcześniej, gdy jeden gracz zajmie {instantDominationPct}% wszystkich wiosek na mapie. Boty nie mogą w ten sposób skończyć gry przed czasem, ale są w końcowym rankingu: kiedy czas minie, wygrywa ten, kto ma najwięcej punktów, człowiek czy bot.\n\nPo końcu gry strona wyników pokazuje tabelę z punktami, wioskami i podbojami każdego gracza. Strona zostaje, więc możesz do niej wrócić później.\n\nWszystko, co osiągniesz, możesz zachować. W dowolnej chwili kliknij Załóż konto, wybierz nazwę i hasło, a gość staje się pełnoprawnym graczem z tą samą wioską, tą samą partią i tym samym dorobkiem rozegranych gier. Konto otwiera też długie światy. Goście, których nikt nie widział przez {guestDeleteDays} dni, są usuwani razem z historią.\n\nMożna też odejść wcześniej. Przycisk Opuść świat kończy twoją grę, a twoje wioski przejmują barbarzyńcy."
+          }
+        },
+        "shots": {
+          "first-hour-start": {
+            "alt": "Widok wioski na początku szybkiej partii: rozbudowana wioska z poziomami budynków, panel produkcji i armia startowa.",
+            "caption": "Wioska na samym starcie: rozbudowane budynki, pełne magazyny i armia z hetmanem. Licznik na górze odmierza czas do końca partii."
+          },
+          "first-hour-conquest": {
+            "alt": "Mapa szybkiej partii z zaznaczoną wioską barbarzyńców: odległość i czas marszu lekkiej kawalerii oraz toporników.",
+            "caption": "Wybierz najbliższą szarą wioskę: karta pokazuje odległość i czas, jakiego każda jednostka potrzebuje, żeby tam dotrzeć."
+          }
+        }
+      },
+      "raiding": {
+        "title": "Najazdy na barbarzyńców: skąd brać surowce",
+        "description": "Po co łupić, które wioski atakować, kto niesie najwięcej, jak działają Asystent i auto-farma i co może pójść nie tak.",
+        "lead": "Własna produkcja to tylko część dochodu. Reszta leży w okolicznych wioskach barbarzyńców i czeka, aż ją zabierzesz, najazd po najeździe.",
+        "sections": {
+          "why": {
+            "title": "Po co w ogóle najazdy",
+            "body": "Tartak, Cegielnia i Huta żelaza produkują przez całą dobę, ale Spichlerz mieści tylko tyle, ile mieści. Gdy się zapełni, wszystko, co przekracza jego pojemność, przepada. Tak samo przepada łup, który wraca do pełnego Spichlerza.\n\nWioski barbarzyńców mają własne kopalnie i nikt nie wydaje tego, co produkują. Za każdym razem, gdy zabierzesz ich zapasy, zaczynają się zapełniać od nowa. Regularne najazdy dają więcej surowców niż własna produkcja i dają je wcześniej niż cokolwiek innego.\n\nZasada jest więc prosta: wydawaj to, co masz, nie pozwól, żeby Spichlerz się przelewał, i wysyłaj wojsko po więcej."
+          },
+          "targets": {
+            "title": "Które wioski atakować",
+            "body": "Szare wioski na mapie należą do barbarzyńców. Większość z nich nie ma ani wojska, ani muru: to małe osady z odrobiną każdego surowca. Wyjątkiem są wioski porzucone przez graczy. Zachowują armię i mur, które miały.\n\nIm bliżej, tym lepiej. Najazd, który szybko wraca, może szybko wyruszyć znowu, a wojsko krócej jest narażone. Lekki kawalerzysta pokonuje pole w {lightCavMinutesPerField} min przy podstawowej szybkości jednostek, a ustawienia świata to przyspieszają, ale i tak to odległość decyduje, ile kursów zdążysz zrobić.\n\nWiększe wioski mają więcej do wzięcia, ale to też w nich częściej kryją się niespodzianki. Zanim wyślesz kolejny atak, zerknij na ostatni raport: Asystent pokazuje, czy poprzedni najazd wrócił z pełnym obciążeniem, z częściowym łupem czy ze stratami."
+          },
+          "army": {
+            "title": "Kogo wysyłać",
+            "body": "To, co przyniesie najazd, zależy od udźwigu wojska, które przeżyło. Udźwig jednego żołnierza: lekki kawalerzysta {lightCavCarry}, pikinier {spearCarry}, topornik {axeCarry}.\n\nLekka kawaleria to urodzeni łupieżcy. Jest szybka, niesie najwięcej i bije dość mocno, żeby poradzić sobie z pustą wioską barbarzyńców. Topornicy to wolna piechota z małym udźwigiem, ale wygrywają bitwy, więc wysyłaj ich tam, gdzie są obrońcy. Pikinierzy niosą sporo jak na piechotę, tyle że są obrońcami: każdy pikinier na łupach to jeden mniej na straży twojej wioski.\n\nDopasuj najazd do łupu. Zbyt wielu tragarzy to zmarnowany kurs, zbyt mało zostawia surowce na miejscu. Raport pokazuje, ile wróciło w porównaniu z tym, ile wojsko mogło unieść, i oznacza pełne obciążenie."
+          },
+          "assistant": {
+            "title": "Asystent farmienia i szablony",
+            "body": "Asystent wypisuje wioski barbarzyńców w wybranym promieniu od bieżącej wioski: odległość, punkty, ostatni atak, ostatni łup, szacowany łup i ostatnio widzianą obronę. Filtry ukrywają wioski zaatakowane przed chwilą, wioski z murem wyższym niż wybrany poziom, wioski, w których były straty, i te, do których atak już idzie.\n\nSzablony to zapisane składy wojska. Ustaw A i B raz, na Punkcie zbiórki albo przez link edytuj w Asystencie, a jedno kliknięcie wyśle je na wybrany wiersz. Szablon C to paczka: Asystent wysyła tyle paczek, ile potrzeba na szacowany łup. Na klawiaturze strzałki przesuwają między wierszami, a klawisze A, B i C wysyłają atak.\n\nAuto-farma odblokowuje się przy {autoFarmUnlockVillages} wioskach albo wcześniej, dzięki zadaniu Łupieżca. Włącz ją dla wybranych wiosek, a co {autoFarmIntervalMin} min wyśle szablon A na cele, które przechodzą przez filtry, od najbliższego, dopóki starczy wojska."
+          },
+          "risks": {
+            "title": "Ryzyko: zwiad, mur i schowek",
+            "body": "Gdy nie masz pewności, zacznij od zwiadu. Kilku zwiadowców powie ci, jakie wojsko, budynki i surowce są w wiosce, zanim zaryzykujesz armię.\n\nMur kosztuje cię wojsko. Każdy poziom wzmacnia obronę, a nawet pusta wioska z murem każe atakującym zapłacić stratami. Dlatego Asystent ukrywa wioski z murem wyższym, niż pozwolisz.\n\nSchowek chroni część surowców wioski przed łupieżcami. Wioska barbarzyńców ze Schowkiem trzyma tę część poza twoim zasięgiem, więc szacowany łup jest mniejszy niż jej pełne zapasy. Raport ze zwiadu pokazuje wszystko, co leży w wiosce, łącznie z ukrytą częścią, więc nie licz na całość. Działa to też w drugą stronę: twój Schowek chroni część twoich surowców przed innymi graczami.\n\nI wreszcie: najazd to atak. Gracze widzą go, gdy idzie na ich wioskę, a najazd przechodzący blisko cudzej wioski można przechwycić w drodze."
+          }
+        },
+        "shots": {
+          "raiding-farm": {
+            "alt": "Asystent farmienia: tabela okolicznych wiosek barbarzyńców z odległością, punktami, ostatnim atakiem, szacowanym łupem i przyciskami szablonów A, B i C.",
+            "caption": "Asystent wypisuje wioski barbarzyńców wokół ciebie. Filtry u góry ukrywają te zaatakowane niedawno, te z murem i te, w których były straty."
+          },
+          "raiding-report": {
+            "alt": "Raport z bitwy: topornicy pokonali pustą wioskę barbarzyńców i wrócili z pełnym obciążeniem surowców.",
+            "caption": "Udany najazd: bez obrońców, bez strat, z pełnym łupem. Atak można powtórzyć albo wysłać szablon A prosto z raportu."
+          }
+        }
+      },
+      "defending": {
+        "title": "Obrona wioski: nadchodzące ataki, wsparcie i unik",
+        "description": "Jak czytać nadchodzące ataki, dlaczego nie ma bonusu nocnego, kto broni najlepiej i jak uniknąć uderzenia, którego nie da się utrzymać.",
+        "lead": "Prędzej czy później ktoś cię zaatakuje. Obrona w LibreHold polega na tym, żeby zobaczyć atak na czas, mieć w domu właściwe wojsko i w porę zdecydować: trzymać się czy zejść z drogi.",
+        "sections": {
+          "incoming": {
+            "title": "Widzisz, co nadchodzi",
+            "body": "Ataki na twoją wioskę pojawiają się w tabeli Nadchodzące ataki, zarówno w widoku wioski, jak i na Punkcie zbiórki. Każdy wiersz mówi, skąd idzie atak, czym prawdopodobnie jest i ile zostało do jego przybycia. Rodzaj to domysł z czasu marszu: tempo wyznacza najwolniejsza jednostka, więc atak idący tempem hetmana dostaje etykietę „hetman?”. Kilku hetmanów lądujących tuż po sobie gra oznacza jako pociąg.\n\nNa mapie nadchodząca armia jest narysowana na swojej drodze. Kliknięcie otwiera kartę z tymi samymi informacjami i dokładną godziną dotarcia.\n\nGra potrafi też zadzwonić. Włącz Dźwięki w Ustawieniach, a usłyszysz alarm, gdy atak na twoją wioskę dotrze na miejsce, o ile gra jest otwarta. To nie budzik: dźwięk rozlega się, kiedy atak już jest na miejscu, a nie wcześniej. Na atak, który wyląduje, gdy śpisz, sprawdź godzinę dotarcia i nastaw budzik w telefonie."
+          },
+          "noBonus": {
+            "title": "Nie ma bonusu nocnego",
+            "body": "W LibreHold nie ma bonusu nocnego. Wioska broni się o trzeciej nad ranem dokładnie tak samo jak w południe i nic nie spowalnia ataku tylko dlatego, że śpisz.\n\nJedyną tarczą, jaką daje gra, jest ochrona początkującego. W długim świecie trwa domyślnie {longProtectionDays} dni, a administrator świata może ją ustawić w zakresie od zera do {protectionMaxDays} dni. W szybkiej partii trwa {instantProtectionMin} min. Dopóki działa, nikt cię nie zaatakuje, a ty możesz atakować tylko barbarzyńców.\n\nBoty dobrze to wiedzą. W długich światach chętnie celują atakami w twoją noc albo w godziny, kiedy zwykle cię nie ma, a odczytują je z tego, kiedy twoje punkty przestają rosnąć. Niektóre uczą się też, o której wraca twoje wojsko po uniku, i uderzają zaraz potem. Planuj obronę na godziny, kiedy jesteś offline, a nie na te, kiedy patrzysz."
+          },
+          "defence": {
+            "title": "Jak się utrzymać: wojsko, mur i wsparcie",
+            "body": "Dobra obrona zależy od tego, kto atakuje. Pikinierzy są tani i dobrze stoją przeciw kawalerii: każdy ma przeciw niej obronę {spearDefCav}. Miecznicy to odpowiedź na piechotę, na przykład na toporników. Łucznicy dobrze bronią się i przed piechotą, i przed kawalerią. Mieszanka wszystkich trzech chroni przed tym, co akurat nadejdzie.\n\nMur obronny mnoży wszystko. Każdy poziom dodaje obrony i wzmacnia cały garnizon, więc gdy zaczynają się ataki, to zwykle najlepszy budynek do rozbudowy.\n\nNie musisz bronić się w pojedynkę. Wsparcie z twoich innych wiosek walczy w bitwie tak, jakby to było twoje wojsko, i tak samo wsparcie od znajomych: każdy może wysłać wojsko do twojej wioski, a ty możesz je odesłać z Punktu zbiórki, kiedy niebezpieczeństwo minie. Tryb Dotrzyj o pozwala ustawić wsparcie tak, żeby dotarło przed atakiem.\n\nNa pociąg hetmanów jest ostrzejsze narzędzie. Snajp wysyła wsparcie, które ląduje między pierwszym a drugim hetmanem, więc kolejni trafiają na świeży garnizon."
+          },
+          "dodge": {
+            "title": "Unik: zejdź z drogi",
+            "body": "Czasem atak jest za duży, żeby go utrzymać. Wtedy najlepsza obrona to być gdzie indziej: wyprowadzić wojsko przed uderzeniem i sprowadzić je zaraz po nim. Atakujący zastaje pustą wioskę, zabiera trochę surowców i nikogo nie zabija.\n\nKażdą armię można odwołać w ciągu pierwszych {cancelWindowMin} min marszu, a droga powrotna trwa tyle, ile marsz w tamtą stronę. Na tym polega cały trik, a przycisk Unik robi to za ciebie: całe wojsko wychodzi jako wsparcie do najbliższej twojej wioski albo jako atak na pobliską wioskę barbarzyńców i zawraca tak, żeby wrócić sekundę po uderzeniu. Ze względu na to okno Unik trzeba kliknąć odpowiednio wcześnie, mniej więcej dwa takie okna przed dotarciem ataku.\n\nUnik ma sens przeciw dużemu atakowi, który wybiłby garnizon. Przeciw hetmanom to błąd: pusta wioska traci lojalność przy każdym hetmanie, który dotrze. Na pociąg lepiej się trzymać, snajpować albo wołać o wsparcie."
+          }
+        },
+        "shots": {
+          "night-incoming": {
+            "alt": "Punkt zbiórki z nadchodzącym atakiem: skąd idzie, jego rodzaj, odliczanie do przybycia i przycisk Unik.",
+            "caption": "Nadchodzące ataki pokazują, kto idzie, czym prawdopodobnie jest i kiedy dotrze."
+          },
+          "night-support": {
+            "alt": "Punkt zbiórki: pikinierzy wysyłani jako wsparcie do własnej wioski, z odległością, czasem marszu i godziną dotarcia w podglądzie.",
+            "caption": "Wsparcie z innej wioski: podgląd pokazuje, kiedy dotrze, więc wiesz, czy zdąży przed atakiem."
+          }
+        }
+      },
+      "scouting": {
+        "title": "Zwiad i armie w drodze",
+        "description": "Jak działają zwiadowcy, co pokazuje raport ze zwiadu, które armie widać na mapie i jak zbadać je albo zaatakować w polu.",
+        "lead": "Wiedza wygrywa więcej bitew niż samo wojsko. Zwiadowcy mówią, co czeka w wiosce, a mapa pokazuje armie maszerujące obok twoich ziem.",
+        "sections": {
+          "scouts": {
+            "title": "Zwiadowcy i raporty ze zwiadu",
+            "body": "Zwiadowców szkoli Stajnia. To najszybsza jednostka w grze: {scoutMinutesPerField} min na pole przy podstawowej szybkości jednostek. Niczego nie niosą. Zwiad to atak złożony wyłącznie ze zwiadowców; zwiadowcy dorzuceni do zwykłego ataku po prostu idą razem z nim.\n\nNa miejscu twoi zwiadowcy spotykają tylko zwiadowców obrońcy, a każdy z nich liczy się z mnożnikiem {scoutDefenseFactor}. Jeśli twoi są silniejsi, przechodzą, część z nich może zginąć, a raport pokazuje surowce, budynki, wojsko (razem ze wsparciem) i lojalność wioski. Jeśli nie, giną wszyscy, a raport mówi tylko, że zwiad się nie udał. Obrońca w żadnym wypadku nic nie traci.\n\nWysyłaj więc więcej zwiadowców, niż się wydaje potrzebne, i trzymaj kilku w domu: tylko twoi zwiadowcy powstrzymują innych graczy przed zajrzeniem do twojej wioski."
+          },
+          "sight": {
+            "title": "Co widać na mapie",
+            "body": "Każdy atak wymierzony w twoją wioskę widzisz od chwili wymarszu. Inne armie też widać, o ile przechodzą blisko którejś z twoich wiosek. Zasięg wzroku, liczony w polach mapy, wynosi {sightRadiusLong} w długich światach i {sightRadiusInstant} w szybkich partiach, gdzie armie pokonują pole w kilka sekund i trzeba je zobaczyć wcześniej. Jeśli świat ma wyłączone bitwy w polu, widać tylko ataki na własne wioski.\n\nKliknij armię na mapie, a otworzy się jej karta: skąd idzie, dokąd, kiedy dotrze i na co wygląda, sądząc po tempie. Z karty możesz ją zbadać albo zaatakować w polu, a jeśli idzie na ciebie, także zrobić unik."
+          },
+          "field": {
+            "title": "Spotkanie w polu",
+            "body": "Przyciski Zwiad i Atak w polu wysyłają wojsko na spotkanie armii w drodze. Gra wylicza miejsce spotkania w chwili wysłania i pokazuje, kiedy wojsko tam dotrze; jeśli jest za wolne, żeby ją dogonić, mówi to od razu.\n\nZwiad w polu działa jak zwiad wioski, przeciw zwiadowcom w tej armii, i pokazuje dokładnie, co w niej maszeruje. Domysł „hetman?” zamienia się w pewność.\n\nBitwa w polu toczy się bez muru, bo na drodze go nie ma. To najtańszy moment, żeby uderzyć w armię: garstka jeźdźców potrafi rozbić kolumnę toporników razem z hetmanem, zanim ta w ogóle dotrze do twojej wioski. Topornicy słabo bronią się przed kawalerią, a w otwartym polu nic im nie pomoże.\n\nJeśli trafiona armia niosła łup, jej ocalali zatrzymują tyle, ile udźwigną, twoi ocalali zabierają resztę do granic własnego udźwigu, a to, co zostanie, przepada na drodze. Jeśli armia zawróciła albo dotarła na miejsce, zanim twoje wojsko zdążyło, nikogo nie zastaje i wraca do domu."
+          },
+          "turnBack": {
+            "title": "Odwrót",
+            "body": "Zwykle armię można odwołać tylko w ciągu pierwszych {cancelWindowMin} min marszu. Armia trafiona w polu to co innego: może zawrócić w każdej chwili, aż do dotarcia na miejsce. Jeśli twój atak zostanie złapany w drodze i straci połowę siły, nie musisz rzucać reszty na broniącą się wioskę. Otwórz kartę armii i kliknij Zawróć.\n\nDruga strona też to wie. Kiedy uderzysz w armię w drodze, licz się z tym, że jej resztki zawrócą, zamiast iść na obronę, która jest już dla nich za silna.\n\nDroga do domu trwa tyle, ile dotychczasowy marsz. Im później wojsko zawróci, tym dłużej nie będzie go w domu, a pusta wioska to łatwy cel."
+          }
+        },
+        "shots": {
+          "scouting-army-card": {
+            "alt": "Mapa z armiami w drodze i karta nadchodzącego ataku, który wygląda na hetmana, z przyciskami Unik, Zwiad i Atak w polu.",
+            "caption": "Kliknij armię na mapie, żeby zobaczyć, dokąd idzie, kiedy dotrze i na co wygląda, a potem ją zbadać albo zaatakować w polu."
+          },
+          "scouting-field-report": {
+            "alt": "Raport z bitwy w polu: garstka lekkiej kawalerii rozbiła w drodze kolumnę toporników z hetmanem.",
+            "caption": "Złapany w drodze, bez muru za plecami, atak z hetmanem traci wszystko w starciu z kilkoma jeźdźcami."
+          }
+        }
+      },
+      "nobles": {
+        "title": "Hetmani i podboje: jak przejąć cudzą wioskę",
+        "description": "Akademia, monety, lojalność i pociągi hetmanów: czego trzeba, żeby przejąć wioskę hetmanem, i co się po drodze traci.",
+        "lead": "Hetman to sposób, żeby z jednej wioski zrobić wiele. Jest drogi, powolny i kruchy, a cała sztuka polega na tym, żeby dotarł do celu żywy.",
+        "sections": {
+          "academy": {
+            "title": "Akademia",
+            "body": "Hetmanów szkoli Akademia. Żeby ją zbudować, potrzebujesz Ratusza na poziomie {academyMain}, Rynku na poziomie {academyMarket} i Kuźni na poziomie {academySmithy}. W długim świecie to daleka droga od startu i pierwszy duży cel każdego gracza.\n\nPoziom Akademii to zarazem limit: wioska może mieć tylu hetmanów, ile wynosi ten poziom, licząc tych w szkoleniu i tych w drodze. Rozbudowa Kuźni pozwala jednej wiosce przygotować kilku hetmanów naraz.\n\nHetman to najwolniejsza jednostka w grze, a jego zasięg jest ograniczony. Największa odległość, na jaką może zaatakować, liczona w polach, to {nobleMaxDistance}. Planuj podboje wokół wiosek w tym promieniu."
+          },
+          "coins": {
+            "title": "Monety",
+            "body": "Oprócz własnej ceny każdy hetman wymaga monet. Wybijasz je w Akademii przyciskiem Wybij monetę, a moneta zawsze kosztuje {coinWood} drewna, {coinClay} gliny i {coinIron} żelaza. Monety należą do ciebie, a nie do wioski: korzystają z nich wszystkie twoje wioski.\n\nHetman wymaga tylu monet, ile masz wiosek, plus tylu, ilu hetmanów już posiadasz, łącznie z tymi w szkoleniu i w drodze. Każda nowa wioska i każdy czekający hetman podnosi cenę następnego. Hetman, który zginie albo zużyje się przy podboju, przestaje się liczyć.\n\nDlatego przed podbojem tak ważne są najazdy. Monety pożerają surowce szybciej niż jakikolwiek budynek, a większość tych surowców pochodzi z okolicznych wiosek barbarzyńców."
+          },
+          "loyalty": {
+            "title": "Lojalność",
+            "body": "Każda wioska ma lojalność, najwyżej {maxLoyalty}. Każdy hetman, który przeżyje wygrany atak, obniża ją losowo o {nobleDropMin}–{nobleDropMax}. Gdy spadnie do zera lub niżej, wioska należy do ciebie, a ten hetman się zużywa; pozostali hetmani z tego samego ataku wracają do domu.\n\nLojalność odrasta o jeden punkt na godzinę, pomnożony przez szybkość świata, więc powolny podbój sam się cofa. Po podboju wioska startuje z lojalnością {loyaltyAfterConquest}, co ułatwia poprzedniemu właścicielowi szybkie odbicie.\n\nPodbój kosztuje też samą wioskę. Każdy budynek traci od {plunderLevelsMin} do {plunderLevelsMax} poziomów, choć Ratusz nigdy nie spada poniżej pierwszego. Badania zaczynają się od zera, kolejki są czyszczone, stacjonujące wsparcie wraca do domu, a wojsko poprzedniego właściciela, które było poza wioską, przepada.\n\nW długim świecie ostatniej wioski gracza domyślnie nie da się przejąć: hetmani zatrzymują lojalność tuż nad zerem. Wyjątkiem są porzucone konta. W szybkiej partii ostatnią wioskę można stracić jak każdą inną."
+          },
+          "train": {
+            "title": "Czyszczenie i pociąg hetmanów",
+            "body": "Hetman słabo walczy. Gdy atak przegra, ginie razem z resztą, a nawet w wygranej bitwie może polec. Dlatego najpierw wyczyść wioskę: wyślij duży atak z topornikami, lekką kawalerią i taranami, który wybije obrońców i obniży mur, a hetmanów zaraz za nim.\n\nKilku hetmanów lądujących jeden po drugim to pociąg. Na Punkcie zbiórki użyj trybu Dotrzyj o, żeby każdy atak docierał chwilę po poprzednim: najpierw czyszczenie, potem pierwszy hetman z solidną eskortą, potem kolejni z mniejszą. Gdy dzielą ich ułamki sekundy, obrońca prawie nie ma luki, żeby wcisnąć wsparcie.\n\nMożna też wysłać kilku hetmanów w jednym ataku. Każdy z nich obniży lojalność, ale jeśli ten atak przegra, giną wszyscy naraz. Pociąg rozkłada ryzyko.\n\nUderzaj, gdy właściciel nie jest gotowy. Najpierw zwiad, sprawdź wsparcie w wiosce i pamiętaj, że obrońca widzi twoich hetmanów od chwili wymarszu, z etykietą „hetman?”. Jeśli atak dotrze, gdy wioska jest już twoja, jego wojsko po prostu zostaje w niej jako wsparcie."
+          }
+        },
+        "shots": {
+          "nobles-academy": {
+            "alt": "Akademia: posiadane monety, koszt monety, przycisk Wybij monetę i hetman gotowy do rekrutacji.",
+            "caption": "Akademia pokazuje, ilu monet wymaga następny hetman i ilu hetmanów może mieć ta wioska."
+          },
+          "nobles-conquest": {
+            "alt": "Raport z podboju: topornicy i hetman przejęli wioskę barbarzyńców, a jej lojalność spadła do zera.",
+            "caption": "Wioska podbita: hetman zbił lojalność do zera i wioska zmieniła właściciela."
+          }
+        }
+      }
+    }
+  }
+}

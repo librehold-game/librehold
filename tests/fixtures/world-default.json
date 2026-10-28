@@ -1,0 +1,5363 @@
+{
+  "farmTargets": [
+    {
+      "defenders": null,
+      "distance": 1,
+      "estimatedLoot": 0,
+      "id": "v:89:71",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 49,
+      "status": "untouched",
+      "wall": null,
+      "x": 89,
+      "y": 71
+    },
+    {
+      "defenders": null,
+      "distance": 1,
+      "estimatedLoot": 0,
+      "id": "v:91:71",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 71
+    },
+    {
+      "defenders": null,
+      "distance": 2,
+      "estimatedLoot": 0,
+      "id": "v:92:71",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 92,
+      "y": 71
+    },
+    {
+      "defenders": null,
+      "distance": 2.23606797749979,
+      "estimatedLoot": 0,
+      "id": "v:88:70",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 88,
+      "y": 70
+    },
+    {
+      "defenders": null,
+      "distance": 2.23606797749979,
+      "estimatedLoot": 0,
+      "id": "v:89:69",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 89,
+      "y": 69
+    },
+    {
+      "defenders": null,
+      "distance": 2.23606797749979,
+      "estimatedLoot": 0,
+      "id": "v:89:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 89,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 2.23606797749979,
+      "estimatedLoot": 0,
+      "id": "v:91:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 64,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 2.23606797749979,
+      "estimatedLoot": 0,
+      "id": "v:92:72",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 92,
+      "y": 72
+    },
+    {
+      "defenders": null,
+      "distance": 3,
+      "estimatedLoot": 0,
+      "id": "v:90:68",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 90,
+      "y": 68
+    },
+    {
+      "defenders": null,
+      "distance": 3.1622776601683795,
+      "estimatedLoot": 0,
+      "id": "v:87:72",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 72
+    },
+    {
+      "defenders": null,
+      "distance": 3.1622776601683795,
+      "estimatedLoot": 0,
+      "id": "v:89:74",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 51,
+      "status": "untouched",
+      "wall": null,
+      "x": 89,
+      "y": 74
+    },
+    {
+      "defenders": null,
+      "distance": 3.605551275463989,
+      "estimatedLoot": 0,
+      "id": "v:87:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 3.605551275463989,
+      "estimatedLoot": 0,
+      "id": "v:88:74",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 88,
+      "y": 74
+    },
+    {
+      "defenders": null,
+      "distance": 3.605551275463989,
+      "estimatedLoot": 0,
+      "id": "v:93:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 93,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 4,
+      "estimatedLoot": 0,
+      "id": "v:90:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 49,
+      "status": "untouched",
+      "wall": null,
+      "x": 90,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 4.123105625617661,
+      "estimatedLoot": 0,
+      "id": "v:91:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 4.123105625617661,
+      "estimatedLoot": 0,
+      "id": "v:91:75",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 75
+    },
+    {
+      "defenders": null,
+      "distance": 4.123105625617661,
+      "estimatedLoot": 0,
+      "id": "v:94:70",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 94,
+      "y": 70
+    },
+    {
+      "defenders": null,
+      "distance": 4.242640687119285,
+      "estimatedLoot": 0,
+      "id": "v:93:74",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 93,
+      "y": 74
+    },
+    {
+      "defenders": null,
+      "distance": 4.47213595499958,
+      "estimatedLoot": 0,
+      "id": "v:86:69",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 86,
+      "y": 69
+    },
+    {
+      "defenders": null,
+      "distance": 4.47213595499958,
+      "estimatedLoot": 0,
+      "id": "v:86:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 86,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 4.47213595499958,
+      "estimatedLoot": 0,
+      "id": "v:92:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 92,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 4.47213595499958,
+      "estimatedLoot": 0,
+      "id": "v:94:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 94,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 5,
+      "estimatedLoot": 0,
+      "id": "v:90:66",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 90,
+      "y": 66
+    },
+    {
+      "defenders": null,
+      "distance": 5,
+      "estimatedLoot": 0,
+      "id": "v:90:76",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 61,
+      "status": "untouched",
+      "wall": null,
+      "x": 90,
+      "y": 76
+    },
+    {
+      "defenders": null,
+      "distance": 5.0990195135927845,
+      "estimatedLoot": 0,
+      "id": "v:85:70",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 85,
+      "y": 70
+    },
+    {
+      "defenders": null,
+      "distance": 5.0990195135927845,
+      "estimatedLoot": 0,
+      "id": "v:91:76",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 76
+    },
+    {
+      "defenders": null,
+      "distance": 5.385164807134504,
+      "estimatedLoot": 0,
+      "id": "v:85:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 85,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 5.385164807134504,
+      "estimatedLoot": 0,
+      "id": "v:88:76",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 88,
+      "y": 76
+    },
+    {
+      "defenders": null,
+      "distance": 5.385164807134504,
+      "estimatedLoot": 0,
+      "id": "v:92:66",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 64,
+      "status": "untouched",
+      "wall": null,
+      "x": 92,
+      "y": 66
+    },
+    {
+      "defenders": null,
+      "distance": 5.385164807134504,
+      "estimatedLoot": 0,
+      "id": "v:95:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 95,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 5.656854249492381,
+      "estimatedLoot": 0,
+      "id": "v:86:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 86,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 5.830951894845301,
+      "estimatedLoot": 0,
+      "id": "v:85:74",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 85,
+      "y": 74
+    },
+    {
+      "defenders": null,
+      "distance": 5.830951894845301,
+      "estimatedLoot": 0,
+      "id": "v:87:66",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 66
+    },
+    {
+      "defenders": null,
+      "distance": 6,
+      "estimatedLoot": 0,
+      "id": "v:90:65",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 50,
+      "status": "untouched",
+      "wall": null,
+      "x": 90,
+      "y": 65
+    },
+    {
+      "defenders": null,
+      "distance": 6.082762530298219,
+      "estimatedLoot": 0,
+      "id": "v:84:72",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 84,
+      "y": 72
+    },
+    {
+      "defenders": null,
+      "distance": 6.082762530298219,
+      "estimatedLoot": 0,
+      "id": "v:89:77",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 47,
+      "status": "untouched",
+      "wall": null,
+      "x": 89,
+      "y": 77
+    },
+    {
+      "defenders": null,
+      "distance": 6.082762530298219,
+      "estimatedLoot": 0,
+      "id": "v:96:72",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 96,
+      "y": 72
+    },
+    {
+      "defenders": null,
+      "distance": 6.324555320336759,
+      "estimatedLoot": 0,
+      "id": "v:84:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 84,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 6.324555320336759,
+      "estimatedLoot": 0,
+      "id": "v:88:77",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 88,
+      "y": 77
+    },
+    {
+      "defenders": null,
+      "distance": 6.324555320336759,
+      "estimatedLoot": 0,
+      "id": "v:92:65",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 92,
+      "y": 65
+    },
+    {
+      "defenders": null,
+      "distance": 6.324555320336759,
+      "estimatedLoot": 0,
+      "id": "v:96:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 96,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 6.4031242374328485,
+      "estimatedLoot": 0,
+      "id": "v:94:76",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 94,
+      "y": 76
+    },
+    {
+      "defenders": null,
+      "distance": 6.708203932499369,
+      "estimatedLoot": 0,
+      "id": "v:84:74",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 84,
+      "y": 74
+    },
+    {
+      "defenders": null,
+      "distance": 7,
+      "estimatedLoot": 0,
+      "id": "v:83:71",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 83,
+      "y": 71
+    },
+    {
+      "defenders": null,
+      "distance": 7.0710678118654755,
+      "estimatedLoot": 0,
+      "id": "v:83:70",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 83,
+      "y": 70
+    },
+    {
+      "defenders": null,
+      "distance": 7.211102550927978,
+      "estimatedLoot": 0,
+      "id": "v:86:65",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 45,
+      "status": "untouched",
+      "wall": null,
+      "x": 86,
+      "y": 65
+    },
+    {
+      "defenders": null,
+      "distance": 7.211102550927978,
+      "estimatedLoot": 0,
+      "id": "v:94:77",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 94,
+      "y": 77
+    },
+    {
+      "defenders": null,
+      "distance": 7.280109889280518,
+      "estimatedLoot": 0,
+      "id": "v:97:69",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 97,
+      "y": 69
+    },
+    {
+      "defenders": null,
+      "distance": 7.615773105863909,
+      "estimatedLoot": 0,
+      "id": "v:87:64",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 64
+    },
+    {
+      "defenders": null,
+      "distance": 7.810249675906654,
+      "estimatedLoot": 0,
+      "id": "v:95:65",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 50,
+      "status": "untouched",
+      "wall": null,
+      "x": 95,
+      "y": 65
+    },
+    {
+      "defenders": null,
+      "distance": 8,
+      "estimatedLoot": 0,
+      "id": "v:82:71",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 82,
+      "y": 71
+    },
+    {
+      "defenders": null,
+      "distance": 8.06225774829855,
+      "estimatedLoot": 0,
+      "id": "v:83:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 46,
+      "status": "untouched",
+      "wall": null,
+      "x": 83,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 8.06225774829855,
+      "estimatedLoot": 0,
+      "id": "v:83:75",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 46,
+      "status": "untouched",
+      "wall": null,
+      "x": 83,
+      "y": 75
+    },
+    {
+      "defenders": null,
+      "distance": 8.06225774829855,
+      "estimatedLoot": 0,
+      "id": "v:91:63",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 63
+    },
+    {
+      "defenders": null,
+      "distance": 8.06225774829855,
+      "estimatedLoot": 0,
+      "id": "v:91:79",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 50,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 79
+    },
+    {
+      "defenders": null,
+      "distance": 8.06225774829855,
+      "estimatedLoot": 0,
+      "id": "v:97:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 97,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 8.06225774829855,
+      "estimatedLoot": 0,
+      "id": "v:98:72",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 98,
+      "y": 72
+    },
+    {
+      "defenders": null,
+      "distance": 8.246211251235321,
+      "estimatedLoot": 0,
+      "id": "v:98:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 98,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 8.48528137423857,
+      "estimatedLoot": 0,
+      "id": "v:84:65",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 61,
+      "status": "untouched",
+      "wall": null,
+      "x": 84,
+      "y": 65
+    },
+    {
+      "defenders": null,
+      "distance": 8.602325267042627,
+      "estimatedLoot": 0,
+      "id": "v:97:66",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 97,
+      "y": 66
+    },
+    {
+      "defenders": null,
+      "distance": 8.602325267042627,
+      "estimatedLoot": 0,
+      "id": "v:97:76",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 97,
+      "y": 76
+    },
+    {
+      "defenders": null,
+      "distance": 8.94427190999916,
+      "estimatedLoot": 0,
+      "id": "v:82:75",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 61,
+      "status": "untouched",
+      "wall": null,
+      "x": 82,
+      "y": 75
+    },
+    {
+      "defenders": null,
+      "distance": 8.94427190999916,
+      "estimatedLoot": 0,
+      "id": "v:86:79",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 86,
+      "y": 79
+    },
+    {
+      "defenders": null,
+      "distance": 8.94427190999916,
+      "estimatedLoot": 0,
+      "id": "v:98:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 98,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 8.94427190999916,
+      "estimatedLoot": 0,
+      "id": "v:98:75",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 98,
+      "y": 75
+    },
+    {
+      "defenders": null,
+      "distance": 9,
+      "estimatedLoot": 0,
+      "id": "v:81:71",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 48,
+      "status": "untouched",
+      "wall": null,
+      "x": 81,
+      "y": 71
+    },
+    {
+      "defenders": null,
+      "distance": 9.055385138137417,
+      "estimatedLoot": 0,
+      "id": "v:89:62",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 89,
+      "y": 62
+    },
+    {
+      "defenders": null,
+      "distance": 9.055385138137417,
+      "estimatedLoot": 0,
+      "id": "v:91:62",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 65,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 62
+    },
+    {
+      "defenders": null,
+      "distance": 9.219544457292887,
+      "estimatedLoot": 0,
+      "id": "v:84:64",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 44,
+      "status": "untouched",
+      "wall": null,
+      "x": 84,
+      "y": 64
+    },
+    {
+      "defenders": null,
+      "distance": 9.219544457292887,
+      "estimatedLoot": 0,
+      "id": "v:99:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 63,
+      "status": "untouched",
+      "wall": null,
+      "x": 99,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 9.433981132056603,
+      "estimatedLoot": 0,
+      "id": "v:85:63",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 85,
+      "y": 63
+    },
+    {
+      "defenders": null,
+      "distance": 9.433981132056603,
+      "estimatedLoot": 0,
+      "id": "v:98:66",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 50,
+      "status": "untouched",
+      "wall": null,
+      "x": 98,
+      "y": 66
+    },
+    {
+      "defenders": null,
+      "distance": 9.486832980505138,
+      "estimatedLoot": 0,
+      "id": "v:87:62",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 64,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 62
+    },
+    {
+      "defenders": null,
+      "distance": 9.486832980505138,
+      "estimatedLoot": 0,
+      "id": "v:87:80",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 80
+    },
+    {
+      "defenders": null,
+      "distance": 9.486832980505138,
+      "estimatedLoot": 0,
+      "id": "v:93:80",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 93,
+      "y": 80
+    },
+    {
+      "defenders": null,
+      "distance": 9.848857801796104,
+      "estimatedLoot": 0,
+      "id": "v:94:80",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 94,
+      "y": 80
+    },
+    {
+      "defenders": null,
+      "distance": 9.848857801796104,
+      "estimatedLoot": 0,
+      "id": "v:99:75",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 64,
+      "status": "untouched",
+      "wall": null,
+      "x": 99,
+      "y": 75
+    },
+    {
+      "defenders": null,
+      "distance": 9.899494936611665,
+      "estimatedLoot": 0,
+      "id": "v:83:78",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 83,
+      "y": 78
+    },
+    {
+      "defenders": null,
+      "distance": 9.899494936611665,
+      "estimatedLoot": 0,
+      "id": "v:97:64",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 97,
+      "y": 64
+    },
+    {
+      "defenders": null,
+      "distance": 10,
+      "estimatedLoot": 0,
+      "id": "v:82:65",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 82,
+      "y": 65
+    },
+    {
+      "defenders": null,
+      "distance": 10,
+      "estimatedLoot": 0,
+      "id": "v:82:77",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 82,
+      "y": 77
+    },
+    {
+      "defenders": null,
+      "distance": 10,
+      "estimatedLoot": 0,
+      "id": "v:84:79",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 84,
+      "y": 79
+    },
+    {
+      "defenders": null,
+      "distance": 10,
+      "estimatedLoot": 0,
+      "id": "v:98:77",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 51,
+      "status": "untouched",
+      "wall": null,
+      "x": 98,
+      "y": 77
+    },
+    {
+      "defenders": null,
+      "distance": 10.04987562112089,
+      "estimatedLoot": 0,
+      "id": "v:91:61",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 48,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 61
+    },
+    {
+      "defenders": null,
+      "distance": 10.198039027185569,
+      "estimatedLoot": 0,
+      "id": "v:80:69",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 80,
+      "y": 69
+    },
+    {
+      "defenders": null,
+      "distance": 10.198039027185569,
+      "estimatedLoot": 0,
+      "id": "v:92:61",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 92,
+      "y": 61
+    },
+    {
+      "defenders": null,
+      "distance": 10.198039027185569,
+      "estimatedLoot": 0,
+      "id": "v:92:81",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 43,
+      "status": "untouched",
+      "wall": null,
+      "x": 92,
+      "y": 81
+    },
+    {
+      "defenders": null,
+      "distance": 10.198039027185569,
+      "estimatedLoot": 0,
+      "id": "v:100:69",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 51,
+      "status": "untouched",
+      "wall": null,
+      "x": 100,
+      "y": 69
+    },
+    {
+      "defenders": null,
+      "distance": 10.198039027185569,
+      "estimatedLoot": 0,
+      "id": "v:100:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 100,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 10.295630140987,
+      "estimatedLoot": 0,
+      "id": "v:81:66",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 81,
+      "y": 66
+    },
+    {
+      "defenders": null,
+      "distance": 10.295630140987,
+      "estimatedLoot": 0,
+      "id": "v:85:62",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 63,
+      "status": "untouched",
+      "wall": null,
+      "x": 85,
+      "y": 62
+    },
+    {
+      "defenders": null,
+      "distance": 10.295630140987,
+      "estimatedLoot": 0,
+      "id": "v:95:62",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 95,
+      "y": 62
+    },
+    {
+      "defenders": null,
+      "distance": 10.44030650891055,
+      "estimatedLoot": 0,
+      "id": "v:80:68",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 80,
+      "y": 68
+    },
+    {
+      "defenders": null,
+      "distance": 10.44030650891055,
+      "estimatedLoot": 0,
+      "id": "v:93:61",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 93,
+      "y": 61
+    },
+    {
+      "defenders": null,
+      "distance": 10.63014581273465,
+      "estimatedLoot": 0,
+      "id": "v:82:64",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 61,
+      "status": "untouched",
+      "wall": null,
+      "x": 82,
+      "y": 64
+    },
+    {
+      "defenders": null,
+      "distance": 10.63014581273465,
+      "estimatedLoot": 0,
+      "id": "v:97:79",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 97,
+      "y": 79
+    },
+    {
+      "defenders": null,
+      "distance": 10.63014581273465,
+      "estimatedLoot": 0,
+      "id": "v:98:64",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 98,
+      "y": 64
+    },
+    {
+      "defenders": null,
+      "distance": 10.770329614269007,
+      "estimatedLoot": 0,
+      "id": "v:94:81",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 94,
+      "y": 81
+    },
+    {
+      "defenders": null,
+      "distance": 10.770329614269007,
+      "estimatedLoot": 0,
+      "id": "v:100:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 100,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 10.816653826391969,
+      "estimatedLoot": 0,
+      "id": "v:84:62",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 84,
+      "y": 62
+    },
+    {
+      "defenders": null,
+      "distance": 10.816653826391969,
+      "estimatedLoot": 0,
+      "id": "v:99:77",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 49,
+      "status": "untouched",
+      "wall": null,
+      "x": 99,
+      "y": 77
+    },
+    {
+      "defenders": null,
+      "distance": 11,
+      "estimatedLoot": 0,
+      "id": "v:90:60",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 48,
+      "status": "untouched",
+      "wall": null,
+      "x": 90,
+      "y": 60
+    },
+    {
+      "defenders": null,
+      "distance": 11.045361017187261,
+      "estimatedLoot": 0,
+      "id": "v:79:70",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 79,
+      "y": 70
+    },
+    {
+      "defenders": null,
+      "distance": 11.045361017187261,
+      "estimatedLoot": 0,
+      "id": "v:91:82",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 82
+    },
+    {
+      "defenders": null,
+      "distance": 11.045361017187261,
+      "estimatedLoot": 0,
+      "id": "v:101:70",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 101,
+      "y": 70
+    },
+    {
+      "defenders": null,
+      "distance": 11.180339887498949,
+      "estimatedLoot": 0,
+      "id": "v:85:61",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 85,
+      "y": 61
+    },
+    {
+      "defenders": null,
+      "distance": 11.313708498984761,
+      "estimatedLoot": 0,
+      "id": "v:82:79",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 82,
+      "y": 79
+    },
+    {
+      "defenders": null,
+      "distance": 11.40175425099138,
+      "estimatedLoot": 0,
+      "id": "v:81:64",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 48,
+      "status": "untouched",
+      "wall": null,
+      "x": 81,
+      "y": 64
+    },
+    {
+      "defenders": null,
+      "distance": 11.40175425099138,
+      "estimatedLoot": 0,
+      "id": "v:87:60",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 60
+    },
+    {
+      "defenders": null,
+      "distance": 11.40175425099138,
+      "estimatedLoot": 0,
+      "id": "v:87:82",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 82
+    },
+    {
+      "defenders": null,
+      "distance": 11.661903789690601,
+      "estimatedLoot": 0,
+      "id": "v:96:81",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 47,
+      "status": "untouched",
+      "wall": null,
+      "x": 96,
+      "y": 81
+    },
+    {
+      "defenders": null,
+      "distance": 11.661903789690601,
+      "estimatedLoot": 0,
+      "id": "v:100:77",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 51,
+      "status": "untouched",
+      "wall": null,
+      "x": 100,
+      "y": 77
+    },
+    {
+      "defenders": null,
+      "distance": 11.704699910719626,
+      "estimatedLoot": 0,
+      "id": "v:94:82",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 48,
+      "status": "untouched",
+      "wall": null,
+      "x": 94,
+      "y": 82
+    },
+    {
+      "defenders": null,
+      "distance": 12,
+      "estimatedLoot": 0,
+      "id": "v:78:71",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 50,
+      "status": "untouched",
+      "wall": null,
+      "x": 78,
+      "y": 71
+    },
+    {
+      "defenders": null,
+      "distance": 12,
+      "estimatedLoot": 0,
+      "id": "v:102:71",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 102,
+      "y": 71
+    },
+    {
+      "defenders": null,
+      "distance": 12.041594578792296,
+      "estimatedLoot": 0,
+      "id": "v:81:79",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 81,
+      "y": 79
+    },
+    {
+      "defenders": null,
+      "distance": 12.041594578792296,
+      "estimatedLoot": 0,
+      "id": "v:82:80",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 82,
+      "y": 80
+    },
+    {
+      "defenders": null,
+      "distance": 12.041594578792296,
+      "estimatedLoot": 0,
+      "id": "v:102:70",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 49,
+      "status": "untouched",
+      "wall": null,
+      "x": 102,
+      "y": 70
+    },
+    {
+      "defenders": null,
+      "distance": 12.165525060596439,
+      "estimatedLoot": 0,
+      "id": "v:78:69",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 78,
+      "y": 69
+    },
+    {
+      "defenders": null,
+      "distance": 12.165525060596439,
+      "estimatedLoot": 0,
+      "id": "v:92:59",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 92,
+      "y": 59
+    },
+    {
+      "defenders": null,
+      "distance": 12.206555615733702,
+      "estimatedLoot": 0,
+      "id": "v:80:78",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 80,
+      "y": 78
+    },
+    {
+      "defenders": null,
+      "distance": 12.36931687685298,
+      "estimatedLoot": 0,
+      "id": "v:87:83",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 63,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 83
+    },
+    {
+      "defenders": null,
+      "distance": 12.36931687685298,
+      "estimatedLoot": 0,
+      "id": "v:102:68",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 102,
+      "y": 68
+    },
+    {
+      "defenders": null,
+      "distance": 12.529964086141668,
+      "estimatedLoot": 0,
+      "id": "v:79:65",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 79,
+      "y": 65
+    },
+    {
+      "defenders": null,
+      "distance": 12.529964086141668,
+      "estimatedLoot": 0,
+      "id": "v:96:82",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 96,
+      "y": 82
+    },
+    {
+      "defenders": null,
+      "distance": 12.529964086141668,
+      "estimatedLoot": 0,
+      "id": "v:101:77",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 63,
+      "status": "untouched",
+      "wall": null,
+      "x": 101,
+      "y": 77
+    },
+    {
+      "defenders": null,
+      "distance": 12.649110640673518,
+      "estimatedLoot": 0,
+      "id": "v:102:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 102,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 12.727922061357855,
+      "estimatedLoot": 0,
+      "id": "v:81:80",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 81,
+      "y": 80
+    },
+    {
+      "defenders": null,
+      "distance": 12.727922061357855,
+      "estimatedLoot": 0,
+      "id": "v:99:62",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 99,
+      "y": 62
+    },
+    {
+      "defenders": null,
+      "distance": 12.727922061357855,
+      "estimatedLoot": 0,
+      "id": "v:99:80",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 99,
+      "y": 80
+    },
+    {
+      "defenders": null,
+      "distance": 12.806248474865697,
+      "estimatedLoot": 0,
+      "id": "v:80:63",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 50,
+      "status": "untouched",
+      "wall": null,
+      "x": 80,
+      "y": 63
+    },
+    {
+      "defenders": null,
+      "distance": 12.806248474865697,
+      "estimatedLoot": 0,
+      "id": "v:82:81",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 82,
+      "y": 81
+    },
+    {
+      "defenders": null,
+      "distance": 12.806248474865697,
+      "estimatedLoot": 0,
+      "id": "v:98:61",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 63,
+      "status": "untouched",
+      "wall": null,
+      "x": 98,
+      "y": 61
+    },
+    {
+      "defenders": null,
+      "distance": 12.806248474865697,
+      "estimatedLoot": 0,
+      "id": "v:98:81",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 49,
+      "status": "untouched",
+      "wall": null,
+      "x": 98,
+      "y": 81
+    },
+    {
+      "defenders": null,
+      "distance": 12.806248474865697,
+      "estimatedLoot": 0,
+      "id": "v:100:63",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 48,
+      "status": "untouched",
+      "wall": null,
+      "x": 100,
+      "y": 63
+    },
+    {
+      "defenders": null,
+      "distance": 13.038404810405298,
+      "estimatedLoot": 0,
+      "id": "v:77:70",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 51,
+      "status": "untouched",
+      "wall": null,
+      "x": 77,
+      "y": 70
+    },
+    {
+      "defenders": null,
+      "distance": 13.038404810405298,
+      "estimatedLoot": 0,
+      "id": "v:79:64",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 65,
+      "status": "untouched",
+      "wall": null,
+      "x": 79,
+      "y": 64
+    },
+    {
+      "defenders": null,
+      "distance": 13.038404810405298,
+      "estimatedLoot": 0,
+      "id": "v:83:60",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 46,
+      "status": "untouched",
+      "wall": null,
+      "x": 83,
+      "y": 60
+    },
+    {
+      "defenders": null,
+      "distance": 13.038404810405298,
+      "estimatedLoot": 0,
+      "id": "v:91:58",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 91,
+      "y": 58
+    },
+    {
+      "defenders": null,
+      "distance": 13.038404810405298,
+      "estimatedLoot": 0,
+      "id": "v:97:82",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 97,
+      "y": 82
+    },
+    {
+      "defenders": null,
+      "distance": 13.038404810405298,
+      "estimatedLoot": 0,
+      "id": "v:103:72",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 58,
+      "status": "untouched",
+      "wall": null,
+      "x": 103,
+      "y": 72
+    },
+    {
+      "defenders": null,
+      "distance": 13.152946437965905,
+      "estimatedLoot": 0,
+      "id": "v:77:69",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 47,
+      "status": "untouched",
+      "wall": null,
+      "x": 77,
+      "y": 69
+    },
+    {
+      "defenders": null,
+      "distance": 13.152946437965905,
+      "estimatedLoot": 0,
+      "id": "v:77:73",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 47,
+      "status": "untouched",
+      "wall": null,
+      "x": 77,
+      "y": 73
+    },
+    {
+      "defenders": null,
+      "distance": 13.341664064126334,
+      "estimatedLoot": 0,
+      "id": "v:87:58",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 51,
+      "status": "untouched",
+      "wall": null,
+      "x": 87,
+      "y": 58
+    },
+    {
+      "defenders": null,
+      "distance": 13.416407864998739,
+      "estimatedLoot": 0,
+      "id": "v:102:65",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 48,
+      "status": "untouched",
+      "wall": null,
+      "x": 102,
+      "y": 65
+    },
+    {
+      "defenders": null,
+      "distance": 13.45362404707371,
+      "estimatedLoot": 0,
+      "id": "v:80:80",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 80,
+      "y": 80
+    },
+    {
+      "defenders": null,
+      "distance": 13.45362404707371,
+      "estimatedLoot": 0,
+      "id": "v:99:61",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 41,
+      "status": "untouched",
+      "wall": null,
+      "x": 99,
+      "y": 61
+    },
+    {
+      "defenders": null,
+      "distance": 13.45362404707371,
+      "estimatedLoot": 0,
+      "id": "v:100:62",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 100,
+      "y": 62
+    },
+    {
+      "defenders": null,
+      "distance": 13.601470508735444,
+      "estimatedLoot": 0,
+      "id": "v:77:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 77,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 13.601470508735444,
+      "estimatedLoot": 0,
+      "id": "v:82:60",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 82,
+      "y": 60
+    },
+    {
+      "defenders": null,
+      "distance": 13.601470508735444,
+      "estimatedLoot": 0,
+      "id": "v:101:63",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 101,
+      "y": 63
+    },
+    {
+      "defenders": null,
+      "distance": 13.892443989449804,
+      "estimatedLoot": 0,
+      "id": "v:83:59",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 51,
+      "status": "untouched",
+      "wall": null,
+      "x": 83,
+      "y": 59
+    },
+    {
+      "defenders": null,
+      "distance": 13.92838827718412,
+      "estimatedLoot": 0,
+      "id": "v:77:66",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 77,
+      "y": 66
+    },
+    {
+      "defenders": null,
+      "distance": 13.92838827718412,
+      "estimatedLoot": 0,
+      "id": "v:77:76",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 77,
+      "y": 76
+    },
+    {
+      "defenders": null,
+      "distance": 13.92838827718412,
+      "estimatedLoot": 0,
+      "id": "v:85:58",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 56,
+      "status": "untouched",
+      "wall": null,
+      "x": 85,
+      "y": 58
+    },
+    {
+      "defenders": null,
+      "distance": 13.92838827718412,
+      "estimatedLoot": 0,
+      "id": "v:95:84",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 95,
+      "y": 84
+    },
+    {
+      "defenders": null,
+      "distance": 13.92838827718412,
+      "estimatedLoot": 0,
+      "id": "v:103:66",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 50,
+      "status": "untouched",
+      "wall": null,
+      "x": 103,
+      "y": 66
+    },
+    {
+      "defenders": null,
+      "distance": 14,
+      "estimatedLoot": 0,
+      "id": "v:104:71",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 47,
+      "status": "untouched",
+      "wall": null,
+      "x": 104,
+      "y": 71
+    },
+    {
+      "defenders": null,
+      "distance": 14.035668847618199,
+      "estimatedLoot": 0,
+      "id": "v:89:85",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 50,
+      "status": "untouched",
+      "wall": null,
+      "x": 89,
+      "y": 85
+    },
+    {
+      "defenders": null,
+      "distance": 14.142135623730951,
+      "estimatedLoot": 0,
+      "id": "v:88:57",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 53,
+      "status": "untouched",
+      "wall": null,
+      "x": 88,
+      "y": 57
+    },
+    {
+      "defenders": null,
+      "distance": 14.142135623730951,
+      "estimatedLoot": 0,
+      "id": "v:92:57",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 60,
+      "status": "untouched",
+      "wall": null,
+      "x": 92,
+      "y": 57
+    },
+    {
+      "defenders": null,
+      "distance": 14.142135623730951,
+      "estimatedLoot": 0,
+      "id": "v:100:61",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 49,
+      "status": "untouched",
+      "wall": null,
+      "x": 100,
+      "y": 61
+    },
+    {
+      "defenders": null,
+      "distance": 14.212670403551895,
+      "estimatedLoot": 0,
+      "id": "v:81:60",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 81,
+      "y": 60
+    },
+    {
+      "defenders": null,
+      "distance": 14.212670403551895,
+      "estimatedLoot": 0,
+      "id": "v:81:82",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 81,
+      "y": 82
+    },
+    {
+      "defenders": null,
+      "distance": 14.212670403551895,
+      "estimatedLoot": 0,
+      "id": "v:99:82",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 99,
+      "y": 82
+    },
+    {
+      "defenders": null,
+      "distance": 14.317821063276353,
+      "estimatedLoot": 0,
+      "id": "v:76:74",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 49,
+      "status": "untouched",
+      "wall": null,
+      "x": 76,
+      "y": 74
+    },
+    {
+      "defenders": null,
+      "distance": 14.317821063276353,
+      "estimatedLoot": 0,
+      "id": "v:77:65",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 57,
+      "status": "untouched",
+      "wall": null,
+      "x": 77,
+      "y": 65
+    },
+    {
+      "defenders": null,
+      "distance": 14.422205101855956,
+      "estimatedLoot": 0,
+      "id": "v:102:63",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 102,
+      "y": 63
+    },
+    {
+      "defenders": null,
+      "distance": 14.422205101855956,
+      "estimatedLoot": 0,
+      "id": "v:102:79",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 54,
+      "status": "untouched",
+      "wall": null,
+      "x": 102,
+      "y": 79
+    },
+    {
+      "defenders": null,
+      "distance": 14.560219778561036,
+      "estimatedLoot": 0,
+      "id": "v:76:67",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 45,
+      "status": "untouched",
+      "wall": null,
+      "x": 76,
+      "y": 67
+    },
+    {
+      "defenders": null,
+      "distance": 14.560219778561036,
+      "estimatedLoot": 0,
+      "id": "v:76:75",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 49,
+      "status": "untouched",
+      "wall": null,
+      "x": 76,
+      "y": 75
+    },
+    {
+      "defenders": null,
+      "distance": 14.560219778561036,
+      "estimatedLoot": 0,
+      "id": "v:86:85",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 59,
+      "status": "untouched",
+      "wall": null,
+      "x": 86,
+      "y": 85
+    },
+    {
+      "defenders": null,
+      "distance": 14.560219778561036,
+      "estimatedLoot": 0,
+      "id": "v:104:75",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 64,
+      "status": "untouched",
+      "wall": null,
+      "x": 104,
+      "y": 75
+    },
+    {
+      "defenders": null,
+      "distance": 14.7648230602334,
+      "estimatedLoot": 0,
+      "id": "v:77:78",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 51,
+      "status": "untouched",
+      "wall": null,
+      "x": 77,
+      "y": 78
+    },
+    {
+      "defenders": null,
+      "distance": 14.7648230602334,
+      "estimatedLoot": 0,
+      "id": "v:83:58",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 55,
+      "status": "untouched",
+      "wall": null,
+      "x": 83,
+      "y": 58
+    },
+    {
+      "defenders": null,
+      "distance": 14.7648230602334,
+      "estimatedLoot": 0,
+      "id": "v:83:84",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 50,
+      "status": "untouched",
+      "wall": null,
+      "x": 83,
+      "y": 84
+    },
+    {
+      "defenders": null,
+      "distance": 15,
+      "estimatedLoot": 0,
+      "id": "v:81:59",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 52,
+      "status": "untouched",
+      "wall": null,
+      "x": 81,
+      "y": 59
+    },
+    {
+      "defenders": null,
+      "distance": 15,
+      "estimatedLoot": 0,
+      "id": "v:99:59",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 62,
+      "status": "untouched",
+      "wall": null,
+      "x": 99,
+      "y": 59
+    },
+    {
+      "defenders": null,
+      "distance": 15,
+      "estimatedLoot": 0,
+      "id": "v:102:62",
+      "inbound": false,
+      "lastAttackAt": null,
+      "lastHaul": null,
+      "lastHaulCapacity": null,
+      "lastLosses": null,
+      "points": 65,
+      "status": "untouched",
+      "wall": null,
+      "x": 102,
+      "y": 62
+    }
+  ],
+  "map": [
+    {
+      "bonus": {
+        "kind": "infantry"
+      },
+      "id": "v:80:63",
+      "name": "",
+      "ownerId": null,
+      "points": 50,
+      "x": 80,
+      "y": 63
+    },
+    {
+      "id": "v:80:68",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 80,
+      "y": 68
+    },
+    {
+      "id": "v:80:69",
+      "name": "",
+      "ownerId": null,
+      "points": 55,
+      "x": 80,
+      "y": 69
+    },
+    {
+      "id": "v:80:78",
+      "name": "",
+      "ownerId": null,
+      "points": 54,
+      "x": 80,
+      "y": 78
+    },
+    {
+      "id": "v:80:80",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 80,
+      "y": 80
+    },
+    {
+      "id": "v:81:64",
+      "name": "",
+      "ownerId": null,
+      "points": 48,
+      "x": 81,
+      "y": 64
+    },
+    {
+      "id": "v:81:66",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 81,
+      "y": 66
+    },
+    {
+      "id": "v:81:71",
+      "name": "",
+      "ownerId": null,
+      "points": 48,
+      "x": 81,
+      "y": 71
+    },
+    {
+      "id": "v:81:79",
+      "name": "",
+      "ownerId": null,
+      "points": 54,
+      "x": 81,
+      "y": 79
+    },
+    {
+      "id": "v:81:80",
+      "name": "",
+      "ownerId": null,
+      "points": 60,
+      "x": 81,
+      "y": 80
+    },
+    {
+      "id": "v:82:64",
+      "name": "",
+      "ownerId": null,
+      "points": 61,
+      "x": 82,
+      "y": 64
+    },
+    {
+      "id": "v:82:65",
+      "name": "",
+      "ownerId": null,
+      "points": 58,
+      "x": 82,
+      "y": 65
+    },
+    {
+      "id": "v:82:71",
+      "name": "",
+      "ownerId": null,
+      "points": 62,
+      "x": 82,
+      "y": 71
+    },
+    {
+      "id": "v:82:75",
+      "name": "",
+      "ownerId": null,
+      "points": 61,
+      "x": 82,
+      "y": 75
+    },
+    {
+      "id": "v:82:77",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 82,
+      "y": 77
+    },
+    {
+      "id": "v:82:79",
+      "name": "",
+      "ownerId": null,
+      "points": 58,
+      "x": 82,
+      "y": 79
+    },
+    {
+      "id": "v:82:80",
+      "name": "",
+      "ownerId": null,
+      "points": 56,
+      "x": 82,
+      "y": 80
+    },
+    {
+      "id": "v:82:81",
+      "name": "",
+      "ownerId": null,
+      "points": 59,
+      "x": 82,
+      "y": 81
+    },
+    {
+      "id": "v:83:67",
+      "name": "",
+      "ownerId": null,
+      "points": 46,
+      "x": 83,
+      "y": 67
+    },
+    {
+      "id": "v:83:70",
+      "name": "",
+      "ownerId": null,
+      "points": 59,
+      "x": 83,
+      "y": 70
+    },
+    {
+      "id": "v:83:71",
+      "name": "",
+      "ownerId": null,
+      "points": 60,
+      "x": 83,
+      "y": 71
+    },
+    {
+      "id": "v:83:75",
+      "name": "",
+      "ownerId": null,
+      "points": 46,
+      "x": 83,
+      "y": 75
+    },
+    {
+      "id": "v:83:78",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 83,
+      "y": 78
+    },
+    {
+      "id": "v:84:62",
+      "name": "",
+      "ownerId": null,
+      "points": 54,
+      "x": 84,
+      "y": 62
+    },
+    {
+      "id": "v:84:64",
+      "name": "",
+      "ownerId": null,
+      "points": 44,
+      "x": 84,
+      "y": 64
+    },
+    {
+      "id": "v:84:65",
+      "name": "",
+      "ownerId": null,
+      "points": 61,
+      "x": 84,
+      "y": 65
+    },
+    {
+      "id": "v:84:72",
+      "name": "",
+      "ownerId": null,
+      "points": 62,
+      "x": 84,
+      "y": 72
+    },
+    {
+      "id": "v:84:73",
+      "name": "",
+      "ownerId": null,
+      "points": 59,
+      "x": 84,
+      "y": 73
+    },
+    {
+      "id": "v:84:74",
+      "name": "",
+      "ownerId": null,
+      "points": 62,
+      "x": 84,
+      "y": 74
+    },
+    {
+      "id": "v:84:79",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 84,
+      "y": 79
+    },
+    {
+      "id": "v:84:81",
+      "name": "",
+      "ownerId": "bot_77",
+      "ownerIsBot": true,
+      "points": 26,
+      "x": 84,
+      "y": 81
+    },
+    {
+      "id": "v:85:61",
+      "name": "",
+      "ownerId": null,
+      "points": 55,
+      "x": 85,
+      "y": 61
+    },
+    {
+      "id": "v:85:62",
+      "name": "",
+      "ownerId": null,
+      "points": 63,
+      "x": 85,
+      "y": 62
+    },
+    {
+      "id": "v:85:63",
+      "name": "",
+      "ownerId": null,
+      "points": 60,
+      "x": 85,
+      "y": 63
+    },
+    {
+      "id": "v:85:70",
+      "name": "",
+      "ownerId": null,
+      "points": 56,
+      "x": 85,
+      "y": 70
+    },
+    {
+      "id": "v:85:73",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 85,
+      "y": 73
+    },
+    {
+      "id": "v:85:74",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 85,
+      "y": 74
+    },
+    {
+      "id": "v:86:65",
+      "name": "",
+      "ownerId": null,
+      "points": 45,
+      "x": 86,
+      "y": 65
+    },
+    {
+      "id": "v:86:67",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 86,
+      "y": 67
+    },
+    {
+      "id": "v:86:69",
+      "name": "",
+      "ownerId": null,
+      "points": 54,
+      "x": 86,
+      "y": 69
+    },
+    {
+      "id": "v:86:73",
+      "name": "",
+      "ownerId": null,
+      "points": 54,
+      "x": 86,
+      "y": 73
+    },
+    {
+      "id": "v:86:79",
+      "name": "",
+      "ownerId": null,
+      "points": 58,
+      "x": 86,
+      "y": 79
+    },
+    {
+      "id": "v:87:62",
+      "name": "",
+      "ownerId": null,
+      "points": 64,
+      "x": 87,
+      "y": 62
+    },
+    {
+      "id": "v:87:64",
+      "name": "",
+      "ownerId": null,
+      "points": 55,
+      "x": 87,
+      "y": 64
+    },
+    {
+      "id": "v:87:66",
+      "name": "",
+      "ownerId": null,
+      "points": 60,
+      "x": 87,
+      "y": 66
+    },
+    {
+      "id": "v:87:72",
+      "name": "",
+      "ownerId": null,
+      "points": 56,
+      "x": 87,
+      "y": 72
+    },
+    {
+      "id": "v:87:73",
+      "name": "",
+      "ownerId": null,
+      "points": 52,
+      "x": 87,
+      "y": 73
+    },
+    {
+      "id": "v:87:77",
+      "name": "",
+      "ownerId": "bot_90",
+      "ownerIsBot": true,
+      "points": 26,
+      "x": 87,
+      "y": 77
+    },
+    {
+      "id": "v:87:80",
+      "name": "",
+      "ownerId": null,
+      "points": 54,
+      "x": 87,
+      "y": 80
+    },
+    {
+      "id": "v:88:70",
+      "name": "",
+      "ownerId": null,
+      "points": 59,
+      "x": 88,
+      "y": 70
+    },
+    {
+      "id": "v:88:74",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 88,
+      "y": 74
+    },
+    {
+      "id": "v:88:76",
+      "name": "",
+      "ownerId": null,
+      "points": 56,
+      "x": 88,
+      "y": 76
+    },
+    {
+      "id": "v:88:77",
+      "name": "",
+      "ownerId": null,
+      "points": 59,
+      "x": 88,
+      "y": 77
+    },
+    {
+      "id": "v:89:62",
+      "name": "",
+      "ownerId": null,
+      "points": 58,
+      "x": 89,
+      "y": 62
+    },
+    {
+      "id": "v:89:69",
+      "name": "",
+      "ownerId": null,
+      "points": 62,
+      "x": 89,
+      "y": 69
+    },
+    {
+      "id": "v:89:71",
+      "name": "",
+      "ownerId": null,
+      "points": 49,
+      "x": 89,
+      "y": 71
+    },
+    {
+      "id": "v:89:73",
+      "name": "",
+      "ownerId": null,
+      "points": 58,
+      "x": 89,
+      "y": 73
+    },
+    {
+      "id": "v:89:74",
+      "name": "",
+      "ownerId": null,
+      "points": 51,
+      "x": 89,
+      "y": 74
+    },
+    {
+      "id": "v:89:77",
+      "name": "",
+      "ownerId": null,
+      "points": 47,
+      "x": 89,
+      "y": 77
+    },
+    {
+      "id": "v:90:65",
+      "name": "",
+      "ownerId": null,
+      "points": 50,
+      "x": 90,
+      "y": 65
+    },
+    {
+      "id": "v:90:66",
+      "name": "",
+      "ownerId": null,
+      "points": 62,
+      "x": 90,
+      "y": 66
+    },
+    {
+      "id": "v:90:67",
+      "name": "",
+      "ownerId": null,
+      "points": 49,
+      "x": 90,
+      "y": 67
+    },
+    {
+      "id": "v:90:68",
+      "name": "",
+      "ownerId": null,
+      "points": 55,
+      "x": 90,
+      "y": 68
+    },
+    {
+      "id": "v:90:71",
+      "name": "",
+      "ownerId": "h1",
+      "points": 26,
+      "x": 90,
+      "y": 71
+    },
+    {
+      "id": "v:90:76",
+      "name": "",
+      "ownerId": null,
+      "points": 61,
+      "x": 90,
+      "y": 76
+    },
+    {
+      "id": "v:91:61",
+      "name": "",
+      "ownerId": null,
+      "points": 48,
+      "x": 91,
+      "y": 61
+    },
+    {
+      "id": "v:91:62",
+      "name": "",
+      "ownerId": null,
+      "points": 65,
+      "x": 91,
+      "y": 62
+    },
+    {
+      "id": "v:91:63",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 91,
+      "y": 63
+    },
+    {
+      "id": "v:91:67",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 91,
+      "y": 67
+    },
+    {
+      "id": "v:91:71",
+      "name": "",
+      "ownerId": null,
+      "points": 60,
+      "x": 91,
+      "y": 71
+    },
+    {
+      "id": "v:91:73",
+      "name": "",
+      "ownerId": null,
+      "points": 64,
+      "x": 91,
+      "y": 73
+    },
+    {
+      "id": "v:91:75",
+      "name": "",
+      "ownerId": null,
+      "points": 55,
+      "x": 91,
+      "y": 75
+    },
+    {
+      "id": "v:91:76",
+      "name": "",
+      "ownerId": null,
+      "points": 60,
+      "x": 91,
+      "y": 76
+    },
+    {
+      "id": "v:91:79",
+      "name": "",
+      "ownerId": null,
+      "points": 50,
+      "x": 91,
+      "y": 79
+    },
+    {
+      "id": "v:92:61",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 92,
+      "y": 61
+    },
+    {
+      "id": "v:92:65",
+      "name": "",
+      "ownerId": null,
+      "points": 58,
+      "x": 92,
+      "y": 65
+    },
+    {
+      "id": "v:92:66",
+      "name": "",
+      "ownerId": null,
+      "points": 64,
+      "x": 92,
+      "y": 66
+    },
+    {
+      "id": "v:92:67",
+      "name": "",
+      "ownerId": null,
+      "points": 58,
+      "x": 92,
+      "y": 67
+    },
+    {
+      "id": "v:92:71",
+      "name": "",
+      "ownerId": null,
+      "points": 54,
+      "x": 92,
+      "y": 71
+    },
+    {
+      "id": "v:92:72",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 92,
+      "y": 72
+    },
+    {
+      "id": "v:92:76",
+      "name": "",
+      "ownerId": "bot_83",
+      "ownerIsBot": true,
+      "points": 26,
+      "x": 92,
+      "y": 76
+    },
+    {
+      "id": "v:92:80",
+      "name": "",
+      "ownerId": "bot_59",
+      "ownerIsBot": true,
+      "points": 26,
+      "x": 92,
+      "y": 80
+    },
+    {
+      "id": "v:92:81",
+      "name": "",
+      "ownerId": null,
+      "points": 43,
+      "x": 92,
+      "y": 81
+    },
+    {
+      "id": "v:93:61",
+      "name": "",
+      "ownerId": null,
+      "points": 62,
+      "x": 93,
+      "y": 61
+    },
+    {
+      "id": "v:93:73",
+      "name": "",
+      "ownerId": null,
+      "points": 56,
+      "x": 93,
+      "y": 73
+    },
+    {
+      "id": "v:93:74",
+      "name": "",
+      "ownerId": null,
+      "points": 56,
+      "x": 93,
+      "y": 74
+    },
+    {
+      "id": "v:93:80",
+      "name": "",
+      "ownerId": null,
+      "points": 52,
+      "x": 93,
+      "y": 80
+    },
+    {
+      "id": "v:94:70",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 94,
+      "y": 70
+    },
+    {
+      "id": "v:94:73",
+      "name": "",
+      "ownerId": null,
+      "points": 62,
+      "x": 94,
+      "y": 73
+    },
+    {
+      "id": "v:94:76",
+      "name": "",
+      "ownerId": null,
+      "points": 58,
+      "x": 94,
+      "y": 76
+    },
+    {
+      "id": "v:94:77",
+      "name": "",
+      "ownerId": null,
+      "points": 55,
+      "x": 94,
+      "y": 77
+    },
+    {
+      "id": "v:94:80",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 94,
+      "y": 80
+    },
+    {
+      "id": "v:94:81",
+      "name": "",
+      "ownerId": null,
+      "points": 59,
+      "x": 94,
+      "y": 81
+    },
+    {
+      "id": "v:95:62",
+      "name": "",
+      "ownerId": null,
+      "points": 58,
+      "x": 95,
+      "y": 62
+    },
+    {
+      "id": "v:95:65",
+      "name": "",
+      "ownerId": null,
+      "points": 50,
+      "x": 95,
+      "y": 65
+    },
+    {
+      "id": "v:95:73",
+      "name": "",
+      "ownerId": null,
+      "points": 56,
+      "x": 95,
+      "y": 73
+    },
+    {
+      "id": "v:95:80",
+      "name": "",
+      "ownerId": "bot_50",
+      "ownerIsBot": true,
+      "points": 26,
+      "x": 95,
+      "y": 80
+    },
+    {
+      "id": "v:96:72",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 96,
+      "y": 72
+    },
+    {
+      "id": "v:96:73",
+      "name": "",
+      "ownerId": null,
+      "points": 59,
+      "x": 96,
+      "y": 73
+    },
+    {
+      "id": "v:96:81",
+      "name": "",
+      "ownerId": null,
+      "points": 47,
+      "x": 96,
+      "y": 81
+    },
+    {
+      "id": "v:97:64",
+      "name": "",
+      "ownerId": null,
+      "points": 56,
+      "x": 97,
+      "y": 64
+    },
+    {
+      "id": "v:97:66",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 97,
+      "y": 66
+    },
+    {
+      "id": "v:97:67",
+      "name": "",
+      "ownerId": null,
+      "points": 62,
+      "x": 97,
+      "y": 67
+    },
+    {
+      "id": "v:97:69",
+      "name": "",
+      "ownerId": null,
+      "points": 59,
+      "x": 97,
+      "y": 69
+    },
+    {
+      "id": "v:97:76",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 97,
+      "y": 76
+    },
+    {
+      "id": "v:97:78",
+      "name": "",
+      "ownerId": "bot_63",
+      "ownerIsBot": true,
+      "points": 26,
+      "x": 97,
+      "y": 78
+    },
+    {
+      "id": "v:97:79",
+      "name": "",
+      "ownerId": null,
+      "points": 52,
+      "x": 97,
+      "y": 79
+    },
+    {
+      "id": "v:98:61",
+      "name": "",
+      "ownerId": null,
+      "points": 63,
+      "x": 98,
+      "y": 61
+    },
+    {
+      "id": "v:98:64",
+      "name": "",
+      "ownerId": null,
+      "points": 55,
+      "x": 98,
+      "y": 64
+    },
+    {
+      "id": "v:98:66",
+      "name": "",
+      "ownerId": null,
+      "points": 50,
+      "x": 98,
+      "y": 66
+    },
+    {
+      "id": "v:98:67",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 98,
+      "y": 67
+    },
+    {
+      "id": "v:98:72",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 98,
+      "y": 72
+    },
+    {
+      "id": "v:98:73",
+      "name": "",
+      "ownerId": null,
+      "points": 60,
+      "x": 98,
+      "y": 73
+    },
+    {
+      "id": "v:98:75",
+      "name": "",
+      "ownerId": null,
+      "points": 59,
+      "x": 98,
+      "y": 75
+    },
+    {
+      "id": "v:98:77",
+      "name": "",
+      "ownerId": null,
+      "points": 51,
+      "x": 98,
+      "y": 77
+    },
+    {
+      "id": "v:98:81",
+      "name": "",
+      "ownerId": null,
+      "points": 49,
+      "x": 98,
+      "y": 81
+    },
+    {
+      "bonus": {
+        "kind": "infantry"
+      },
+      "id": "v:99:61",
+      "name": "",
+      "ownerId": null,
+      "points": 41,
+      "x": 99,
+      "y": 61
+    },
+    {
+      "id": "v:99:62",
+      "name": "",
+      "ownerId": null,
+      "points": 52,
+      "x": 99,
+      "y": 62
+    },
+    {
+      "id": "v:99:73",
+      "name": "",
+      "ownerId": null,
+      "points": 63,
+      "x": 99,
+      "y": 73
+    },
+    {
+      "id": "v:99:75",
+      "name": "",
+      "ownerId": null,
+      "points": 64,
+      "x": 99,
+      "y": 75
+    },
+    {
+      "id": "v:99:77",
+      "name": "",
+      "ownerId": null,
+      "points": 49,
+      "x": 99,
+      "y": 77
+    },
+    {
+      "id": "v:99:80",
+      "name": "",
+      "ownerId": null,
+      "points": 57,
+      "x": 99,
+      "y": 80
+    },
+    {
+      "bonus": {
+        "kind": "iron"
+      },
+      "id": "v:100:61",
+      "name": "",
+      "ownerId": null,
+      "points": 49,
+      "x": 100,
+      "y": 61
+    },
+    {
+      "id": "v:100:62",
+      "name": "",
+      "ownerId": null,
+      "points": 62,
+      "x": 100,
+      "y": 62
+    },
+    {
+      "id": "v:100:63",
+      "name": "",
+      "ownerId": null,
+      "points": 48,
+      "x": 100,
+      "y": 63
+    },
+    {
+      "id": "v:100:67",
+      "name": "",
+      "ownerId": null,
+      "points": 55,
+      "x": 100,
+      "y": 67
+    },
+    {
+      "id": "v:100:69",
+      "name": "",
+      "ownerId": null,
+      "points": 51,
+      "x": 100,
+      "y": 69
+    },
+    {
+      "id": "v:100:73",
+      "name": "",
+      "ownerId": null,
+      "points": 53,
+      "x": 100,
+      "y": 73
+    },
+    {
+      "id": "v:100:77",
+      "name": "",
+      "ownerId": null,
+      "points": 51,
+      "x": 100,
+      "y": 77
+    }
+  ],
+  "state": {
+    "clockOriginLocalMs": 1700003600000,
+    "commands": [],
+    "config": {
+      "barbarianDensity": "normal",
+      "battleLosses": "normal",
+      "beginnerProtectionDays": 7,
+      "botArrival": "allAtOnce",
+      "botCount": 100,
+      "botModifiers": {
+        "building": 1,
+        "recruitment": 1,
+        "resources": 1
+      },
+      "botStance": "normal",
+      "difficulty": "normal",
+      "humanModifiers": {
+        "building": 1,
+        "recruitment": 1,
+        "resources": 1
+      },
+      "lastVillage": "protected",
+      "mapSize": 200,
+      "nobleCost": {
+        "clay": 0,
+        "iron": 0,
+        "wood": 0
+      },
+      "rampUpDays": 14,
+      "unitSpeed": 1,
+      "worldSpeed": 8
+    },
+    "human": {
+      "aggressorUntil": 0,
+      "buildTemplates": [
+        {
+          "id": "tpl_start",
+          "name": "",
+          "steps": [
+            "wood",
+            "clay",
+            "iron",
+            "wood",
+            "clay",
+            "main",
+            "wood",
+            "clay",
+            "iron",
+            "storage",
+            "main",
+            "wood",
+            "clay",
+            "iron",
+            "farm",
+            "wood",
+            "clay",
+            "iron",
+            "storage",
+            "main",
+            "barracks",
+            "wood",
+            "clay",
+            "iron",
+            "farm",
+            "storage",
+            "wood",
+            "clay",
+            "iron",
+            "main",
+            "main",
+            "smithy",
+            "wood",
+            "clay",
+            "iron",
+            "storage",
+            "farm",
+            "wood",
+            "clay",
+            "iron"
+          ]
+        },
+        {
+          "id": "tpl_def",
+          "name": "",
+          "steps": [
+            "main",
+            "main",
+            "barracks",
+            "wall",
+            "wall",
+            "barracks",
+            "barracks",
+            "wall",
+            "wall",
+            "wall",
+            "farm",
+            "storage",
+            "barracks",
+            "barracks",
+            "wall",
+            "wall",
+            "wall",
+            "wall",
+            "wall",
+            "wall"
+          ]
+        },
+        {
+          "id": "tpl_off",
+          "name": "",
+          "steps": [
+            "main",
+            "main",
+            "main",
+            "main",
+            "barracks",
+            "barracks",
+            "barracks",
+            "barracks",
+            "smithy",
+            "smithy",
+            "smithy",
+            "smithy",
+            "smithy",
+            "stable",
+            "stable",
+            "stable",
+            "farm",
+            "farm",
+            "storage",
+            "storage"
+          ]
+        }
+      ],
+      "farmAssistant": {
+        "autoFarmEnabled": false,
+        "autoFarmUnlocked": false,
+        "autoFarmVillages": [],
+        "filters": {
+          "hideInbound": true,
+          "hideLosses": true,
+          "maxWall": 3,
+          "minMinutesSinceAttack": 30,
+          "radius": 15
+        },
+        "templates": {
+          "A": {
+            "units": {}
+          },
+          "B": {
+            "units": {}
+          },
+          "C": {
+            "units": {}
+          },
+          "D": {
+            "units": {}
+          }
+        }
+      },
+      "quests": {
+        "active": [
+          "wood1"
+        ],
+        "claimed": [],
+        "completed": [],
+        "progress": {
+          "wood1": 0
+        }
+      },
+      "stats": {
+        "attacksRepelled": 0,
+        "attacksSent": 0,
+        "attacksToday": {
+          "count": 0,
+          "day": 0
+        },
+        "battlesWon": 0,
+        "coinsMinted": 0,
+        "lootedToday": {
+          "day": 0,
+          "total": 0
+        },
+        "pointsHistory": [
+          [
+            0,
+            26
+          ]
+        ],
+        "researchCompleted": 0,
+        "resourcesLooted": {
+          "clay": 0,
+          "iron": 0,
+          "wood": 0
+        },
+        "scoutsSent": 0,
+        "supportsSent": 0,
+        "tradesSent": 0,
+        "unitsKilled": 0,
+        "unitsLost": 0,
+        "villagesConquered": 0
+      },
+      "trader": {
+        "accepted": false,
+        "expiresAt": 28800000,
+        "offer": {
+          "get": "wood",
+          "getAmount": 800,
+          "give": "clay",
+          "giveAmount": 1000
+        },
+        "offerIndex": 0
+      },
+      "villageGroups": []
+    },
+    "intel": {},
+    "me": "h1",
+    "now": 0,
+    "paused": false,
+    "player": {
+      "buildQueueSlots": 2,
+      "coins": 0,
+      "color": "#d23b2f",
+      "history": {
+        "daily": [],
+        "hourly": []
+      },
+      "id": "h1",
+      "joinAt": 0,
+      "name": "Ala",
+      "noblesTrained": 0,
+      "points": 26,
+      "protectedUntil": 604800000,
+      "status": "active",
+      "villageIds": [
+        "v:90:71"
+      ]
+    },
+    "players": {
+      "bot_0": {
+        "color": "#d23b2f",
+        "id": "bot_0",
+        "isBot": true,
+        "name": "Torric",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:101:100"
+        ]
+      },
+      "bot_1": {
+        "color": "#2f6fd2",
+        "id": "bot_1",
+        "isBot": true,
+        "name": "Harwin",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:98:101"
+        ]
+      },
+      "bot_10": {
+        "color": "#b5172f",
+        "id": "bot_10",
+        "isBot": true,
+        "name": "Ulard",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:103:109"
+        ]
+      },
+      "bot_11": {
+        "color": "#5a3fd2",
+        "id": "bot_11",
+        "isBot": true,
+        "name": "Kalius32",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:91:104"
+        ]
+      },
+      "bot_12": {
+        "color": "#ff9d6e",
+        "id": "bot_12",
+        "isBot": true,
+        "name": "Radus",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:91:95"
+        ]
+      },
+      "bot_13": {
+        "color": "#9fb7ff",
+        "id": "bot_13",
+        "isBot": true,
+        "name": "Belmund86",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:109:106"
+        ]
+      },
+      "bot_14": {
+        "color": "#c79a3d",
+        "id": "bot_14",
+        "isBot": true,
+        "name": "Rorslav",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:100:111"
+        ]
+      },
+      "bot_15": {
+        "color": "#6b1f5f",
+        "id": "bot_15",
+        "isBot": true,
+        "name": "Jarger50",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:111:97"
+        ]
+      },
+      "bot_16": {
+        "color": "#004d73",
+        "id": "bot_16",
+        "isBot": true,
+        "name": "Grimias",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:109:93"
+        ]
+      },
+      "bot_17": {
+        "color": "#ff5252",
+        "id": "bot_17",
+        "isBot": true,
+        "name": "Harwen13",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:94:110"
+        ]
+      },
+      "bot_18": {
+        "color": "#3949ab",
+        "id": "bot_18",
+        "isBot": true,
+        "name": "Ulbert",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:98:88"
+        ]
+      },
+      "bot_19": {
+        "color": "#ffb300",
+        "id": "bot_19",
+        "isBot": true,
+        "name": "Kalmar35",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:87:99"
+        ]
+      },
+      "bot_2": {
+        "color": "#8e3fbf",
+        "id": "bot_2",
+        "isBot": true,
+        "name": "Ulton87",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:101:95"
+        ]
+      },
+      "bot_20": {
+        "color": "#8d6e63",
+        "id": "bot_20",
+        "isBot": true,
+        "name": "Radgon25",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:93:89"
+        ]
+      },
+      "bot_21": {
+        "color": "#ec407a",
+        "id": "bot_21",
+        "isBot": true,
+        "name": "Belvik",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:102:87"
+        ]
+      },
+      "bot_22": {
+        "color": "#26c6da",
+        "id": "bot_22",
+        "isBot": true,
+        "name": "Rortan79",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:112:93"
+        ]
+      },
+      "bot_23": {
+        "color": "#9e9e9e",
+        "id": "bot_23",
+        "isBot": true,
+        "name": "Jarko",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:114:101"
+        ]
+      },
+      "bot_24": {
+        "color": "#d23b2f",
+        "id": "bot_24",
+        "isBot": true,
+        "name": "Griman43",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:86:97"
+        ]
+      },
+      "bot_25": {
+        "color": "#2f6fd2",
+        "id": "bot_25",
+        "isBot": true,
+        "name": "Wenwyn",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:88:108"
+        ]
+      },
+      "bot_26": {
+        "color": "#8e3fbf",
+        "id": "bot_26",
+        "isBot": true,
+        "name": "Ullas96",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:112:108"
+        ]
+      },
+      "bot_27": {
+        "color": "#e07b1a",
+        "id": "bot_27",
+        "isBot": true,
+        "name": "Kalhelm",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:93:113"
+        ]
+      },
+      "bot_28": {
+        "color": "#e8c51e",
+        "id": "bot_28",
+        "isBot": true,
+        "name": "Radnik22",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:108:113"
+        ]
+      },
+      "bot_29": {
+        "color": "#7a4a1e",
+        "id": "bot_29",
+        "isBot": true,
+        "name": "Arkok",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:96:85"
+        ]
+      },
+      "bot_3": {
+        "color": "#e07b1a",
+        "id": "bot_3",
+        "isBot": true,
+        "name": "Kalel",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:103:105"
+        ]
+      },
+      "bot_30": {
+        "color": "#e04f9a",
+        "id": "bot_30",
+        "isBot": true,
+        "name": "Rorric-6",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:104:115"
+        ]
+      },
+      "bot_31": {
+        "color": "#1fb4c4",
+        "id": "bot_31",
+        "isBot": true,
+        "name": "Jarwin",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:107:86"
+        ]
+      },
+      "bot_32": {
+        "color": "#f2f2f2",
+        "id": "bot_32",
+        "isBot": true,
+        "name": "Grimton-60",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:116:100"
+        ]
+      },
+      "bot_33": {
+        "color": "#222222",
+        "id": "bot_33",
+        "isBot": true,
+        "name": "Wenel",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:101:84"
+        ]
+      },
+      "bot_34": {
+        "color": "#b5172f",
+        "id": "bot_34",
+        "isBot": true,
+        "name": "Uldor-79",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:84:104"
+        ]
+      },
+      "bot_35": {
+        "color": "#5a3fd2",
+        "id": "bot_35",
+        "isBot": true,
+        "name": "Kalmir",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:83:99"
+        ]
+      },
+      "bot_36": {
+        "color": "#ff9d6e",
+        "id": "bot_36",
+        "isBot": true,
+        "name": "Radrik-42",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:90:86"
+        ]
+      },
+      "bot_37": {
+        "color": "#9fb7ff",
+        "id": "bot_37",
+        "isBot": true,
+        "name": "Arkdan",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:84:107"
+        ]
+      },
+      "bot_38": {
+        "color": "#c79a3d",
+        "id": "bot_38",
+        "isBot": true,
+        "name": "Silald-9",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:88:113"
+        ]
+      },
+      "bot_39": {
+        "color": "#6b1f5f",
+        "id": "bot_39",
+        "isBot": true,
+        "name": "Jargar",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:117:105"
+        ]
+      },
+      "bot_4": {
+        "color": "#e8c51e",
+        "id": "bot_4",
+        "isBot": true,
+        "name": "Svendor",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:106:98"
+        ]
+      },
+      "bot_40": {
+        "color": "#004d73",
+        "id": "bot_40",
+        "isBot": true,
+        "name": "Grimard-3",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:86:89"
+        ]
+      },
+      "bot_41": {
+        "color": "#ff5252",
+        "id": "bot_41",
+        "isBot": true,
+        "name": "Wenius",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:111:114"
+        ]
+      },
+      "bot_42": {
+        "color": "#3949ab",
+        "id": "bot_42",
+        "isBot": true,
+        "name": "Norus-57",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:108:116"
+        ]
+      },
+      "bot_43": {
+        "color": "#ffb300",
+        "id": "bot_43",
+        "isBot": true,
+        "name": "Kalmund",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:115:90"
+        ]
+      },
+      "bot_44": {
+        "color": "#8d6e63",
+        "id": "bot_44",
+        "isBot": true,
+        "name": "Radslav-76",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:97:118"
+        ]
+      },
+      "bot_45": {
+        "color": "#ec407a",
+        "id": "bot_45",
+        "isBot": true,
+        "name": "Arkger",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:84:91"
+        ]
+      },
+      "bot_46": {
+        "color": "#26c6da",
+        "id": "bot_46",
+        "isBot": true,
+        "name": "Silias-39",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:107:82"
+        ]
+      },
+      "bot_47": {
+        "color": "#9e9e9e",
+        "id": "bot_47",
+        "isBot": true,
+        "name": "Jarwen",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:117:110"
+        ]
+      },
+      "bot_48": {
+        "color": "#d23b2f",
+        "id": "bot_48",
+        "isBot": true,
+        "name": "Grimbert-58",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:119:94"
+        ]
+      },
+      "bot_49": {
+        "color": "#2f6fd2",
+        "id": "bot_49",
+        "isBot": true,
+        "name": "Wenmar",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:91:118"
+        ]
+      },
+      "bot_5": {
+        "color": "#7a4a1e",
+        "id": "bot_5",
+        "isBot": true,
+        "name": "Belmir",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:97:94"
+        ]
+      },
+      "bot_50": {
+        "color": "#8e3fbf",
+        "id": "bot_50",
+        "isBot": true,
+        "name": "Norgon",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:95:80"
+        ]
+      },
+      "bot_51": {
+        "color": "#e07b1a",
+        "id": "bot_51",
+        "isBot": true,
+        "name": "Kalvik35",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:113:84"
+        ]
+      },
+      "bot_52": {
+        "color": "#e8c51e",
+        "id": "bot_52",
+        "isBot": true,
+        "name": "Radtan",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:94:120"
+        ]
+      },
+      "bot_53": {
+        "color": "#7a4a1e",
+        "id": "bot_53",
+        "isBot": true,
+        "name": "Arkko88",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:79:102"
+        ]
+      },
+      "bot_54": {
+        "color": "#e04f9a",
+        "id": "bot_54",
+        "isBot": true,
+        "name": "Silan",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:102:121"
+        ]
+      },
+      "bot_55": {
+        "color": "#1fb4c4",
+        "id": "bot_55",
+        "isBot": true,
+        "name": "Dobwyn17",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:118:89"
+        ]
+      },
+      "bot_56": {
+        "color": "#f2f2f2",
+        "id": "bot_56",
+        "isBot": true,
+        "name": "Grimlas",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:82:89"
+        ]
+      },
+      "bot_57": {
+        "color": "#222222",
+        "id": "bot_57",
+        "isBot": true,
+        "name": "Wenhelm71",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:85:85"
+        ]
+      },
+      "bot_58": {
+        "color": "#b5172f",
+        "id": "bot_58",
+        "isBot": true,
+        "name": "Nornik",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:79:96"
+        ]
+      },
+      "bot_59": {
+        "color": "#5a3fd2",
+        "id": "bot_59",
+        "isBot": true,
+        "name": "Marok",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:92:80"
+        ]
+      },
+      "bot_6": {
+        "color": "#e04f9a",
+        "id": "bot_6",
+        "isBot": true,
+        "name": "Rorrik",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:93:99"
+        ]
+      },
+      "bot_60": {
+        "color": "#ff9d6e",
+        "id": "bot_60",
+        "isBot": true,
+        "name": "Radric",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:120:108"
+        ]
+      },
+      "bot_61": {
+        "color": "#9fb7ff",
+        "id": "bot_61",
+        "isBot": true,
+        "name": "Arkwin-35",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:122:101"
+        ]
+      },
+      "bot_62": {
+        "color": "#c79a3d",
+        "id": "bot_62",
+        "isBot": true,
+        "name": "Silton",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:83:114"
+        ]
+      },
+      "bot_63": {
+        "color": "#6b1f5f",
+        "id": "bot_63",
+        "isBot": true,
+        "name": "Dobel-72",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:97:78"
+        ]
+      },
+      "bot_64": {
+        "color": "#004d73",
+        "id": "bot_64",
+        "isBot": true,
+        "name": "Grimdor",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:104:78"
+        ]
+      },
+      "bot_65": {
+        "color": "#ff5252",
+        "id": "bot_65",
+        "isBot": true,
+        "name": "Wenmir-53",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:122:96"
+        ]
+      },
+      "bot_66": {
+        "color": "#3949ab",
+        "id": "bot_66",
+        "isBot": true,
+        "name": "Norrik",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:111:80"
+        ]
+      },
+      "bot_67": {
+        "color": "#ffb300",
+        "id": "bot_67",
+        "isBot": true,
+        "name": "Mardan1",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:113:119"
+        ]
+      },
+      "bot_68": {
+        "color": "#8d6e63",
+        "id": "bot_68",
+        "isBot": true,
+        "name": "Mirald",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:123:103"
+        ]
+      },
+      "bot_69": {
+        "color": "#ec407a",
+        "id": "bot_69",
+        "isBot": true,
+        "name": "Arkgar-70",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:78:108"
+        ]
+      },
+      "bot_7": {
+        "color": "#1fb4c4",
+        "id": "bot_7",
+        "isBot": true,
+        "name": "Jardan",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:98:107"
+        ]
+      },
+      "bot_70": {
+        "color": "#26c6da",
+        "id": "bot_70",
+        "isBot": true,
+        "name": "Silard",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:106:123"
+        ]
+      },
+      "bot_71": {
+        "color": "#9e9e9e",
+        "id": "bot_71",
+        "isBot": true,
+        "name": "Dobius91",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:78:91"
+        ]
+      },
+      "bot_72": {
+        "color": "#d23b2f",
+        "id": "bot_72",
+        "isBot": true,
+        "name": "Fenus",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:76:99"
+        ]
+      },
+      "bot_73": {
+        "color": "#2f6fd2",
+        "id": "bot_73",
+        "isBot": true,
+        "name": "Wenmund38",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:117:117"
+        ]
+      },
+      "bot_74": {
+        "color": "#8e3fbf",
+        "id": "bot_74",
+        "isBot": true,
+        "name": "Norslav",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:85:119"
+        ]
+      },
+      "bot_75": {
+        "color": "#e07b1a",
+        "id": "bot_75",
+        "isBot": true,
+        "name": "Marger74",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:119:85"
+        ]
+      },
+      "bot_76": {
+        "color": "#e8c51e",
+        "id": "bot_76",
+        "isBot": true,
+        "name": "Mirias",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:76:105"
+        ]
+      },
+      "bot_77": {
+        "color": "#7a4a1e",
+        "id": "bot_77",
+        "isBot": true,
+        "name": "Arkwen20",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:84:81"
+        ]
+      },
+      "bot_78": {
+        "color": "#e04f9a",
+        "id": "bot_78",
+        "isBot": true,
+        "name": "Silbert",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:88:122"
+        ]
+      },
+      "bot_79": {
+        "color": "#1fb4c4",
+        "id": "bot_79",
+        "isBot": true,
+        "name": "Dobmar",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:122:112"
+        ]
+      },
+      "bot_8": {
+        "color": "#f2f2f2",
+        "id": "bot_8",
+        "isBot": true,
+        "name": "Grimald",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:108:103"
+        ]
+      },
+      "bot_80": {
+        "color": "#f2f2f2",
+        "id": "bot_80",
+        "isBot": true,
+        "name": "Fengon",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:97:125"
+        ]
+      },
+      "bot_81": {
+        "color": "#222222",
+        "id": "bot_81",
+        "isBot": true,
+        "name": "Wenvik58",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:108:76"
+        ]
+      },
+      "bot_82": {
+        "color": "#b5172f",
+        "id": "bot_82",
+        "isBot": true,
+        "name": "Nortan",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:124:92"
+        ]
+      },
+      "bot_83": {
+        "color": "#5a3fd2",
+        "id": "bot_83",
+        "isBot": true,
+        "name": "Marko95",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:92:76"
+        ]
+      },
+      "bot_84": {
+        "color": "#ff9d6e",
+        "id": "bot_84",
+        "isBot": true,
+        "name": "Miran",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:104:125"
+        ]
+      },
+      "bot_85": {
+        "color": "#9fb7ff",
+        "id": "bot_85",
+        "isBot": true,
+        "name": "Zedwyn41",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:81:83"
+        ]
+      },
+      "bot_86": {
+        "color": "#c79a3d",
+        "id": "bot_86",
+        "isBot": true,
+        "name": "Sillas",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:112:123"
+        ]
+      },
+      "bot_87": {
+        "color": "#6b1f5f",
+        "id": "bot_87",
+        "isBot": true,
+        "name": "Dobhelm77",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:78:114"
+        ]
+      },
+      "bot_88": {
+        "color": "#004d73",
+        "id": "bot_88",
+        "isBot": true,
+        "name": "Fennik",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:74:97"
+        ]
+      },
+      "bot_89": {
+        "color": "#ff5252",
+        "id": "bot_89",
+        "isBot": true,
+        "name": "Ostok",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:116:121"
+        ]
+      },
+      "bot_9": {
+        "color": "#222222",
+        "id": "bot_9",
+        "isBot": true,
+        "name": "Hargar11",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:103:92"
+        ]
+      },
+      "bot_90": {
+        "color": "#3949ab",
+        "id": "bot_90",
+        "isBot": true,
+        "name": "Norric0",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:87:77"
+        ]
+      },
+      "bot_91": {
+        "color": "#ffb300",
+        "id": "bot_91",
+        "isBot": true,
+        "name": "Marwin",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:115:78"
+        ]
+      },
+      "bot_92": {
+        "color": "#8d6e63",
+        "id": "bot_92",
+        "isBot": true,
+        "name": "Mirton-36",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:82:120"
+        ]
+      },
+      "bot_93": {
+        "color": "#ec407a",
+        "id": "bot_93",
+        "isBot": true,
+        "name": "Zedel",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:93:126"
+        ]
+      },
+      "bot_94": {
+        "color": "#26c6da",
+        "id": "bot_94",
+        "isBot": true,
+        "name": "Sildor-72",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:127:99"
+        ]
+      },
+      "bot_95": {
+        "color": "#9e9e9e",
+        "id": "bot_95",
+        "isBot": true,
+        "name": "Dobmir",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:102:73"
+        ]
+      },
+      "bot_96": {
+        "color": "#d23b2f",
+        "id": "bot_96",
+        "isBot": true,
+        "name": "Fenrik-57",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:123:85"
+        ]
+      },
+      "bot_97": {
+        "color": "#2f6fd2",
+        "id": "bot_97",
+        "isBot": true,
+        "name": "Ostdan",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:126:109"
+        ]
+      },
+      "bot_98": {
+        "color": "#8e3fbf",
+        "id": "bot_98",
+        "isBot": true,
+        "name": "Lerald-3",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:74:112"
+        ]
+      },
+      "bot_99": {
+        "color": "#e07b1a",
+        "id": "bot_99",
+        "isBot": true,
+        "name": "Margar",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:112:74"
+        ]
+      },
+      "h1": {
+        "color": "#d23b2f",
+        "id": "h1",
+        "isBot": false,
+        "name": "Ala",
+        "points": 26,
+        "status": "active",
+        "villageIds": [
+          "v:90:71"
+        ]
+      }
+    },
+    "scheduled": [],
+    "serverTime": 1700000000000,
+    "unreadReports": 0,
+    "villages": {
+      "v:90:71": {
+        "buildQueue": [],
+        "buildings": {
+          "academy": 0,
+          "barracks": 0,
+          "clay": 0,
+          "farm": 1,
+          "hide": 1,
+          "iron": 0,
+          "main": 1,
+          "market": 0,
+          "smithy": 0,
+          "stable": 0,
+          "statue": 0,
+          "storage": 1,
+          "wall": 0,
+          "wood": 0,
+          "workshop": 0
+        },
+        "id": "v:90:71",
+        "loyalty": 100,
+        "loyaltyUpdatedAt": 0,
+        "name": "",
+        "ownerId": "h1",
+        "points": 26,
+        "recruitQueues": {
+          "academy": [],
+          "barracks": [],
+          "stable": [],
+          "statue": [],
+          "workshop": []
+        },
+        "research": {
+          "archer": 0,
+          "axe": 0,
+          "catapult": 0,
+          "heavyCav": 0,
+          "lightCav": 0,
+          "mountedArcher": 0,
+          "noble": 0,
+          "paladin": 0,
+          "ram": 0,
+          "scout": 0,
+          "spear": 0,
+          "sword": 0
+        },
+        "researchQueue": [],
+        "resources": {
+          "clay": 500,
+          "iron": 500,
+          "wood": 500
+        },
+        "resourcesUpdatedAt": 0,
+        "supportFrom": {},
+        "units": {
+          "archer": 0,
+          "axe": 0,
+          "catapult": 0,
+          "heavyCav": 0,
+          "lightCav": 0,
+          "mountedArcher": 0,
+          "noble": 0,
+          "paladin": 0,
+          "ram": 0,
+          "scout": 0,
+          "spear": 10,
+          "sword": 0
+        },
+        "x": 90,
+        "y": 71
+      }
+    },
+    "worldId": 1,
+    "worldName": "Fixture"
+  }
+}

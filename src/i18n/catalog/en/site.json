@@ -1,0 +1,166 @@
+{
+  "site": {
+    "header": {
+      "navLabel": "Site",
+      "accountLabel": "Account",
+      "howToPlay": "How to play",
+      "worlds": "Worlds",
+      "faq": "FAQ",
+      "login": "Log in"
+    },
+    "footer": {
+      "navLabel": "More",
+      "changelog": "Changelog",
+      "terms": "Terms",
+      "copyright": "© 2026 {author} and contributors",
+      "operator": "Hosted by {operator}",
+      "source": "Source code (AGPL-3.0)"
+    },
+    "live": {
+      "label": "Live now",
+      "games": {
+        "one": "# game running",
+        "other": "# games running"
+      },
+      "humans": {
+        "one": "# player",
+        "other": "# players"
+      },
+      "bots": {
+        "one": "# bot",
+        "other": "# bots"
+      },
+      "openSeats": {
+        "one": "# free seat",
+        "other": "# free seats"
+      },
+      "lastBattle": "Last battle {ago}",
+      "noBattle": "No battle yet",
+      "nothingRunning": "Nobody is playing right now. Press Play now to start a game.",
+      "noEvents": "No large battle yet.",
+      "justNow": "just now",
+      "ago": "{time} ago",
+      "botName": "{name} (bot)",
+      "barbarians": "barbarians",
+      "event": {
+        "conquest": "{attacker} took a village from {defender} in {world}",
+        "conquestBarbarian": "{attacker} took a barbarian village in {world}",
+        "battle": "{attacker} attacked {defender} in {world} · {troops} troops",
+        "battleBarbarian": "{attacker} attacked barbarians in {world} · {troops} troops"
+      }
+    },
+    "home": {
+      "hero": {
+        "title": "Village wars in your browser",
+        "subhead": "One hour, up to {instantSeats} players and {instantBots} bots. You start with {instantStartAxe} axemen, {instantStartLightCav} light cavalry and a hetman. Hold {instantDominationPct}% of the villages and the game ends early.",
+        "reassure": "No sign-up. Works on your phone.",
+        "createAccount": "Create an account",
+        "clipAlt": "The game: a village at work, then an army marching across the map",
+        "account": "An account adds long worlds and private games for your friends."
+      },
+      "features": {
+        "title": "In the game",
+        "village": {
+          "title": "Village",
+          "text": "Buildings, resources and the build queue.",
+          "alt": "The village with two upgrades in the build queue"
+        },
+        "army": {
+          "title": "Army",
+          "text": "Train troops, then send attacks and support from the rally point.",
+          "alt": "The rally point on a phone"
+        },
+        "reports": {
+          "title": "Reports",
+          "text": "A report after every battle, with losses and loot.",
+          "alt": "A battle report"
+        },
+        "incoming": {
+          "title": "Incoming attacks",
+          "text": "You see when an attack lands, in time to send support.",
+          "alt": "The list of incoming attacks"
+        }
+      },
+      "worlds": {
+        "title": "Open worlds",
+        "speed": "Speed ×{speed}",
+        "started": "started {date}",
+        "players": "{humans} players · {bots} bots",
+        "join": "Join",
+        "joinLabel": "Join {name}"
+      },
+      "faq": {
+        "title": "FAQ",
+        "all": "All questions"
+      }
+    },
+    "faq": {
+      "items": {
+        "free": {
+          "q": "Is it free?",
+          "a": "Yes, all of it."
+        },
+        "payToWin": {
+          "q": "Can I pay to win?",
+          "a": "No. If anything is ever sold, it will be looks or small extras such as a fancier profile editor. Never resources, speed or troops."
+        },
+        "bots": {
+          "q": "Are there bots?",
+          "a": "Yes, and they are always marked as bots. A one-hour game has up to {instantSeats} players and {instantBots} bots."
+        },
+        "phone": {
+          "q": "Does it work on a phone?",
+          "a": "Yes. The game runs in the browser of a phone, a tablet or a computer; there is nothing to install."
+        },
+        "time": {
+          "q": "How much time does it take?",
+          "a": "A quick game takes {instantDurationMin} minutes. A long world needs a few short visits a day."
+        }
+      }
+    },
+    "worlds": {
+      "title": "Worlds",
+      "running": "Instant games now",
+      "long": "Long worlds",
+      "finished": "Finished games",
+      "noRunning": "No instant game is running right now.",
+      "noLong": "No long world yet.",
+      "noFinished": "No finished game yet.",
+      "timeLeft": "{time} left",
+      "day": "day {day}",
+      "ended": "ended {date}",
+      "status": {
+        "open": "open to new players",
+        "closed": "closed to new players",
+        "paused": "paused"
+      },
+      "settings": "Settings",
+      "setting": {
+        "speed": "World speed",
+        "unitSpeed": "Unit speed",
+        "mapSize": "Map",
+        "protection": "Beginner protection",
+        "lastVillage": "Last village",
+        "fieldBattles": "Field battles"
+      },
+      "days": {
+        "one": "# day",
+        "other": "# days"
+      },
+      "lastVillage": {
+        "protected": "cannot be lost",
+        "canBeLost": "can be lost"
+      },
+      "yes": "on",
+      "no": "off",
+      "map": "Map",
+      "mapLabel": "Map of {name}",
+      "legend": "Each dot is a village in its owner's colour, players and bots alike; grey dots are barbarian villages.",
+      "top": "Top ten",
+      "player": "Player",
+      "points": "Points",
+      "villages": "Villages",
+      "events": "Latest large battles"
+    }
+  }
+}

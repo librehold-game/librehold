@@ -1,0 +1,19 @@
+node_modules
+dist
+server/bin/
+.DS_Store
+*.local
+
+.cache
+
+deploy/.env
+__pycache__/
+
+# Superpowers working files (specs, plans, ledgers) stay local
+docs/superpowers/
+.superpowers/
+
+# Claude Code: local settings and worktrees
+.claude/settings.local.json
+.claude/worktrees/
+*.tsbuildinfo

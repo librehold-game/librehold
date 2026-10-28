@@ -1,0 +1,176 @@
+{
+  "site": {
+    "header": {
+      "navLabel": "Strona",
+      "accountLabel": "Konto",
+      "howToPlay": "Jak grać",
+      "worlds": "Światy",
+      "faq": "FAQ",
+      "login": "Zaloguj się"
+    },
+    "footer": {
+      "navLabel": "Więcej",
+      "changelog": "Zmiany",
+      "terms": "Regulamin",
+      "copyright": "© 2026 {author} i współautorzy",
+      "operator": "Hostowane przez {operator}",
+      "source": "Kod źródłowy (AGPL-3.0)"
+    },
+    "live": {
+      "label": "Teraz w grze",
+      "games": {
+        "one": "# gra trwa",
+        "few": "# gry trwają",
+        "many": "# gier trwa",
+        "other": "# gry trwa"
+      },
+      "humans": {
+        "one": "# gracz",
+        "few": "# graczy",
+        "many": "# graczy",
+        "other": "# gracza"
+      },
+      "bots": {
+        "one": "# bot",
+        "few": "# boty",
+        "many": "# botów",
+        "other": "# bota"
+      },
+      "openSeats": {
+        "one": "# wolne miejsce",
+        "few": "# wolne miejsca",
+        "many": "# wolnych miejsc",
+        "other": "# wolnego miejsca"
+      },
+      "lastBattle": "Ostatnia bitwa {ago}",
+      "noBattle": "Jeszcze bez bitwy",
+      "nothingRunning": "Teraz nikt nie gra. Kliknij Graj teraz i zacznij nową partię.",
+      "noEvents": "Jeszcze nie było dużej bitwy.",
+      "justNow": "przed chwilą",
+      "ago": "{time} temu",
+      "botName": "{name} (bot)",
+      "barbarians": "barbarzyńcy",
+      "event": {
+        "conquest": "{attacker} przejmuje wioskę gracza {defender} ({world})",
+        "conquestBarbarian": "{attacker} przejmuje wioskę barbarzyńców ({world})",
+        "battle": "{attacker} atakuje gracza {defender} ({world}) · wojsk: {troops}",
+        "battleBarbarian": "{attacker} atakuje barbarzyńców ({world}) · wojsk: {troops}"
+      }
+    },
+    "home": {
+      "hero": {
+        "title": "Wojna o wioski w przeglądarce",
+        "subhead": "Godzina gry, do {instantSeats} graczy i {instantBots} botów. Na start masz {instantStartAxe} toporników, {instantStartLightCav} lekkiej kawalerii i hetmana. Kto zajmie {instantDominationPct}% wiosek, wygrywa przed czasem.",
+        "reassure": "Bez rejestracji. Działa też na telefonie.",
+        "createAccount": "Załóż konto",
+        "clipAlt": "Gra: wioska przy pracy, potem armia maszerująca przez mapę",
+        "account": "Konto daje długie światy i własne gry dla znajomych."
+      },
+      "features": {
+        "title": "W grze",
+        "village": {
+          "title": "Wioska",
+          "text": "Budynki, surowce i kolejka budowy.",
+          "alt": "Wioska z dwiema rozbudowami w kolejce"
+        },
+        "army": {
+          "title": "Wojsko",
+          "text": "Rekrutacja jednostek, ataki i wsparcie wysyłane z placu.",
+          "alt": "Plac zbiórki na telefonie"
+        },
+        "reports": {
+          "title": "Raporty",
+          "text": "Po każdej walce raport ze stratami i łupem.",
+          "alt": "Raport z bitwy"
+        },
+        "incoming": {
+          "title": "Nadchodzące ataki",
+          "text": "Widać, kiedy wejdzie atak, więc zdążysz wysłać wsparcie.",
+          "alt": "Lista nadciągających ataków"
+        }
+      },
+      "worlds": {
+        "title": "Otwarte światy",
+        "speed": "Szybkość ×{speed}",
+        "started": "start {date}",
+        "players": "graczy: {humans} · botów: {bots}",
+        "join": "Dołącz",
+        "joinLabel": "Dołącz do świata {name}"
+      },
+      "faq": {
+        "title": "Częste pytania",
+        "all": "Wszystkie pytania"
+      }
+    },
+    "faq": {
+      "items": {
+        "free": {
+          "q": "Czy gra jest darmowa?",
+          "a": "Tak, cała gra."
+        },
+        "payToWin": {
+          "q": "Czy można zapłacić za wygraną?",
+          "a": "Nie. Jeśli kiedyś coś będzie płatne, to tylko wygląd albo drobiazgi, np. lepszy edytor profilu. Nigdy surowce, szybkość ani wojsko."
+        },
+        "bots": {
+          "q": "Czy są tu boty?",
+          "a": "Tak, i zawsze widać, kto jest botem. W godzinnej partii gra do {instantSeats} ludzi i {instantBots} botów."
+        },
+        "phone": {
+          "q": "Czy gra działa na telefonie?",
+          "a": "Tak. Gra działa w przeglądarce telefonu, tabletu i komputera; nie trzeba niczego instalować."
+        },
+        "time": {
+          "q": "Ile czasu to zajmuje?",
+          "a": "Szybka partia trwa {instantDurationMin} minut. W długim świecie wystarczy parę krótkich wejść dziennie."
+        }
+      }
+    },
+    "worlds": {
+      "title": "Światy",
+      "running": "Szybkie partie teraz",
+      "long": "Długie światy",
+      "finished": "Zakończone partie",
+      "noRunning": "Teraz nie trwa żadna szybka partia.",
+      "noLong": "Nie ma jeszcze długiego świata.",
+      "noFinished": "Nie ma jeszcze zakończonej partii.",
+      "timeLeft": "zostało {time}",
+      "day": "dzień {day}",
+      "ended": "koniec {date}",
+      "status": {
+        "open": "otwarty dla nowych graczy",
+        "closed": "zamknięty dla nowych graczy",
+        "paused": "wstrzymany"
+      },
+      "settings": "Ustawienia",
+      "setting": {
+        "speed": "Szybkość świata",
+        "unitSpeed": "Szybkość jednostek",
+        "mapSize": "Mapa",
+        "protection": "Ochrona początkujących",
+        "lastVillage": "Ostatnia wioska",
+        "fieldBattles": "Bitwy w polu"
+      },
+      "days": {
+        "one": "# dzień",
+        "few": "# dni",
+        "many": "# dni",
+        "other": "# dnia"
+      },
+      "lastVillage": {
+        "protected": "nie można jej stracić",
+        "canBeLost": "można ją stracić"
+      },
+      "yes": "tak",
+      "no": "nie",
+      "map": "Mapa",
+      "mapLabel": "Mapa świata {name}",
+      "legend": "Każda kropka to wioska w kolorze właściciela, gracza albo bota; szare kropki to wioski barbarzyńców.",
+      "top": "Najlepsza dziesiątka",
+      "player": "Gracz",
+      "points": "Punkty",
+      "villages": "Wioski",
+      "events": "Ostatnie duże bitwy"
+    }
+  }
+}

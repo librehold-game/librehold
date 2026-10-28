@@ -1,0 +1,237 @@
+{
+ "units": {
+  "spear": {
+   "file": {
+    "south": "spear-south.png",
+    "east": "spear-east.png",
+    "north": "spear-north.png",
+    "west": "spear-west.png"
+   },
+   "w": 48,
+   "h": 48,
+   "frames": 6,
+   "anchor": [
+    24,
+    42
+   ]
+  },
+  "sword": {
+   "file": {
+    "south": "sword-south.png",
+    "east": "sword-east.png",
+    "north": "sword-north.png",
+    "west": "sword-west.png"
+   },
+   "w": 48,
+   "h": 48,
+   "frames": 6,
+   "anchor": [
+    26,
+    42
+   ]
+  },
+  "axe": {
+   "file": {
+    "south": "axe-south.png",
+    "east": "axe-east.png",
+    "north": "axe-north.png",
+    "west": "axe-west.png"
+   },
+   "w": 48,
+   "h": 48,
+   "frames": 6,
+   "anchor": [
+    24,
+    42
+   ]
+  },
+  "archer": {
+   "file": {
+    "south": "archer-south.png",
+    "east": "archer-east.png",
+    "north": "archer-north.png",
+    "west": "archer-west.png"
+   },
+   "w": 48,
+   "h": 48,
+   "frames": 6,
+   "anchor": [
+    24,
+    43
+   ]
+  },
+  "scout": {
+   "file": {
+    "south": "scout-south.png",
+    "east": "scout-east.png",
+    "north": "scout-north.png",
+    "west": "scout-west.png"
+   },
+   "w": 48,
+   "h": 48,
+   "frames": 6,
+   "anchor": [
+    24,
+    43
+   ]
+  },
+  "lightCav": {
+   "file": {
+    "south": "lightCav-south.png",
+    "east": "lightCav-east.png",
+    "north": "lightCav-north.png",
+    "west": "lightCav-west.png"
+   },
+   "w": 56,
+   "h": 56,
+   "frames": 6,
+   "anchor": [
+    28,
+    49
+   ]
+  },
+  "mountedArcher": {
+   "file": {
+    "south": "mountedArcher-south.png",
+    "east": "mountedArcher-east.png",
+    "north": "mountedArcher-north.png",
+    "west": "mountedArcher-west.png"
+   },
+   "w": 56,
+   "h": 56,
+   "frames": 6,
+   "anchor": [
+    28,
+    50
+   ]
+  },
+  "heavyCav": {
+   "file": {
+    "south": "heavyCav-south.png",
+    "east": "heavyCav-east.png",
+    "north": "heavyCav-north.png",
+    "west": "heavyCav-west.png"
+   },
+   "w": 56,
+   "h": 56,
+   "frames": 6,
+   "anchor": [
+    28,
+    50
+   ]
+  },
+  "ram": {
+   "file": {
+    "south": "ram-south.png",
+    "east": "ram-east.png",
+    "north": "ram-north.png",
+    "west": "ram-west.png"
+   },
+   "w": 48,
+   "h": 48,
+   "frames": 1,
+   "anchor": [
+    24,
+    46
+   ]
+  },
+  "catapult": {
+   "file": {
+    "south": "catapult-south.png",
+    "east": "catapult-east.png",
+    "north": "catapult-north.png",
+    "west": "catapult-west.png"
+   },
+   "w": 48,
+   "h": 48,
+   "frames": 1,
+   "anchor": [
+    25,
+    46
+   ]
+  },
+  "paladin": {
+   "file": {
+    "south": "paladin-south.png",
+    "east": "paladin-east.png",
+    "north": "paladin-north.png",
+    "west": "paladin-west.png"
+   },
+   "w": 48,
+   "h": 48,
+   "frames": 6,
+   "anchor": [
+    22,
+    43
+   ]
+  },
+  "noble": {
+   "file": {
+    "south": "noble-south.png",
+    "east": "noble-east.png",
+    "north": "noble-north.png",
+    "west": "noble-west.png"
+   },
+   "w": 48,
+   "h": 48,
+   "frames": 6,
+   "anchor": [
+    24,
+    42
+   ]
+  }
+ },
+ "ground": {
+  "meadow": "ground-meadow.png",
+  "forest": "ground-forest.png",
+  "mountain": "ground-mountain.png",
+  "water": "ground-water.png"
+ },
+ "torch": {
+  "file": {
+   "south": "torch-south.png",
+   "east": "torch-east.png",
+   "north": "torch-north.png",
+   "west": "torch-west.png"
+  },
+  "w": 68,
+  "h": 68,
+  "frames": 6,
+  "anchor": [
+   34,
+   60
+  ],
+  "scale": 0.736
+ },
+ "shield": {
+  "file": {
+   "south": "shield-south.png",
+   "east": "shield-east.png",
+   "north": "shield-north.png",
+   "west": "shield-west.png"
+  },
+  "w": 68,
+  "h": 68,
+  "frames": 6,
+  "anchor": [
+   34,
+   60
+  ],
+  "scale": 0.696
+ },
+ "boat": {
+  "file": {
+   "south": "boat-south.png",
+   "east": "boat-east.png",
+   "north": "boat-north.png",
+   "west": "boat-west.png"
+  },
+  "w": 68,
+  "h": 68,
+  "frames": 6,
+  "anchor": [
+   34,
+   64
+  ]
+ }
+}

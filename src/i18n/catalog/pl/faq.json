@@ -1,0 +1,36 @@
+{
+  "site": {
+    "faq": {
+      "title": "Pytania i odpowiedzi — LibreHold",
+      "description": "Odpowiedzi o LibreHold: szybka partia i długi świat, gość i konto, co się dzieje pod twoją nieobecność, ochrona, języki i zgłoszenia.",
+      "heading": "Pytania i odpowiedzi",
+      "reportLink": "Zgłoś problem",
+      "items": {
+        "instantVsLong": {
+          "q": "Czym szybka partia różni się od długiego świata?",
+          "a": "Szybka partia trwa {instantDurationMin} min i ma miejsca dla {instantSeats} graczy i {instantBots} botów. Zaczynasz z rozbudowaną wioską i hetmanem, a dołączyć można w ciągu pierwszych {instantJoinWindowMin} min. Długi świat toczy się tygodniami, domyślnie z prędkością ×{longDefaultSpeed}, a start jest skromny: jedna mała wioska, którą rozbudowujesz od podstaw."
+        },
+        "guestVsAccount": {
+          "q": "Czy potrzebuję konta?",
+          "a": "Żeby spróbować, nie. Po kliknięciu Graj teraz grasz jako gość, a gość gra tylko w szybkie partie; gość, którego nikt nie widział przez {guestDeleteDays} dni, jest usuwany. Konto zachowuje dorobek rozegranych partii i otwiera długie światy. Gościa zamienisz w konto nawet w trakcie partii: kliknij Załóż konto, wybierz nazwę i hasło, a wioska zostaje przy tobie."
+        },
+        "away": {
+          "q": "Co się dzieje, kiedy mnie nie ma?",
+          "a": "Świat toczy się dalej. Kolejki budowy i rekrutacji kończą się bez ciebie, twoje ataki docierają do celu, a ataki innych graczy — do ciebie. Surowce przybywają, dopóki Spichlerz się nie zapełni; potem produkcja staje, więc lepiej wydać je przed wyjściem. Schowek chroni część surowców przed łupieżcami."
+        },
+        "protection": {
+          "q": "Czy jest bonus nocny albo ochrona początkujących?",
+          "a": "Bonusu nocnego nie ma: atak dociera o tej godzinie, o której dociera. Jest za to ochrona początkujących — dopóki trwa, nikt nie może cię zaatakować. W długim świecie trwa domyślnie {longProtectionDays} dni, a administrator może ją wyłączyć albo wydłużyć nawet do {protectionMaxDays} dni. W szybkiej partii trwa {instantProtectionMin} min."
+        },
+        "languages": {
+          "q": "W jakich językach można grać?",
+          "a": "Po polsku i po angielsku. Język zmienisz w każdej chwili przełącznikiem, a gra zapamięta wybór. Gracze obu języków dzielą te same światy, więc twój sąsiad może grać po angielsku."
+        },
+        "report": {
+          "q": "Jak zgłosić błąd lub gracza albo zadać pytanie?",
+          "a": "Przez formularz zgłoszeń. Może z niego skorzystać każdy, z kontem czy bez, do {reportsPerHour} zgłoszeń na godzinę. Napisz, czego dotyczy sprawa — błędu, gracza czy pytania — opisz ją w kilku zdaniach, a jeśli chcesz dostać odpowiedź, zostaw adres e-mail. Formularz: {reportLink}"
+        }
+      }
+    }
+  }
+}

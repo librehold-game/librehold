@@ -1,0 +1,243 @@
+{
+  "nav": {
+    "lobby": "Lobby",
+    "admin": "Admin panel",
+    "logout": "Log out"
+  },
+  "loading": "Loading…",
+  "login": {
+    "title": "Log in",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Log in",
+    "noAccount": "No account yet?",
+    "register": "Create an account"
+  },
+  "register": {
+    "title": "Sign up",
+    "username": "Username",
+    "password": "Password",
+    "confirm": "Repeat the password",
+    "submit": "Create an account",
+    "haveAccount": "Already have an account?",
+    "login": "Log in"
+  },
+  "lobby": {
+    "quadrant": {
+      "random": "Anywhere",
+      "nw": "North-west",
+      "ne": "North-east",
+      "sw": "South-west",
+      "se": "South-east"
+    },
+    "summary": "players: {humans} · bots: {bots} · speed ×{speed}",
+    "paused": "paused",
+    "direction": "Start in",
+    "join": "Join",
+    "mine": "My worlds",
+    "mineEmpty": "You aren't playing in any world yet.",
+    "open": "Open worlds",
+    "openEmpty": "There are no worlds to join right now.",
+    "enter": "Enter",
+    "instant": {
+      "title": "Instant game",
+      "text": "An hour-long world on a small map. You start with a grown village, an army and a hetman ready to take the barbarian village next door."
+    }
+  },
+  "admin": {
+    "title": "Admin panel",
+    "tab": {
+      "accounts": "Accounts",
+      "worlds": "Worlds"
+    },
+    "col": {
+      "name": "Name",
+      "role": "Role",
+      "created": "Created",
+      "password": "Password",
+      "status": "Status",
+      "players": "Players",
+      "bots": "Bots",
+      "state": "State",
+      "actions": "Actions"
+    },
+    "role": {
+      "admin": "admin",
+      "player": "player",
+      "guest": "guest"
+    },
+    "newPasswordFor": "New password for {name}",
+    "newPassword": "new password",
+    "setPassword": "Set password",
+    "passwordDone": "New password set for {name}; their sessions were ended.",
+    "settingsOf": "Settings: {name}",
+    "save": "Save changes",
+    "status": {
+      "open": "open",
+      "closed": "closed",
+      "ended": "ended"
+    },
+    "state": {
+      "paused": "paused",
+      "running": "running"
+    },
+    "action": {
+      "close": "Close",
+      "open": "Open",
+      "resume": "Resume",
+      "pause": "Pause",
+      "settings": "Settings"
+    },
+    "newWorld": "New world",
+    "worldName": "World name",
+    "create": "Create world",
+    "creationOnly": "only when creating",
+    "field": {
+      "worldSpeed": "World speed",
+      "unitSpeed": "Unit speed",
+      "mapSize": "Map size",
+      "barbarianDensity": "Barbarian density",
+      "botCount": "Number of bots",
+      "botArrival": "Bot arrival",
+      "rampUpDays": "Ramp-up days",
+      "beginnerProtectionDays": "Beginner protection (days)",
+      "lastVillage": "Last village",
+      "difficulty": "Difficulty",
+      "botStance": "Bots towards humans",
+      "battleLosses": "Battle losses",
+      "humanModifiers": "Human multipliers",
+      "botModifiers": "Bot multipliers",
+      "noFieldBattles": "No field battles",
+      "sightRadius": "Sight radius (tiles)"
+    },
+    "choice": {
+      "barbarianDensity": {
+        "sparse": "sparse",
+        "normal": "normal",
+        "dense": "dense"
+      },
+      "botArrival": {
+        "allAtOnce": "all at once",
+        "rampUp": "gradually"
+      },
+      "lastVillage": {
+        "protected": "protected",
+        "canBeLost": "can be lost"
+      },
+      "difficulty": {
+        "easy": "easy",
+        "normal": "normal",
+        "hard": "hard",
+        "brutal": "brutal"
+      },
+      "botStance": {
+        "peacefulRetaliate": "peaceful — strike back only when attacked",
+        "peacefulReputation": "peaceful — by reputation",
+        "normal": "normal",
+        "allAgainstHumans": "everyone against humans"
+      },
+      "battleLosses": {
+        "normal": "normal",
+        "reduced": "reduced"
+      }
+    },
+    "modifier": {
+      "resources": "resources",
+      "recruitment": "recruitment",
+      "building": "building"
+    }
+  },
+  "privacy": {
+    "title": "Privacy",
+    "intro": "LibreHold is a hobby game made for friends. This page says what it keeps about you, and why.",
+    "account": "Your account keeps a nickname, a password hash, your language and when you last played. A guest has no password; a guest not seen for 30 days is deleted.",
+    "actions": "Game actions (orders, joining and leaving worlds) are recorded to improve the game and its AI. The records use a random player ID, never your nickname or IP address.",
+    "deletion": "When an account or guest is deleted, its records stay, but nothing links them back to you; old leaderboards show it as a former player.",
+    "address": "Your IP address is used only in memory, to limit how many accounts one address can open and how many problem reports it can send in an hour, and is never stored.",
+    "cookies": "One cookie keeps you signed in and another remembers your language. There is no tracking and there are no ads."
+  },
+  "stats": {
+    "label": "Instant games so far",
+    "games": "games played",
+    "players": "players",
+    "conquests": "villages conquered",
+    "unitsKilled": "troops killed",
+    "last24h": "In the last 24 hours: {games} games, {conquests} villages conquered."
+  },
+  "claim": {
+    "title": "Keep your progress",
+    "text": "Pick a name and a password. Your games and tally stay with you, and long worlds open up.",
+    "submit": "Create account"
+  },
+  "footer": {
+    "privacy": "Privacy"
+  },
+  "publicProfile": {
+    "notFound": "There is no player by that name.",
+    "guest": "Playing as a guest.",
+    "tallyLabel": "Instant games",
+    "tally": {
+      "games": "games played",
+      "wins": "wins",
+      "conquered": "villages conquered",
+      "killed": "troops killed"
+    },
+    "games": "Past games",
+    "noGames": "No finished games yet.",
+    "place": "place {rank} of {players} · {points} pts"
+  },
+  "archive": {
+    "notFound": "There is no finished game with that number.",
+    "bot": "bot",
+    "formerPlayer": "Former player",
+    "reason": {
+      "time": "Time ran out. {winner} finished with the most points.",
+      "domination": "{winner} won early by holding most of the map."
+    },
+    "summary": "{humans} players and {bots} bots · {conquests} villages changed hands · {attacks} attacks · players killed {killed} troops",
+    "leaderboard": "Leaderboard",
+    "col": {
+      "player": "Player",
+      "points": "Points",
+      "villages": "Villages",
+      "conquered": "Conquered",
+      "killed": "Troops killed"
+    },
+    "running": "Still running · {time} left"
+  },
+  "head": {
+    "home": {
+      "title": "LibreHold — pixel-art village wars in your browser",
+      "description": "Free village wars in your browser. One-hour games against players and bots, or long worlds that last for weeks."
+    },
+    "privacy": {
+      "title": "Privacy — LibreHold",
+      "description": "What LibreHold stores about you, why, and how to have it removed."
+    },
+    "notFound": {
+      "title": "Page not found — LibreHold",
+      "description": "This page does not exist. Go back to the front page and start a game."
+    },
+    "login": {
+      "title": "Log in — LibreHold"
+    },
+    "register": {
+      "title": "Create an account — LibreHold"
+    },
+    "lobby": {
+      "title": "Lobby — LibreHold"
+    },
+    "admin": {
+      "title": "Admin panel — LibreHold"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "There is nothing at this address. It may have moved, or the link has a typo.",
+    "home": "Go to the front page"
+  },
+  "languageNote": {
+    "text": "This page is also in English →",
+    "close": "Close"
+  }
+}

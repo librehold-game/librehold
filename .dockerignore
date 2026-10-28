@@ -1,0 +1,11 @@
+.git
+.claude
+.superpowers
+.cache
+node_modules
+dist
+coverage
+server/bin
+deploy
+**/*.log
+**/.DS_Store

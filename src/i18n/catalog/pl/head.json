@@ -1,0 +1,65 @@
+{
+  "head": {
+    "imageAlt": "Pikselowa wioska z zamkiem, polami i jeziorem",
+    "formerPlayer": "były gracz",
+    "count": {
+      "players": {
+        "one": "# gracz",
+        "few": "# gracze",
+        "many": "# graczy",
+        "other": "# gracza"
+      },
+      "bots": {
+        "one": "# bot",
+        "few": "# boty",
+        "many": "# botów",
+        "other": "# bota"
+      },
+      "conquests": {
+        "one": "# przejęta wioska",
+        "few": "# przejęte wioski",
+        "many": "# przejętych wiosek",
+        "other": "# przejętej wioski"
+      },
+      "games": {
+        "one": "# gra",
+        "few": "# gry",
+        "many": "# gier",
+        "other": "# gry"
+      },
+      "wins": {
+        "one": "# wygrana",
+        "few": "# wygrane",
+        "many": "# wygranych",
+        "other": "# wygranej"
+      }
+    },
+    "game": {
+      "ended": {
+        "title": "{name} — wygrywa {winner} · {players}, {conquests}",
+        "titleBot": "{name} — wygrywa {winner} (bot) · {players}, {conquests}",
+        "description": "Zakończona szybka gra w LibreHold: końcowy ranking, podboje i mapa. Zacznij własną partię jednym kliknięciem."
+      },
+      "running": {
+        "title": "{name} — trwa teraz · {players}, {bots}",
+        "description": "Szybka gra w LibreHold, która toczy się właśnie teraz. Wskocz do następnej jednym kliknięciem, bez zakładania konta."
+      }
+    },
+    "player": {
+      "title": "{name} — {games}, {wins}, {conquests}",
+      "description": "{name} w LibreHold: rozegrane gry, wygrane i przejęte wioski."
+    },
+    "world": {
+      "title": "{name} — dzień {day} · {players} i {bots}",
+      "description": "Długi świat Osad: ranking, mapa i najnowsze podboje. Dołącz i zbuduj swoją wioskę."
+    },
+    "worlds": {
+      "title": "Światy — LibreHold",
+      "description": "Wszystkie światy Osad: długie, trwające tygodniami, i szybkie partie na godzinę."
+    },
+    "join": {
+      "title": "{name} — dołącz do gry",
+      "description": "{host} zaprasza cię do prywatnej gry w LibreHold. Dołączasz jednym kliknięciem."
+    }
+  }
+}

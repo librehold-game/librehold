@@ -1,0 +1,35 @@
+[
+  {
+    "seed": 1,
+    "medianPoints": {
+      "10": 914,
+      "20": 3472,
+      "30": 5538
+    },
+    "medianVillages": 1,
+    "farmRunsPerDay": 3863.6,
+    "quitShare": 0.16666666666666666
+  },
+  {
+    "seed": 2,
+    "medianPoints": {
+      "10": 807,
+      "20": 2946,
+      "30": 5661
+    },
+    "medianVillages": 2,
+    "farmRunsPerDay": 4387.533333333334,
+    "quitShare": 0.03333333333333333
+  },
+  {
+    "seed": 3,
+    "medianPoints": {
+      "10": 670,
+      "20": 2376,
+      "30": 4652
+    },
+    "medianVillages": 1,
+    "farmRunsPerDay": 3282.4333333333334,
+    "quitShare": 0.06666666666666667
+  }
+]

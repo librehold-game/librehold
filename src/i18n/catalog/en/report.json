@@ -1,0 +1,63 @@
+{
+  "report": {
+    "intro": "Tell the admin about a bug, a player who breaks the rules, or ask a question. Every report is read.",
+    "kind": "What is it about?",
+    "text": "What happened?",
+    "count": "{n} / {max}",
+    "hint": "At least {min} characters.",
+    "email": "Email (optional)",
+    "send": "Send",
+    "sending": "Sending…",
+    "sent": "Thank you. Your report has reached the admin.",
+    "asAccount": "It is sent as {name}.",
+    "asVisitor": "It is sent without an account. Leave an email if you want an answer.",
+    "attached": "Sent along with it",
+    "world": "World",
+    "screen": "Screen",
+    "build": "Build",
+    "browser": "Browser",
+    "close": "Close",
+    "kindBug": "A bug",
+    "kindPlayer": "A player",
+    "kindQuestion": "A question",
+    "kindOther": "Something else"
+  },
+  "errors": {
+    "tooManyReports": "You've sent five reports in the last hour. Try again later.",
+    "reportKind": "Choose what the report is about.",
+    "reportText": "Write between 10 and 2000 characters.",
+    "reportEmail": "That email address does not look right."
+  },
+  "admin": {
+    "tab": {
+      "reports": "Reports"
+    },
+    "reports": {
+      "empty": "No reports yet.",
+      "date": "Date",
+      "kind": "Kind",
+      "sender": "Sender",
+      "world": "World",
+      "text": "Text",
+      "email": "Email",
+      "status": "Status",
+      "visitor": "a visitor",
+      "details": "Details",
+      "statuses": {
+        "new": "new",
+        "read": "read",
+        "done": "done"
+      }
+    }
+  },
+  "privacy": {
+    "reportsTitle": "Problem reports",
+    "reports": "A problem report keeps what you write: its kind, the text and the email if you give one. Sent while signed in, it keeps your account; sent from the game, also the world, the screen you were on, the game's build and your browser. It never keeps your IP address. A report is deleted a year after the admin closes it."
+  },
+  "head": {
+    "report": {
+      "title": "Report a problem — LibreHold",
+      "description": "Tell the admin of LibreHold about a bug, a player who breaks the rules, or ask a question. No account needed."
+    }
+  }
+}

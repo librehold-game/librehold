@@ -1,0 +1,16 @@
+name: Idea
+description: Suggest a feature or a change to the rules.
+labels: [idea]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What should change, and what problem it solves for players or hosts.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Other ways you considered, if any.

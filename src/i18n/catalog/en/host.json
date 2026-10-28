@@ -1,0 +1,109 @@
+{
+  "host": {
+    "defaultName": "{host}'s game",
+    "open": "Host a game",
+    "intro": "A private game for you and your friends: choose the settings, send the link, and start when everyone is in.",
+    "create": "Create the game",
+    "full": "The server is full right now. Try again in a few minutes.",
+    "field": {
+      "name": "Name",
+      "duration": "Length",
+      "seats": "Players",
+      "bots": "Bots",
+      "worldSpeed": "World speed",
+      "unitSpeed": "Unit speed",
+      "startVillage": "Start village",
+      "barbarians": "Barbarian villages",
+      "difficulty": "Bot difficulty",
+      "botStance": "Bots towards players",
+      "fieldBattles": "Armies can meet on the road",
+      "sightRadius": "Sight of passing armies (tiles, 0 = none)",
+      "protectionMin": "Beginner protection (minutes)",
+      "domination": "Win early by holding",
+      "lateJoin": "Late joining",
+      "registeredOnly": "Registered players only"
+    },
+    "minutes": "{n} min",
+    "startVillage": {
+      "grown": "Grown, with an army",
+      "fresh": "A fresh start"
+    },
+    "barbarians": {
+      "few": "Few",
+      "normal": "Normal",
+      "many": "Many"
+    },
+    "dominationOff": "Off",
+    "dominationPct": "{n} % of the villages",
+    "lateJoinNone": "Until the start only",
+    "lateJoinUntil": "Until {n} min after the start",
+    "status": {
+      "waiting": "Waiting for you to start",
+      "running": "Running",
+      "paused": "Paused",
+      "ended": "Over"
+    },
+    "seatsTaken": "{humans} of {seats} players",
+    "inviteLink": "Invite link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "showQr": "Show QR code",
+    "hideQr": "Hide QR code",
+    "qrLabel": "QR code of the invite link",
+    "replace": "Replace the link",
+    "replaceConfirm": "Replace the link? The old one stops working; players already in stay.",
+    "start": "Start",
+    "pause": "Pause ({min} min left)",
+    "resume": "Resume",
+    "end": "End now",
+    "endConfirm": "End the game now? The player with the most points wins.",
+    "closeConfirm": "Close this game? Nobody has played it yet, so it is simply removed.",
+    "players": "Players",
+    "nobody": "Nobody has joined yet.",
+    "guest": "guest",
+    "kick": "Kick {name}",
+    "kickConfirm": "Kick {name}? Their villages turn barbarian and they cannot come back.",
+    "godView": "Open the god view",
+    "results": "Results",
+    "past": "Games you hosted",
+    "playing": "Games you were invited to",
+    "settings": {
+      "title": "Player worlds",
+      "text": "Limits for the worlds players host from now on; worlds already made keep theirs.",
+      "seats": "Seats per world",
+      "bots": "Bots per world",
+      "save": "Save",
+      "saved": "Saved"
+    },
+    "privateGame": "private game"
+  },
+  "errors": {
+    "alreadyHosting": "You already host a game. End it before you start another.",
+    "serverFull": "The server is full. Try again in a few minutes.",
+    "outOfRange": "That number is out of range.",
+    "noPlayers": "Wait until at least one player joins.",
+    "notStarted": "The game has not started yet.",
+    "alreadyStarted": "The game has already started.",
+    "alreadyPaused": "The game is already paused.",
+    "notPaused": "The game is not paused.",
+    "pauseLimit": "All 30 minutes of pauses are used up.",
+    "notAPlayer": "That player is not in the game.",
+    "banned": "The host has removed you from this game.",
+    "registeredOnly": "Only registered players may join this game.",
+    "worldFull": "This game is full.",
+    "joinClosed": "Joining this game has closed."
+  },
+  "join": {
+    "invited": "{host} invites you to this game.",
+    "joining": "Joining the game…",
+    "nowhere": "This link leads nowhere.",
+    "full": "This game is full.",
+    "closed": "Joining this game has closed.",
+    "ended": "This game is over."
+  },
+  "archive": {
+    "reason": {
+      "host": "The host ended the game. {winner} finished with the most points."
+    }
+  }
+}

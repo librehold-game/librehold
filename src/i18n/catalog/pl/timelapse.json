@@ -1,0 +1,21 @@
+{
+  "timelapse": {
+    "watch": "Obejrzyj mapę",
+    "map": "Mapa gry",
+    "play": "Odtwórz",
+    "pause": "Pauza",
+    "restart": "Od początku",
+    "length": "Długość",
+    "seconds": "{n} s",
+    "scrub": "Czas gry",
+    "clock": "{time} z {end}",
+    "legend": "Gracze na mapie",
+    "loading": "Wczytywanie mapy…",
+    "unavailable": "Tej gry nie da się odtworzyć na mapie.",
+    "download": "Pobierz film",
+    "videoLength": "Długość filmu",
+    "recording": "Nagrywanie… {pct} %",
+    "save": "Zapisz film",
+    "wonBy": "Wygrywa: {winner}"
+  }
+}

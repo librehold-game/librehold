@@ -1,0 +1,26 @@
+/* Village animation layer: transform/opacity only, SVG + @keyframes. */
+.scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  border: 8px solid transparent;
+  border-image: url("../../assets/pixel/ui/chrome/frame.png") 40 / 8px stretch;
+  box-sizing: border-box;
+}
+.scene-paused * { animation-play-state: paused !important; }
+.scene-off * { animation: none !important; }
+/* "Limited" mode keeps state indicators (construction, progress bars, alarm, smoke) and stops decorations. */
+.scene-limited .deco { animation: none !important; }
+.scene .hotspot, .scene .marks { cursor: pointer; }
+.scene .hotspot:hover .hl { opacity: 0.35; }
+.scene .hl { opacity: 0; transition: opacity 0.15s; }
+.scene.pixel image { image-rendering: pixelated; pointer-events: none; }
+.scene.pixel .hit { fill: transparent; pointer-events: fill; }
+
+@keyframes sc-smoke { 0% { transform: translate(0, 0) scale(0.6); opacity: 0.55; } 100% { transform: translate(var(--sx, 6px), -42px) scale(1.8); opacity: 0; } }
+@keyframes sc-bell { from { transform: rotate(-25deg); } to { transform: rotate(25deg); } }
+@keyframes sc-alarm { from { opacity: 0.12; } to { opacity: 0.32; } }
+@keyframes sc-flag { 0% { transform: skewY(0deg) scaleX(1); } 50% { transform: skewY(-6deg) scaleX(0.92); } 100% { transform: skewY(0deg) scaleX(1); } }
+@keyframes sc-pulse { from { transform: scale(1); } to { transform: scale(1.12); } }
+@keyframes sc-wagon { from { transform: translateX(0); } to { transform: translateX(var(--dx, -260px)); } }

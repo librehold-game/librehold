@@ -1,0 +1,546 @@
+{
+  "brains": {
+    "bot_0": {
+      "skill": 0.09450303204357624,
+      "style": "opportunist",
+      "resilience": 0.25148812592960895,
+      "caution": 0.3291989015415311,
+      "routine": {
+        "wakeMin": 369,
+        "sleepMin": 1279,
+        "checkIns": [
+          {
+            "atMin": 584,
+            "lenMin": 7
+          },
+          {
+            "atMin": 648,
+            "lenMin": 9
+          },
+          {
+            "atMin": 1004,
+            "lenMin": 8
+          }
+        ],
+        "eveningStartMin": 1110,
+        "eveningLenMin": 99,
+        "weekendWakeShiftMin": 62
+      },
+      "online": false,
+      "sessionEndsAt": 0,
+      "actionLog": [],
+      "roles": {},
+      "memory": {
+        "known": {},
+        "discoveredAt": -1
+      },
+      "overwhelm": 0,
+      "lastSessionStats": {
+        "villagesLost": 0,
+        "incomingAttacks": 0
+      },
+      "grudges": {},
+      "habits": {},
+      "mood": {
+        "phase": "build",
+        "until": 0,
+        "failures": 0
+      }
+    }
+  },
+  "commands": [
+    {
+      "id": "c_r",
+      "type": "return",
+      "originId": "v:127:89",
+      "targetId": "v:128:90",
+      "units": {
+        "scout": 1
+      },
+      "departedAt": 7963675,
+      "arrivesAt": 8727350
+    },
+    {
+      "id": "c_t",
+      "type": "attack",
+      "originId": "v:128:90",
+      "targetId": "v:114:88",
+      "units": {
+        "axe": 10
+      },
+      "departedAt": 7963675,
+      "arrivesAt": 23237181
+    },
+    {
+      "id": "c_u",
+      "type": "attack",
+      "originId": "v:128:90",
+      "targetId": "v:114:94",
+      "units": {
+        "axe": 10
+      },
+      "departedAt": 7963675,
+      "arrivesAt": 23688712
+    }
+  ],
+  "human": {
+    "stats": {
+      "attacksSent": 2,
+      "attacksToday": {
+        "day": 0,
+        "count": 3
+      },
+      "lootedToday": {
+        "day": 0,
+        "total": 0
+      },
+      "resourcesLooted": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "unitsKilled": 0,
+      "unitsLost": 0,
+      "villagesConquered": 0,
+      "pointsHistory": [
+        [
+          0,
+          26
+        ]
+      ],
+      "battlesWon": 0,
+      "scoutsSent": 1,
+      "supportsSent": 0,
+      "tradesSent": 0,
+      "coinsMinted": 0,
+      "researchCompleted": 0,
+      "attacksRepelled": 0
+    },
+    "quests": {
+      "completed": [],
+      "active": [
+        "wood1"
+      ],
+      "claimed": []
+    },
+    "farmAssistant": {
+      "templates": {
+        "A": {
+          "units": {}
+        },
+        "B": {
+          "units": {}
+        },
+        "C": {
+          "units": {}
+        },
+        "D": {
+          "units": {}
+        }
+      },
+      "autoFarmUnlocked": false,
+      "autoFarmEnabled": false,
+      "autoFarmVillages": [],
+      "filters": {
+        "radius": 15,
+        "minMinutesSinceAttack": 30,
+        "maxWall": 3,
+        "hideLosses": true,
+        "hideInbound": true
+      }
+    },
+    "trader": {
+      "offerIndex": 0,
+      "offer": {
+        "give": "wood",
+        "giveAmount": 1000,
+        "get": "clay",
+        "getAmount": 800
+      },
+      "expiresAt": 28800000,
+      "accepted": false
+    },
+    "villageGroups": [],
+    "buildTemplates": [
+      {
+        "id": "tpl_start",
+        "name": "",
+        "steps": [
+          "wood",
+          "clay",
+          "iron",
+          "wood",
+          "clay",
+          "main",
+          "wood",
+          "clay",
+          "iron",
+          "storage",
+          "main",
+          "wood",
+          "clay",
+          "iron",
+          "farm",
+          "wood",
+          "clay",
+          "iron",
+          "storage",
+          "main",
+          "barracks",
+          "wood",
+          "clay",
+          "iron",
+          "farm",
+          "storage",
+          "wood",
+          "clay",
+          "iron",
+          "main",
+          "main",
+          "smithy",
+          "wood",
+          "clay",
+          "iron",
+          "storage",
+          "farm",
+          "wood",
+          "clay",
+          "iron"
+        ]
+      },
+      {
+        "id": "tpl_def",
+        "name": "",
+        "steps": [
+          "main",
+          "main",
+          "barracks",
+          "wall",
+          "wall",
+          "barracks",
+          "barracks",
+          "wall",
+          "wall",
+          "wall",
+          "farm",
+          "storage",
+          "barracks",
+          "barracks",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall",
+          "wall"
+        ]
+      },
+      {
+        "id": "tpl_off",
+        "name": "",
+        "steps": [
+          "main",
+          "main",
+          "main",
+          "main",
+          "barracks",
+          "barracks",
+          "barracks",
+          "barracks",
+          "smithy",
+          "smithy",
+          "smithy",
+          "smithy",
+          "smithy",
+          "stable",
+          "stable",
+          "stable",
+          "farm",
+          "farm",
+          "storage",
+          "storage"
+        ]
+      }
+    ],
+    "aggressorUntil": 0
+  },
+  "intel": {
+    "intel": {
+      "at": 7963675,
+      "units": {},
+      "wall": 0,
+      "loyalty": 100
+    },
+    "farmTargetFlags": {
+      "hasWall": false,
+      "scoutedAt": 7963675
+    }
+  },
+  "news": null,
+  "players": [
+    {
+      "id": "h1",
+      "name": "Player",
+      "isHuman": true,
+      "color": "#d23b2f",
+      "villageIds": [
+        "v:128:90"
+      ],
+      "coins": 0,
+      "noblesTrained": 0,
+      "buildQueueSlots": 2,
+      "protectedUntil": 0,
+      "joinAt": 0,
+      "status": "active",
+      "points": 26,
+      "history": {
+        "hourly": [
+          26,
+          26
+        ],
+        "daily": []
+      },
+      "daily": [
+        {
+          "day": 0,
+          "att": 0,
+          "def": 0,
+          "sup": 0,
+          "loot": 0,
+          "farm": 0
+        }
+      ]
+    },
+    {
+      "id": "bot_test",
+      "name": "Bot bot_test",
+      "isHuman": false,
+      "color": "#5a7fbf",
+      "villageIds": [
+        "v:127:89"
+      ],
+      "coins": 0,
+      "noblesTrained": 0,
+      "buildQueueSlots": 2,
+      "protectedUntil": 0,
+      "joinAt": 0,
+      "status": "active",
+      "points": 0,
+      "history": {
+        "hourly": [],
+        "daily": []
+      }
+    }
+  ],
+  "reports": [
+    {
+      "id": "rep_s",
+      "time": 7963675,
+      "type": "scout",
+      "originId": "v:128:90",
+      "targetId": "v:127:89",
+      "origin": {
+        "id": "v:128:90",
+        "name": "",
+        "x": 128,
+        "y": 90,
+        "ownerId": "h1",
+        "ownerName": "Player"
+      },
+      "target": {
+        "id": "v:127:89",
+        "name": "",
+        "x": 127,
+        "y": 89,
+        "ownerId": "bot_test",
+        "ownerName": "Bot bot_test",
+        "ownerIsBot": true
+      },
+      "attacker": {
+        "units": {
+          "scout": 1
+        },
+        "losses": {}
+      },
+      "defender": {
+        "units": {},
+        "losses": {}
+      },
+      "scout": {
+        "resources": {
+          "wood": 508,
+          "clay": 508,
+          "iron": 508
+        },
+        "buildings": {
+          "main": 1,
+          "barracks": 0,
+          "stable": 0,
+          "workshop": 0,
+          "academy": 0,
+          "smithy": 0,
+          "statue": 0,
+          "market": 0,
+          "wood": 0,
+          "clay": 0,
+          "iron": 0,
+          "farm": 1,
+          "storage": 1,
+          "hide": 1,
+          "wall": 0
+        },
+        "units": {},
+        "loyalty": 100
+      },
+      "luck": 0,
+      "morale": 1,
+      "wallBefore": 0,
+      "wallAfter": 0,
+      "outcome": "attackerWon",
+      "read": false
+    }
+  ],
+  "villages": [
+    {
+      "id": "v:128:90",
+      "x": 128,
+      "y": 90,
+      "name": "",
+      "ownerId": "h1",
+      "points": 26,
+      "resources": {
+        "wood": 588.4852777777778,
+        "clay": 588.4852777777778,
+        "iron": 588.4852777777778
+      },
+      "resourcesUpdatedAt": 7963675,
+      "buildings": {
+        "main": 1,
+        "barracks": 0,
+        "stable": 0,
+        "workshop": 0,
+        "academy": 0,
+        "smithy": 0,
+        "statue": 0,
+        "market": 0,
+        "wood": 0,
+        "clay": 0,
+        "iron": 0,
+        "farm": 1,
+        "storage": 1,
+        "hide": 1,
+        "wall": 0
+      },
+      "units": {
+        "spear": 10,
+        "sword": 0,
+        "axe": 0,
+        "archer": 0,
+        "scout": 0,
+        "lightCav": 0,
+        "mountedArcher": 0,
+        "heavyCav": 0,
+        "ram": 0,
+        "catapult": 0,
+        "paladin": 0,
+        "noble": 0
+      },
+      "supportFrom": {},
+      "loyalty": 100,
+      "loyaltyUpdatedAt": 7963675,
+      "buildQueue": [],
+      "recruitQueues": {
+        "barracks": [],
+        "stable": [],
+        "workshop": [],
+        "academy": [],
+        "statue": []
+      },
+      "researchQueue": [],
+      "research": {
+        "spear": 0,
+        "sword": 0,
+        "axe": 0,
+        "archer": 0,
+        "scout": 0,
+        "lightCav": 0,
+        "mountedArcher": 0,
+        "heavyCav": 0,
+        "ram": 0,
+        "catapult": 0,
+        "paladin": 0,
+        "noble": 0
+      }
+    },
+    {
+      "id": "v:127:89",
+      "x": 127,
+      "y": 89,
+      "name": "",
+      "ownerId": "bot_test",
+      "points": 26,
+      "resources": {
+        "wood": 508.48527777777775,
+        "clay": 508.48527777777775,
+        "iron": 508.48527777777775
+      },
+      "resourcesUpdatedAt": 7963675,
+      "buildings": {
+        "main": 1,
+        "barracks": 0,
+        "stable": 0,
+        "workshop": 0,
+        "academy": 0,
+        "smithy": 0,
+        "statue": 0,
+        "market": 0,
+        "wood": 0,
+        "clay": 0,
+        "iron": 0,
+        "farm": 1,
+        "storage": 1,
+        "hide": 1,
+        "wall": 0
+      },
+      "units": {
+        "spear": 0,
+        "sword": 0,
+        "axe": 0,
+        "archer": 0,
+        "scout": 0,
+        "lightCav": 0,
+        "mountedArcher": 0,
+        "heavyCav": 0,
+        "ram": 0,
+        "catapult": 0,
+        "paladin": 0,
+        "noble": 0
+      },
+      "supportFrom": {},
+      "loyalty": 100,
+      "loyaltyUpdatedAt": 7963675,
+      "buildQueue": [],
+      "recruitQueues": {
+        "barracks": [],
+        "stable": [],
+        "workshop": [],
+        "academy": [],
+        "statue": []
+      },
+      "researchQueue": [],
+      "research": {
+        "spear": 0,
+        "sword": 0,
+        "axe": 0,
+        "archer": 0,
+        "scout": 0,
+        "lightCav": 0,
+        "mountedArcher": 0,
+        "heavyCav": 0,
+        "ram": 0,
+        "catapult": 0,
+        "paladin": 0,
+        "noble": 0
+      }
+    }
+  ]
+}

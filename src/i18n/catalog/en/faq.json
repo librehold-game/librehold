@@ -1,0 +1,36 @@
+{
+  "site": {
+    "faq": {
+      "title": "Questions and answers — LibreHold",
+      "description": "Answers about LibreHold: instant games and long worlds, guests and accounts, what happens while you are away, protection, languages and reports.",
+      "heading": "Questions and answers",
+      "reportLink": "Report a problem",
+      "items": {
+        "instantVsLong": {
+          "q": "What is the difference between an instant game and a long world?",
+          "a": "An instant game lasts {instantDurationMin} minutes and has seats for {instantSeats} players and {instantBots} bots. You start with a built-up village and a hetman, and you can join during its first {instantJoinWindowMin} minutes. A long world runs for weeks, at speed ×{longDefaultSpeed} by default, and you start small: one modest village that you grow yourself."
+        },
+        "guestVsAccount": {
+          "q": "Do I need an account?",
+          "a": "Not to try. Play now makes you a guest, and a guest plays instant games only; a guest nobody has seen for {guestDeleteDays} days is deleted. An account keeps the tally of your games and opens the long worlds. You can turn your guest into an account in the middle of a game: press Create account, pick a name and a password, and your village stays yours."
+        },
+        "away": {
+          "q": "What happens while I am away?",
+          "a": "The world keeps running. Your build and recruitment queues finish, your attacks land, and so do other players' attacks on you. Resources keep coming in until the Storehouse is full; after that, production stops, so spend them before you go. The Hideout keeps part of your resources out of raiders' reach."
+        },
+        "protection": {
+          "q": "Is there a night bonus or beginner protection?",
+          "a": "There is no night bonus: an attack lands at whatever hour it lands. New players get beginner protection instead, and nobody can attack them while it lasts. On a long world it lasts {longProtectionDays} days by default; an admin can switch it off or set it to as much as {protectionMaxDays} days. In an instant game it lasts {instantProtectionMin} minutes."
+        },
+        "languages": {
+          "q": "Which languages can I play in?",
+          "a": "English and Polish. You can switch at any time with the language picker, and the game remembers your choice. Players of both languages share the same worlds, so your neighbour may well be playing in the other one."
+        },
+        "report": {
+          "q": "How do I report a bug or a player, or ask a question?",
+          "a": "Use the report form. Anyone can send one, with or without an account, up to {reportsPerHour} reports an hour. Say what it is about — a bug, a player or a question — describe it in a few sentences and, if you would like an answer, leave an email address. The form: {reportLink}"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5734 @@
+[
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "scout": 131
+        },
+        "research": {
+          "spear": 2,
+          "archer": 3,
+          "ram": 2,
+          "noble": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "archer": 246,
+          "lightCav": 31,
+          "catapult": 101,
+          "noble": 56,
+          "scout": 137
+        },
+        "research": {
+          "archer": 2,
+          "heavyCav": 2,
+          "paladin": 2,
+          "noble": 1
+        },
+        "wall": 6,
+        "buildings": {
+          "main": 23,
+          "barracks": 12,
+          "stable": 5,
+          "workshop": 8,
+          "academy": 3,
+          "smithy": 7,
+          "statue": 1,
+          "market": 25,
+          "wood": 16,
+          "clay": 8,
+          "iron": 29,
+          "farm": 6,
+          "storage": 14,
+          "hide": 7,
+          "wall": 6
+        },
+        "resources": {
+          "wood": 63090,
+          "clay": 37435,
+          "iron": 33482
+        },
+        "hideLevel": 9
+      },
+      "luck": -0.21656131220515817,
+      "morale": 1,
+      "catapultTarget": "farm",
+      "lossMode": "normal",
+      "rngSeed": 4027050219
+    },
+    "result": {
+      "kind": "scout",
+      "outcome": "defenderWon",
+      "attackPower": 131,
+      "defensePower": 274,
+      "luck": 0,
+      "morale": 1,
+      "attackerLosses": {
+        "scout": 131
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {},
+      "defenderSurvivors": {
+        "archer": 246,
+        "scout": 137,
+        "lightCav": 31,
+        "catapult": 101,
+        "noble": 56
+      },
+      "wallBefore": 6,
+      "wallAfter": 6,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 283,
+          "archer": 500,
+          "lightCav": 287,
+          "ram": 37,
+          "catapult": 346
+        },
+        "research": {
+          "archer": 0,
+          "paladin": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "axe": 21,
+          "paladin": 18
+        },
+        "research": {
+          "lightCav": 1,
+          "ram": 2,
+          "paladin": 0
+        },
+        "wall": 10,
+        "buildings": {
+          "main": 19,
+          "barracks": 21,
+          "stable": 4,
+          "workshop": 15,
+          "academy": 1,
+          "smithy": 0,
+          "statue": 1,
+          "market": 8,
+          "wood": 14,
+          "clay": 10,
+          "iron": 4,
+          "farm": 14,
+          "storage": 21,
+          "hide": 1,
+          "wall": 10
+        },
+        "resources": {
+          "wood": 10910,
+          "clay": 97903,
+          "iron": 46475
+        },
+        "hideLevel": 4
+      },
+      "luck": 0.15804257022682577,
+      "morale": 0.9989841010887175,
+      "lossMode": "reduced",
+      "rngSeed": 4027300482
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 95226.27747575883,
+      "defensePower": 8516.707265699188,
+      "luck": 0.15804257022682577,
+      "morale": 0.9989841010887175,
+      "attackerLosses": {
+        "spear": 3,
+        "archer": 7,
+        "lightCav": 4,
+        "catapult": 5
+      },
+      "attackerSurvivors": {
+        "spear": 280,
+        "archer": 493,
+        "lightCav": 283,
+        "ram": 37,
+        "catapult": 341
+      },
+      "defenderLosses": {
+        "axe": 21,
+        "paladin": 18
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 10,
+      "wallAfter": 3,
+      "buildingDamage": {
+        "building": "market",
+        "from": 8,
+        "to": 0
+      },
+      "haul": {
+        "wood": 2366,
+        "clay": 21866,
+        "iron": 10338
+      },
+      "haulCapacity": 34570
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 65,
+          "archer": 90,
+          "scout": 335,
+          "mountedArcher": 371,
+          "heavyCav": 212,
+          "catapult": 399,
+          "noble": 159
+        },
+        "research": {
+          "spear": 0,
+          "catapult": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 37,
+          "sword": 280,
+          "mountedArcher": 437,
+          "catapult": 227,
+          "noble": 279
+        },
+        "research": {
+          "scout": 0,
+          "ram": 3,
+          "catapult": 2
+        },
+        "wall": 18,
+        "buildings": {
+          "main": 2,
+          "barracks": 17,
+          "stable": 15,
+          "workshop": 8,
+          "academy": 0,
+          "smithy": 7,
+          "statue": 1,
+          "market": 10,
+          "wood": 22,
+          "clay": 16,
+          "iron": 27,
+          "farm": 25,
+          "storage": 19,
+          "hide": 5,
+          "wall": 18
+        },
+        "resources": {
+          "wood": 30685,
+          "clay": 15866,
+          "iron": 44228
+        },
+        "hideLevel": 7
+      },
+      "luck": 0.12277099082712084,
+      "morale": 0.6994836321799085,
+      "lossMode": "normal",
+      "rngSeed": 4026756029
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 98122.86975040245,
+      "defensePower": 151600.86776472846,
+      "luck": 0.12277099082712084,
+      "morale": 0.6994836321799085,
+      "attackerLosses": {
+        "axe": 65,
+        "archer": 90,
+        "scout": 335,
+        "mountedArcher": 371,
+        "heavyCav": 212,
+        "catapult": 399,
+        "noble": 159
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 19,
+        "sword": 146,
+        "mountedArcher": 228,
+        "catapult": 118,
+        "noble": 145
+      },
+      "defenderSurvivors": {
+        "spear": 18,
+        "sword": 134,
+        "mountedArcher": 209,
+        "catapult": 109,
+        "noble": 134
+      },
+      "wallBefore": 18,
+      "wallAfter": 18,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 264,
+          "sword": 273,
+          "axe": 76,
+          "archer": 74,
+          "lightCav": 430,
+          "mountedArcher": 274,
+          "heavyCav": 23,
+          "catapult": 381,
+          "noble": 405
+        },
+        "research": {
+          "lightCav": 0,
+          "ram": 0,
+          "noble": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "archer": 432,
+          "scout": 121,
+          "mountedArcher": 127,
+          "paladin": 1
+        },
+        "research": {
+          "axe": 1,
+          "lightCav": 2
+        },
+        "wall": 8,
+        "buildings": {
+          "main": 10,
+          "barracks": 22,
+          "stable": 10,
+          "workshop": 6,
+          "academy": 1,
+          "smithy": 19,
+          "statue": 0,
+          "market": 3,
+          "wood": 23,
+          "clay": 19,
+          "iron": 29,
+          "farm": 23,
+          "storage": 28,
+          "hide": 7,
+          "wall": 8
+        },
+        "resources": {
+          "wood": 51485,
+          "clay": 78510,
+          "iron": 37811
+        },
+        "hideLevel": 5
+      },
+      "luck": 0.013494330341927707,
+      "morale": 0.8682434137212112,
+      "catapultTarget": "statue",
+      "lossMode": "reduced",
+      "rngSeed": 4027006292
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 141633.92593329772,
+      "defensePower": 28649.393528903485,
+      "luck": 0.013494330341927707,
+      "morale": 0.8682434137212112,
+      "attackerLosses": {
+        "spear": 12,
+        "sword": 12,
+        "axe": 3,
+        "archer": 3,
+        "lightCav": 20,
+        "mountedArcher": 12,
+        "heavyCav": 1,
+        "catapult": 18,
+        "noble": 19
+      },
+      "attackerSurvivors": {
+        "spear": 252,
+        "sword": 261,
+        "axe": 73,
+        "archer": 71,
+        "lightCav": 410,
+        "mountedArcher": 262,
+        "heavyCav": 22,
+        "catapult": 363,
+        "noble": 386
+      },
+      "defenderLosses": {
+        "archer": 432,
+        "scout": 121,
+        "mountedArcher": 127,
+        "paladin": 1
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 8,
+      "wallAfter": 8,
+      "buildingDamage": {
+        "building": "smithy",
+        "from": 19,
+        "to": 0
+      },
+      "haul": {
+        "wood": 17983,
+        "clay": 27510,
+        "iron": 13162
+      },
+      "haulCapacity": 58655
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 275,
+          "scout": 29,
+          "lightCav": 202,
+          "mountedArcher": 255,
+          "heavyCav": 20,
+          "paladin": 56
+        },
+        "research": {
+          "archer": 2,
+          "scout": 0,
+          "ram": 3,
+          "catapult": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "lightCav": 364
+        },
+        "research": {
+          "scout": 1,
+          "ram": 3,
+          "catapult": 2
+        },
+        "wall": 5,
+        "buildings": {
+          "main": 26,
+          "barracks": 17,
+          "stable": 12,
+          "workshop": 1,
+          "academy": 1,
+          "smithy": 14,
+          "statue": 0,
+          "market": 23,
+          "wood": 9,
+          "clay": 27,
+          "iron": 28,
+          "farm": 24,
+          "storage": 16,
+          "hide": 1,
+          "wall": 5
+        },
+        "resources": {
+          "wood": 5625,
+          "clay": 24165,
+          "iron": 13853
+        },
+        "hideLevel": 0
+      },
+      "luck": -0.07666337385307997,
+      "morale": 0.6143053386360406,
+      "lossMode": "normal",
+      "rngSeed": 4027844935
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 44957.11364610726,
+      "defensePower": 15289.310256375178,
+      "luck": -0.07666337385307997,
+      "morale": 0.6143053386360406,
+      "attackerLosses": {
+        "axe": 55,
+        "scout": 5,
+        "lightCav": 41,
+        "mountedArcher": 51,
+        "heavyCav": 3,
+        "paladin": 11
+      },
+      "attackerSurvivors": {
+        "axe": 220,
+        "scout": 24,
+        "lightCav": 161,
+        "mountedArcher": 204,
+        "heavyCav": 17,
+        "paladin": 45
+      },
+      "defenderLosses": {
+        "lightCav": 364
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 5,
+      "wallAfter": 5,
+      "haul": {
+        "wood": 3948,
+        "clay": 16960,
+        "iron": 9722
+      },
+      "haulCapacity": 30630
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 170,
+          "sword": 239,
+          "axe": 222,
+          "archer": 73,
+          "mountedArcher": 229,
+          "heavyCav": 473,
+          "ram": 354,
+          "catapult": 363,
+          "noble": 244
+        },
+        "research": {
+          "axe": 2,
+          "heavyCav": 3,
+          "ram": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 165,
+          "sword": 414,
+          "lightCav": 339,
+          "heavyCav": 472,
+          "ram": 131,
+          "catapult": 365,
+          "paladin": 116
+        },
+        "research": {},
+        "wall": 13,
+        "buildings": {
+          "main": 23,
+          "barracks": 9,
+          "stable": 0,
+          "workshop": 2,
+          "academy": 3,
+          "smithy": 14,
+          "statue": 0,
+          "market": 6,
+          "wood": 20,
+          "clay": 5,
+          "iron": 4,
+          "farm": 20,
+          "storage": 1,
+          "hide": 5,
+          "wall": 13
+        },
+        "resources": {
+          "wood": 8829,
+          "clay": 83930,
+          "iron": 99440
+        },
+        "hideLevel": 0
+      },
+      "luck": -0.240700509166345,
+      "morale": 1,
+      "lossMode": "reduced",
+      "rngSeed": 4027888862
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 145247.31076095888,
+      "defensePower": 258968.7897003584,
+      "luck": -0.240700509166345,
+      "morale": 1,
+      "attackerLosses": {
+        "spear": 170,
+        "sword": 239,
+        "axe": 222,
+        "archer": 73,
+        "mountedArcher": 229,
+        "heavyCav": 473,
+        "ram": 354,
+        "catapult": 363,
+        "noble": 244
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 34,
+        "sword": 87,
+        "lightCav": 71,
+        "heavyCav": 100,
+        "ram": 27,
+        "catapult": 77,
+        "paladin": 24
+      },
+      "defenderSurvivors": {
+        "spear": 131,
+        "sword": 327,
+        "lightCav": 268,
+        "heavyCav": 372,
+        "ram": 104,
+        "catapult": 288,
+        "paladin": 92
+      },
+      "wallBefore": 13,
+      "wallAfter": 13,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 190,
+          "scout": 343,
+          "mountedArcher": 478,
+          "ram": 323,
+          "noble": 154
+        },
+        "research": {
+          "paladin": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 383,
+          "axe": 183,
+          "archer": 427,
+          "scout": 340,
+          "mountedArcher": 101,
+          "heavyCav": 63
+        },
+        "research": {
+          "scout": 0,
+          "mountedArcher": 2
+        },
+        "wall": 16,
+        "buildings": {
+          "main": 8,
+          "barracks": 4,
+          "stable": 17,
+          "workshop": 5,
+          "academy": 1,
+          "smithy": 2,
+          "statue": 0,
+          "market": 0,
+          "wood": 12,
+          "clay": 11,
+          "iron": 26,
+          "farm": 15,
+          "storage": 9,
+          "hide": 3,
+          "wall": 16
+        },
+        "resources": {
+          "wood": 42687,
+          "clay": 92337,
+          "iron": 95881
+        },
+        "hideLevel": 7
+      },
+      "luck": -0.17458635289222002,
+      "morale": 0.5028799348510802,
+      "catapultTarget": "academy",
+      "lossMode": "normal",
+      "rngSeed": 4027344409
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 26783.707672825713,
+      "defensePower": 72423.19477937133,
+      "luck": -0.17458635289222002,
+      "morale": 0.5028799348510802,
+      "attackerLosses": {
+        "spear": 190,
+        "scout": 343,
+        "mountedArcher": 478,
+        "ram": 323,
+        "noble": 154
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 87,
+        "axe": 41,
+        "archer": 97,
+        "scout": 76,
+        "mountedArcher": 22,
+        "heavyCav": 14
+      },
+      "defenderSurvivors": {
+        "sword": 296,
+        "axe": 142,
+        "archer": 330,
+        "scout": 264,
+        "mountedArcher": 79,
+        "heavyCav": 49
+      },
+      "wallBefore": 16,
+      "wallAfter": 16,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 159,
+          "axe": 11,
+          "archer": 302,
+          "mountedArcher": 288,
+          "heavyCav": 61,
+          "ram": 291,
+          "catapult": 347,
+          "paladin": 115
+        },
+        "research": {
+          "archer": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 47,
+          "axe": 131,
+          "archer": 154,
+          "scout": 424,
+          "noble": 499
+        },
+        "research": {
+          "spear": 2,
+          "axe": 0
+        },
+        "wall": 9,
+        "buildings": {
+          "main": 3,
+          "barracks": 13,
+          "stable": 4,
+          "workshop": 2,
+          "academy": 0,
+          "smithy": 15,
+          "statue": 1,
+          "market": 6,
+          "wood": 3,
+          "clay": 7,
+          "iron": 11,
+          "farm": 30,
+          "storage": 30,
+          "hide": 6,
+          "wall": 9
+        },
+        "resources": {
+          "wood": 80080,
+          "clay": 59357,
+          "iron": 31821
+        },
+        "hideLevel": 7
+      },
+      "luck": 0.15756302571389824,
+      "morale": 0.4473534407326951,
+      "lossMode": "reduced",
+      "rngSeed": 4027594672
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 54173.2930901631,
+      "defensePower": 72143.84379095686,
+      "luck": 0.15756302571389824,
+      "morale": 0.4473534407326951,
+      "attackerLosses": {
+        "spear": 159,
+        "axe": 11,
+        "archer": 302,
+        "mountedArcher": 288,
+        "heavyCav": 61,
+        "ram": 291,
+        "catapult": 347,
+        "paladin": 115
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 15,
+        "axe": 42,
+        "archer": 50,
+        "scout": 138,
+        "noble": 163
+      },
+      "defenderSurvivors": {
+        "sword": 32,
+        "axe": 89,
+        "archer": 104,
+        "scout": 286,
+        "noble": 336
+      },
+      "wallBefore": 9,
+      "wallAfter": 9,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 397,
+          "archer": 402,
+          "mountedArcher": 197,
+          "paladin": 71
+        },
+        "research": {
+          "spear": 2,
+          "mountedArcher": 3,
+          "heavyCav": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "paladin": 49
+        },
+        "research": {
+          "archer": 0,
+          "scout": 1,
+          "mountedArcher": 2,
+          "ram": 0,
+          "noble": 3
+        },
+        "wall": 2,
+        "buildings": {
+          "main": 6,
+          "barracks": 17,
+          "stable": 18,
+          "workshop": 12,
+          "academy": 2,
+          "smithy": 8,
+          "statue": 1,
+          "market": 18,
+          "wood": 24,
+          "clay": 22,
+          "iron": 21,
+          "farm": 30,
+          "storage": 21,
+          "hide": 7,
+          "wall": 2
+        },
+        "resources": {
+          "wood": 49690,
+          "clay": 49082,
+          "iron": 13915
+        },
+        "hideLevel": 5
+      },
+      "luck": -0.01656241901218891,
+      "morale": 0.6253650535363704,
+      "lossMode": "normal",
+      "rngSeed": 4028433315
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 40378.93212350545,
+      "defensePower": 11358.271243960337,
+      "luck": -0.01656241901218891,
+      "morale": 0.6253650535363704,
+      "attackerLosses": {
+        "axe": 60,
+        "archer": 60,
+        "mountedArcher": 29,
+        "paladin": 10
+      },
+      "attackerSurvivors": {
+        "axe": 337,
+        "archer": 342,
+        "mountedArcher": 168,
+        "paladin": 61
+      },
+      "defenderLosses": {
+        "paladin": 49
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 2,
+      "wallAfter": 2,
+      "haul": {
+        "wood": 9418,
+        "clay": 9301,
+        "iron": 2571
+      },
+      "haulCapacity": 21290
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 29,
+          "axe": 253,
+          "ram": 471,
+          "catapult": 391,
+          "paladin": 115
+        },
+        "research": {
+          "archer": 1,
+          "catapult": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "axe": 264,
+          "archer": 21,
+          "ram": 360,
+          "noble": 205
+        },
+        "research": {
+          "scout": 2,
+          "lightCav": 3,
+          "mountedArcher": 1
+        },
+        "wall": 1,
+        "buildings": {
+          "main": 18,
+          "barracks": 6,
+          "stable": 3,
+          "workshop": 13,
+          "academy": 2,
+          "smithy": 18,
+          "statue": 0,
+          "market": 15,
+          "wood": 4,
+          "clay": 13,
+          "iron": 14,
+          "farm": 21,
+          "storage": 20,
+          "hide": 1,
+          "wall": 1
+        },
+        "resources": {
+          "wood": 55905,
+          "clay": 60247,
+          "iron": 70140
+        },
+        "hideLevel": 1
+      },
+      "luck": 0.2242724969983101,
+      "morale": 0.4580861871363595,
+      "catapultTarget": "storage",
+      "lossMode": "reduced",
+      "rngSeed": 4028477242
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 37968.79271986946,
+      "defensePower": 32313.23400106348,
+      "luck": 0.2242724969983101,
+      "morale": 0.4580861871363595,
+      "attackerLosses": {
+        "spear": 11,
+        "axe": 99,
+        "ram": 185,
+        "catapult": 154,
+        "paladin": 45
+      },
+      "attackerSurvivors": {
+        "spear": 18,
+        "axe": 154,
+        "ram": 286,
+        "catapult": 237,
+        "paladin": 70
+      },
+      "defenderLosses": {
+        "axe": 264,
+        "archer": 21,
+        "ram": 360,
+        "noble": 205
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 1,
+      "wallAfter": 0,
+      "buildingDamage": {
+        "building": "storage",
+        "from": 20,
+        "to": 12
+      },
+      "haul": {
+        "wood": 2698,
+        "clay": 2907,
+        "iron": 3385
+      },
+      "haulCapacity": 8990
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "scout": 90
+        },
+        "research": {
+          "archer": 0,
+          "mountedArcher": 3,
+          "ram": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "lightCav": 151,
+          "catapult": 132,
+          "scout": 191
+        },
+        "research": {
+          "archer": 1,
+          "lightCav": 3
+        },
+        "wall": 14,
+        "buildings": {
+          "main": 13,
+          "barracks": 23,
+          "stable": 1,
+          "workshop": 6,
+          "academy": 3,
+          "smithy": 0,
+          "statue": 0,
+          "market": 9,
+          "wood": 3,
+          "clay": 20,
+          "iron": 22,
+          "farm": 18,
+          "storage": 21,
+          "hide": 3,
+          "wall": 14
+        },
+        "resources": {
+          "wood": 71632,
+          "clay": 86469,
+          "iron": 45912
+        },
+        "hideLevel": 5
+      },
+      "luck": 0.2268545700935647,
+      "morale": 1,
+      "lossMode": "normal",
+      "rngSeed": 1591705036
+    },
+    "result": {
+      "kind": "scout",
+      "outcome": "defenderWon",
+      "attackPower": 90,
+      "defensePower": 382,
+      "luck": 0,
+      "morale": 1,
+      "attackerLosses": {
+        "scout": 90
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {},
+      "defenderSurvivors": {
+        "scout": 191,
+        "lightCav": 151,
+        "catapult": 132
+      },
+      "wallBefore": 14,
+      "wallAfter": 14,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 342,
+          "sword": 303,
+          "archer": 313,
+          "scout": 461,
+          "lightCav": 105,
+          "mountedArcher": 127
+        },
+        "research": {
+          "lightCav": 0,
+          "heavyCav": 0,
+          "noble": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 446,
+          "mountedArcher": 68,
+          "ram": 115
+        },
+        "research": {
+          "spear": 3,
+          "lightCav": 0,
+          "heavyCav": 1,
+          "noble": 2
+        },
+        "wall": 9,
+        "buildings": {
+          "main": 19,
+          "barracks": 15,
+          "stable": 10,
+          "workshop": 6,
+          "academy": 3,
+          "smithy": 19,
+          "statue": 0,
+          "market": 17,
+          "wood": 19,
+          "clay": 0,
+          "iron": 5,
+          "farm": 20,
+          "storage": 22,
+          "hide": 3,
+          "wall": 9
+        },
+        "resources": {
+          "wood": 79761,
+          "clay": 23278,
+          "iron": 40557
+        },
+        "hideLevel": 5
+      },
+      "luck": -0.03024790796916932,
+      "morale": 0.841051755240187,
+      "lossMode": "reduced",
+      "rngSeed": 1591454773
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 36359.969548123656,
+      "defensePower": 30340.32248652283,
+      "luck": -0.03024790796916932,
+      "morale": 0.841051755240187,
+      "attackerLosses": {
+        "spear": 131,
+        "sword": 115,
+        "archer": 119,
+        "scout": 176,
+        "lightCav": 40,
+        "mountedArcher": 48
+      },
+      "attackerSurvivors": {
+        "spear": 211,
+        "sword": 188,
+        "archer": 194,
+        "scout": 285,
+        "lightCav": 65,
+        "mountedArcher": 79
+      },
+      "defenderLosses": {
+        "sword": 446,
+        "mountedArcher": 68,
+        "ram": 115
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 9,
+      "wallAfter": 9,
+      "haul": {
+        "wood": 10700,
+        "clay": 3077,
+        "iron": 5408
+      },
+      "haulCapacity": 19185
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 67,
+          "sword": 111,
+          "ram": 487
+        },
+        "research": {
+          "spear": 1,
+          "axe": 0
+        }
+      },
+      "defender": {
+        "units": {},
+        "research": {
+          "spear": 3,
+          "heavyCav": 0,
+          "noble": 2
+        },
+        "wall": 9,
+        "buildings": {
+          "main": 27,
+          "barracks": 23,
+          "stable": 14,
+          "workshop": 10,
+          "academy": 0,
+          "smithy": 18,
+          "statue": 1,
+          "market": 5,
+          "wood": 4,
+          "clay": 10,
+          "iron": 9,
+          "farm": 15,
+          "storage": 25,
+          "hide": 2,
+          "wall": 9
+        },
+        "resources": {
+          "wood": 30894,
+          "clay": 16661,
+          "iron": 30231
+        },
+        "hideLevel": 4
+      },
+      "luck": 0.12502269365359098,
+      "morale": 0.6647336699767038,
+      "catapultTarget": "academy",
+      "lossMode": "normal",
+      "rngSeed": 1591999226
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 3304.7070102367143,
+      "defensePower": 249.62111146708008,
+      "luck": 0.12502269365359098,
+      "morale": 0.6647336699767038,
+      "attackerLosses": {
+        "spear": 1,
+        "sword": 2,
+        "ram": 11
+      },
+      "attackerSurvivors": {
+        "spear": 66,
+        "sword": 109,
+        "ram": 476
+      },
+      "defenderLosses": {},
+      "defenderSurvivors": {},
+      "wallBefore": 9,
+      "wallAfter": 0,
+      "haul": {
+        "wood": 1308,
+        "clay": 698,
+        "iron": 1279
+      },
+      "haulCapacity": 3285
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 370,
+          "lightCav": 346,
+          "heavyCav": 232,
+          "ram": 233,
+          "catapult": 263,
+          "paladin": 351
+        },
+        "research": {
+          "spear": 1,
+          "archer": 0,
+          "ram": 0,
+          "noble": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "archer": 227,
+          "lightCav": 4,
+          "mountedArcher": 433,
+          "heavyCav": 407
+        },
+        "research": {
+          "sword": 1,
+          "axe": 0,
+          "mountedArcher": 1,
+          "ram": 0,
+          "catapult": 0
+        },
+        "wall": 19,
+        "buildings": {
+          "main": 3,
+          "barracks": 18,
+          "stable": 16,
+          "workshop": 8,
+          "academy": 0,
+          "smithy": 7,
+          "statue": 0,
+          "market": 20,
+          "wood": 28,
+          "clay": 30,
+          "iron": 26,
+          "farm": 6,
+          "storage": 19,
+          "hide": 7,
+          "wall": 19
+        },
+        "resources": {
+          "wood": 87996,
+          "clay": 8139,
+          "iron": 17521
+        },
+        "hideLevel": 7
+      },
+      "luck": 0.17755584267433733,
+      "morale": 0.5287298366427421,
+      "lossMode": "reduced",
+      "rngSeed": 1591955299
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 104875.98017338206,
+      "defensePower": 133650.34003362845,
+      "luck": 0.17755584267433733,
+      "morale": 0.5287298366427421,
+      "attackerLosses": {
+        "sword": 370,
+        "lightCav": 346,
+        "heavyCav": 232,
+        "ram": 233,
+        "catapult": 263,
+        "paladin": 351
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "archer": 78,
+        "lightCav": 1,
+        "mountedArcher": 151,
+        "heavyCav": 142
+      },
+      "defenderSurvivors": {
+        "archer": 149,
+        "lightCav": 3,
+        "mountedArcher": 282,
+        "heavyCav": 265
+      },
+      "wallBefore": 19,
+      "wallAfter": 19,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 477,
+          "scout": 198,
+          "lightCav": 387,
+          "mountedArcher": 103,
+          "heavyCav": 42,
+          "paladin": 55
+        },
+        "research": {
+          "scout": 0,
+          "lightCav": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 248,
+          "archer": 73,
+          "lightCav": 97,
+          "mountedArcher": 29
+        },
+        "research": {
+          "scout": 2,
+          "noble": 2
+        },
+        "wall": 18,
+        "buildings": {
+          "main": 11,
+          "barracks": 25,
+          "stable": 5,
+          "workshop": 12,
+          "academy": 1,
+          "smithy": 0,
+          "statue": 1,
+          "market": 19,
+          "wood": 11,
+          "clay": 16,
+          "iron": 9,
+          "farm": 9,
+          "storage": 19,
+          "hide": 6,
+          "wall": 18
+        },
+        "resources": {
+          "wood": 91139,
+          "clay": 23132,
+          "iron": 38459
+        },
+        "hideLevel": 5
+      },
+      "luck": -0.17418547254055738,
+      "morale": 0.7184564110590145,
+      "lossMode": "normal",
+      "rngSeed": 1592293416
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 57135.92071597475,
+      "defensePower": 26727.170458030447,
+      "luck": -0.17418547254055738,
+      "morale": 0.7184564110590145,
+      "attackerLosses": {
+        "axe": 153,
+        "scout": 64,
+        "lightCav": 124,
+        "mountedArcher": 33,
+        "heavyCav": 13,
+        "paladin": 17
+      },
+      "attackerSurvivors": {
+        "axe": 324,
+        "scout": 134,
+        "lightCav": 263,
+        "mountedArcher": 70,
+        "heavyCav": 29,
+        "paladin": 38
+      },
+      "defenderLosses": {
+        "sword": 248,
+        "archer": 73,
+        "lightCav": 97,
+        "mountedArcher": 29
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 18,
+      "wallAfter": 18,
+      "haul": {
+        "wood": 19792,
+        "clay": 4947,
+        "iron": 8291
+      },
+      "haulCapacity": 33030
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 478,
+          "axe": 224,
+          "archer": 495,
+          "lightCav": 304,
+          "ram": 93,
+          "catapult": 186
+        },
+        "research": {
+          "sword": 3,
+          "scout": 0,
+          "heavyCav": 0,
+          "ram": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 407,
+          "archer": 455,
+          "heavyCav": 239,
+          "catapult": 421
+        },
+        "research": {
+          "axe": 0,
+          "lightCav": 3
+        },
+        "wall": 2,
+        "buildings": {
+          "main": 28,
+          "barracks": 6,
+          "stable": 0,
+          "workshop": 5,
+          "academy": 1,
+          "smithy": 5,
+          "statue": 1,
+          "market": 14,
+          "wood": 29,
+          "clay": 30,
+          "iron": 0,
+          "farm": 13,
+          "storage": 30,
+          "hide": 3,
+          "wall": 2
+        },
+        "resources": {
+          "wood": 86651,
+          "clay": 80529,
+          "iron": 98251
+        },
+        "hideLevel": 0
+      },
+      "luck": 0.14826021797489375,
+      "morale": 1,
+      "catapultTarget": "iron",
+      "lossMode": "reduced",
+      "rngSeed": 1592249489
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 104975.09738748276,
+      "defensePower": 108650.88299401487,
+      "luck": 0.14826021797489375,
+      "morale": 1,
+      "attackerLosses": {
+        "sword": 478,
+        "axe": 224,
+        "archer": 495,
+        "lightCav": 304,
+        "ram": 93,
+        "catapult": 186
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 193,
+        "archer": 217,
+        "heavyCav": 113,
+        "catapult": 200
+      },
+      "defenderSurvivors": {
+        "sword": 214,
+        "archer": 238,
+        "heavyCav": 126,
+        "catapult": 221
+      },
+      "wallBefore": 2,
+      "wallAfter": 2,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 136,
+          "sword": 330,
+          "archer": 261,
+          "lightCav": 140,
+          "mountedArcher": 278,
+          "heavyCav": 111,
+          "ram": 472,
+          "paladin": 148,
+          "noble": 15
+        },
+        "research": {
+          "spear": 2,
+          "sword": 3,
+          "scout": 2,
+          "ram": 3,
+          "noble": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 328
+        },
+        "research": {
+          "sword": 0,
+          "scout": 1,
+          "heavyCav": 2,
+          "ram": 3,
+          "catapult": 1
+        },
+        "wall": 18,
+        "buildings": {
+          "main": 8,
+          "barracks": 20,
+          "stable": 17,
+          "workshop": 4,
+          "academy": 1,
+          "smithy": 15,
+          "statue": 0,
+          "market": 18,
+          "wood": 26,
+          "clay": 2,
+          "iron": 15,
+          "farm": 2,
+          "storage": 5,
+          "hide": 2,
+          "wall": 18
+        },
+        "resources": {
+          "wood": 26066,
+          "clay": 86427,
+          "iron": 18322
+        },
+        "hideLevel": 4
+      },
+      "luck": 0.011093749548308551,
+      "morale": 0.8564407591242342,
+      "lossMode": "normal",
+      "rngSeed": 1592587606
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 94843.6719302746,
+      "defensePower": 21084.821808435736,
+      "luck": 0.011093749548308551,
+      "morale": 0.8564407591242342,
+      "attackerLosses": {
+        "spear": 14,
+        "sword": 35,
+        "archer": 28,
+        "lightCav": 14,
+        "mountedArcher": 30,
+        "heavyCav": 11,
+        "ram": 50,
+        "paladin": 15,
+        "noble": 1
+      },
+      "attackerSurvivors": {
+        "spear": 122,
+        "sword": 295,
+        "archer": 233,
+        "lightCav": 126,
+        "mountedArcher": 248,
+        "heavyCav": 100,
+        "ram": 422,
+        "paladin": 133,
+        "noble": 14
+      },
+      "defenderLosses": {
+        "spear": 328
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 18,
+      "wallAfter": 0,
+      "haul": {
+        "wood": 10024,
+        "clay": 33557,
+        "iron": 7004
+      },
+      "haulCapacity": 50585
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 471,
+          "sword": 407,
+          "archer": 266,
+          "lightCav": 25,
+          "mountedArcher": 389
+        },
+        "research": {
+          "spear": 3,
+          "sword": 1,
+          "heavyCav": 1,
+          "paladin": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 309,
+          "lightCav": 411,
+          "heavyCav": 376,
+          "paladin": 7,
+          "noble": 267
+        },
+        "research": {
+          "archer": 3,
+          "scout": 1,
+          "lightCav": 1,
+          "mountedArcher": 2,
+          "paladin": 3
+        },
+        "wall": 14,
+        "buildings": {
+          "main": 21,
+          "barracks": 22,
+          "stable": 5,
+          "workshop": 5,
+          "academy": 1,
+          "smithy": 19,
+          "statue": 1,
+          "market": 21,
+          "wood": 28,
+          "clay": 16,
+          "iron": 6,
+          "farm": 11,
+          "storage": 26,
+          "hide": 2,
+          "wall": 14
+        },
+        "resources": {
+          "wood": 12108,
+          "clay": 56660,
+          "iron": 83888
+        },
+        "hideLevel": 8
+      },
+      "luck": 0.09795771620701998,
+      "morale": 0.35974519122391935,
+      "lossMode": "reduced",
+      "rngSeed": 1592543679
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 27921.095270993625,
+      "defensePower": 201516.10250979106,
+      "luck": 0.09795771620701998,
+      "morale": 0.35974519122391935,
+      "attackerLosses": {
+        "spear": 471,
+        "sword": 407,
+        "archer": 266,
+        "lightCav": 25,
+        "mountedArcher": 389
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 8,
+        "lightCav": 11,
+        "heavyCav": 10,
+        "noble": 6
+      },
+      "defenderSurvivors": {
+        "sword": 301,
+        "lightCav": 400,
+        "heavyCav": 366,
+        "paladin": 7,
+        "noble": 261
+      },
+      "wallBefore": 14,
+      "wallAfter": 14,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 42,
+          "sword": 127,
+          "archer": 193,
+          "heavyCav": 151,
+          "ram": 398,
+          "paladin": 279
+        },
+        "research": {
+          "spear": 0,
+          "mountedArcher": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 57,
+          "sword": 141,
+          "lightCav": 166,
+          "ram": 421,
+          "paladin": 465
+        },
+        "research": {
+          "spear": 1,
+          "lightCav": 2,
+          "mountedArcher": 3,
+          "heavyCav": 3
+        },
+        "wall": 20,
+        "buildings": {
+          "main": 30,
+          "barracks": 11,
+          "stable": 18,
+          "workshop": 7,
+          "academy": 1,
+          "smithy": 15,
+          "statue": 0,
+          "market": 9,
+          "wood": 22,
+          "clay": 27,
+          "iron": 8,
+          "farm": 7,
+          "storage": 12,
+          "hide": 7,
+          "wall": 20
+        },
+        "resources": {
+          "wood": 38895,
+          "clay": 60551,
+          "iron": 96621
+        },
+        "hideLevel": 5
+      },
+      "luck": 0.16921163070946932,
+      "morale": 0.8224091857438907,
+      "catapultTarget": "statue",
+      "lossMode": "normal",
+      "rngSeed": 1590321940
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 69027.29167010516,
+      "defensePower": 434852.3139688257,
+      "luck": 0.16921163070946932,
+      "morale": 0.8224091857438907,
+      "attackerLosses": {
+        "spear": 42,
+        "sword": 127,
+        "archer": 193,
+        "heavyCav": 151,
+        "ram": 398,
+        "paladin": 279
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 3,
+        "sword": 8,
+        "lightCav": 11,
+        "ram": 27,
+        "paladin": 30
+      },
+      "defenderSurvivors": {
+        "spear": 54,
+        "sword": 133,
+        "lightCav": 155,
+        "ram": 394,
+        "paladin": 435
+      },
+      "wallBefore": 20,
+      "wallAfter": 20,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 11,
+          "archer": 237,
+          "scout": 269,
+          "ram": 71,
+          "noble": 41
+        },
+        "research": {
+          "spear": 0,
+          "axe": 2,
+          "scout": 3,
+          "paladin": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 149,
+          "scout": 488,
+          "mountedArcher": 277
+        },
+        "research": {
+          "spear": 1,
+          "sword": 2,
+          "scout": 1,
+          "heavyCav": 3,
+          "catapult": 2,
+          "paladin": 0
+        },
+        "wall": 12,
+        "buildings": {
+          "main": 2,
+          "barracks": 2,
+          "stable": 0,
+          "workshop": 12,
+          "academy": 3,
+          "smithy": 4,
+          "statue": 1,
+          "market": 24,
+          "wood": 27,
+          "clay": 9,
+          "iron": 6,
+          "farm": 30,
+          "storage": 24,
+          "hide": 8,
+          "wall": 12
+        },
+        "resources": {
+          "wood": 6131,
+          "clay": 40611,
+          "iron": 31251
+        },
+        "hideLevel": 9
+      },
+      "luck": 0.08356743620242923,
+      "morale": 0.8882531074807047,
+      "lossMode": "reduced",
+      "rngSeed": 1590278013
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 4848.022551126293,
+      "defensePower": 34407.68338028943,
+      "luck": 0.08356743620242923,
+      "morale": 0.8882531074807047,
+      "attackerLosses": {
+        "spear": 11,
+        "archer": 237,
+        "scout": 269,
+        "ram": 71,
+        "noble": 41
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 3,
+        "scout": 13,
+        "mountedArcher": 8
+      },
+      "defenderSurvivors": {
+        "sword": 146,
+        "scout": 475,
+        "mountedArcher": 269
+      },
+      "wallBefore": 12,
+      "wallAfter": 12,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "scout": 78
+        },
+        "research": {
+          "archer": 3,
+          "ram": 3,
+          "paladin": 0,
+          "noble": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 138,
+          "archer": 56,
+          "catapult": 213,
+          "paladin": 103,
+          "noble": 175,
+          "scout": 226
+        },
+        "research": {
+          "scout": 3,
+          "mountedArcher": 2
+        },
+        "wall": 10,
+        "buildings": {
+          "main": 17,
+          "barracks": 18,
+          "stable": 15,
+          "workshop": 14,
+          "academy": 2,
+          "smithy": 9,
+          "statue": 0,
+          "market": 25,
+          "wood": 22,
+          "clay": 22,
+          "iron": 16,
+          "farm": 23,
+          "storage": 26,
+          "hide": 3,
+          "wall": 10
+        },
+        "resources": {
+          "wood": 81343,
+          "clay": 3053,
+          "iron": 26134
+        },
+        "hideLevel": 5
+      },
+      "luck": 0.15236536122392863,
+      "morale": 1,
+      "lossMode": "normal",
+      "rngSeed": 400218317
+    },
+    "result": {
+      "kind": "scout",
+      "outcome": "defenderWon",
+      "attackPower": 78,
+      "defensePower": 452,
+      "luck": 0,
+      "morale": 1,
+      "attackerLosses": {
+        "scout": 78
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {},
+      "defenderSurvivors": {
+        "sword": 138,
+        "archer": 56,
+        "scout": 226,
+        "catapult": 213,
+        "paladin": 103,
+        "noble": 175
+      },
+      "wallBefore": 10,
+      "wallAfter": 10,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 113,
+          "sword": 339,
+          "archer": 276,
+          "scout": 376,
+          "lightCav": 141,
+          "mountedArcher": 162,
+          "heavyCav": 151,
+          "ram": 255,
+          "paladin": 162,
+          "noble": 455
+        },
+        "research": {
+          "archer": 2,
+          "scout": 2,
+          "mountedArcher": 0,
+          "catapult": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "archer": 274,
+          "lightCav": 236,
+          "ram": 111,
+          "paladin": 56
+        },
+        "research": {
+          "spear": 1,
+          "lightCav": 0,
+          "heavyCav": 0,
+          "paladin": 1
+        },
+        "wall": 14,
+        "buildings": {
+          "main": 7,
+          "barracks": 19,
+          "stable": 3,
+          "workshop": 2,
+          "academy": 3,
+          "smithy": 3,
+          "statue": 0,
+          "market": 21,
+          "wood": 21,
+          "clay": 10,
+          "iron": 10,
+          "farm": 6,
+          "storage": 8,
+          "hide": 0,
+          "wall": 14
+        },
+        "resources": {
+          "wood": 78283,
+          "clay": 71437,
+          "iron": 23977
+        },
+        "hideLevel": 9
+      },
+      "luck": -0.1977629722096026,
+      "morale": 0.5738300228957087,
+      "catapultTarget": "workshop",
+      "lossMode": "reduced",
+      "rngSeed": 400468580
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 52323.118675532976,
+      "defensePower": 66381.4976714989,
+      "luck": -0.1977629722096026,
+      "morale": 0.5738300228957087,
+      "attackerLosses": {
+        "spear": 113,
+        "sword": 339,
+        "archer": 276,
+        "scout": 376,
+        "lightCav": 141,
+        "mountedArcher": 162,
+        "heavyCav": 151,
+        "ram": 255,
+        "paladin": 162,
+        "noble": 455
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "archer": 96,
+        "lightCav": 83,
+        "ram": 39,
+        "paladin": 19
+      },
+      "defenderSurvivors": {
+        "archer": 178,
+        "lightCav": 153,
+        "ram": 72,
+        "paladin": 37
+      },
+      "wallBefore": 14,
+      "wallAfter": 14,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 95,
+          "heavyCav": 417,
+          "ram": 274,
+          "paladin": 401,
+          "noble": 422
+        },
+        "research": {
+          "scout": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "scout": 173,
+          "heavyCav": 367,
+          "paladin": 257,
+          "noble": 214
+        },
+        "research": {
+          "spear": 3,
+          "sword": 1,
+          "archer": 3,
+          "scout": 3,
+          "lightCav": 1
+        },
+        "wall": 16,
+        "buildings": {
+          "main": 28,
+          "barracks": 9,
+          "stable": 4,
+          "workshop": 5,
+          "academy": 1,
+          "smithy": 19,
+          "statue": 0,
+          "market": 7,
+          "wood": 25,
+          "clay": 17,
+          "iron": 30,
+          "farm": 12,
+          "storage": 22,
+          "hide": 7,
+          "wall": 16
+        },
+        "resources": {
+          "wood": 82083,
+          "clay": 49402,
+          "iron": 31894
+        },
+        "hideLevel": 7
+      },
+      "luck": -0.1980955380713567,
+      "morale": 0.9224446683423593,
+      "lossMode": "normal",
+      "rngSeed": 400718843
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 103343.75331097915,
+      "defensePower": 260071.13702904872,
+      "luck": -0.1980955380713567,
+      "morale": 0.9224446683423593,
+      "attackerLosses": {
+        "axe": 95,
+        "heavyCav": 417,
+        "ram": 274,
+        "paladin": 401,
+        "noble": 422
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "scout": 43,
+        "heavyCav": 92,
+        "paladin": 65,
+        "noble": 53
+      },
+      "defenderSurvivors": {
+        "scout": 130,
+        "heavyCav": 275,
+        "paladin": 192,
+        "noble": 161
+      },
+      "wallBefore": 16,
+      "wallAfter": 16,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 447,
+          "mountedArcher": 444,
+          "ram": 0,
+          "paladin": 298
+        },
+        "research": {
+          "archer": 1,
+          "ram": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 56,
+          "archer": 380,
+          "scout": 186,
+          "ram": 52,
+          "paladin": 66
+        },
+        "research": {
+          "spear": 1,
+          "scout": 1,
+          "lightCav": 0,
+          "ram": 0,
+          "catapult": 1
+        },
+        "wall": 1,
+        "buildings": {
+          "main": 30,
+          "barracks": 21,
+          "stable": 18,
+          "workshop": 0,
+          "academy": 1,
+          "smithy": 10,
+          "statue": 0,
+          "market": 10,
+          "wood": 15,
+          "clay": 6,
+          "iron": 1,
+          "farm": 24,
+          "storage": 10,
+          "hide": 10,
+          "wall": 1
+        },
+        "resources": {
+          "wood": 36635,
+          "clay": 336,
+          "iron": 5389
+        },
+        "hideLevel": 10
+      },
+      "luck": -0.002185996971093118,
+      "morale": 0.5603833108441905,
+      "lossMode": "reduced",
+      "rngSeed": 400762770
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 57285.769333232274,
+      "defensePower": 30613.4789341142,
+      "luck": -0.002185996971093118,
+      "morale": 0.5603833108441905,
+      "attackerLosses": {
+        "spear": 88,
+        "mountedArcher": 86,
+        "paladin": 58
+      },
+      "attackerSurvivors": {
+        "spear": 359,
+        "mountedArcher": 358,
+        "paladin": 240
+      },
+      "defenderLosses": {
+        "sword": 56,
+        "archer": 380,
+        "scout": 186,
+        "ram": 52,
+        "paladin": 66
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 1,
+      "wallAfter": 1,
+      "haul": {
+        "wood": 34635,
+        "clay": 0,
+        "iron": 3389
+      },
+      "haulCapacity": 50875
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 424,
+          "sword": 152,
+          "noble": 361
+        },
+        "research": {
+          "spear": 1,
+          "archer": 0,
+          "lightCav": 2,
+          "heavyCav": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "catapult": 270
+        },
+        "research": {
+          "sword": 3,
+          "axe": 0,
+          "archer": 0,
+          "scout": 0,
+          "heavyCav": 3,
+          "catapult": 0
+        },
+        "wall": 2,
+        "buildings": {
+          "main": 5,
+          "barracks": 8,
+          "stable": 2,
+          "workshop": 9,
+          "academy": 0,
+          "smithy": 6,
+          "statue": 0,
+          "market": 15,
+          "wood": 10,
+          "clay": 3,
+          "iron": 29,
+          "farm": 6,
+          "storage": 13,
+          "hide": 1,
+          "wall": 2
+        },
+        "resources": {
+          "wood": 13883,
+          "clay": 63296,
+          "iron": 73047
+        },
+        "hideLevel": 10
+      },
+      "luck": 0.22474765416700393,
+      "morale": 0.7964813439408317,
+      "catapultTarget": "hide",
+      "lossMode": "normal",
+      "rngSeed": 401013033
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 18407.4709685217,
+      "defensePower": 29077.977759999994,
+      "luck": 0.22474765416700393,
+      "morale": 0.7964813439408317,
+      "attackerLosses": {
+        "spear": 424,
+        "sword": 152,
+        "noble": 361
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "catapult": 136
+      },
+      "defenderSurvivors": {
+        "catapult": 134
+      },
+      "wallBefore": 2,
+      "wallAfter": 2,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 47,
+          "scout": 47,
+          "mountedArcher": 148
+        },
+        "research": {
+          "sword": 2,
+          "axe": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 377,
+          "axe": 44,
+          "archer": 357,
+          "mountedArcher": 74
+        },
+        "research": {
+          "axe": 0,
+          "mountedArcher": 1,
+          "ram": 2,
+          "paladin": 2
+        },
+        "wall": 9,
+        "buildings": {
+          "main": 7,
+          "barracks": 16,
+          "stable": 1,
+          "workshop": 9,
+          "academy": 3,
+          "smithy": 19,
+          "statue": 1,
+          "market": 7,
+          "wood": 23,
+          "clay": 30,
+          "iron": 28,
+          "farm": 25,
+          "storage": 4,
+          "hide": 0,
+          "wall": 9
+        },
+        "resources": {
+          "wood": 2991,
+          "clay": 82656,
+          "iron": 87386
+        },
+        "hideLevel": 10
+      },
+      "luck": 0.13654042792040855,
+      "morale": 1,
+      "lossMode": "reduced",
+      "rngSeed": 401056960
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 21854.251753374556,
+      "defensePower": 31401.689263726978,
+      "luck": 0.13654042792040855,
+      "morale": 1,
+      "attackerLosses": {
+        "sword": 47,
+        "scout": 47,
+        "mountedArcher": 148
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 110,
+        "axe": 12,
+        "archer": 104,
+        "mountedArcher": 21
+      },
+      "defenderSurvivors": {
+        "sword": 267,
+        "axe": 32,
+        "archer": 253,
+        "mountedArcher": 53
+      },
+      "wallBefore": 9,
+      "wallAfter": 9,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 122,
+          "axe": 327,
+          "heavyCav": 57,
+          "ram": 213,
+          "paladin": 274,
+          "noble": 151
+        },
+        "research": {
+          "spear": 0,
+          "sword": 2,
+          "archer": 0,
+          "mountedArcher": 3,
+          "paladin": 1,
+          "noble": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 480,
+          "scout": 35,
+          "heavyCav": 355,
+          "ram": 496
+        },
+        "research": {
+          "spear": 3,
+          "archer": 3,
+          "noble": 0
+        },
+        "wall": 12,
+        "buildings": {
+          "main": 7,
+          "barracks": 18,
+          "stable": 2,
+          "workshop": 14,
+          "academy": 2,
+          "smithy": 2,
+          "statue": 0,
+          "market": 11,
+          "wood": 4,
+          "clay": 2,
+          "iron": 25,
+          "farm": 9,
+          "storage": 15,
+          "hide": 10,
+          "wall": 12
+        },
+        "resources": {
+          "wood": 65265,
+          "clay": 87113,
+          "iron": 55294
+        },
+        "hideLevel": 0
+      },
+      "luck": 0.011332479189150035,
+      "morale": 0.850144889182411,
+      "lossMode": "normal",
+      "rngSeed": 401307223
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 63030.83852910655,
+      "defensePower": 116071.0211387764,
+      "luck": 0.011332479189150035,
+      "morale": 0.850144889182411,
+      "attackerLosses": {
+        "sword": 122,
+        "axe": 327,
+        "heavyCav": 57,
+        "ram": 213,
+        "paladin": 274,
+        "noble": 151
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 192,
+        "scout": 14,
+        "heavyCav": 142,
+        "ram": 199
+      },
+      "defenderSurvivors": {
+        "sword": 288,
+        "scout": 21,
+        "heavyCav": 213,
+        "ram": 297
+      },
+      "wallBefore": 12,
+      "wallAfter": 12,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 412,
+          "sword": 138,
+          "archer": 53,
+          "scout": 35,
+          "heavyCav": 235,
+          "paladin": 326
+        },
+        "research": {
+          "sword": 0,
+          "mountedArcher": 1,
+          "heavyCav": 3,
+          "catapult": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 166,
+          "axe": 408,
+          "lightCav": 334,
+          "mountedArcher": 421,
+          "heavyCav": 394,
+          "catapult": 150
+        },
+        "research": {
+          "sword": 1
+        },
+        "wall": 3,
+        "buildings": {
+          "main": 26,
+          "barracks": 18,
+          "stable": 18,
+          "workshop": 7,
+          "academy": 3,
+          "smithy": 16,
+          "statue": 1,
+          "market": 22,
+          "wood": 4,
+          "clay": 7,
+          "iron": 18,
+          "farm": 17,
+          "storage": 11,
+          "hide": 1,
+          "wall": 3
+        },
+        "resources": {
+          "wood": 80510,
+          "clay": 36469,
+          "iron": 64374
+        },
+        "hideLevel": 0
+      },
+      "luck": -0.16224600770510733,
+      "morale": 0.8075230001704767,
+      "catapultTarget": "academy",
+      "lossMode": "reduced",
+      "rngSeed": 401351150
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 72125.64638446982,
+      "defensePower": 83126.59241098605,
+      "luck": -0.16224600770510733,
+      "morale": 0.8075230001704767,
+      "attackerLosses": {
+        "spear": 412,
+        "sword": 138,
+        "archer": 53,
+        "scout": 35,
+        "heavyCav": 235,
+        "paladin": 326
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 67,
+        "axe": 165,
+        "lightCav": 134,
+        "mountedArcher": 171,
+        "heavyCav": 160,
+        "catapult": 60
+      },
+      "defenderSurvivors": {
+        "sword": 99,
+        "axe": 243,
+        "lightCav": 200,
+        "mountedArcher": 250,
+        "heavyCav": 234,
+        "catapult": 90
+      },
+      "wallBefore": 3,
+      "wallAfter": 3,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 215,
+          "ram": 40,
+          "catapult": 386
+        },
+        "research": {
+          "archer": 3,
+          "scout": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "ram": 80
+        },
+        "research": {
+          "axe": 1,
+          "lightCav": 0,
+          "paladin": 0
+        },
+        "wall": 18,
+        "buildings": {
+          "main": 17,
+          "barracks": 4,
+          "stable": 7,
+          "workshop": 8,
+          "academy": 2,
+          "smithy": 8,
+          "statue": 1,
+          "market": 0,
+          "wood": 30,
+          "clay": 7,
+          "iron": 23,
+          "farm": 30,
+          "storage": 6,
+          "hide": 7,
+          "wall": 18
+        },
+        "resources": {
+          "wood": 95329,
+          "clay": 7405,
+          "iron": 81335
+        },
+        "hideLevel": 2
+      },
+      "luck": 0.054446933208964765,
+      "morale": 0.5105219619814306,
+      "lossMode": "normal",
+      "rngSeed": 401601413
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 25451.690034716932,
+      "defensePower": 3769.41267310242,
+      "luck": 0.054446933208964765,
+      "morale": 0.5105219619814306,
+      "attackerLosses": {
+        "axe": 12,
+        "ram": 2,
+        "catapult": 23
+      },
+      "attackerSurvivors": {
+        "axe": 203,
+        "ram": 38,
+        "catapult": 363
+      },
+      "defenderLosses": {
+        "ram": 80
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 18,
+      "wallAfter": 17,
+      "buildingDamage": {
+        "building": "wood",
+        "from": 30,
+        "to": 25
+      },
+      "haul": {
+        "wood": 1053,
+        "clay": 80,
+        "iron": 897
+      },
+      "haulCapacity": 2030
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 155,
+          "archer": 103,
+          "scout": 397,
+          "lightCav": 271,
+          "paladin": 411,
+          "noble": 358
+        },
+        "research": {
+          "spear": 3,
+          "axe": 2,
+          "heavyCav": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 52,
+          "sword": 338,
+          "mountedArcher": 337
+        },
+        "research": {
+          "archer": 2,
+          "mountedArcher": 3,
+          "catapult": 3
+        },
+        "wall": 15,
+        "buildings": {
+          "main": 29,
+          "barracks": 23,
+          "stable": 15,
+          "workshop": 13,
+          "academy": 2,
+          "smithy": 14,
+          "statue": 0,
+          "market": 24,
+          "wood": 0,
+          "clay": 8,
+          "iron": 5,
+          "farm": 18,
+          "storage": 7,
+          "hide": 4,
+          "wall": 15
+        },
+        "resources": {
+          "wood": 2651,
+          "clay": 6284,
+          "iron": 41253
+        },
+        "hideLevel": 8
+      },
+      "luck": -0.15424234350211918,
+      "morale": 0.33186025691684334,
+      "lossMode": "reduced",
+      "rngSeed": 401851676
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 31248.76777571347,
+      "defensePower": 41100.205343128786,
+      "luck": -0.15424234350211918,
+      "morale": 0.33186025691684334,
+      "attackerLosses": {
+        "spear": 155,
+        "archer": 103,
+        "scout": 397,
+        "lightCav": 271,
+        "paladin": 411,
+        "noble": 358
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 17,
+        "sword": 113,
+        "mountedArcher": 111
+      },
+      "defenderSurvivors": {
+        "spear": 35,
+        "sword": 225,
+        "mountedArcher": 226
+      },
+      "wallBefore": 15,
+      "wallAfter": 15,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "scout": 413
+        },
+        "research": {
+          "spear": 1,
+          "sword": 2,
+          "axe": 3,
+          "archer": 0,
+          "lightCav": 3,
+          "heavyCav": 1,
+          "catapult": 3,
+          "paladin": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "lightCav": 282,
+          "paladin": 158,
+          "noble": 242,
+          "scout": 75
+        },
+        "research": {
+          "sword": 2,
+          "axe": 2,
+          "noble": 0
+        },
+        "wall": 2,
+        "buildings": {
+          "main": 6,
+          "barracks": 5,
+          "stable": 0,
+          "workshop": 7,
+          "academy": 3,
+          "smithy": 12,
+          "statue": 0,
+          "market": 7,
+          "wood": 27,
+          "clay": 20,
+          "iron": 6,
+          "farm": 22,
+          "storage": 1,
+          "hide": 9,
+          "wall": 2
+        },
+        "resources": {
+          "wood": 94901,
+          "clay": 12817,
+          "iron": 11871
+        },
+        "hideLevel": 6
+      },
+      "luck": -0.2346410040045157,
+      "morale": 1,
+      "catapultTarget": "hide",
+      "lossMode": "normal",
+      "rngSeed": 2222072482
+    },
+    "result": {
+      "kind": "scout",
+      "outcome": "attackerWon",
+      "attackPower": 413,
+      "defensePower": 150,
+      "luck": 0,
+      "morale": 1,
+      "attackerLosses": {
+        "scout": 90
+      },
+      "attackerSurvivors": {
+        "scout": 323
+      },
+      "defenderLosses": {},
+      "defenderSurvivors": {
+        "scout": 75,
+        "lightCav": 282,
+        "paladin": 158,
+        "noble": 242
+      },
+      "wallBefore": 2,
+      "wallAfter": 2,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 214,
+          "axe": 273,
+          "scout": 379,
+          "mountedArcher": 329,
+          "ram": 347,
+          "catapult": 107,
+          "noble": 337
+        },
+        "research": {
+          "sword": 0,
+          "lightCav": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "lightCav": 390,
+          "mountedArcher": 312,
+          "heavyCav": 199,
+          "paladin": 184
+        },
+        "research": {
+          "spear": 3,
+          "archer": 3,
+          "scout": 2,
+          "catapult": 0,
+          "paladin": 2
+        },
+        "wall": 1,
+        "buildings": {
+          "main": 30,
+          "barracks": 18,
+          "stable": 1,
+          "workshop": 2,
+          "academy": 2,
+          "smithy": 2,
+          "statue": 1,
+          "market": 25,
+          "wood": 4,
+          "clay": 28,
+          "iron": 14,
+          "farm": 13,
+          "storage": 23,
+          "hide": 8,
+          "wall": 1
+        },
+        "resources": {
+          "wood": 38406,
+          "clay": 81106,
+          "iron": 64368
+        },
+        "hideLevel": 8
+      },
+      "luck": -0.18189899215940386,
+      "morale": 0.6766831627115607,
+      "lossMode": "reduced",
+      "rngSeed": 2222028555
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 40990.401315634386,
+      "defensePower": 112802.7155259035,
+      "luck": -0.18189899215940386,
+      "morale": 0.6766831627115607,
+      "attackerLosses": {
+        "spear": 214,
+        "axe": 273,
+        "scout": 379,
+        "mountedArcher": 329,
+        "ram": 347,
+        "catapult": 107,
+        "noble": 337
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "lightCav": 43,
+        "mountedArcher": 35,
+        "heavyCav": 21,
+        "paladin": 20
+      },
+      "defenderSurvivors": {
+        "lightCav": 347,
+        "mountedArcher": 277,
+        "heavyCav": 178,
+        "paladin": 164
+      },
+      "wallBefore": 1,
+      "wallAfter": 1,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 372,
+          "sword": 444,
+          "heavyCav": 59
+        },
+        "research": {
+          "spear": 2,
+          "axe": 0,
+          "mountedArcher": 3,
+          "paladin": 2,
+          "noble": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "heavyCav": 171
+        },
+        "research": {
+          "archer": 1,
+          "heavyCav": 2,
+          "catapult": 2
+        },
+        "wall": 16,
+        "buildings": {
+          "main": 14,
+          "barracks": 11,
+          "stable": 12,
+          "workshop": 4,
+          "academy": 3,
+          "smithy": 11,
+          "statue": 0,
+          "market": 21,
+          "wood": 27,
+          "clay": 4,
+          "iron": 4,
+          "farm": 5,
+          "storage": 15,
+          "hide": 6,
+          "wall": 16
+        },
+        "resources": {
+          "wood": 42864,
+          "clay": 41472,
+          "iron": 45727
+        },
+        "hideLevel": 3
+      },
+      "luck": 0.24548038782086223,
+      "morale": 0.5191509420285001,
+      "lossMode": "normal",
+      "rngSeed": 2221778292
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 15906.170988734468,
+      "defensePower": 60522.85546774348,
+      "luck": 0.24548038782086223,
+      "morale": 0.5191509420285001,
+      "attackerLosses": {
+        "spear": 372,
+        "sword": 444,
+        "heavyCav": 59
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "heavyCav": 23
+      },
+      "defenderSurvivors": {
+        "heavyCav": 148
+      },
+      "wallBefore": 16,
+      "wallAfter": 16,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 417,
+          "scout": 497,
+          "heavyCav": 254,
+          "catapult": 297,
+          "paladin": 384,
+          "noble": 127
+        },
+        "research": {
+          "ram": 2,
+          "catapult": 0,
+          "paladin": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "scout": 291,
+          "catapult": 62
+        },
+        "research": {
+          "axe": 2,
+          "archer": 3,
+          "heavyCav": 0,
+          "ram": 1,
+          "catapult": 1
+        },
+        "wall": 4,
+        "buildings": {
+          "main": 14,
+          "barracks": 25,
+          "stable": 2,
+          "workshop": 13,
+          "academy": 2,
+          "smithy": 5,
+          "statue": 1,
+          "market": 20,
+          "wood": 17,
+          "clay": 8,
+          "iron": 5,
+          "farm": 15,
+          "storage": 5,
+          "hide": 8,
+          "wall": 4
+        },
+        "resources": {
+          "wood": 42017,
+          "clay": 41547,
+          "iron": 99428
+        },
+        "hideLevel": 5
+      },
+      "luck": 0.1292500504059717,
+      "morale": 0.8108660704689099,
+      "catapultTarget": "hide",
+      "lossMode": "reduced",
+      "rngSeed": 2221734365
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 154684.22617190052,
+      "defensePower": 5179.001809974664,
+      "luck": 0.1292500504059717,
+      "morale": 0.8108660704689099,
+      "attackerLosses": {
+        "axe": 2,
+        "scout": 2,
+        "paladin": 2
+      },
+      "attackerSurvivors": {
+        "axe": 415,
+        "scout": 495,
+        "heavyCav": 254,
+        "catapult": 297,
+        "paladin": 382,
+        "noble": 127
+      },
+      "defenderLosses": {
+        "scout": 291,
+        "catapult": 62
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 4,
+      "wallAfter": 4,
+      "buildingDamage": {
+        "building": "hide",
+        "from": 8,
+        "to": 0
+      },
+      "haul": {
+        "wood": 12596,
+        "clay": 12453,
+        "iron": 30001
+      },
+      "haulCapacity": 55050
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 216,
+          "axe": 222,
+          "catapult": 350,
+          "noble": 272
+        },
+        "research": {
+          "sword": 3,
+          "axe": 1,
+          "archer": 0,
+          "lightCav": 0,
+          "mountedArcher": 3,
+          "catapult": 3,
+          "paladin": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "axe": 407,
+          "archer": 475,
+          "scout": 191,
+          "noble": 165
+        },
+        "research": {
+          "archer": 2,
+          "ram": 1
+        },
+        "wall": 16,
+        "buildings": {
+          "main": 24,
+          "barracks": 19,
+          "stable": 8,
+          "workshop": 10,
+          "academy": 1,
+          "smithy": 20,
+          "statue": 1,
+          "market": 6,
+          "wood": 8,
+          "clay": 18,
+          "iron": 20,
+          "farm": 28,
+          "storage": 11,
+          "hide": 2,
+          "wall": 16
+        },
+        "resources": {
+          "wood": 58209,
+          "clay": 77052,
+          "iron": 4161
+        },
+        "hideLevel": 7
+      },
+      "luck": -0.06750163191463798,
+      "morale": 0.8384480859851464,
+      "lossMode": "normal",
+      "rngSeed": 2222867198
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 57544.2683322407,
+      "defensePower": 91135.01311251984,
+      "luck": -0.06750163191463798,
+      "morale": 0.8384480859851464,
+      "attackerLosses": {
+        "sword": 216,
+        "axe": 222,
+        "catapult": 350,
+        "noble": 272
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "axe": 205,
+        "archer": 239,
+        "scout": 95,
+        "noble": 82
+      },
+      "defenderSurvivors": {
+        "axe": 202,
+        "archer": 236,
+        "scout": 96,
+        "noble": 83
+      },
+      "wallBefore": 16,
+      "wallAfter": 16,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 282,
+          "sword": 179,
+          "archer": 139,
+          "ram": 284,
+          "catapult": 386
+        },
+        "research": {
+          "spear": 2,
+          "sword": 2,
+          "scout": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 482,
+          "sword": 160,
+          "axe": 196,
+          "archer": 9,
+          "lightCav": 289,
+          "ram": 13,
+          "catapult": 390,
+          "noble": 250
+        },
+        "research": {
+          "spear": 2,
+          "archer": 2,
+          "lightCav": 0,
+          "ram": 3
+        },
+        "wall": 15,
+        "buildings": {
+          "main": 13,
+          "barracks": 16,
+          "stable": 3,
+          "workshop": 0,
+          "academy": 0,
+          "smithy": 17,
+          "statue": 0,
+          "market": 17,
+          "wood": 27,
+          "clay": 22,
+          "iron": 3,
+          "farm": 30,
+          "storage": 29,
+          "hide": 7,
+          "wall": 15
+        },
+        "resources": {
+          "wood": 42535,
+          "clay": 68523,
+          "iron": 46540
+        },
+        "hideLevel": 7
+      },
+      "luck": -0.20771475101355463,
+      "morale": 1,
+      "lossMode": "reduced",
+      "rngSeed": 2222616935
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 39908.79449063298,
+      "defensePower": 160267.0886413644,
+      "luck": -0.20771475101355463,
+      "morale": 1,
+      "attackerLosses": {
+        "spear": 282,
+        "sword": 179,
+        "archer": 139,
+        "ram": 284,
+        "catapult": 386
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 30,
+        "sword": 9,
+        "axe": 13,
+        "lightCav": 18,
+        "catapult": 25,
+        "noble": 16
+      },
+      "defenderSurvivors": {
+        "spear": 452,
+        "sword": 151,
+        "axe": 183,
+        "archer": 9,
+        "lightCav": 271,
+        "ram": 13,
+        "catapult": 365,
+        "noble": 234
+      },
+      "wallBefore": 15,
+      "wallAfter": 15,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 112,
+          "sword": 227,
+          "axe": 75,
+          "archer": 423,
+          "scout": 107,
+          "lightCav": 466,
+          "ram": 459
+        },
+        "research": {
+          "mountedArcher": 1,
+          "heavyCav": 0,
+          "paladin": 2,
+          "noble": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "lightCav": 368,
+          "heavyCav": 491,
+          "paladin": 300
+        },
+        "research": {
+          "archer": 1,
+          "lightCav": 3,
+          "heavyCav": 2,
+          "paladin": 3
+        },
+        "wall": 1,
+        "buildings": {
+          "main": 30,
+          "barracks": 16,
+          "stable": 9,
+          "workshop": 3,
+          "academy": 3,
+          "smithy": 13,
+          "statue": 0,
+          "market": 8,
+          "wood": 13,
+          "clay": 23,
+          "iron": 26,
+          "farm": 26,
+          "storage": 16,
+          "hide": 8,
+          "wall": 1
+        },
+        "resources": {
+          "wood": 88436,
+          "clay": 13702,
+          "iron": 93129
+        },
+        "hideLevel": 7
+      },
+      "luck": -0.10851989116054028,
+      "morale": 0.35434156910050657,
+      "catapultTarget": "market",
+      "lossMode": "normal",
+      "rngSeed": 2222573008
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 24524.948303136156,
+      "defensePower": 243176.84023932868,
+      "luck": -0.10851989116054028,
+      "morale": 0.35434156910050657,
+      "attackerLosses": {
+        "spear": 112,
+        "sword": 227,
+        "axe": 75,
+        "archer": 423,
+        "scout": 107,
+        "lightCav": 466,
+        "ram": 459
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "lightCav": 12,
+        "heavyCav": 16,
+        "paladin": 9
+      },
+      "defenderSurvivors": {
+        "lightCav": 356,
+        "heavyCav": 475,
+        "paladin": 291
+      },
+      "wallBefore": 1,
+      "wallAfter": 1,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 48,
+          "catapult": 335
+        },
+        "research": {
+          "spear": 1,
+          "lightCav": 3,
+          "mountedArcher": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 496,
+          "lightCav": 74,
+          "mountedArcher": 464,
+          "noble": 133
+        },
+        "research": {
+          "archer": 0,
+          "mountedArcher": 0
+        },
+        "wall": 6,
+        "buildings": {
+          "main": 3,
+          "barracks": 11,
+          "stable": 2,
+          "workshop": 12,
+          "academy": 3,
+          "smithy": 5,
+          "statue": 0,
+          "market": 14,
+          "wood": 7,
+          "clay": 1,
+          "iron": 13,
+          "farm": 6,
+          "storage": 27,
+          "hide": 6,
+          "wall": 6
+        },
+        "resources": {
+          "wood": 73548,
+          "clay": 91098,
+          "iron": 95683
+        },
+        "hideLevel": 7
+      },
+      "luck": 0.06895714218262583,
+      "morale": 0.6621837102808058,
+      "lossMode": "reduced",
+      "rngSeed": 2222322745
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 24052.60730228554,
+      "defensePower": 51782.52925109164,
+      "luck": 0.06895714218262583,
+      "morale": 0.6621837102808058,
+      "attackerLosses": {
+        "spear": 48,
+        "catapult": 335
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 79,
+        "lightCav": 11,
+        "mountedArcher": 74,
+        "noble": 21
+      },
+      "defenderSurvivors": {
+        "spear": 417,
+        "lightCav": 63,
+        "mountedArcher": 390,
+        "noble": 112
+      },
+      "wallBefore": 6,
+      "wallAfter": 6,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 75,
+          "archer": 97,
+          "mountedArcher": 229,
+          "heavyCav": 497,
+          "noble": 66
+        },
+        "research": {
+          "sword": 3,
+          "axe": 1,
+          "archer": 2,
+          "scout": 3,
+          "lightCav": 1,
+          "mountedArcher": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 74,
+          "archer": 214,
+          "scout": 404,
+          "catapult": 360,
+          "noble": 276
+        },
+        "research": {
+          "axe": 2,
+          "mountedArcher": 3
+        },
+        "wall": 0,
+        "buildings": {
+          "main": 3,
+          "barracks": 7,
+          "stable": 1,
+          "workshop": 13,
+          "academy": 1,
+          "smithy": 19,
+          "statue": 1,
+          "market": 1,
+          "wood": 4,
+          "clay": 26,
+          "iron": 7,
+          "farm": 3,
+          "storage": 2,
+          "hide": 6,
+          "wall": 0
+        },
+        "resources": {
+          "wood": 89570,
+          "clay": 89795,
+          "iron": 52245
+        },
+        "hideLevel": 1
+      },
+      "luck": 0.09082495933398604,
+      "morale": 0.3100691715022549,
+      "lossMode": "normal",
+      "rngSeed": 2223455578
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 36809.277770492685,
+      "defensePower": 51719.412770063056,
+      "luck": 0.09082495933398604,
+      "morale": 0.3100691715022549,
+      "attackerLosses": {
+        "axe": 75,
+        "archer": 97,
+        "mountedArcher": 229,
+        "heavyCav": 497,
+        "noble": 66
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 44,
+        "archer": 128,
+        "scout": 243,
+        "catapult": 217,
+        "noble": 165
+      },
+      "defenderSurvivors": {
+        "spear": 30,
+        "archer": 86,
+        "scout": 161,
+        "catapult": 143,
+        "noble": 111
+      },
+      "wallBefore": 0,
+      "wallAfter": 0,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 27,
+          "sword": 121,
+          "scout": 303,
+          "lightCav": 362,
+          "mountedArcher": 434,
+          "heavyCav": 420,
+          "ram": 16,
+          "catapult": 400
+        },
+        "research": {
+          "sword": 3,
+          "mountedArcher": 3,
+          "heavyCav": 2,
+          "catapult": 0,
+          "paladin": 3,
+          "noble": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 249,
+          "scout": 232,
+          "lightCav": 299,
+          "mountedArcher": 133,
+          "heavyCav": 356,
+          "catapult": 329
+        },
+        "research": {
+          "sword": 1,
+          "scout": 2
+        },
+        "wall": 9,
+        "buildings": {
+          "main": 29,
+          "barracks": 15,
+          "stable": 9,
+          "workshop": 13,
+          "academy": 1,
+          "smithy": 1,
+          "statue": 0,
+          "market": 5,
+          "wood": 15,
+          "clay": 15,
+          "iron": 23,
+          "farm": 26,
+          "storage": 2,
+          "hide": 7,
+          "wall": 9
+        },
+        "resources": {
+          "wood": 71259,
+          "clay": 1393,
+          "iron": 48005
+        },
+        "hideLevel": 1
+      },
+      "luck": -0.0006214071763679385,
+      "morale": 0.7520062854280695,
+      "catapultTarget": "smithy",
+      "lossMode": "reduced",
+      "rngSeed": 2223205315
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 182818.6215448096,
+      "defensePower": 131352.9174388629,
+      "luck": -0.0006214071763679385,
+      "morale": 0.7520062854280695,
+      "attackerLosses": {
+        "spear": 8,
+        "sword": 36,
+        "scout": 92,
+        "lightCav": 111,
+        "mountedArcher": 133,
+        "heavyCav": 128,
+        "ram": 4,
+        "catapult": 122
+      },
+      "attackerSurvivors": {
+        "spear": 19,
+        "sword": 85,
+        "scout": 211,
+        "lightCav": 251,
+        "mountedArcher": 301,
+        "heavyCav": 292,
+        "ram": 12,
+        "catapult": 278
+      },
+      "defenderLosses": {
+        "sword": 249,
+        "scout": 232,
+        "lightCav": 299,
+        "mountedArcher": 133,
+        "heavyCav": 356,
+        "catapult": 329
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 9,
+      "wallAfter": 8,
+      "buildingDamage": {
+        "building": "smithy",
+        "from": 1,
+        "to": 0
+      },
+      "haul": {
+        "wood": 30454,
+        "clay": 532,
+        "iron": 20494
+      },
+      "haulCapacity": 51480
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "scout": 49
+        },
+        "research": {
+          "spear": 1,
+          "archer": 3,
+          "lightCav": 0,
+          "mountedArcher": 2,
+          "noble": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "axe": 6,
+          "mountedArcher": 129,
+          "catapult": 160,
+          "scout": 36
+        },
+        "research": {
+          "sword": 0,
+          "scout": 3,
+          "lightCav": 0,
+          "mountedArcher": 0,
+          "catapult": 3,
+          "paladin": 2,
+          "noble": 0
+        },
+        "wall": 7,
+        "buildings": {
+          "main": 10,
+          "barracks": 21,
+          "stable": 0,
+          "workshop": 9,
+          "academy": 0,
+          "smithy": 11,
+          "statue": 1,
+          "market": 21,
+          "wood": 0,
+          "clay": 1,
+          "iron": 21,
+          "farm": 13,
+          "storage": 28,
+          "hide": 4,
+          "wall": 7
+        },
+        "resources": {
+          "wood": 65592,
+          "clay": 38170,
+          "iron": 93361
+        },
+        "hideLevel": 10
+      },
+      "luck": 0.11986550164874643,
+      "morale": 1,
+      "lossMode": "normal",
+      "rngSeed": 2777865707
+    },
+    "result": {
+      "kind": "scout",
+      "outcome": "defenderWon",
+      "attackPower": 49,
+      "defensePower": 72,
+      "luck": 0,
+      "morale": 1,
+      "attackerLosses": {
+        "scout": 49
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {},
+      "defenderSurvivors": {
+        "axe": 6,
+        "scout": 36,
+        "mountedArcher": 129,
+        "catapult": 160
+      },
+      "wallBefore": 7,
+      "wallAfter": 7,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 165,
+          "scout": 427,
+          "lightCav": 191,
+          "heavyCav": 206,
+          "ram": 326
+        },
+        "research": {
+          "spear": 0,
+          "lightCav": 0,
+          "mountedArcher": 2,
+          "heavyCav": 3,
+          "paladin": 1,
+          "noble": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "scout": 440,
+          "noble": 252
+        },
+        "research": {
+          "scout": 3,
+          "ram": 3,
+          "catapult": 0,
+          "paladin": 2,
+          "noble": 3
+        },
+        "wall": 20,
+        "buildings": {
+          "main": 19,
+          "barracks": 18,
+          "stable": 2,
+          "workshop": 10,
+          "academy": 2,
+          "smithy": 1,
+          "statue": 1,
+          "market": 2,
+          "wood": 25,
+          "clay": 6,
+          "iron": 29,
+          "farm": 0,
+          "storage": 14,
+          "hide": 3,
+          "wall": 20
+        },
+        "resources": {
+          "wood": 62806,
+          "clay": 79647,
+          "iron": 92945
+        },
+        "hideLevel": 1
+      },
+      "luck": -0.16999456624034792,
+      "morale": 0.4676679221913218,
+      "lossMode": "reduced",
+      "rngSeed": 2778115970
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 27323.84559428447,
+      "defensePower": 39817.496572664175,
+      "luck": -0.16999456624034792,
+      "morale": 0.4676679221913218,
+      "attackerLosses": {
+        "spear": 165,
+        "scout": 427,
+        "lightCav": 191,
+        "heavyCav": 206,
+        "ram": 326
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "scout": 126,
+        "noble": 71
+      },
+      "defenderSurvivors": {
+        "scout": 314,
+        "noble": 181
+      },
+      "wallBefore": 20,
+      "wallAfter": 20,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 60,
+          "axe": 467,
+          "paladin": 349
+        },
+        "research": {
+          "noble": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "archer": 309,
+          "lightCav": 322,
+          "catapult": 32
+        },
+        "research": {
+          "spear": 2,
+          "sword": 2,
+          "scout": 3
+        },
+        "wall": 10,
+        "buildings": {
+          "main": 14,
+          "barracks": 21,
+          "stable": 16,
+          "workshop": 3,
+          "academy": 1,
+          "smithy": 15,
+          "statue": 0,
+          "market": 25,
+          "wood": 18,
+          "clay": 3,
+          "iron": 30,
+          "farm": 21,
+          "storage": 14,
+          "hide": 9,
+          "wall": 10
+        },
+        "resources": {
+          "wood": 20588,
+          "clay": 18992,
+          "iron": 1882
+        },
+        "hideLevel": 5
+      },
+      "luck": -0.112025999231264,
+      "morale": 0.7955458995187654,
+      "catapultTarget": "smithy",
+      "lossMode": "normal",
+      "rngSeed": 2777571517
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 51236.9381735917,
+      "defensePower": 39474.265154533896,
+      "luck": -0.112025999231264,
+      "morale": 0.7955458995187654,
+      "attackerLosses": {
+        "sword": 40,
+        "axe": 316,
+        "paladin": 236
+      },
+      "attackerSurvivors": {
+        "sword": 20,
+        "axe": 151,
+        "paladin": 113
+      },
+      "defenderLosses": {
+        "archer": 309,
+        "lightCav": 322,
+        "catapult": 32
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 10,
+      "wallAfter": 10,
+      "haul": {
+        "wood": 6586,
+        "clay": 6063,
+        "iron": 461
+      },
+      "haulCapacity": 13110
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 174,
+          "axe": 465,
+          "scout": 375,
+          "lightCav": 235,
+          "mountedArcher": 435,
+          "heavyCav": 223,
+          "catapult": 282,
+          "paladin": 124
+        },
+        "research": {
+          "paladin": 1
+        }
+      },
+      "defender": {
+        "units": {},
+        "research": {
+          "ram": 3,
+          "paladin": 2
+        },
+        "wall": 10,
+        "buildings": {
+          "main": 25,
+          "barracks": 13,
+          "stable": 0,
+          "workshop": 15,
+          "academy": 2,
+          "smithy": 18,
+          "statue": 0,
+          "market": 24,
+          "wood": 17,
+          "clay": 2,
+          "iron": 29,
+          "farm": 3,
+          "storage": 24,
+          "hide": 0,
+          "wall": 10
+        },
+        "resources": {
+          "wood": 23406,
+          "clay": 30568,
+          "iron": 59542
+        },
+        "hideLevel": 3
+      },
+      "luck": 0.21110254304949194,
+      "morale": 0.3474430488422513,
+      "lossMode": "reduced",
+      "rngSeed": 2777821780
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 78245.74430529492,
+      "defensePower": 287.61899176818,
+      "luck": 0.21110254304949194,
+      "morale": 0.3474430488422513,
+      "attackerLosses": {},
+      "attackerSurvivors": {
+        "sword": 174,
+        "axe": 465,
+        "scout": 375,
+        "lightCav": 235,
+        "mountedArcher": 435,
+        "heavyCav": 223,
+        "catapult": 282,
+        "paladin": 124
+      },
+      "defenderLosses": {},
+      "defenderSurvivors": {},
+      "wallBefore": 10,
+      "wallAfter": 10,
+      "buildingDamage": {
+        "building": "market",
+        "from": 24,
+        "to": 17
+      },
+      "haul": {
+        "wood": 14650,
+        "clay": 19183,
+        "iron": 37527
+      },
+      "haulCapacity": 71360
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 210,
+          "axe": 121,
+          "scout": 133,
+          "lightCav": 119,
+          "heavyCav": 6,
+          "paladin": 131,
+          "noble": 229
+        },
+        "research": {
+          "sword": 0,
+          "axe": 1,
+          "ram": 0,
+          "catapult": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 62,
+          "lightCav": 417,
+          "ram": 63,
+          "paladin": 439,
+          "noble": 202
+        },
+        "research": {
+          "axe": 2,
+          "archer": 3,
+          "mountedArcher": 3,
+          "noble": 0
+        },
+        "wall": 13,
+        "buildings": {
+          "main": 10,
+          "barracks": 17,
+          "stable": 14,
+          "workshop": 7,
+          "academy": 1,
+          "smithy": 15,
+          "statue": 0,
+          "market": 25,
+          "wood": 10,
+          "clay": 12,
+          "iron": 8,
+          "farm": 4,
+          "storage": 24,
+          "hide": 2,
+          "wall": 13
+        },
+        "resources": {
+          "wood": 1139,
+          "clay": 90441,
+          "iron": 9944
+        },
+        "hideLevel": 5
+      },
+      "luck": 0.2302862376673147,
+      "morale": 0.7009238112485037,
+      "lossMode": "normal",
+      "rngSeed": 2778660423
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 42970.248655450334,
+      "defensePower": 305010.1766050976,
+      "luck": 0.2302862376673147,
+      "morale": 0.7009238112485037,
+      "attackerLosses": {
+        "spear": 210,
+        "axe": 121,
+        "scout": 133,
+        "lightCav": 119,
+        "heavyCav": 6,
+        "paladin": 131,
+        "noble": 229
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 3,
+        "lightCav": 23,
+        "ram": 3,
+        "paladin": 24,
+        "noble": 10
+      },
+      "defenderSurvivors": {
+        "sword": 59,
+        "lightCav": 394,
+        "ram": 60,
+        "paladin": 415,
+        "noble": 192
+      },
+      "wallBefore": 13,
+      "wallAfter": 13,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 43,
+          "archer": 244,
+          "scout": 202,
+          "mountedArcher": 260
+        },
+        "research": {
+          "sword": 2,
+          "axe": 0,
+          "heavyCav": 2,
+          "catapult": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 317,
+          "heavyCav": 202,
+          "noble": 447
+        },
+        "research": {
+          "scout": 3,
+          "mountedArcher": 2
+        },
+        "wall": 6,
+        "buildings": {
+          "main": 8,
+          "barracks": 23,
+          "stable": 2,
+          "workshop": 0,
+          "academy": 0,
+          "smithy": 17,
+          "statue": 0,
+          "market": 25,
+          "wood": 7,
+          "clay": 26,
+          "iron": 20,
+          "farm": 23,
+          "storage": 30,
+          "hide": 8,
+          "wall": 6
+        },
+        "resources": {
+          "wood": 23352,
+          "clay": 84839,
+          "iron": 43891
+        },
+        "hideLevel": 5
+      },
+      "luck": 0.21213410864584148,
+      "morale": 1,
+      "catapultTarget": "academy",
+      "lossMode": "reduced",
+      "rngSeed": 2778704350
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 44339.86569426488,
+      "defensePower": 108981.37509384727,
+      "luck": 0.21213410864584148,
+      "morale": 1,
+      "attackerLosses": {
+        "axe": 43,
+        "archer": 244,
+        "scout": 202,
+        "mountedArcher": 260
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 41,
+        "heavyCav": 26,
+        "noble": 58
+      },
+      "defenderSurvivors": {
+        "spear": 276,
+        "heavyCav": 176,
+        "noble": 389
+      },
+      "wallBefore": 6,
+      "wallAfter": 6,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 180,
+          "sword": 423,
+          "axe": 62,
+          "lightCav": 299,
+          "ram": 315,
+          "catapult": 335,
+          "noble": 323
+        },
+        "research": {
+          "spear": 2,
+          "archer": 3,
+          "catapult": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "axe": 220,
+          "lightCav": 376,
+          "mountedArcher": 386,
+          "ram": 190,
+          "catapult": 315
+        },
+        "research": {
+          "axe": 0,
+          "heavyCav": 1,
+          "catapult": 0,
+          "noble": 0
+        },
+        "wall": 15,
+        "buildings": {
+          "main": 5,
+          "barracks": 12,
+          "stable": 14,
+          "workshop": 7,
+          "academy": 2,
+          "smithy": 4,
+          "statue": 0,
+          "market": 18,
+          "wood": 30,
+          "clay": 10,
+          "iron": 29,
+          "farm": 12,
+          "storage": 1,
+          "hide": 1,
+          "wall": 15
+        },
+        "resources": {
+          "wood": 72453,
+          "clay": 74377,
+          "iron": 14943
+        },
+        "hideLevel": 6
+      },
+      "luck": 0.08063650166150182,
+      "morale": 0.7264321401016787,
+      "lossMode": "normal",
+      "rngSeed": 2778159897
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 76926.96543881482,
+      "defensePower": 103573.7537887656,
+      "luck": 0.08063650166150182,
+      "morale": 0.7264321401016787,
+      "attackerLosses": {
+        "spear": 180,
+        "sword": 423,
+        "axe": 62,
+        "lightCav": 299,
+        "ram": 315,
+        "catapult": 335,
+        "noble": 323
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "axe": 140,
+        "lightCav": 241,
+        "mountedArcher": 248,
+        "ram": 121,
+        "catapult": 202
+      },
+      "defenderSurvivors": {
+        "axe": 80,
+        "lightCav": 135,
+        "mountedArcher": 138,
+        "ram": 69,
+        "catapult": 113
+      },
+      "wallBefore": 15,
+      "wallAfter": 15,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 222,
+          "sword": 219,
+          "axe": 142,
+          "archer": 170,
+          "scout": 16
+        },
+        "research": {
+          "scout": 2
+        }
+      },
+      "defender": {
+        "units": {},
+        "research": {
+          "spear": 2,
+          "scout": 0,
+          "catapult": 1
+        },
+        "wall": 7,
+        "buildings": {
+          "main": 19,
+          "barracks": 25,
+          "stable": 14,
+          "workshop": 13,
+          "academy": 2,
+          "smithy": 0,
+          "statue": 0,
+          "market": 24,
+          "wood": 0,
+          "clay": 29,
+          "iron": 16,
+          "farm": 28,
+          "storage": 22,
+          "hide": 1,
+          "wall": 7
+        },
+        "resources": {
+          "wood": 75065,
+          "clay": 18603,
+          "iron": 68004
+        },
+        "hideLevel": 4
+      },
+      "luck": -0.12595134938601404,
+      "morale": 0.9231713936664163,
+      "lossMode": "reduced",
+      "rngSeed": 2778410160
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 12849.830121394058,
+      "defensePower": 180.54244948783585,
+      "luck": -0.12595134938601404,
+      "morale": 0.9231713936664163,
+      "attackerLosses": {
+        "spear": 1
+      },
+      "attackerSurvivors": {
+        "spear": 221,
+        "sword": 219,
+        "axe": 142,
+        "archer": 170,
+        "scout": 16
+      },
+      "defenderLosses": {},
+      "defenderSurvivors": {},
+      "wallBefore": 7,
+      "wallAfter": 7,
+      "haul": {
+        "wood": 5550,
+        "clay": 1355,
+        "iron": 5025
+      },
+      "haulCapacity": 11930
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 296,
+          "axe": 122,
+          "lightCav": 351,
+          "mountedArcher": 160
+        },
+        "research": {
+          "archer": 0,
+          "scout": 1,
+          "mountedArcher": 2,
+          "heavyCav": 1,
+          "ram": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "scout": 269
+        },
+        "research": {
+          "heavyCav": 2,
+          "ram": 1,
+          "noble": 0
+        },
+        "wall": 17,
+        "buildings": {
+          "main": 28,
+          "barracks": 23,
+          "stable": 10,
+          "workshop": 9,
+          "academy": 0,
+          "smithy": 7,
+          "statue": 1,
+          "market": 17,
+          "wood": 26,
+          "clay": 6,
+          "iron": 15,
+          "farm": 27,
+          "storage": 18,
+          "hide": 4,
+          "wall": 17
+        },
+        "resources": {
+          "wood": 40596,
+          "clay": 53378,
+          "iron": 41322
+        },
+        "hideLevel": 7
+      },
+      "luck": -0.2316023347666487,
+      "morale": 0.6778073593741283,
+      "catapultTarget": "wood",
+      "lossMode": "normal",
+      "rngSeed": 2779248803
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 40348.35864485977,
+      "defensePower": 1334.4580070980492,
+      "luck": -0.2316023347666487,
+      "morale": 0.6778073593741283,
+      "attackerLosses": {
+        "spear": 2,
+        "lightCav": 3,
+        "mountedArcher": 1
+      },
+      "attackerSurvivors": {
+        "spear": 294,
+        "axe": 122,
+        "lightCav": 348,
+        "mountedArcher": 159
+      },
+      "defenderLosses": {
+        "scout": 269
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 17,
+      "wallAfter": 17,
+      "haul": {
+        "wood": 13283,
+        "clay": 17553,
+        "iron": 13524
+      },
+      "haulCapacity": 44360
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "mountedArcher": 191,
+          "paladin": 300
+        },
+        "research": {
+          "spear": 0,
+          "axe": 1,
+          "mountedArcher": 1,
+          "ram": 0,
+          "paladin": 3,
+          "noble": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 374,
+          "lightCav": 31,
+          "ram": 99
+        },
+        "research": {
+          "archer": 1,
+          "ram": 2
+        },
+        "wall": 10,
+        "buildings": {
+          "main": 5,
+          "barracks": 8,
+          "stable": 0,
+          "workshop": 9,
+          "academy": 1,
+          "smithy": 1,
+          "statue": 0,
+          "market": 12,
+          "wood": 3,
+          "clay": 3,
+          "iron": 10,
+          "farm": 23,
+          "storage": 25,
+          "hide": 7,
+          "wall": 10
+        },
+        "resources": {
+          "wood": 66914,
+          "clay": 23681,
+          "iron": 92929
+        },
+        "hideLevel": 6
+      },
+      "luck": 0.19151111040264368,
+      "morale": 0.7139414247591048,
+      "lossMode": "reduced",
+      "rngSeed": 2779292730
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 73089.49248965415,
+      "defensePower": 21080.54894587702,
+      "luck": 0.19151111040264368,
+      "morale": 0.7139414247591048,
+      "attackerLosses": {
+        "mountedArcher": 14,
+        "paladin": 24
+      },
+      "attackerSurvivors": {
+        "mountedArcher": 177,
+        "paladin": 276
+      },
+      "defenderLosses": {
+        "sword": 374,
+        "lightCav": 31,
+        "ram": 99
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 10,
+      "wallAfter": 10,
+      "haul": {
+        "wood": 13302,
+        "clay": 4626,
+        "iron": 18522
+      },
+      "haulCapacity": 36450
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "scout": 141
+        },
+        "research": {
+          "catapult": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "archer": 12,
+          "mountedArcher": 222,
+          "heavyCav": 296,
+          "noble": 47,
+          "scout": 292
+        },
+        "research": {
+          "mountedArcher": 2,
+          "catapult": 0
+        },
+        "wall": 12,
+        "buildings": {
+          "main": 28,
+          "barracks": 10,
+          "stable": 18,
+          "workshop": 11,
+          "academy": 3,
+          "smithy": 13,
+          "statue": 1,
+          "market": 21,
+          "wood": 30,
+          "clay": 6,
+          "iron": 21,
+          "farm": 12,
+          "storage": 6,
+          "hide": 3,
+          "wall": 12
+        },
+        "resources": {
+          "wood": 69480,
+          "clay": 57646,
+          "iron": 4542
+        },
+        "hideLevel": 5
+      },
+      "luck": -0.038391395239159465,
+      "morale": 1,
+      "lossMode": "normal",
+      "rngSeed": 304752576
+    },
+    "result": {
+      "kind": "scout",
+      "outcome": "defenderWon",
+      "attackPower": 141,
+      "defensePower": 584,
+      "luck": 0,
+      "morale": 1,
+      "attackerLosses": {
+        "scout": 141
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {},
+      "defenderSurvivors": {
+        "archer": 12,
+        "scout": 292,
+        "mountedArcher": 222,
+        "heavyCav": 296,
+        "noble": 47
+      },
+      "wallBefore": 12,
+      "wallAfter": 12,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 381,
+          "sword": 200,
+          "mountedArcher": 264
+        },
+        "research": {}
+      },
+      "defender": {
+        "units": {
+          "sword": 249,
+          "archer": 87,
+          "mountedArcher": 376,
+          "ram": 224,
+          "catapult": 7
+        },
+        "research": {
+          "archer": 2,
+          "heavyCav": 1,
+          "ram": 1,
+          "paladin": 1,
+          "noble": 1
+        },
+        "wall": 11,
+        "buildings": {
+          "main": 13,
+          "barracks": 4,
+          "stable": 6,
+          "workshop": 5,
+          "academy": 1,
+          "smithy": 15,
+          "statue": 1,
+          "market": 4,
+          "wood": 24,
+          "clay": 10,
+          "iron": 13,
+          "farm": 0,
+          "storage": 6,
+          "hide": 8,
+          "wall": 11
+        },
+        "resources": {
+          "wood": 876,
+          "clay": 43619,
+          "iron": 10018
+        },
+        "hideLevel": 3
+      },
+      "luck": -0.09589920041617006,
+      "morale": 0.8316499683307483,
+      "catapultTarget": "iron",
+      "lossMode": "reduced",
+      "rngSeed": 304708649
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 30444.244800325287,
+      "defensePower": 52929.709630195255,
+      "luck": -0.09589920041617006,
+      "morale": 0.8316499683307483,
+      "attackerLosses": {
+        "spear": 381,
+        "sword": 200,
+        "mountedArcher": 264
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 55,
+        "archer": 18,
+        "mountedArcher": 83,
+        "ram": 49,
+        "catapult": 1
+      },
+      "defenderSurvivors": {
+        "sword": 194,
+        "archer": 69,
+        "mountedArcher": 293,
+        "ram": 175,
+        "catapult": 6
+      },
+      "wallBefore": 11,
+      "wallAfter": 11,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "spear": 325,
+          "archer": 11,
+          "lightCav": 70,
+          "heavyCav": 365,
+          "ram": 222,
+          "paladin": 348
+        },
+        "research": {
+          "spear": 3,
+          "ram": 0,
+          "paladin": 1,
+          "noble": 3
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 335
+        },
+        "research": {
+          "sword": 0,
+          "axe": 1,
+          "scout": 2,
+          "lightCav": 3,
+          "noble": 3
+        },
+        "wall": 16,
+        "buildings": {
+          "main": 11,
+          "barracks": 2,
+          "stable": 5,
+          "workshop": 11,
+          "academy": 3,
+          "smithy": 19,
+          "statue": 0,
+          "market": 3,
+          "wood": 14,
+          "clay": 29,
+          "iron": 26,
+          "farm": 22,
+          "storage": 28,
+          "hide": 2,
+          "wall": 16
+        },
+        "resources": {
+          "wood": 83827,
+          "clay": 8217,
+          "iron": 38252
+        },
+        "hideLevel": 8
+      },
+      "luck": 0.11959469423163682,
+      "morale": 0.7078312964644282,
+      "lossMode": "normal",
+      "rngSeed": 305046766
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 96056.21302611555,
+      "defensePower": 10443.23261510322,
+      "luck": 0.11959469423163682,
+      "morale": 0.7078312964644282,
+      "attackerLosses": {
+        "spear": 12,
+        "lightCav": 2,
+        "heavyCav": 14,
+        "ram": 7,
+        "paladin": 13
+      },
+      "attackerSurvivors": {
+        "spear": 313,
+        "archer": 11,
+        "lightCav": 68,
+        "heavyCav": 351,
+        "ram": 215,
+        "paladin": 335
+      },
+      "defenderLosses": {
+        "sword": 335
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 16,
+      "wallAfter": 0,
+      "haul": {
+        "wood": 41980,
+        "clay": 3600,
+        "iron": 18845
+      },
+      "haulCapacity": 64425
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "ram": 373,
+          "catapult": 282
+        },
+        "research": {
+          "sword": 1,
+          "archer": 0,
+          "catapult": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 324,
+          "axe": 408,
+          "heavyCav": 286,
+          "catapult": 284,
+          "noble": 66
+        },
+        "research": {
+          "spear": 2,
+          "axe": 2,
+          "archer": 0,
+          "scout": 1,
+          "mountedArcher": 0,
+          "noble": 2
+        },
+        "wall": 11,
+        "buildings": {
+          "main": 9,
+          "barracks": 19,
+          "stable": 8,
+          "workshop": 4,
+          "academy": 0,
+          "smithy": 5,
+          "statue": 1,
+          "market": 14,
+          "wood": 11,
+          "clay": 10,
+          "iron": 8,
+          "farm": 0,
+          "storage": 24,
+          "hide": 5,
+          "wall": 11
+        },
+        "resources": {
+          "wood": 52893,
+          "clay": 52947,
+          "iron": 12115
+        },
+        "hideLevel": 8
+      },
+      "luck": -0.09657926042564213,
+      "morale": 0.8074102940969168,
+      "lossMode": "reduced",
+      "rngSeed": 305002839
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 21114.11566088482,
+      "defensePower": 172051.7969713292,
+      "luck": -0.09657926042564213,
+      "morale": 0.8074102940969168,
+      "attackerLosses": {
+        "ram": 373,
+        "catapult": 282
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 7,
+        "axe": 9,
+        "heavyCav": 6,
+        "catapult": 6,
+        "noble": 1
+      },
+      "defenderSurvivors": {
+        "sword": 317,
+        "axe": 399,
+        "heavyCav": 280,
+        "catapult": 278,
+        "noble": 65
+      },
+      "wallBefore": 11,
+      "wallAfter": 11,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 354,
+          "archer": 255,
+          "heavyCav": 96,
+          "catapult": 429,
+          "paladin": 418
+        },
+        "research": {
+          "sword": 1,
+          "axe": 0,
+          "scout": 3,
+          "ram": 3,
+          "paladin": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 131,
+          "sword": 297,
+          "axe": 477,
+          "archer": 258,
+          "lightCav": 206,
+          "heavyCav": 37,
+          "ram": 350,
+          "noble": 232
+        },
+        "research": {
+          "spear": 3,
+          "lightCav": 2,
+          "ram": 2,
+          "noble": 3
+        },
+        "wall": 12,
+        "buildings": {
+          "main": 21,
+          "barracks": 21,
+          "stable": 7,
+          "workshop": 8,
+          "academy": 0,
+          "smithy": 13,
+          "statue": 0,
+          "market": 13,
+          "wood": 15,
+          "clay": 28,
+          "iron": 1,
+          "farm": 24,
+          "storage": 16,
+          "hide": 8,
+          "wall": 12
+        },
+        "resources": {
+          "wood": 22624,
+          "clay": 82717,
+          "iron": 36940
+        },
+        "hideLevel": 3
+      },
+      "luck": -0.1986213905038312,
+      "morale": 0.9399809717433527,
+      "catapultTarget": "market",
+      "lossMode": "normal",
+      "rngSeed": 304164196
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 111749.18355053573,
+      "defensePower": 127144.48406351986,
+      "luck": -0.1986213905038312,
+      "morale": 0.9399809717433527,
+      "attackerLosses": {
+        "sword": 354,
+        "archer": 255,
+        "heavyCav": 96,
+        "catapult": 429,
+        "paladin": 418
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 107,
+        "sword": 245,
+        "axe": 394,
+        "archer": 213,
+        "lightCav": 169,
+        "heavyCav": 30,
+        "ram": 289,
+        "noble": 191
+      },
+      "defenderSurvivors": {
+        "spear": 24,
+        "sword": 52,
+        "axe": 83,
+        "archer": 45,
+        "lightCav": 37,
+        "heavyCav": 7,
+        "ram": 61,
+        "noble": 41
+      },
+      "wallBefore": 12,
+      "wallAfter": 12,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "axe": 176,
+          "ram": 155,
+          "catapult": 435,
+          "paladin": 207,
+          "noble": 90
+        },
+        "research": {
+          "spear": 1,
+          "sword": 0,
+          "scout": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "spear": 144,
+          "scout": 98,
+          "mountedArcher": 396,
+          "paladin": 126
+        },
+        "research": {
+          "axe": 1,
+          "archer": 0,
+          "heavyCav": 1
+        },
+        "wall": 18,
+        "buildings": {
+          "main": 20,
+          "barracks": 20,
+          "stable": 1,
+          "workshop": 1,
+          "academy": 0,
+          "smithy": 11,
+          "statue": 0,
+          "market": 4,
+          "wood": 22,
+          "clay": 6,
+          "iron": 2,
+          "farm": 5,
+          "storage": 15,
+          "hide": 7,
+          "wall": 18
+        },
+        "resources": {
+          "wood": 10510,
+          "clay": 14200,
+          "iron": 93953
+        },
+        "hideLevel": 1
+      },
+      "luck": -0.19095871457830071,
+      "morale": 1,
+      "lossMode": "reduced",
+      "rngSeed": 303913933
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 68444.89274667576,
+      "defensePower": 109791.57081275071,
+      "luck": -0.19095871457830071,
+      "morale": 1,
+      "attackerLosses": {
+        "axe": 176,
+        "ram": 155,
+        "catapult": 435,
+        "paladin": 207,
+        "noble": 90
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "spear": 35,
+        "scout": 24,
+        "mountedArcher": 98,
+        "paladin": 31
+      },
+      "defenderSurvivors": {
+        "spear": 109,
+        "scout": 74,
+        "mountedArcher": 298,
+        "paladin": 95
+      },
+      "wallBefore": 18,
+      "wallAfter": 18,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "archer": 391,
+          "scout": 117,
+          "heavyCav": 360,
+          "ram": 345,
+          "catapult": 243,
+          "noble": 238
+        },
+        "research": {
+          "axe": 1,
+          "heavyCav": 3,
+          "noble": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "heavyCav": 181
+        },
+        "research": {
+          "sword": 3,
+          "mountedArcher": 1,
+          "heavyCav": 3
+        },
+        "wall": 19,
+        "buildings": {
+          "main": 24,
+          "barracks": 1,
+          "stable": 1,
+          "workshop": 6,
+          "academy": 1,
+          "smithy": 0,
+          "statue": 0,
+          "market": 3,
+          "wood": 28,
+          "clay": 21,
+          "iron": 9,
+          "farm": 21,
+          "storage": 13,
+          "hide": 3,
+          "wall": 19
+        },
+        "resources": {
+          "wood": 47497,
+          "clay": 5630,
+          "iron": 25416
+        },
+        "hideLevel": 5
+      },
+      "luck": -0.02444670209661126,
+      "morale": 0.5262990944553166,
+      "lossMode": "normal",
+      "rngSeed": 304458386
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 58323.40087885926,
+      "defensePower": 60948.896140761295,
+      "luck": -0.02444670209661126,
+      "morale": 0.5262990944553166,
+      "attackerLosses": {
+        "archer": 391,
+        "scout": 117,
+        "heavyCav": 360,
+        "ram": 345,
+        "catapult": 243,
+        "noble": 238
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "heavyCav": 169
+      },
+      "defenderSurvivors": {
+        "heavyCav": 12
+      },
+      "wallBefore": 19,
+      "wallAfter": 19,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 47,
+          "lightCav": 280,
+          "mountedArcher": 304,
+          "catapult": 128,
+          "noble": 114
+        },
+        "research": {
+          "archer": 2,
+          "catapult": 2
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 339,
+          "archer": 271,
+          "scout": 499,
+          "paladin": 128
+        },
+        "research": {
+          "sword": 2,
+          "archer": 2,
+          "lightCav": 1,
+          "ram": 0,
+          "catapult": 2,
+          "noble": 2
+        },
+        "wall": 19,
+        "buildings": {
+          "main": 17,
+          "barracks": 1,
+          "stable": 1,
+          "workshop": 4,
+          "academy": 1,
+          "smithy": 2,
+          "statue": 1,
+          "market": 13,
+          "wood": 14,
+          "clay": 1,
+          "iron": 16,
+          "farm": 25,
+          "storage": 15,
+          "hide": 0,
+          "wall": 19
+        },
+        "resources": {
+          "wood": 52956,
+          "clay": 64099,
+          "iron": 98416
+        },
+        "hideLevel": 2
+      },
+      "luck": 0.11492033849935979,
+      "morale": 0.4582991621689871,
+      "catapultTarget": "workshop",
+      "lossMode": "reduced",
+      "rngSeed": 304414459
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 47762.64565489029,
+      "defensePower": 117849.88385549662,
+      "luck": 0.11492033849935979,
+      "morale": 0.4582991621689871,
+      "attackerLosses": {
+        "sword": 47,
+        "lightCav": 280,
+        "mountedArcher": 304,
+        "catapult": 128,
+        "noble": 114
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 44,
+        "archer": 35,
+        "scout": 65,
+        "paladin": 16
+      },
+      "defenderSurvivors": {
+        "sword": 295,
+        "archer": 236,
+        "scout": 434,
+        "paladin": 112
+      },
+      "wallBefore": 19,
+      "wallAfter": 19,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "archer": 370,
+          "mountedArcher": 293,
+          "paladin": 490
+        },
+        "research": {
+          "spear": 0,
+          "archer": 2,
+          "scout": 0,
+          "mountedArcher": 3,
+          "paladin": 1
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 382,
+          "axe": 412,
+          "archer": 304
+        },
+        "research": {
+          "sword": 3,
+          "lightCav": 3,
+          "heavyCav": 0,
+          "paladin": 2
+        },
+        "wall": 10,
+        "buildings": {
+          "main": 17,
+          "barracks": 16,
+          "stable": 14,
+          "workshop": 4,
+          "academy": 2,
+          "smithy": 2,
+          "statue": 1,
+          "market": 14,
+          "wood": 26,
+          "clay": 3,
+          "iron": 14,
+          "farm": 9,
+          "storage": 28,
+          "hide": 8,
+          "wall": 10
+        },
+        "resources": {
+          "wood": 78140,
+          "clay": 54458,
+          "iron": 82067
+        },
+        "hideLevel": 9
+      },
+      "luck": -0.08699892775621265,
+      "morale": 0.9562949700048193,
+      "lossMode": "normal",
+      "rngSeed": 306135672
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "attackerWon",
+      "attackPower": 113207.2395037272,
+      "defensePower": 35257.396701844766,
+      "luck": -0.08699892775621265,
+      "morale": 0.9562949700048193,
+      "attackerLosses": {
+        "archer": 64,
+        "mountedArcher": 50,
+        "paladin": 86
+      },
+      "attackerSurvivors": {
+        "archer": 306,
+        "mountedArcher": 243,
+        "paladin": 404
+      },
+      "defenderLosses": {
+        "sword": 382,
+        "axe": 412,
+        "archer": 304
+      },
+      "defenderSurvivors": {},
+      "wallBefore": 10,
+      "wallAfter": 10,
+      "haul": {
+        "wood": 20280,
+        "clay": 14012,
+        "iron": 21318
+      },
+      "haulCapacity": 55610
+    }
+  },
+  {
+    "input": {
+      "attacker": {
+        "units": {
+          "sword": 238,
+          "archer": 441,
+          "lightCav": 1,
+          "heavyCav": 74,
+          "catapult": 293,
+          "paladin": 462
+        },
+        "research": {
+          "spear": 3,
+          "mountedArcher": 1,
+          "heavyCav": 1,
+          "catapult": 0,
+          "paladin": 0
+        }
+      },
+      "defender": {
+        "units": {
+          "sword": 477,
+          "lightCav": 292,
+          "mountedArcher": 394,
+          "ram": 142,
+          "noble": 373
+        },
+        "research": {
+          "spear": 0,
+          "sword": 0,
+          "archer": 0,
+          "lightCav": 2,
+          "mountedArcher": 3,
+          "catapult": 1
+        },
+        "wall": 3,
+        "buildings": {
+          "main": 10,
+          "barracks": 15,
+          "stable": 5,
+          "workshop": 7,
+          "academy": 2,
+          "smithy": 0,
+          "statue": 0,
+          "market": 20,
+          "wood": 15,
+          "clay": 10,
+          "iron": 16,
+          "farm": 29,
+          "storage": 14,
+          "hide": 6,
+          "wall": 3
+        },
+        "resources": {
+          "wood": 49274,
+          "clay": 76599,
+          "iron": 24686
+        },
+        "hideLevel": 2
+      },
+      "luck": -0.012695851502940059,
+      "morale": 0.39665669295936823,
+      "lossMode": "reduced",
+      "rngSeed": 305885409
+    },
+    "result": {
+      "kind": "battle",
+      "outcome": "defenderWon",
+      "attackPower": 47932.427630927596,
+      "defensePower": 84109.81992258075,
+      "luck": -0.012695851502940059,
+      "morale": 0.39665669295936823,
+      "attackerLosses": {
+        "sword": 238,
+        "archer": 441,
+        "lightCav": 1,
+        "heavyCav": 74,
+        "catapult": 293,
+        "paladin": 462
+      },
+      "attackerSurvivors": {},
+      "defenderLosses": {
+        "sword": 103,
+        "lightCav": 62,
+        "mountedArcher": 85,
+        "ram": 30,
+        "noble": 81
+      },
+      "defenderSurvivors": {
+        "sword": 374,
+        "lightCav": 230,
+        "mountedArcher": 309,
+        "ram": 112,
+        "noble": 292
+      },
+      "wallBefore": 3,
+      "wallAfter": 3,
+      "haul": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "haulCapacity": 0
+    }
+  }
+]

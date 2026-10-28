@@ -1,0 +1,294 @@
+@import "tailwindcss";
+@import "./assets/fonts/fonts.css";
+@import "./ui/pixelSkin.css";
+
+@theme {
+  --color-parchment: #f4e4bc;
+  --color-panel: #e8d5a8;
+  --color-panel-dark: #d6bf8e;
+  --color-wood-border: #7d510f;
+  --color-border-dark: #603000;
+  --color-ink: #2e1a05;
+  --color-muted: #6b563a;
+  --color-ok: #4c8f2f;
+  --color-bad: #a33a2a;
+  --color-gold: #c8a54b;
+  --color-wood: #6b4423;
+  --color-clay: #b06d3a;
+  --color-iron: #7a8b99;
+  --font-heading: "MedievalSharp", "Georgia", serif;
+  --font-display: "Cinzel", "Georgia", serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+  --ink-light: #f7e9c9;
+}
+
+@layer base {
+  body {
+    @apply text-ink font-body text-[13px];
+    min-height: 100vh;
+    /* Without this, dragging the map down reloads the game on phones. */
+    overscroll-behavior-y: none;
+    background-color: #2f1e10;
+    background-image:
+      radial-gradient(ellipse 120% 70% at 50% -8%, rgba(255, 226, 160, 0.16), transparent 72%),
+      radial-gradient(ellipse 100% 60% at 50% 115%, rgba(0, 0, 0, 0.5), transparent 70%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+
+  input[type="text"], input[type="number"], input[type="search"], input:not([type]), select, textarea {
+    background-color: #f3e6c6;
+    border: 1px solid var(--color-wood-border);
+    border-radius: 3px;
+    color: var(--color-ink);
+    box-shadow: inset 0 1px 2px rgba(96, 48, 0, 0.25);
+  }
+
+  input[type="range"] {
+    accent-color: var(--color-wood-border);
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: var(--color-panel-dark);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-wood-border);
+    border: 1px solid #45291a;
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #96631a;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply border-2 border-wood-border rounded-[3px];
+    background-color: var(--color-panel);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 252, 240, 0.35),
+      inset 0 1px 4px rgba(96, 48, 0, 0.18),
+      0 2px 6px rgba(20, 10, 0, 0.4);
+  }
+  .panel-header {
+    @apply border-b-2 border-border-dark px-3 py-1.5 font-display font-semibold text-[14px];
+    color: var(--ink-light);
+    background-color: var(--color-wood);
+    background-image: linear-gradient(rgba(255, 240, 205, 0.14), rgba(0, 0, 0, 0.3));
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 1px 0 rgba(255, 236, 190, 0.28), inset 0 -3px 6px rgba(0, 0, 0, 0.28);
+  }
+  .btn {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-[3px] border border-border-dark text-ink text-[12px] font-semibold
+      cursor-pointer select-none whitespace-nowrap;
+    background-color: #d9bb7f;
+    background-image: linear-gradient(to bottom, rgba(255, 247, 225, 0.6), rgba(122, 79, 32, 0.32));
+    text-shadow: 0 1px 0 rgba(255, 250, 230, 0.4);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.5),
+      inset 0 -2px 3px rgba(90, 55, 15, 0.28),
+      0 1px 2px rgba(0, 0, 0, 0.35);
+  }
+  .btn:hover:not(:disabled) {
+    background-image: linear-gradient(to bottom, rgba(255, 252, 238, 0.75), rgba(150, 100, 40, 0.24));
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(70, 42, 10, 0.4);
+  }
+  .btn:disabled {
+    @apply opacity-45 cursor-not-allowed;
+    filter: grayscale(0.35);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+  .btn-danger {
+    background-color: #a33a2a;
+    background-image: linear-gradient(to bottom, rgba(255, 190, 170, 0.45), rgba(80, 15, 5, 0.5));
+    @apply text-white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+  .btn-danger:hover:not(:disabled) {
+    background-image: linear-gradient(to bottom, rgba(255, 210, 195, 0.55), rgba(110, 25, 10, 0.45));
+  }
+
+  .tab {
+    @apply px-3 py-1.5 border-2 border-b-0 border-border-dark rounded-t-[4px] font-display font-semibold text-[13px] cursor-pointer;
+    color: #e6d3ac;
+    background-color: #5c3a1c;
+    background-image: linear-gradient(rgba(255, 235, 190, 0.12), rgba(0, 0, 0, 0.38));
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+    box-shadow: inset 0 1px 0 rgba(255, 236, 190, 0.2);
+  }
+  .tab:hover:not(:disabled):not(.tab-active) {
+    color: #fff3d4;
+  }
+  .tab-active {
+    @apply text-ink;
+    background-color: var(--color-panel);
+    text-shadow: none;
+    box-shadow: inset 0 1px 0 rgba(255, 252, 240, 0.6);
+  }
+  .tab:disabled {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  .table-game {
+    @apply w-full border-collapse text-[12px];
+  }
+  .table-game th {
+    @apply border border-border-dark px-2 py-1 text-left font-display font-semibold;
+    color: var(--ink-light);
+    background-color: var(--color-wood);
+    background-image: linear-gradient(rgba(255, 240, 205, 0.12), rgba(0, 0, 0, 0.3));
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  }
+  .table-game td {
+    @apply border border-wood-border/50 px-2 py-1;
+  }
+  .table-game tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  .table-game tbody tr:hover td {
+    background: rgba(255, 241, 205, 0.45);
+  }
+
+  /* Lettered plank — map rulers and other narrow wooden strips. */
+  .wood-strip {
+    color: var(--ink-light);
+    background-color: var(--color-wood);
+    background-image: linear-gradient(rgba(255, 240, 205, 0.12), rgba(0, 0, 0, 0.3));
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+  }
+
+  /* 9-slice plank frame — for "pictures": the village illustration, map, minimap. */
+  .frame-wood {
+    border: 10px solid var(--color-wood-border);
+    box-shadow: 0 2px 8px rgba(20, 10, 0, 0.45);
+  }
+
+  /* Bottom tab bar — narrow screens only; desktop keeps the tabs at the top. */
+  .navbar-bottom {
+    background-color: var(--color-wood);
+    background-image: linear-gradient(rgba(255, 235, 190, 0.12), rgba(0, 0, 0, 0.42));
+    border-top: 2px solid var(--color-border-dark);
+    box-shadow: 0 -3px 10px rgba(20, 10, 0, 0.45);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .navbtn {
+    @apply flex flex-col items-center justify-center gap-0.5 flex-1 py-1.5 px-0.5 font-display font-semibold text-[10px] leading-tight cursor-pointer relative;
+    color: #e6d3ac;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+    background: none;
+    border: 0;
+  }
+  .navbtn-active {
+    color: #fff3d4;
+    background: rgba(244, 228, 188, 0.16);
+    box-shadow: inset 0 2px 0 var(--color-gold);
+  }
+  .navbtn .navbtn-icon {
+    font-size: 17px;
+    line-height: 1;
+  }
+}
+
+/* On narrow screens a table turns into cards: the column header moves before the cell via `data-label`. */
+@media (max-width: 700px) {
+  .table-stack,
+  .table-stack tbody,
+  .table-stack tr,
+  .table-stack td {
+    display: block;
+    width: 100%;
+  }
+  .table-stack thead {
+    display: none;
+  }
+  .table-stack tr {
+    margin-bottom: 6px;
+    border: 1px solid var(--color-wood-border);
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.22);
+  }
+  .table-stack tr:nth-child(even) td,
+  .table-stack tbody tr:hover td {
+    background: none;
+  }
+  .table-stack td {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    border: 0;
+    border-bottom: 1px dashed rgba(125, 81, 15, 0.35);
+    padding: 5px 8px;
+  }
+  /* The label is a separate flex item, so the value stays on one line next to it. */
+  .table-stack td::before {
+    content: attr(data-label);
+    flex: 0 0 6.5rem;
+    font-weight: 600;
+    color: var(--color-muted);
+  }
+  .table-stack td:last-child {
+    border-bottom: 0;
+  }
+  .table-stack td.stack-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: auto;
+    border-bottom: 0;
+    padding-right: 2px;
+  }
+  .table-stack td.stack-inline::before {
+    content: none;
+  }
+  .table-stack td:not([data-label]):not(.stack-inline) {
+    display: block;
+  }
+  .table-stack td:not([data-label])::before {
+    content: none;
+  }
+  .table-stack tr:has(td.stack-inline:last-child) td.stack-inline {
+    padding-bottom: 8px;
+  }
+}
+
+/* A finger needs a bigger target than a cursor — 34 px is the minimum that avoids hitting the neighbouring button. */
+@media (pointer: coarse) {
+  .btn {
+    @apply px-3 py-1.5 text-[13px];
+    min-height: 34px;
+  }
+  .tab {
+    @apply px-3 py-2;
+  }
+  input[type="text"], input[type="number"], input[type="search"], input:not([type]), select {
+    min-height: 34px;
+  }
+  button, select, input, a {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(200, 165, 75, 0.25);
+  }
+}
+
+/* Outside the layers: the plank header is dark, so these two text colours must be inverted —
+   inside @layer components, Tailwind utilities from a later layer would win over them. */
+.panel-header .text-muted { color: #d9c8a6; }
+.panel-header .text-gold { color: #f0c95f; }
+
+/* The host panel comes from the account site; in the god view it sits on a game panel. */
+.host-panel > * + * { margin-top: 0.5rem; }
+.host-panel input[readonly] { min-width: 0; flex: 1 1 200px; }

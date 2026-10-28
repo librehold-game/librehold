@@ -1,0 +1,63 @@
+{
+  "report": {
+    "intro": "Opisz błąd, gracza, który łamie zasady, albo zadaj pytanie. Administrator czyta każde zgłoszenie.",
+    "kind": "Czego dotyczy?",
+    "text": "Co się stało?",
+    "count": "{n} / {max}",
+    "hint": "Co najmniej {min} znaków.",
+    "email": "E-mail (nieobowiązkowo)",
+    "send": "Wyślij",
+    "sending": "Wysyłanie…",
+    "sent": "Dziękujemy. Zgłoszenie trafiło do administratora.",
+    "asAccount": "Zgłoszenie pójdzie jako {name}.",
+    "asVisitor": "Zgłoszenie pójdzie bez konta. Podaj e-mail, jeśli chcesz dostać odpowiedź.",
+    "attached": "Wysyłane razem ze zgłoszeniem",
+    "world": "Świat",
+    "screen": "Ekran",
+    "build": "Wersja",
+    "browser": "Przeglądarka",
+    "close": "Zamknij",
+    "kindBug": "Błąd",
+    "kindPlayer": "Gracz",
+    "kindQuestion": "Pytanie",
+    "kindOther": "Coś innego"
+  },
+  "errors": {
+    "tooManyReports": "W ciągu ostatniej godziny wysłano już pięć zgłoszeń. Spróbuj później.",
+    "reportKind": "Wybierz, czego dotyczy zgłoszenie.",
+    "reportText": "Napisz od 10 do 2000 znaków.",
+    "reportEmail": "Ten adres e-mail wygląda na błędny."
+  },
+  "admin": {
+    "tab": {
+      "reports": "Zgłoszenia"
+    },
+    "reports": {
+      "empty": "Nie ma jeszcze zgłoszeń.",
+      "date": "Data",
+      "kind": "Rodzaj",
+      "sender": "Nadawca",
+      "world": "Świat",
+      "text": "Treść",
+      "email": "E-mail",
+      "status": "Stan",
+      "visitor": "gość bez konta",
+      "details": "Szczegóły",
+      "statuses": {
+        "new": "nowe",
+        "read": "przeczytane",
+        "done": "zamknięte"
+      }
+    }
+  },
+  "privacy": {
+    "reportsTitle": "Zgłoszenia problemów",
+    "reports": "Zgłoszenie problemu zapisuje to, co piszesz: rodzaj, treść i e-mail, jeśli go podasz. Wysłane po zalogowaniu zapisuje też konto, a wysłane z gry także świat, ekran, na którym jesteś, wersję gry i przeglądarkę. Nigdy nie zapisuje adresu IP. Zgłoszenie jest usuwane rok po tym, jak administrator je zamknie."
+  },
+  "head": {
+    "report": {
+      "title": "Zgłoś problem — LibreHold",
+      "description": "Napisz do administratora Osad o błędzie, graczu łamiącym zasady albo zadaj pytanie. Konto nie jest potrzebne."
+    }
+  }
+}

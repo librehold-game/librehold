@@ -1,0 +1,204 @@
+{
+  "guides": {
+    "breadcrumb": "How to play",
+    "pageTitle": "{title} — how to play — {app}",
+    "related": "Read more",
+    "next": "Next guide: {title}",
+    "howToPlay": {
+      "title": "How to play: villages, raids and conquest — LibreHold",
+      "description": "What LibreHold is, how instant games differ from long worlds, and the loop that turns one village into many. Start here, then read the guides.",
+      "heading": "How to play",
+      "lead": "LibreHold is a free strategy game about one village that becomes many. This page explains the two kinds of worlds and the loop every game follows; the guides below go deeper.",
+      "sections": {
+        "what": {
+          "title": "What the game is",
+          "body": "LibreHold is a free strategy game that runs in the browser, on a computer or a phone. There is nothing to install and nothing to buy that makes you stronger.\n\nYou start with a village. Its buildings produce wood, clay and iron, train troops and protect what you have. Troops raid the barbarian villages around you, defend you against other players and, once you can afford hetmans, take new villages for you.\n\nThe map is shared. The other villages belong to real players, to bots that are clearly labelled as bots, or to barbarians, who belong to nobody. Everything happens in real time: a building takes a while to go up, an army needs time to march, and the game goes on while you are away."
+        },
+        "worlds": {
+          "title": "Instant games and long worlds",
+          "body": "An instant game lasts {instantDurationMin} minutes. It has seats for {instantSeats} players and {instantBots} bots on a map of {instantMapSize}×{instantMapSize} fields, and it runs at speed ×{instantSpeed}. You can join during its first {instantJoinWindowMin} minutes. Nobody starts from scratch: your village is already built up, and an army with a hetman is waiting in it. Play now puts you in one straight away, without an account.\n\nA long world runs for weeks. Its default speed is ×{longDefaultSpeed}, and you start the classic way: a Town Hall at its first level, {longStartResources} of each resource and {longStartSpear} spearmen. New players get beginner protection, {longProtectionDays} days by default, and nobody can attack them while it lasts. Long worlds need an account; a guest gets one by picking a name and a password.\n\nIf you have never played a game like this, start with an instant game. One game shows you the whole loop, and the guide to your first hour walks you through it."
+        },
+        "loop": {
+          "title": "The loop: from resources to new villages",
+          "body": "Every game follows the same loop.\n\nResources come first. Your Lumber Mill, Brickworks and Ironworks produce around the clock, and the Storehouse decides how much you can keep.\n\nResources become buildings. A higher Town Hall builds faster, the Barracks and the Stable train troops, the Smithy researches them, the Farmstead feeds them and the Wall helps them hold.\n\nBuildings become troops, and troops go raiding. Barbarian villages nearby have resources and usually few defenders or none, so light cavalry and axemen bring home far more than your village produces on its own.\n\nRaids pay for hetmans. A hetman needs an Academy, coins and a strong escort. Each one that survives a winning attack lowers the target's loyalty, and when it reaches zero the village is yours.\n\nMore villages mean more resources, and the loop starts again, only bigger. Other players run the same loop and look at your village as their next target, so defence is part of it too."
+        }
+      },
+      "guidesTitle": "The guides",
+      "readGuide": "Read the guide",
+      "lookUp": "Look things up",
+      "unitsLink": "All units",
+      "buildingsLink": "All buildings"
+    },
+    "guide": {
+      "firstHour": {
+        "title": "Your first hour: an instant game from start to finish",
+        "description": "What you get when you press Play now, how to take your first barbarian village with a single hetman, and how an instant game ends.",
+        "lead": "An instant game is the quickest way to learn LibreHold. You get a built-up village, a ready army and a short, fast game to see how far they take you.",
+        "sections": {
+          "start": {
+            "title": "What you start with",
+            "body": "Press Play now and the game makes you a guest player with a random nickname. No email, no password. You can change the nickname with the button at the top of the screen.\n\nYour village is already grown: a Town Hall at level {instantStartMain}, Barracks at {instantStartBarracks}, a Stable at {instantStartStable}, a Smithy at {instantStartSmithy} and a Wall at {instantStartWall}, plus an Academy, a Market and strong resource buildings. You have {instantStartResources} each of wood, clay and iron, and every unit the Smithy researches is already researched.\n\nThe army waits at home: spearmen {instantStartSpear}, axemen {instantStartAxe}, light cavalry {instantStartLightCav}, scouts {instantStartScout} and hetmans {instantStartNoble}. A short tutorial shows you where to find them. For the first {instantProtectionMin} minutes you are under beginner protection: no player can attack you, and you can attack only barbarians."
+          },
+          "firstConquest": {
+            "title": "Your first conquest",
+            "body": "Grey villages on the map belong to barbarians. In an instant game their loyalty starts at {instantBarbarianLoyalty}, and every hetman who survives a winning attack lowers loyalty by {nobleDropMin} to {nobleDropMax}. So a single hetman is enough to take one.\n\nOpen the map, click the nearest barbarian village and check the distance. Then go to the Rally Point and send one attack with the hetman and a good escort of axemen together. The axemen fight, the hetman survives behind them, and the village changes hands the moment the attack lands.\n\nClear the defenders first. Most barbarian villages have no troops at all, but a village a player has left behind keeps its army and its wall, and a hetman in a lost battle dies with everyone else. If the map tells you nothing about a village, send your scouts first.\n\nDo not leave a long gap between the first visit and the hetman. Loyalty starts growing back from the moment anyone's troops first reach a barbarian village, and at this speed it climbs quickly. A hetman who comes with the very first attack meets the lowest loyalty there is."
+          },
+          "growing": {
+            "title": "The rest of the hour",
+            "body": "A hetman is used up when he takes a village, so the next one has to be trained in the Academy. Each hetman needs coins: as many as you have villages, plus as many as the hetmans you already own. A coin costs {coinWood} wood, {coinClay} clay and {coinIron} iron, and the hetman has his own price on top.\n\nYour main village produces a lot, but not enough to mint coins every few minutes. Light cavalry fill the gap: send them at the barbarian villages around you, and use the Assistant to repeat the raids quickly. Loot pays for coins, coins pay for hetmans, and hetmans bring villages.\n\nThe level of the Academy limits how many hetmans a village holds at once, counting the ones on the road. Raise it if you want to send more than one at a time.\n\nKeep an eye on the Rally Point as well. Once your protection ends, players and bots can attack you, and the villages you take start out weak: every building loses levels, and there are no troops in them."
+          },
+          "ending": {
+            "title": "How the game ends",
+            "body": "An instant game ends after {instantDurationMin} minutes, or earlier when one player holds {instantDominationPct}% of all the villages on the map. Bots cannot end the game early this way, but they do appear in the final ranking: when time runs out, whoever has the most points wins, human or bot.\n\nWhen the game is over, the results page shows the leaderboard with each player's points, villages and conquests. The page stays, so you can come back to it later.\n\nYou can keep everything you did. Press Create account at any time during the game, choose a name and a password, and your guest becomes a full player with the same village, the same game and the same tally of games. An account also opens the long worlds. Guests nobody has seen for {guestDeleteDays} days are deleted, together with their history.\n\nYou can also leave early. Leave world ends your game, and your villages go to the barbarians."
+          }
+        },
+        "shots": {
+          "first-hour-start": {
+            "alt": "The village view at the start of an instant game: a grown village with building levels on the map, the production panel and the starting army.",
+            "caption": "Your village at the very start: buildings already built up, full storehouses and an army with a hetman. The timer at the top counts down to the end of the game."
+          },
+          "first-hour-conquest": {
+            "alt": "The map of an instant game with a barbarian village selected, showing its distance and the travel times of light cavalry and axemen.",
+            "caption": "Pick the nearest grey village: its card shows the distance and how long each unit needs to get there."
+          }
+        }
+      },
+      "raiding": {
+        "title": "Raiding barbarian villages for resources",
+        "description": "Why raids matter, which villages to hit, which troops carry the most, how the farm assistant and auto-farming work, and what can go wrong.",
+        "lead": "Your own production is only part of your income. The rest sits in the barbarian villages around you, waiting to be collected one raid at a time.",
+        "sections": {
+          "why": {
+            "title": "Why raid at all",
+            "body": "Your Lumber Mill, Brickworks and Ironworks produce every hour, but the Storehouse holds only so much. Once it is full, whatever is produced beyond its capacity is lost, and so is any loot that comes home to a full Storehouse.\n\nBarbarian villages have their own mines, and nobody spends what they produce. Every time you take their stock, it starts filling up again. A steady stream of raids brings you more resources than your own production, and brings them earlier in the game than anything else can.\n\nSo the rule is simple: spend what you have, keep the Storehouse from overflowing, and send troops out to fetch more."
+          },
+          "targets": {
+            "title": "Which villages to hit",
+            "body": "Grey villages on the map belong to barbarians. Most of them have no troops and no wall: they are small settlements with a little of each resource. Villages a player has abandoned are the exception. They keep whatever army and wall they had.\n\nCloser is better. A raid that comes home quickly can go out again quickly, and your troops are at risk for less time. A light cavalryman needs {lightCavMinutesPerField} minutes per field at the base unit speed, and world settings make that faster, but distance still decides how many trips you get in.\n\nBigger villages have more to take, but they are also where surprises hide. Look at the last report before you send again: the Assistant shows whether the last attack came home with a full load, with partial loot or with losses."
+          },
+          "army": {
+            "title": "Which troops to send",
+            "body": "What a raid brings back depends on what your surviving troops can carry. Each light cavalryman carries {lightCavCarry} resources, each spearman {spearCarry} and each axeman {axeCarry}.\n\nLight cavalry are the raiders. They are fast, they carry the most, and they hit hard enough for an empty barbarian village. Axemen are slow infantry and carry little, but they win fights, so use them where there are defenders. Spearmen carry well for infantry, but they are defenders, and every spearman out raiding is one fewer guarding your village.\n\nSize the raid to the loot. Too many carriers waste a trip; too few leave resources behind. The report shows how much came back against how much your troops could carry, and marks a full load."
+          },
+          "assistant": {
+            "title": "The farm assistant and templates",
+            "body": "The Assistant lists the barbarian villages within a radius of your current village: distance, points, the last attack, the last loot, the estimated loot and the defence you saw last time. Filters hide villages you attacked a moment ago, villages with a wall above the level you choose, villages where you had losses, and villages with an attack already on the way.\n\nTemplates are saved troop sets. Set up A and B once, in the Rally Point or with the edit link in the Assistant, and a single click sends them at a row. Template C is a pack: the Assistant sends as many packs as the estimated loot needs. On a keyboard, the arrow keys move between rows and A, B or C sends.\n\nAuto-farming unlocks when you have {autoFarmUnlockVillages} villages, or earlier through the Raider quest. Turn it on for the villages you choose, and every {autoFarmIntervalMin} minutes it sends template A at the targets that pass your filters, nearest first, for as long as the troops last."
+          },
+          "risks": {
+            "title": "Risks: scouting, the wall and the hideout",
+            "body": "Scout first when you are not sure. A few scouts tell you the troops, buildings and resources of a village before you risk an army.\n\nA wall costs you troops. Every level makes the defence stronger, and even an empty village with a wall makes the attackers pay in losses. That is why the Assistant hides villages with a higher wall than you allow.\n\nA Hideout protects part of a village's resources from raiders. A barbarian village with a Hideout keeps that part out of your reach, so the estimated loot is smaller than its full stock. A scout report shows everything in the village, the hidden part included, so do not count on all of it. It works the other way too: your own Hideout keeps part of your resources out of other players' reach.\n\nFinally, raids are attacks. Players see them coming at their villages, and a raid that passes close to another player's village can be caught on the road."
+          }
+        },
+        "shots": {
+          "raiding-farm": {
+            "alt": "The farm assistant: a table of nearby barbarian villages with distance, points, last attack, estimated loot and buttons for templates A, B and C.",
+            "caption": "The Assistant lists the barbarian villages around you. The filters at the top hide the ones you hit recently, the walled ones and the ones where you had losses."
+          },
+          "raiding-report": {
+            "alt": "A battle report: axemen beat an empty barbarian village and came home with a full load of resources.",
+            "caption": "A good raid: no defenders, no losses and a full load. You can repeat the attack or send template A straight from the report."
+          }
+        }
+      },
+      "defending": {
+        "title": "Defending your village: incoming attacks, support and dodging",
+        "description": "How to read incoming attacks, why there is no night bonus, which troops defend best, and how to dodge a hit you cannot hold.",
+        "lead": "Sooner or later someone attacks you. Defence in LibreHold is about seeing it coming, having the right troops at home and deciding in time whether to hold or step aside.",
+        "sections": {
+          "incoming": {
+            "title": "Seeing an attack coming",
+            "body": "Attacks on your village appear under Incoming attacks, both in the village view and in the Rally Point. Each row says where the attack comes from, what it probably is and how long until it arrives. The kind is a guess read from the march time: the slowest unit sets the pace, so an attack moving at a hetman's pace is marked “hetman?”. Several hetmans landing right after each other are flagged as a train.\n\nOn the map, an incoming army is drawn along its road. Clicking it opens a card with the same facts and the exact arrival time.\n\nThe game can also ring a bell. Turn on Sounds in Settings and you hear an alarm when an attack on your village lands while the game is open. It is not a wake-up call: it sounds when the attack has arrived, not before. For an attack that lands while you sleep, look at the arrival time and set an alarm on your phone."
+          },
+          "noBonus": {
+            "title": "There is no night bonus",
+            "body": "There is no night bonus in LibreHold. Your village defends exactly as well at three in the morning as at noon, and nothing slows an attack down because you are asleep.\n\nThe only shield the game gives you is beginner protection. On long worlds it lasts {longProtectionDays} days by default, and the admin of each world can set it anywhere from none to {protectionMaxDays} days. In an instant game it lasts {instantProtectionMin} minutes. While it lasts, nobody can attack you, and you can attack only barbarians.\n\nBots know all this. On long worlds they like to time attacks for your night or for the hours when you are usually away, which they read from when your points stop growing. Some learn when your troops come back from a dodge and land right after. Plan your defence for the hours you are offline, not the hours you are watching."
+          },
+          "defence": {
+            "title": "Holding: the right troops, the wall and support",
+            "body": "Good defence depends on what attacks you. Spearmen are cheap and stand well against cavalry, with {spearDefCav} defence against it each. Swordsmen are the answer to infantry such as axemen. Archers defend well against both infantry and cavalry. A mix of all three covers you against whatever arrives.\n\nThe Wall multiplies everything. Each level adds defence and makes the whole garrison stronger, so it is usually the best building to raise once attacks start.\n\nYou do not have to hold alone. Support from your other villages fights in the battle as if it were your own army, and so does support from friends: anyone can send troops to your village, and you can send them back from the Rally Point when the danger has passed. The Arrive at mode lets you time support so it lands before the attack.\n\nAgainst a hetman train there is a sharper tool. Snipe sends support that lands between the first and the second hetman, so the hetmans behind the first meet a fresh garrison."
+          },
+          "dodge": {
+            "title": "Dodging: stepping out of the way",
+            "body": "Sometimes an attack is too big to hold. Then the best defence is to be somewhere else: send your troops out before it lands and bring them back right after. The attacker finds an empty village, takes some resources and kills nobody.\n\nAny army can be recalled during the first {cancelWindowMin} minutes of its march, and it takes as long to come back as it spent going out. That is the whole trick, and the Dodge button does it for you: all your troops leave as support to your nearest village, or as an attack on a nearby barbarian village, and turn back so that they arrive home a second after the hit. Because of the recall window, you have to press Dodge early enough, roughly two such windows before the attack lands.\n\nDodging is right against a large attack that would wipe out your garrison. It is wrong against hetmans: an empty village loses loyalty to every hetman who arrives. Against a train, hold, snipe or call for support."
+          }
+        },
+        "shots": {
+          "night-incoming": {
+            "alt": "The Rally Point with an incoming attack: where it comes from, its kind, the countdown to arrival and the Dodge button.",
+            "caption": "Incoming attacks show who is coming, what it probably is and when it lands."
+          },
+          "night-support": {
+            "alt": "The Rally Point sending spearmen as support to the player's own village, with the distance, travel time and arrival shown in the preview.",
+            "caption": "Support from your other village: the preview shows when it arrives, so you know whether it gets there before the attack."
+          }
+        }
+      },
+      "scouting": {
+        "title": "Scouting and armies on the road",
+        "description": "How scouts work, what a scout report shows, which armies you can see on the map, and how to scout or fight them in the field.",
+        "lead": "Information wins more battles than troops do. Scouts tell you what waits in a village, and the map shows you the armies marching past your land.",
+        "sections": {
+          "scouts": {
+            "title": "Scouts and scout reports",
+            "body": "Scouts are trained in the Stable. They are the fastest unit in the game, {scoutMinutesPerField} minutes per field at the base unit speed, and they carry nothing. A scouting mission is an attack made of scouts only; scouts mixed into a normal attack simply march along with it.\n\nWhen your scouts arrive, they meet only the defending scouts, and each defending scout counts {scoutDefenseFactor} times. If your scouts are stronger, they get through, some of them may die, and the report shows the village's resources, buildings, troops (support included) and loyalty. If not, every scout dies and the report says only that the scouting failed. The defender loses nothing either way.\n\nSo send more scouts than you think you need, and keep some at home: your own scouts are the only thing that stops other players from looking inside your village."
+          },
+          "sight": {
+            "title": "What you see on the map",
+            "body": "Every attack aimed at one of your villages is visible to you from the moment it sets out. Other armies are visible too, as long as they pass close to one of your villages. The sight radius, counted in map fields, is {sightRadiusLong} on long worlds and {sightRadiusInstant} in instant games, where armies cross a field in seconds and you need to see them earlier. If a world has field battles switched off, you see only the attacks on your own villages.\n\nClick an army on the map to open its card: where it comes from, where it is going, when it arrives and what it looks like, judging by its pace. From the card you can scout it or attack it in the field, and if it is coming at you, dodge it."
+          },
+          "field": {
+            "title": "Meeting an army on the road",
+            "body": "Scout and Attack in the field send your troops to meet an army on its road. The game works out the meeting point when you send them and shows when they will get there; if your troops are too slow to catch it, it tells you so straight away.\n\nA field scout works like scouting a village, against the scouts in that army, and shows exactly what marches in it. A guess like “hetman?” becomes a fact.\n\nA field battle is fought without a wall, because there is none on a road. That makes it the cheapest moment to hit an army: a handful of horsemen can destroy a column of axemen and its hetman before it ever reaches your village. Axemen defend badly against cavalry, and in the open nothing helps them.\n\nIf the army you hit was carrying loot, its survivors keep what they can carry, your survivors take what is left up to what they can carry, and the rest is lost on the road. If the army has turned back or arrived before your troops get there, they find nothing and come home."
+          },
+          "turnBack": {
+            "title": "Turning back",
+            "body": "Normally an army can be recalled only during the first {cancelWindowMin} minutes of its march. An army that has been hit in the field is different: it may turn back at any moment until it arrives. If your attack is caught on the road and loses half its strength, you do not have to throw the rest at a defended village. Open its card and press Turn back.\n\nThe other side knows this too. When you hit an army on the road, expect what is left of it to turn round rather than walk into a defence that is now too strong for it.\n\nThe way home takes as long as the march so far. The later your troops turn back, the longer they are away, and an empty village is an easy target."
+          }
+        },
+        "shots": {
+          "scouting-army-card": {
+            "alt": "The map with armies on their roads and the card of an incoming attack that looks like a hetman, with Dodge, Scout and Attack in the field buttons.",
+            "caption": "Click an army on the map to see where it is going, when it arrives and what it looks like, then scout it or attack it in the field."
+          },
+          "scouting-field-report": {
+            "alt": "A field battle report: a handful of light cavalry beat a column of axemen with a hetman on the road.",
+            "caption": "Caught on the road with no wall to hide behind, a hetman attack loses everything to a few horsemen."
+          }
+        }
+      },
+      "nobles": {
+        "title": "Hetmans and conquest: taking another village",
+        "description": "The Academy, coins, loyalty and hetman trains: what it takes to conquer a village with hetmans, and what is lost along the way.",
+        "lead": "Hetmans are how one village becomes many. They are expensive, slow and fragile, and getting them to the target alive is the whole art.",
+        "sections": {
+          "academy": {
+            "title": "The Academy",
+            "body": "Hetmans are trained in the Academy. To build it, you need a Town Hall at level {academyMain}, a Market at level {academyMarket} and a Smithy at level {academySmithy}. On a long world that is a long way from the start, and reaching it is the first big goal of every player.\n\nThe level of the Forge is also a limit: a village can hold as many hetmans as its Academy level, counting the ones in training and the ones on the road. Raising the Forge lets one village prepare several hetmans at once.\n\nA hetman is the slowest unit in the game, and he can attack only villages up to {nobleMaxDistance} fields away. Plan your conquests around the villages within that reach."
+          },
+          "coins": {
+            "title": "Coins",
+            "body": "Besides his own cost, every hetman needs coins. You mint them in the Academy with Mint a coin, and a coin always costs {coinWood} wood, {coinClay} clay and {coinIron} iron. Coins belong to you, not to a village: all your villages share them.\n\nThe coins a hetman needs are the number of your villages plus the number of hetmans you already own, including those in training and on the road. Every new village and every waiting hetman makes the next one dearer. A hetman who dies or is used up in a conquest stops counting.\n\nThis is why raids matter so much before a conquest. Coins eat resources faster than any building does, and the barbarian villages around you are where most of those resources come from."
+          },
+          "loyalty": {
+            "title": "Loyalty",
+            "body": "Every village has loyalty, at most {maxLoyalty}. Each hetman who survives a winning attack lowers it by a random {nobleDropMin} to {nobleDropMax}. When it falls to zero or below, the village is yours and that hetman is used up; any other hetmans in the same attack go home.\n\nLoyalty grows back by one point per hour, multiplied by the world speed, so a slow conquest undoes itself. After a conquest the village starts at {loyaltyAfterConquest}, which makes it easier for the old owner to win it back at once.\n\nA conquest costs the village too. Every building loses {plunderLevelsMin} to {plunderLevelsMax} levels, though the Town Hall never drops below its first level. Research starts from zero, the queues are cleared, support stationed there is sent home, and the previous owner's troops that were away from it are lost.\n\nOn long worlds a player's last village cannot be taken by default: hetmans stop just short of zero. Abandoned accounts are the exception. In instant games the last village can be lost like any other."
+          },
+          "train": {
+            "title": "Clearing and the hetman train",
+            "body": "Hetmans fight badly. If the attack loses, they die with everyone else, and even in a winning attack they can fall. Clear the village first: send a large attack with axemen, light cavalry and rams to kill the defenders and bring the wall down, and send the hetmans right behind it.\n\nSeveral hetmans landing one after another make a train. Use the Arrive at mode in the Rally Point so that each attack lands a moment after the one before: the clearing attack first, then the first hetman with a solid escort, then the others with smaller ones. With only fractions of a second between them, the defender has almost no gap to slip support into.\n\nYou can also put several hetmans into one attack. Each of them lowers loyalty, but if that attack loses, they all die together. A train spreads the risk.\n\nStrike when the owner is not ready. Scout first, check for support in the village, and remember that the defender sees your hetmans from the moment they set out, marked “hetman?”. If an attack arrives after the village is already yours, its troops simply stay there as support."
+          }
+        },
+        "shots": {
+          "nobles-academy": {
+            "alt": "The Academy: the coins you own, the coin cost, the Mint a coin button and a hetman ready to recruit.",
+            "caption": "The Academy shows how many coins the next hetman needs and how many hetmans this village can hold."
+          },
+          "nobles-conquest": {
+            "alt": "A conquest report: axemen and a hetman took a barbarian village, and its loyalty fell to zero.",
+            "caption": "Village conquered: the hetman brought loyalty down to zero and the village changed hands."
+          }
+        }
+      }
+    }
+  }
+}

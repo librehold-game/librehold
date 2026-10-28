@@ -1,0 +1,1487 @@
+{
+  "BONUS_BALANCE": {
+    "allResources": 1.3,
+    "farmCapacity": 1.2,
+    "recruitTimeFactor": 0.8,
+    "singleResource": 2,
+    "storageCapacity": 1.5
+  },
+  "BUILDINGS": {
+    "academy": {
+      "baseCost": {
+        "clay": 25000,
+        "iron": 10000,
+        "wood": 15000
+      },
+      "basePoints": 512,
+      "basePop": 80,
+      "baseTimeSec": 586800,
+      "costFactor": {
+        "clay": 2,
+        "iron": 2,
+        "wood": 2
+      },
+      "id": "academy",
+      "maxLevel": 3,
+      "popFactor": 1.17,
+      "requirements": [
+        {
+          "building": "main",
+          "level": 20
+        },
+        {
+          "building": "market",
+          "level": 10
+        },
+        {
+          "building": "smithy",
+          "level": 20
+        }
+      ]
+    },
+    "barracks": {
+      "baseCost": {
+        "clay": 170,
+        "iron": 90,
+        "wood": 200
+      },
+      "basePoints": 16,
+      "basePop": 7,
+      "baseTimeSec": 1800,
+      "costFactor": {
+        "clay": 1.28,
+        "iron": 1.26,
+        "wood": 1.26
+      },
+      "id": "barracks",
+      "maxLevel": 25,
+      "popFactor": 1.17,
+      "requirements": [
+        {
+          "building": "main",
+          "level": 3
+        }
+      ]
+    },
+    "clay": {
+      "baseCost": {
+        "clay": 50,
+        "iron": 40,
+        "wood": 65
+      },
+      "basePoints": 6,
+      "basePop": 10,
+      "baseTimeSec": 900,
+      "costFactor": {
+        "clay": 1.265,
+        "iron": 1.24,
+        "wood": 1.27
+      },
+      "id": "clay",
+      "maxLevel": 30,
+      "popFactor": 1.14,
+      "requirements": []
+    },
+    "farm": {
+      "baseCost": {
+        "clay": 40,
+        "iron": 30,
+        "wood": 45
+      },
+      "basePoints": 5,
+      "basePop": 0,
+      "baseTimeSec": 1200,
+      "costFactor": {
+        "clay": 1.32,
+        "iron": 1.29,
+        "wood": 1.3
+      },
+      "id": "farm",
+      "maxLevel": 30,
+      "popFactor": 1,
+      "requirements": []
+    },
+    "hide": {
+      "baseCost": {
+        "clay": 60,
+        "iron": 50,
+        "wood": 50
+      },
+      "basePoints": 5,
+      "basePop": 2,
+      "baseTimeSec": 1800,
+      "costFactor": {
+        "clay": 1.25,
+        "iron": 1.25,
+        "wood": 1.25
+      },
+      "id": "hide",
+      "maxLevel": 10,
+      "popFactor": 1.17,
+      "requirements": []
+    },
+    "iron": {
+      "baseCost": {
+        "clay": 65,
+        "iron": 70,
+        "wood": 75
+      },
+      "basePoints": 6,
+      "basePop": 10,
+      "baseTimeSec": 1080,
+      "costFactor": {
+        "clay": 1.275,
+        "iron": 1.24,
+        "wood": 1.252
+      },
+      "id": "iron",
+      "maxLevel": 30,
+      "popFactor": 1.17,
+      "requirements": []
+    },
+    "main": {
+      "baseCost": {
+        "clay": 80,
+        "iron": 70,
+        "wood": 90
+      },
+      "basePoints": 10,
+      "basePop": 5,
+      "baseTimeSec": 900,
+      "costFactor": {
+        "clay": 1.275,
+        "iron": 1.26,
+        "wood": 1.26
+      },
+      "id": "main",
+      "maxLevel": 30,
+      "popFactor": 1.17,
+      "requirements": []
+    },
+    "market": {
+      "baseCost": {
+        "clay": 100,
+        "iron": 100,
+        "wood": 100
+      },
+      "basePoints": 10,
+      "basePop": 20,
+      "baseTimeSec": 2700,
+      "costFactor": {
+        "clay": 1.275,
+        "iron": 1.26,
+        "wood": 1.26
+      },
+      "id": "market",
+      "maxLevel": 25,
+      "popFactor": 1.17,
+      "requirements": [
+        {
+          "building": "main",
+          "level": 3
+        },
+        {
+          "building": "storage",
+          "level": 2
+        }
+      ]
+    },
+    "smithy": {
+      "baseCost": {
+        "clay": 180,
+        "iron": 240,
+        "wood": 220
+      },
+      "basePoints": 19,
+      "basePop": 20,
+      "baseTimeSec": 6000,
+      "costFactor": {
+        "clay": 1.275,
+        "iron": 1.26,
+        "wood": 1.26
+      },
+      "id": "smithy",
+      "maxLevel": 20,
+      "popFactor": 1.17,
+      "requirements": [
+        {
+          "building": "main",
+          "level": 5
+        },
+        {
+          "building": "barracks",
+          "level": 1
+        }
+      ]
+    },
+    "stable": {
+      "baseCost": {
+        "clay": 240,
+        "iron": 260,
+        "wood": 270
+      },
+      "basePoints": 20,
+      "basePop": 8,
+      "baseTimeSec": 6000,
+      "costFactor": {
+        "clay": 1.28,
+        "iron": 1.26,
+        "wood": 1.26
+      },
+      "id": "stable",
+      "maxLevel": 20,
+      "popFactor": 1.17,
+      "requirements": [
+        {
+          "building": "barracks",
+          "level": 5
+        },
+        {
+          "building": "smithy",
+          "level": 5
+        }
+      ]
+    },
+    "statue": {
+      "baseCost": {
+        "clay": 220,
+        "iron": 220,
+        "wood": 220
+      },
+      "basePoints": 24,
+      "basePop": 10,
+      "baseTimeSec": 1500,
+      "costFactor": {
+        "clay": 1.275,
+        "iron": 1.26,
+        "wood": 1.26
+      },
+      "id": "statue",
+      "maxLevel": 1,
+      "popFactor": 1.17,
+      "requirements": [
+        {
+          "building": "main",
+          "level": 1
+        }
+      ]
+    },
+    "storage": {
+      "baseCost": {
+        "clay": 50,
+        "iron": 40,
+        "wood": 60
+      },
+      "basePoints": 6,
+      "basePop": 0,
+      "baseTimeSec": 1020,
+      "costFactor": {
+        "clay": 1.27,
+        "iron": 1.245,
+        "wood": 1.265
+      },
+      "id": "storage",
+      "maxLevel": 30,
+      "popFactor": 1.15,
+      "requirements": []
+    },
+    "wall": {
+      "baseCost": {
+        "clay": 100,
+        "iron": 20,
+        "wood": 50
+      },
+      "basePoints": 8,
+      "basePop": 5,
+      "baseTimeSec": 3600,
+      "costFactor": {
+        "clay": 1.275,
+        "iron": 1.26,
+        "wood": 1.26
+      },
+      "id": "wall",
+      "maxLevel": 20,
+      "popFactor": 1.17,
+      "requirements": [
+        {
+          "building": "barracks",
+          "level": 1
+        }
+      ]
+    },
+    "wood": {
+      "baseCost": {
+        "clay": 60,
+        "iron": 40,
+        "wood": 50
+      },
+      "basePoints": 6,
+      "basePop": 5,
+      "baseTimeSec": 900,
+      "costFactor": {
+        "clay": 1.275,
+        "iron": 1.245,
+        "wood": 1.25
+      },
+      "id": "wood",
+      "maxLevel": 30,
+      "popFactor": 1.155,
+      "requirements": []
+    },
+    "workshop": {
+      "baseCost": {
+        "clay": 240,
+        "iron": 260,
+        "wood": 300
+      },
+      "basePoints": 24,
+      "basePop": 8,
+      "baseTimeSec": 6000,
+      "costFactor": {
+        "clay": 1.28,
+        "iron": 1.26,
+        "wood": 1.26
+      },
+      "id": "workshop",
+      "maxLevel": 15,
+      "popFactor": 1.17,
+      "requirements": [
+        {
+          "building": "main",
+          "level": 10
+        },
+        {
+          "building": "smithy",
+          "level": 10
+        }
+      ]
+    }
+  },
+  "BUILDING_BALANCE": {
+    "cancelRefundQueued": 1,
+    "cancelRefundStarted": 0.9,
+    "mainTimeFactor": 1.05,
+    "minBuildTimeMs": 1000,
+    "pointsFactor": 1.2,
+    "timeConst": 1.18,
+    "timeFactor": 1.2,
+    "timeMinExponent": -13,
+    "timeShift": 14
+  },
+  "BUILDING_ORDER": [
+    "main",
+    "barracks",
+    "stable",
+    "workshop",
+    "academy",
+    "smithy",
+    "statue",
+    "market",
+    "wood",
+    "clay",
+    "iron",
+    "farm",
+    "storage",
+    "hide",
+    "wall"
+  ],
+  "COMBAT_BALANCE": {
+    "buildingHpA": 0.39,
+    "buildingHpB": 0.8,
+    "catapultFactor": 0.8,
+    "lossExponent": 1.5,
+    "luckRange": 0.25,
+    "maxReports": 500,
+    "moraleVsBarbarian": 1,
+    "reducedLossFactor": 0.5,
+    "scoutDefenseFactor": 2,
+    "villageBaseDefense": 0,
+    "villageDefensePerWall": 20,
+    "wallDefenseFactor": 1.037,
+    "wallHpA": 0.27,
+    "wallHpB": 0.7
+  },
+  "COMMAND_BALANCE": {
+    "cancelWindowMs": 600000,
+    "merchantCapacity": 1000,
+    "merchantSpeed": 6,
+    "tradeCancelWindowMs": 300000
+  },
+  "CONQUEST_BALANCE": {
+    "coinBaseCost": {
+      "clay": 30000,
+      "iron": 25000,
+      "wood": 28000
+    },
+    "coinsPerNoble": 1,
+    "coinsPerVillage": 1,
+    "loyaltyAfterConquest": 25,
+    "loyaltyPerHour": 1,
+    "maxLoyalty": 100,
+    "nobleDropAvg": 27.5,
+    "nobleDropMax": 35,
+    "nobleDropMin": 20,
+    "nobleMaxDistance": 70,
+    "plunderLevelsMax": 3,
+    "plunderLevelsMin": 1
+  },
+  "DEFAULT_WORLD_CONFIG": {
+    "barbarianDensity": "normal",
+    "battleLosses": "normal",
+    "beginnerProtectionDays": 7,
+    "botArrival": "allAtOnce",
+    "botCount": 100,
+    "botModifiers": {
+      "building": 1,
+      "recruitment": 1,
+      "resources": 1
+    },
+    "botStance": "normal",
+    "difficulty": "normal",
+    "humanModifiers": {
+      "building": 1,
+      "recruitment": 1,
+      "resources": 1
+    },
+    "lastVillage": "protected",
+    "mapSize": 200,
+    "nobleCost": {
+      "clay": 0,
+      "iron": 0,
+      "wood": 0
+    },
+    "rampUpDays": 14,
+    "unitSpeed": 1,
+    "worldSpeed": 8
+  },
+  "FARM_BALANCE": {
+    "autoFarmIntervalMs": 900000,
+    "autoFarmMaxPerTick": 20,
+    "autoFarmUnlockVillages": 3,
+    "defaultFilters": {
+      "hideInbound": true,
+      "hideLosses": true,
+      "maxWall": 3,
+      "minMinutesSinceAttack": 30,
+      "radius": 15
+    }
+  },
+  "MAP": {
+    "bonusShare": 0.03,
+    "crowdMinTileW": 80,
+    "defaultZoomIdx": 2,
+    "density": {
+      "dense": 0.38,
+      "normal": 0.28,
+      "sparse": 0.18
+    },
+    "spawnSpacing": 5,
+    "tileH": 38,
+    "tileW": 53,
+    "viewCols": 15,
+    "viewRows": 13,
+    "villageSizePoints": [
+      300,
+      1000,
+      3000,
+      9000,
+      11000
+    ],
+    "zoomLevels": [
+      2.5,
+      1.6,
+      1,
+      0.7,
+      0.5
+    ]
+  },
+  "QUESTS": [
+    {
+      "id": "wood1",
+      "requires": [],
+      "reward": {
+        "resources": {
+          "clay": 40,
+          "iron": 20,
+          "wood": 60
+        }
+      }
+    },
+    {
+      "id": "clay1",
+      "requires": [
+        "wood1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 60,
+          "iron": 20,
+          "wood": 40
+        }
+      }
+    },
+    {
+      "id": "iron1",
+      "requires": [
+        "clay1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 40,
+          "iron": 60,
+          "wood": 40
+        }
+      }
+    },
+    {
+      "id": "main3",
+      "requires": [
+        "iron1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 100,
+          "iron": 50,
+          "wood": 100
+        }
+      }
+    },
+    {
+      "id": "storage3",
+      "requires": [
+        "main3"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 150,
+          "iron": 100,
+          "wood": 150
+        }
+      }
+    },
+    {
+      "id": "wood5",
+      "requires": [
+        "storage3"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 0,
+          "iron": 0,
+          "wood": 200
+        }
+      }
+    },
+    {
+      "id": "clay5",
+      "requires": [
+        "wood5"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 200,
+          "iron": 0,
+          "wood": 0
+        }
+      }
+    },
+    {
+      "id": "iron5",
+      "requires": [
+        "clay5"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 0,
+          "iron": 200,
+          "wood": 0
+        }
+      }
+    },
+    {
+      "id": "farm5",
+      "requires": [
+        "iron5"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 100,
+          "iron": 100,
+          "wood": 100
+        }
+      }
+    },
+    {
+      "id": "barracks1",
+      "requires": [
+        "farm5"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 50,
+          "iron": 50,
+          "wood": 50
+        }
+      }
+    },
+    {
+      "id": "spear10",
+      "requires": [
+        "barracks1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 100,
+          "iron": 100,
+          "wood": 100
+        }
+      }
+    },
+    {
+      "id": "hide3",
+      "requires": [
+        "spear10"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 150,
+          "iron": 150,
+          "wood": 150
+        }
+      }
+    },
+    {
+      "id": "smithy1",
+      "requires": [
+        "hide3"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 100,
+          "iron": 200,
+          "wood": 100
+        }
+      }
+    },
+    {
+      "id": "research_sword",
+      "requires": [
+        "smithy1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 200,
+          "iron": 200,
+          "wood": 200
+        }
+      }
+    },
+    {
+      "id": "wall1",
+      "requires": [
+        "research_sword"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 100,
+          "iron": 100,
+          "wood": 100
+        }
+      }
+    },
+    {
+      "id": "first_attack",
+      "requires": [
+        "wall1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 100,
+          "iron": 100,
+          "wood": 100
+        }
+      }
+    },
+    {
+      "id": "first_battle",
+      "requires": [
+        "first_attack"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 500,
+          "iron": 500,
+          "wood": 500
+        }
+      }
+    },
+    {
+      "id": "loot5000",
+      "requires": [
+        "first_battle"
+      ],
+      "reward": {
+        "autoFarm": true,
+        "resources": {
+          "clay": 300,
+          "iron": 300,
+          "wood": 300
+        }
+      }
+    },
+    {
+      "id": "template_a",
+      "requires": [
+        "first_battle"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 200,
+          "iron": 200,
+          "wood": 200
+        }
+      }
+    },
+    {
+      "id": "main10",
+      "requires": [
+        "loot5000"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 500,
+          "iron": 500,
+          "wood": 500
+        }
+      }
+    },
+    {
+      "id": "stable1",
+      "requires": [
+        "main10"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 300,
+          "iron": 300,
+          "wood": 300
+        }
+      }
+    },
+    {
+      "id": "scout",
+      "requires": [
+        "stable1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 200,
+          "iron": 100,
+          "wood": 200
+        }
+      }
+    },
+    {
+      "id": "light_cav10",
+      "requires": [
+        "stable1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 500,
+          "iron": 500,
+          "wood": 500
+        }
+      }
+    },
+    {
+      "id": "market1",
+      "requires": [
+        "main10"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 300,
+          "iron": 300,
+          "wood": 300
+        }
+      }
+    },
+    {
+      "id": "trade",
+      "requires": [
+        "market1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 400,
+          "iron": 400,
+          "wood": 400
+        }
+      }
+    },
+    {
+      "id": "resources10",
+      "requires": [
+        "main10"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 1000,
+          "iron": 1000,
+          "wood": 1000
+        }
+      }
+    },
+    {
+      "id": "points1000",
+      "requires": [
+        "main10"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 1000,
+          "iron": 1000,
+          "wood": 1000
+        }
+      }
+    },
+    {
+      "id": "workshop1",
+      "requires": [
+        "resources10"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 500,
+          "iron": 500,
+          "wood": 500
+        }
+      }
+    },
+    {
+      "id": "rams5",
+      "requires": [
+        "workshop1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 600,
+          "iron": 600,
+          "wood": 600
+        }
+      }
+    },
+    {
+      "id": "wall10",
+      "requires": [
+        "rams5"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 800,
+          "iron": 800,
+          "wood": 800
+        }
+      }
+    },
+    {
+      "id": "loot100k",
+      "requires": [
+        "loot5000"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 2000,
+          "iron": 2000,
+          "wood": 2000
+        }
+      }
+    },
+    {
+      "id": "main20",
+      "requires": [
+        "points1000"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 3000,
+          "iron": 3000,
+          "wood": 3000
+        }
+      }
+    },
+    {
+      "id": "smithy20",
+      "requires": [
+        "main20"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 3000,
+          "iron": 3000,
+          "wood": 3000
+        }
+      }
+    },
+    {
+      "id": "academy1",
+      "requires": [
+        "smithy20"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 5000,
+          "iron": 5000,
+          "wood": 5000
+        }
+      }
+    },
+    {
+      "id": "coin",
+      "requires": [
+        "academy1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 3000,
+          "iron": 3000,
+          "wood": 3000
+        }
+      }
+    },
+    {
+      "id": "noble",
+      "requires": [
+        "coin"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 5000,
+          "iron": 5000,
+          "wood": 5000
+        }
+      }
+    },
+    {
+      "id": "conquest1",
+      "requires": [
+        "noble"
+      ],
+      "reward": {
+        "buildQueueSlot": true
+      }
+    },
+    {
+      "id": "villages3",
+      "requires": [
+        "conquest1"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 10000,
+          "iron": 10000,
+          "wood": 10000
+        }
+      }
+    },
+    {
+      "id": "villages5",
+      "requires": [
+        "villages3"
+      ],
+      "reward": {
+        "buildQueueSlot": true
+      }
+    },
+    {
+      "id": "points10000",
+      "requires": [
+        "main20"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 10000,
+          "iron": 10000,
+          "wood": 10000
+        }
+      }
+    },
+    {
+      "id": "kills10000",
+      "requires": [
+        "loot100k"
+      ],
+      "reward": {
+        "resources": {
+          "clay": 10000,
+          "iron": 10000,
+          "wood": 10000
+        }
+      }
+    },
+    {
+      "id": "villages10",
+      "requires": [
+        "villages5"
+      ],
+      "reward": {
+        "buildQueueSlot": true
+      }
+    }
+  ],
+  "RESEARCH_BALANCE": {
+    "maxLevel": 3,
+    "minResearchTimeMs": 1000
+  },
+  "RESEARCH_UNLOCK_COST": {
+    "archer": {
+      "clay": 300,
+      "iron": 600,
+      "wood": 1000
+    },
+    "axe": {
+      "clay": 300,
+      "iron": 400,
+      "wood": 600
+    },
+    "catapult": {
+      "clay": 4000,
+      "iron": 1000,
+      "wood": 3200
+    },
+    "heavyCav": {
+      "clay": 1500,
+      "iron": 6000,
+      "wood": 2000
+    },
+    "lightCav": {
+      "clay": 1000,
+      "iron": 2500,
+      "wood": 1250
+    },
+    "mountedArcher": {
+      "clay": 1000,
+      "iron": 1500,
+      "wood": 2500
+    },
+    "noble": {
+      "clay": 0,
+      "iron": 0,
+      "wood": 0
+    },
+    "paladin": {
+      "clay": 200,
+      "iron": 400,
+      "wood": 200
+    },
+    "ram": {
+      "clay": 2000,
+      "iron": 2000,
+      "wood": 3000
+    },
+    "scout": {
+      "clay": 500,
+      "iron": 200,
+      "wood": 500
+    },
+    "spear": {
+      "clay": 300,
+      "iron": 100,
+      "wood": 500
+    },
+    "sword": {
+      "clay": 300,
+      "iron": 700,
+      "wood": 300
+    }
+  },
+  "RESOURCE_BALANCE": {
+    "baseProductionPerHour": 5,
+    "farmBase": 240,
+    "farmFactor": 1.1722,
+    "farmLevel0": 0,
+    "hideBase": 150,
+    "hideFactor": 1.3335,
+    "productionBase": 30,
+    "productionFactor": 1.163118,
+    "storageBase": 1000,
+    "storageFactor": 1.2294,
+    "storageLevel0": 500,
+    "storageWarningRatio": 0.9
+  },
+  "UNITS": {
+    "archer": {
+      "attack": 15,
+      "attackClass": "archer",
+      "baseRecruitSec": 1800,
+      "building": "barracks",
+      "cost": {
+        "clay": 30,
+        "iron": 60,
+        "wood": 100
+      },
+      "defense": 50,
+      "defenseArcher": 5,
+      "defenseCavalry": 40,
+      "haul": 10,
+      "id": "archer",
+      "pop": 1,
+      "requirements": [
+        {
+          "building": "barracks",
+          "level": 1
+        },
+        {
+          "building": "smithy",
+          "level": 1
+        }
+      ],
+      "speed": 18
+    },
+    "axe": {
+      "attack": 40,
+      "attackClass": "infantry",
+      "baseRecruitSec": 1320,
+      "building": "barracks",
+      "cost": {
+        "clay": 30,
+        "iron": 40,
+        "wood": 60
+      },
+      "defense": 10,
+      "defenseArcher": 10,
+      "defenseCavalry": 5,
+      "haul": 10,
+      "id": "axe",
+      "pop": 1,
+      "requirements": [
+        {
+          "building": "barracks",
+          "level": 1
+        },
+        {
+          "building": "smithy",
+          "level": 1
+        }
+      ],
+      "speed": 18
+    },
+    "catapult": {
+      "attack": 100,
+      "attackClass": "infantry",
+      "baseRecruitSec": 7200,
+      "building": "workshop",
+      "cost": {
+        "clay": 400,
+        "iron": 100,
+        "wood": 320
+      },
+      "defense": 100,
+      "defenseArcher": 100,
+      "defenseCavalry": 50,
+      "haul": 0,
+      "id": "catapult",
+      "pop": 8,
+      "requirements": [
+        {
+          "building": "workshop",
+          "level": 5
+        }
+      ],
+      "speed": 30
+    },
+    "heavyCav": {
+      "attack": 150,
+      "attackClass": "cavalry",
+      "baseRecruitSec": 3600,
+      "building": "stable",
+      "cost": {
+        "clay": 150,
+        "iron": 600,
+        "wood": 200
+      },
+      "defense": 200,
+      "defenseArcher": 180,
+      "defenseCavalry": 80,
+      "haul": 50,
+      "id": "heavyCav",
+      "pop": 6,
+      "requirements": [
+        {
+          "building": "stable",
+          "level": 10
+        },
+        {
+          "building": "smithy",
+          "level": 15
+        }
+      ],
+      "speed": 11
+    },
+    "lightCav": {
+      "attack": 130,
+      "attackClass": "cavalry",
+      "baseRecruitSec": 1800,
+      "building": "stable",
+      "cost": {
+        "clay": 100,
+        "iron": 250,
+        "wood": 125
+      },
+      "defense": 30,
+      "defenseArcher": 30,
+      "defenseCavalry": 40,
+      "haul": 80,
+      "id": "lightCav",
+      "pop": 4,
+      "requirements": [
+        {
+          "building": "stable",
+          "level": 3
+        },
+        {
+          "building": "smithy",
+          "level": 5
+        }
+      ],
+      "speed": 10
+    },
+    "mountedArcher": {
+      "attack": 120,
+      "attackClass": "archer",
+      "baseRecruitSec": 2700,
+      "building": "stable",
+      "cost": {
+        "clay": 100,
+        "iron": 150,
+        "wood": 250
+      },
+      "defense": 40,
+      "defenseArcher": 50,
+      "defenseCavalry": 30,
+      "haul": 50,
+      "id": "mountedArcher",
+      "pop": 5,
+      "requirements": [
+        {
+          "building": "stable",
+          "level": 5
+        },
+        {
+          "building": "smithy",
+          "level": 10
+        }
+      ],
+      "speed": 10
+    },
+    "noble": {
+      "attack": 30,
+      "attackClass": "infantry",
+      "baseRecruitSec": 18000,
+      "building": "academy",
+      "cost": {
+        "clay": 50000,
+        "iron": 50000,
+        "wood": 40000
+      },
+      "defense": 100,
+      "defenseArcher": 100,
+      "defenseCavalry": 50,
+      "haul": 0,
+      "id": "noble",
+      "pop": 100,
+      "requirements": [
+        {
+          "building": "academy",
+          "level": 1
+        }
+      ],
+      "speed": 35
+    },
+    "paladin": {
+      "attack": 150,
+      "attackClass": "cavalry",
+      "baseRecruitSec": 21600,
+      "building": "statue",
+      "cost": {
+        "clay": 20,
+        "iron": 40,
+        "wood": 20
+      },
+      "defense": 250,
+      "defenseArcher": 150,
+      "defenseCavalry": 400,
+      "haul": 100,
+      "id": "paladin",
+      "pop": 10,
+      "requirements": [
+        {
+          "building": "statue",
+          "level": 1
+        }
+      ],
+      "speed": 10
+    },
+    "ram": {
+      "attack": 2,
+      "attackClass": "infantry",
+      "baseRecruitSec": 4800,
+      "building": "workshop",
+      "cost": {
+        "clay": 200,
+        "iron": 200,
+        "wood": 300
+      },
+      "defense": 20,
+      "defenseArcher": 20,
+      "defenseCavalry": 50,
+      "haul": 0,
+      "id": "ram",
+      "pop": 5,
+      "requirements": [
+        {
+          "building": "workshop",
+          "level": 1
+        }
+      ],
+      "speed": 30
+    },
+    "scout": {
+      "attack": 0,
+      "attackClass": "cavalry",
+      "baseRecruitSec": 900,
+      "building": "stable",
+      "cost": {
+        "clay": 50,
+        "iron": 20,
+        "wood": 50
+      },
+      "defense": 2,
+      "defenseArcher": 2,
+      "defenseCavalry": 1,
+      "haul": 0,
+      "id": "scout",
+      "pop": 2,
+      "requirements": [
+        {
+          "building": "stable",
+          "level": 1
+        },
+        {
+          "building": "smithy",
+          "level": 5
+        }
+      ],
+      "speed": 9
+    },
+    "spear": {
+      "attack": 10,
+      "attackClass": "infantry",
+      "baseRecruitSec": 1020,
+      "building": "barracks",
+      "cost": {
+        "clay": 30,
+        "iron": 10,
+        "wood": 50
+      },
+      "defense": 15,
+      "defenseArcher": 20,
+      "defenseCavalry": 45,
+      "haul": 25,
+      "id": "spear",
+      "pop": 1,
+      "requirements": [
+        {
+          "building": "barracks",
+          "level": 1
+        }
+      ],
+      "speed": 18
+    },
+    "sword": {
+      "attack": 25,
+      "attackClass": "infantry",
+      "baseRecruitSec": 1500,
+      "building": "barracks",
+      "cost": {
+        "clay": 30,
+        "iron": 70,
+        "wood": 30
+      },
+      "defense": 50,
+      "defenseArcher": 40,
+      "defenseCavalry": 15,
+      "haul": 15,
+      "id": "sword",
+      "pop": 1,
+      "requirements": [
+        {
+          "building": "barracks",
+          "level": 1
+        },
+        {
+          "building": "smithy",
+          "level": 1
+        }
+      ],
+      "speed": 22
+    }
+  },
+  "UNIT_BALANCE": {
+    "minRecruitTimeMs": 1000,
+    "recruitTimeFactor": 0.9666,
+    "researchBonus": [
+      0,
+      0,
+      0.25,
+      0.4
+    ],
+    "researchCostMultiplier": [
+      0,
+      1,
+      3,
+      9
+    ],
+    "researchTimePerResourceSec": 0.3
+  },
+  "WORLD_LIMITS": {
+    "beginnerProtectionDays": {
+      "max": 30,
+      "min": 0
+    },
+    "botCount": {
+      "max": 300,
+      "min": 0
+    },
+    "buildQueueSlots": {
+      "max": 5,
+      "min": 2
+    },
+    "mapSizes": [
+      100,
+      200,
+      400
+    ],
+    "modifier": {
+      "max": 10,
+      "min": 0.25
+    },
+    "rampUpDays": {
+      "max": 60,
+      "min": 1
+    },
+    "sightRadius": {
+      "max": 10,
+      "min": 0
+    },
+    "unitSpeed": {
+      "max": 10,
+      "min": 0.5
+    },
+    "worldSpeed": {
+      "max": 100,
+      "min": 1
+    }
+  }
+}

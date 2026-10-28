@@ -1,0 +1,55 @@
+{
+  "head": {
+    "imageAlt": "A pixel-art village with a castle, fields and a lake",
+    "formerPlayer": "a former player",
+    "count": {
+      "players": {
+        "one": "# player",
+        "other": "# players"
+      },
+      "bots": {
+        "one": "# bot",
+        "other": "# bots"
+      },
+      "conquests": {
+        "one": "# village conquered",
+        "other": "# villages conquered"
+      },
+      "games": {
+        "one": "# game",
+        "other": "# games"
+      },
+      "wins": {
+        "one": "# win",
+        "other": "# wins"
+      }
+    },
+    "game": {
+      "ended": {
+        "title": "{name} — won by {winner} · {players}, {conquests}",
+        "titleBot": "{name} — won by {winner} (bot) · {players}, {conquests}",
+        "description": "A finished instant game of LibreHold: the final ranking, the conquests and the map. Start your own game in one click."
+      },
+      "running": {
+        "title": "{name} — live now · {players}, {bots}",
+        "description": "An instant game of LibreHold being played right now. Join the next one in one click, no sign-up needed."
+      }
+    },
+    "player": {
+      "title": "{name} — {games}, {wins}, {conquests}",
+      "description": "{name} in LibreHold: games played, wins and villages conquered."
+    },
+    "world": {
+      "title": "{name} — day {day} · {players} and {bots}",
+      "description": "A long-running world of LibreHold: the ranking, the map and the latest conquests. Join and build your village."
+    },
+    "worlds": {
+      "title": "Worlds — LibreHold",
+      "description": "Every world of LibreHold: long worlds that run for weeks and instant games that last an hour."
+    },
+    "join": {
+      "title": "{name} — join the game",
+      "description": "{host} invites you to a private game of LibreHold. Join in one click."
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "terms": {
+    "title": "Regulamin — LibreHold",
+    "description": "Zasady Osad prostymi słowami: kto prowadzi grę, konta i goście, uczciwa gra, moderacja, koniec światów, brak gwarancji i kontakt.",
+    "heading": "Regulamin",
+    "updated": "Wersja robocza, 21 października 2026",
+    "sections": {
+      "operator": {
+        "title": "Kto prowadzi grę",
+        "body": "LibreHold to darmowa strategiczna gra w przeglądarce, prowadzona przez tomcatflow.com. To projekt hobbystyczny: zaczął się jako gra dla znajomych, a teraz może do niego dołączyć każdy, kto ma ochotę.\n\nNiczego tu nie kupisz. W grze nie ma żadnych płatności ani reklam i nikt nie może zapłacić za przewagę nad innymi. Gdyby to się kiedyś zmieniło, najpierw zmieni się ten regulamin, a w dzienniku zmian pojawi się o tym wpis.\n\nGrając, zgadzasz się na zasady z tej strony. Są celowo krótkie i napisane zwykłym językiem."
+      },
+      "accounts": {
+        "title": "Konta i goście",
+        "body": "Grać można na dwa sposoby. Po kliknięciu Graj teraz grasz jako gość: z losowym pseudonimem, bez e-maila i bez hasła. Gość gra tylko w szybkie partie, a gość, którego nikt nie widział przez {guestDeleteDays} dni, jest usuwany razem z całą historią.\n\nKonto ma nazwę i hasło. Zachowuje dorobek rozegranych partii i otwiera długie światy. Gościa możesz zamienić w konto w każdej chwili, także w środku partii, przyciskiem Załóż konto.\n\nHasło zachowaj dla siebie. Kto je zna, może grać za ciebie, a nikt, kto prowadzi grę, nigdy cię o nie nie poprosi. Co gra zapisuje na twój temat, opisuje strona Prywatność."
+      },
+      "fairPlay": {
+        "title": "Uczciwa gra",
+        "body": "LibreHold daje frajdę tylko wtedy, gdy wszyscy grają według tych samych zasad.\n\nJedno konto na osobę. Nie zakładaj dodatkowych kont, żeby przerzucać z nich surowce albo wojsko na główne, i nie dziel konta z nikim innym.\n\nBez automatów. Każdy rozkaz w grze wydaje człowiek: żadnych skryptów, botów, makr, rozszerzeń przeglądarki, które grają za ciebie, ani narzędzi, które same wysyłają rozkazy na serwer. Boty na mapie są częścią gry i zawsze mają etykietę; własnych przyprowadzać nie wolno.\n\nBez wykorzystywania błędów. Jeśli trafisz na coś, co daje surowce, wojsko albo szybkość ponad to, na co pozwalają zasady, nie korzystaj z tego, tylko to zgłoś. Za zgłoszenie błędu nigdy nie spotkają cię kłopoty."
+      },
+      "moderation": {
+        "title": "Nazwy i moderacja",
+        "body": "Nazwy są publiczne: widać je na mapie, w rankingach i w raportach.\n\nAdministrator może zmienić albo usunąć nazwę obraźliwą, nienawistną lub podszywającą się pod kogoś innego, a także usunąć konto, które łamie te zasady albo służy do nękania innych graczy.\n\nJeśli uważasz, że decyzja była błędna, napisz o tym przez formularz zgłoszeń, a sprawa zostanie rozpatrzona jeszcze raz."
+      },
+      "worlds": {
+        "title": "Jak kończą się światy",
+        "body": "Każdy świat kiedyś się kończy. Szybka partia kończy się po {instantDurationMin} min albo wcześniej, gdy jeden gracz zajmie większość mapy. Jej dane są usuwane {instantKeepHours} godz. po jej zakończeniu, a wyniki zostają: końcowy ranking i dorobek rozegranych partii każdego gracza.\n\nDługie światy toczą się tygodniami, ale nie bez końca. Długi świat może zostać zamknięty dla nowych graczy, wstrzymany, zamknięty na dobre albo uruchomiony od nowa, na przykład gdy minie jego czas, gdy zmienią się zasady albo gdy coś pójdzie bardzo źle. Jeśli to możliwe, zapowiadamy to z wyprzedzeniem.\n\nNic, co zbudujesz albo zdobędziesz w świecie, nie jest twoją własnością i nie ma wartości pieniężnej: wioski, wojsko i surowce istnieją tylko w grze."
+      },
+      "warranty": {
+        "title": "Bez gwarancji",
+        "body": "LibreHold jest darmowy i udostępniany taki, jaki jest, bez żadnej gwarancji. Gra powstaje i działa dzięki wolnemu czasowi.\n\nCzasem gra może być niedostępna: z powodu aktualizacji, naprawy albo awarii. Jej zasady, liczby i wygląd mogą się zmienić w każdej chwili, także w długim świecie, a postęp może przepaść przez błąd albo awarię.\n\nGraj dlatego, że to frajda, a nie dlatego, że od tego coś zależy."
+      },
+      "contact": {
+        "title": "Kontakt",
+        "body": "Pytanie, błąd, gracz łamiący zasady albo nazwa, której nie powinno tu być: skorzystaj z formularza zgłoszeń, {reportLink}. Zgłoszenie może wysłać każdy, z kontem czy bez, do {reportsPerHour} na godzinę.\n\nJeśli chcesz dostać odpowiedź, zostaw adres e-mail. Nie jest obowiązkowy i służy tylko do tego, żeby ci odpisać. Zgłoszenia czyta administrator, a zamknięte są usuwane po {reportKeepDays} dniach."
+      },
+      "changes": {
+        "title": "Zmiany regulaminu",
+        "body": "Ten regulamin może się zmieniać razem z grą. Każdą zmianę ogłaszamy w dzienniku zmian, a data na górze tej strony mówi, którą wersję czytasz.\n\nJeśli grasz dalej po zmianie, obowiązują nowe zasady. Jeśli się z nimi nie zgadzasz, możesz w każdej chwili przestać grać: gość zostanie usunięty sam, a konto usuniemy na prośbę wysłaną przez formularz zgłoszeń."
+      }
+    }
+  }
+}

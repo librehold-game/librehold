@@ -1,0 +1,109 @@
+{
+  "host": {
+    "defaultName": "Gra {host}",
+    "open": "Zorganizuj grę",
+    "intro": "Prywatna gra dla ciebie i znajomych: ustaw zasady, wyślij link i wystartuj, kiedy wszyscy będą na miejscu.",
+    "create": "Utwórz grę",
+    "full": "Serwer jest teraz pełny. Spróbuj za kilka minut.",
+    "field": {
+      "name": "Nazwa",
+      "duration": "Czas gry",
+      "seats": "Gracze",
+      "bots": "Boty",
+      "worldSpeed": "Tempo świata",
+      "unitSpeed": "Tempo wojsk",
+      "startVillage": "Wioska na start",
+      "barbarians": "Wioski barbarzyńskie",
+      "difficulty": "Siła botów",
+      "botStance": "Boty wobec graczy",
+      "fieldBattles": "Armie mogą się spotkać w drodze",
+      "sightRadius": "Widać przechodzące armie (pola, 0 = wcale)",
+      "protectionMin": "Ochrona początkujących (minuty)",
+      "domination": "Wcześniejsza wygrana przy",
+      "lateJoin": "Dołączanie po starcie",
+      "registeredOnly": "Tylko zarejestrowani gracze"
+    },
+    "minutes": "{n} min",
+    "startVillage": {
+      "grown": "Rozbudowana, z wojskiem",
+      "fresh": "Od zera"
+    },
+    "barbarians": {
+      "few": "Mało",
+      "normal": "Zwykle",
+      "many": "Dużo"
+    },
+    "dominationOff": "Wyłączona",
+    "dominationPct": "{n} % wiosek",
+    "lateJoinNone": "Tylko do startu",
+    "lateJoinUntil": "Do {n} min po starcie",
+    "status": {
+      "waiting": "Czeka, aż wystartujesz",
+      "running": "Trwa",
+      "paused": "Wstrzymana",
+      "ended": "Zakończona"
+    },
+    "seatsTaken": "Gracze: {humans} z {seats}",
+    "inviteLink": "Link z zaproszeniem",
+    "copy": "Kopiuj",
+    "copied": "Skopiowano",
+    "showQr": "Pokaż kod QR",
+    "hideQr": "Ukryj kod QR",
+    "qrLabel": "Kod QR z linkiem do gry",
+    "replace": "Zmień link",
+    "replaceConfirm": "Zmienić link? Stary przestanie działać, a gracze, którzy już są w grze, zostaną.",
+    "start": "Start",
+    "pause": "Pauza (zostało {min} min)",
+    "resume": "Wznów",
+    "end": "Zakończ teraz",
+    "endConfirm": "Zakończyć grę teraz? Wygrywa gracz z największą liczbą punktów.",
+    "closeConfirm": "Zamknąć tę grę? Nikt jeszcze w nią nie grał, więc po prostu zniknie.",
+    "players": "Gracze",
+    "nobody": "Nikt jeszcze nie dołączył.",
+    "guest": "gość",
+    "kick": "Wyrzuć: {name}",
+    "kickConfirm": "Wyrzucić {name}? Wioski staną się barbarzyńskie, a powrót do gry będzie zablokowany.",
+    "godView": "Otwórz widok całej mapy",
+    "results": "Wyniki",
+    "past": "Twoje gry jako gospodarz",
+    "playing": "Gry, do których cię zaproszono",
+    "settings": {
+      "title": "Światy graczy",
+      "text": "Limity dla światów tworzonych przez graczy od teraz; istniejące zachowują swoje.",
+      "seats": "Miejsca na świat",
+      "bots": "Boty na świat",
+      "save": "Zapisz",
+      "saved": "Zapisano"
+    },
+    "privateGame": "prywatna gra"
+  },
+  "errors": {
+    "alreadyHosting": "Już organizujesz grę. Zakończ ją, zanim zaczniesz kolejną.",
+    "serverFull": "Serwer jest pełny. Spróbuj za kilka minut.",
+    "outOfRange": "Ta liczba jest poza zakresem.",
+    "noPlayers": "Poczekaj, aż dołączy choć jeden gracz.",
+    "notStarted": "Gra jeszcze się nie zaczęła.",
+    "alreadyStarted": "Gra już trwa.",
+    "alreadyPaused": "Gra jest już wstrzymana.",
+    "notPaused": "Gra nie jest wstrzymana.",
+    "pauseLimit": "Wszystkie 30 minut pauz zostało wykorzystane.",
+    "notAPlayer": "Tego gracza nie ma w grze.",
+    "banned": "Gospodarz usunął cię z tej gry.",
+    "registeredOnly": "Do tej gry mogą dołączyć tylko zarejestrowani gracze.",
+    "worldFull": "Ta gra jest pełna.",
+    "joinClosed": "Dołączanie do tej gry zostało zamknięte."
+  },
+  "join": {
+    "invited": "{host} zaprasza cię do tej gry.",
+    "joining": "Dołączanie do gry…",
+    "nowhere": "Ten link prowadzi donikąd.",
+    "full": "Ta gra jest pełna.",
+    "closed": "Dołączanie do tej gry zostało zamknięte.",
+    "ended": "Ta gra już się skończyła."
+  },
+  "archive": {
+    "reason": {
+      "host": "Gospodarz zakończył grę. Najwięcej punktów zebrał(a) {winner}."
+    }
+  }
+}

@@ -1,0 +1,1338 @@
+{
+  "building": {
+    "main": "Ratusz",
+    "barracks": "Koszary",
+    "stable": "Stajnia",
+    "workshop": "Warsztat",
+    "academy": "Akademia",
+    "smithy": "Kuźnia",
+    "statue": "Piedestał",
+    "market": "Rynek",
+    "wood": "Tartak",
+    "clay": "Cegielnia",
+    "iron": "Huta żelaza",
+    "farm": "Zagroda",
+    "storage": "Spichlerz",
+    "hide": "Schowek",
+    "wall": "Mur obronny"
+  },
+  "unit": {
+    "spear": "Pikinier",
+    "sword": "Miecznik",
+    "axe": "Topornik",
+    "archer": "Łucznik",
+    "scout": "Zwiadowca",
+    "lightCav": "Lekki kawalerzysta",
+    "mountedArcher": "Łucznik konny",
+    "heavyCav": "Ciężki kawalerzysta",
+    "ram": "Taran",
+    "catapult": "Katapulta",
+    "paladin": "Rycerz",
+    "noble": "Hetman"
+  },
+  "unitPlural": {
+    "spear": {
+      "one": "Pikinier",
+      "few": "Pikinierów",
+      "many": "Pikinierów",
+      "other": "Pikinierów"
+    },
+    "sword": {
+      "one": "Miecznik",
+      "few": "Mieczników",
+      "many": "Mieczników",
+      "other": "Mieczników"
+    },
+    "axe": {
+      "one": "Topornik",
+      "few": "Toporników",
+      "many": "Toporników",
+      "other": "Toporników"
+    },
+    "archer": {
+      "one": "Łucznik",
+      "few": "Łuczników",
+      "many": "Łuczników",
+      "other": "Łuczników"
+    },
+    "scout": {
+      "one": "Zwiadowca",
+      "few": "Zwiadowców",
+      "many": "Zwiadowców",
+      "other": "Zwiadowców"
+    },
+    "lightCav": {
+      "one": "Lekki kawalerzysta",
+      "few": "Lekkich kawalerzystów",
+      "many": "Lekkich kawalerzystów",
+      "other": "Lekkich kawalerzystów"
+    },
+    "mountedArcher": {
+      "one": "Łucznik konny",
+      "few": "Łuczników konnych",
+      "many": "Łuczników konnych",
+      "other": "Łuczników konnych"
+    },
+    "heavyCav": {
+      "one": "Ciężki kawalerzysta",
+      "few": "Ciężkich kawalerzystów",
+      "many": "Ciężkich kawalerzystów",
+      "other": "Ciężkich kawalerzystów"
+    },
+    "ram": {
+      "one": "Taran",
+      "few": "Tarany",
+      "many": "Taranów",
+      "other": "Tarany"
+    },
+    "catapult": {
+      "one": "Katapulta",
+      "few": "Katapulty",
+      "many": "Katapult",
+      "other": "Katapulty"
+    },
+    "paladin": {
+      "one": "Rycerz",
+      "few": "Rycerz",
+      "many": "Rycerz",
+      "other": "Rycerz"
+    },
+    "noble": {
+      "one": "Hetman",
+      "few": "Hetmanów",
+      "many": "Hetmanów",
+      "other": "Hetmanów"
+    }
+  },
+  "resource": {
+    "wood": "Drewno",
+    "clay": "Glina",
+    "iron": "Żelazo"
+  },
+  "quest": {
+    "wood1": {
+      "title": "Pierwsze drewno",
+      "description": "Rozbuduj Tartak do poziomu 1."
+    },
+    "clay1": {
+      "title": "Cegielnia",
+      "description": "Rozbuduj Cegielnię do poziomu 1."
+    },
+    "iron1": {
+      "title": "Huta żelaza",
+      "description": "Rozbuduj Hutę żelaza do poziomu 1."
+    },
+    "main3": {
+      "title": "Ratusz rośnie",
+      "description": "Rozbuduj Ratusz do poziomu 3 — skraca czas budowy."
+    },
+    "storage3": {
+      "title": "Większy spichlerz",
+      "description": "Rozbuduj Spichlerz do poziomu 3."
+    },
+    "wood5": {
+      "title": "Drwale",
+      "description": "Rozbuduj Tartak do poziomu 5."
+    },
+    "clay5": {
+      "title": "Gliniarze",
+      "description": "Rozbuduj Cegielnię do poziomu 5."
+    },
+    "iron5": {
+      "title": "Hutnicy",
+      "description": "Rozbuduj Hutę żelaza do poziomu 5."
+    },
+    "farm5": {
+      "title": "Miejsce dla ludzi",
+      "description": "Rozbuduj Zagrodę do poziomu 5."
+    },
+    "barracks1": {
+      "title": "Koszary",
+      "description": "Wybuduj Koszary (wymaga Ratusza 3)."
+    },
+    "spear10": {
+      "title": "Pierwsza straż",
+      "description": "Zrekrutuj 10 pikinierów."
+    },
+    "hide3": {
+      "title": "Schowek",
+      "description": "Rozbuduj Schowek do poziomu 3 — ukrywa surowce przed najazdem."
+    },
+    "smithy1": {
+      "title": "Kuźnia",
+      "description": "Wybuduj Kuźnię (wymaga Ratusza 5 i Koszar 1)."
+    },
+    "research_sword": {
+      "title": "Pierwsze badanie",
+      "description": "Zbadaj miecznika w Kuźni."
+    },
+    "wall1": {
+      "title": "Palisada",
+      "description": "Wybuduj Mur (wymaga Koszar 1)."
+    },
+    "first_attack": {
+      "title": "Na wyprawę!",
+      "description": "Wyślij pierwszy atak z Punktu zbiórki na wioskę barbarzyńską."
+    },
+    "first_battle": {
+      "title": "Pierwsze zwycięstwo",
+      "description": "Wygraj pierwszą bitwę."
+    },
+    "loot5000": {
+      "title": "Łupieżca",
+      "description": "Zrabuj łącznie 5 000 surowców — nagroda odblokowuje auto-farmę."
+    },
+    "template_a": {
+      "title": "Szablon farmy",
+      "description": "Zdefiniuj szablon A w Punkcie zbiórki — farmienie jednym kliknięciem."
+    },
+    "main10": {
+      "title": "Siedziba władzy",
+      "description": "Rozbuduj Ratusz do poziomu 10."
+    },
+    "stable1": {
+      "title": "Stajnia",
+      "description": "Wybuduj Stajnię (wymaga Ratusza 10, Koszar 5, Kuźni 5)."
+    },
+    "scout": {
+      "title": "Oczy i uszy",
+      "description": "Wyślij zwiadowców na obcą wioskę."
+    },
+    "light_cav10": {
+      "title": "Lekka jazda",
+      "description": "Zrekrutuj 10 lekkich kawalerzystów."
+    },
+    "market1": {
+      "title": "Rynek",
+      "description": "Wybuduj Rynek (wymaga Ratusza 3, Spichlerza 2)."
+    },
+    "trade": {
+      "title": "Kupcy w drodze",
+      "description": "Wyślij surowce kupcami do innej wioski albo przyjmij ofertę handlarza."
+    },
+    "resources10": {
+      "title": "Gospodarka",
+      "description": "Tartak, Cegielnia i Huta na poziomie 10."
+    },
+    "points1000": {
+      "title": "Tysiąc punktów",
+      "description": "Osiągnij 1 000 punktów."
+    },
+    "workshop1": {
+      "title": "Warsztat",
+      "description": "Wybuduj Warsztat (wymaga Ratusza 10, Kuźni 10)."
+    },
+    "rams5": {
+      "title": "Taranem w bramę",
+      "description": "Zbuduj 5 taranów."
+    },
+    "wall10": {
+      "title": "Twierdza",
+      "description": "Rozbuduj Mur do poziomu 10."
+    },
+    "loot100k": {
+      "title": "Pan farm",
+      "description": "Zrabuj łącznie 100 000 surowców."
+    },
+    "main20": {
+      "title": "Wielki Ratusz",
+      "description": "Rozbuduj Ratusz do poziomu 20."
+    },
+    "smithy20": {
+      "title": "Mistrz kowalski",
+      "description": "Rozbuduj Kuźnię do poziomu 20."
+    },
+    "academy1": {
+      "title": "Akademia",
+      "description": "Wybuduj Akademię (Ratusz 20, Kuźnia 20, Rynek 10)."
+    },
+    "coin": {
+      "title": "Pierwsza moneta",
+      "description": "Wybij monetę hetmańską."
+    },
+    "noble": {
+      "title": "Hetman",
+      "description": "Wyszkol pierwszego hetmana."
+    },
+    "conquest1": {
+      "title": "Pierwszy podbój",
+      "description": "Podbij pierwszą wioskę."
+    },
+    "villages3": {
+      "title": "Trzy wioski",
+      "description": "Posiadaj 3 wioski."
+    },
+    "villages5": {
+      "title": "Pięć wiosek",
+      "description": "Posiadaj 5 wiosek."
+    },
+    "points10000": {
+      "title": "Dziesięć tysięcy",
+      "description": "Osiągnij 10 000 punktów."
+    },
+    "kills10000": {
+      "title": "Pogromca",
+      "description": "Pokonaj 10 000 jednostek wroga."
+    },
+    "villages10": {
+      "title": "Imperium",
+      "description": "Posiadaj 10 wiosek."
+    }
+  },
+  "template": {
+    "tpl_start": "Start (ekonomia 1–10)",
+    "tpl_def": "Obronna (koszary + mur)",
+    "tpl_off": "Ofensywna (kuźnia + stajnia)"
+  },
+  "blocker": {
+    "maxLevel": "osiągnięto maksymalny poziom",
+    "queueFull": "kolejka jest pełna",
+    "requirements": "brak wymaganych budynków",
+    "research": "jednostka nieodblokowana w Kuźni",
+    "resources": "za mało surowców",
+    "population": "brak miejsca w Zagrodzie",
+    "busy": "trwa już inne badanie",
+    "limit": "osiągnięto limit",
+    "coins": "za mało monet",
+    "count": "nieprawidłowa liczba",
+    "noUnits": "nie wybrano wojska",
+    "notEnough": "za mało wojska w wiosce",
+    "noTarget": "na tym polu nie ma wioski",
+    "self": "nie można wysłać do samego siebie",
+    "noAttackPower": "ta grupa nie ma siły ataku",
+    "supportTargetBarbarian": "nie można wspierać wioski barbarzyńskiej",
+    "attackOwnVillage": "to twoja wioska — atak nie wyjdzie",
+    "nobleUnescorted": "hetman bez eskorty",
+    "nobleTooFar": "hetman nie doleci tak daleko",
+    "merchants": "za mało kupców",
+    "storage": "za mało miejsca w spichlerzu celu",
+    "sameVillage": "to ta sama wioska",
+    "academy": "brak Akademii",
+    "targetProtected": "gracz jest pod ochroną początkującego",
+    "selfProtected": "jesteś pod ochroną początkującego — możesz atakować tylko barbarzyńców",
+    "notOwner": "to nie twoja wioska",
+    "noMarket": "brak Rynku",
+    "empty": "nie ma czego wysłać",
+    "tooLate": "Za późno: twoje wojsko nie zdąży przed dotarciem tej armii.",
+    "notInterceptable": "Tej armii nie da się spotkać w drodze.",
+    "notVisible": "Nie widzisz już tej armii.",
+    "fieldBattlesOff": "Bitwy w polu są w tym świecie wyłączone.",
+    "scoutsOnly": "Na zwiad armii wyślij samych zwiadowców."
+  },
+  "news": {
+    "scheduledFailed": "Zaplanowana wysyłka nie wyszła: {reasons}.",
+    "scheduledLostVillage": "Zaplanowana wysyłka nie wyszła: wioska nie należy już do ciebie.",
+    "respawn": "Twoje ostatnie wioski upadły. Zaczynasz od nowa w {x}|{y}.",
+    "newPlayer": "Nowy gracz {player} osiedlił się w okolicy {x}|{y}.",
+    "title": "Pogłoski",
+    "protection": "🛡 Okres ochronny: jeszcze {time}",
+    "empty": "Cisza. W karczmach jeszcze nic nie słychać."
+  },
+  "gossip": {
+    "conquest": {
+      "0": "{a} przejął {place} od {b}.",
+      "1": "Chorągwie {a} powiewają nad {place} — {b} nie zdołał się obronić.",
+      "2": "Mówią, że {place} należy teraz do {a}. Wcześniej trzymał ją {b}."
+    },
+    "topConqueror": {
+      "0": "Najwięcej wiosek w zeszłym tygodniu przejął {a} ({n}).",
+      "1": "{a} rośnie najszybciej — {n} przejętych wiosek w tydzień."
+    },
+    "inactive": {
+      "0": "Od kilku dni nikt nie widział {a}.",
+      "1": "Wioski {a} stoją puste od kilku dni. Pewnie już nie wróci.",
+      "2": "{a} zniknął bez słowa — sąsiedzi już ostrzą topory."
+    },
+    "topFarmer": {
+      "0": "Farmerem dnia został {a} — {n} surowców z barbarzyńskich wiosek.",
+      "1": "{a} wczoraj nie odpuszczał barbarzyńcom: {n} surowców łupu."
+    },
+    "topAttacker": {
+      "0": "Wczoraj najgroźniejszy był {a} — pokonał wojska warte {n} pkt.",
+      "1": "Karczmy mówią o {a}: {n} pokonanych przeciwników w jeden dzień."
+    },
+    "barbarians": "barbarzyńców",
+    "unknown": "nieznanego"
+  },
+  "village": {
+    "barbarian": "Wioska barbarzyńska",
+    "of": "Wioska {owner}",
+    "mine": "Moja wioska",
+    "inactive": " (nieaktywny)",
+    "collapse": "Zwiń",
+    "expand": "Rozwiń",
+    "production": "Produkcja",
+    "perHour": "na godzinę",
+    "levelTitle": "{building} poz. {n}",
+    "boostProduction": "» Powiększenie wydobycia",
+    "params": "Bieżące parametry",
+    "worldSpeed": "Prędkość świata",
+    "unitsSpeed": " · jednostki ×{n}",
+    "population": "Ludność",
+    "storage": "Spichlerz",
+    "loyalty": "Lojalność",
+    "loyaltyRising": "{n} (rośnie)",
+    "bonus": "Bonus wioski",
+    "protection": "Ochrona",
+    "protectionLeft": "jeszcze {time}",
+    "battleLosses": "Straty w walce",
+    "reduced": "zmniejszone",
+    "villages": "Wioski",
+    "points": {
+      "one": "# punkt",
+      "few": "# punkty",
+      "many": "# punktów",
+      "other": "# punkty"
+    },
+    "hideScene": "Zwiń ilustrację",
+    "showScene": "Pokaż ilustrację",
+    "units": "Jednostki"
+  },
+  "player": {
+    "bot": "bot",
+    "former": "były gracz"
+  },
+  "app": {
+    "loadingWorld": "Wczytywanie świata…",
+    "paused": "Świat wstrzymany przez administratora"
+  },
+  "header": {
+    "village": "Wioska:",
+    "rename": "Kliknij, aby zmienić nazwę",
+    "bonus": "Wioska bonusowa",
+    "prevVillage": "Poprzednia wioska (,)",
+    "nextVillage": "Następna wioska (.)",
+    "villageCount": {
+      "one": "# wioska",
+      "few": "# wioski",
+      "many": "# wiosek",
+      "other": "# wioski"
+    },
+    "coins": "Monety hetmańskie (globalne)",
+    "population": "Populacja: zajęta / limit zagrody",
+    "points": "Punkty wioski",
+    "pointsShort": "{n} pkt"
+  },
+  "nav": {
+    "more": "Więcej",
+    "label": "Nawigacja",
+    "lobby": "← Lobby",
+    "shortcut": "Skrót: {key}",
+    "village": {
+      "label": "Wioska",
+      "short": "Wioska"
+    },
+    "map": {
+      "label": "Mapa",
+      "short": "Mapa"
+    },
+    "rally": {
+      "label": "Punkt zbiórki",
+      "short": "Zbiórka"
+    },
+    "farm": {
+      "label": "Asystent",
+      "short": "Asystent"
+    },
+    "reports": {
+      "label": "Raporty",
+      "short": "Raporty"
+    },
+    "overview": {
+      "label": "Przegląd",
+      "short": "Przegląd"
+    },
+    "news": {
+      "label": "Pogłoski",
+      "short": "Pogłoski"
+    },
+    "quests": {
+      "label": "Zadania",
+      "short": "Zadania"
+    },
+    "ranking": {
+      "label": "Ranking",
+      "short": "Ranking"
+    },
+    "settings": {
+      "label": "Ustawienia",
+      "short": "Ustaw."
+    }
+  },
+  "resourceBar": {
+    "tooltip": "{name}: {amount} / {cap}\nProdukcja: {perHour}/h\n{full}",
+    "full": "Magazyn pełny — nadwyżka przepada!",
+    "fullIn": "Pełny magazyn za {time}",
+    "nearlyFull": "Magazyn prawie pełny"
+  },
+  "clock": {
+    "title": "Czas serwera",
+    "paused": "PAUZA"
+  },
+  "errorBoundary": {
+    "title": "Błąd interfejsu",
+    "safe": "Stan gry jest bezpieczny na serwerze. Odśwież stronę.",
+    "reload": "Odśwież"
+  },
+  "incoming": {
+    "title": "Nadchodzące ataki",
+    "from": "Skąd",
+    "kind": "Rodzaj",
+    "arrival": "Przybycie",
+    "defence": "Obrona",
+    "train": "pociąg ({n})",
+    "dodge": "Unik",
+    "dodgeTitle": "Wyprowadź całe wojsko przed uderzeniem — wróci sekundę po nim",
+    "snipe": "Snajp",
+    "snipeTitle": "Wsparcie lądujące między 1. a 2. hetmanem",
+    "noneInTime": "Żadna wioska nie zdąży."
+  },
+  "incomingLabel": {
+    "scout": "zwiad",
+    "cavalry": "lekka kawaleria",
+    "heavyCav": "ciężka kawaleria",
+    "infantry": "piechota",
+    "sword": "miecznicy",
+    "siege": "tarany/katapulty",
+    "noble": "hetman?"
+  },
+  "profile": {
+    "tooFewData": "za mało danych",
+    "sparkline": "Punkty dzień po dniu",
+    "statusQuit": "nieaktywny",
+    "statusEliminated": "wyeliminowany",
+    "from": "od: {name}",
+    "barbarians": "barbarzyńcy",
+    "took": "przejął: {name}",
+    "dialog": "Profil: {name}",
+    "you": " (ty)",
+    "rank": "Miejsce w rankingu",
+    "points": "punkty",
+    "villages": "wioski",
+    "villagesTitle": "Wioski",
+    "none": "brak",
+    "colVillage": "Wioska",
+    "colCoords": "Współrzędne",
+    "colPoints": "Punkty",
+    "conquests": "Przejęcia",
+    "othersSee": "Tak widzą cię inni gracze."
+  },
+  "mapCard": {
+    "points": "Punkty",
+    "player": "Gracz",
+    "you": "Ty",
+    "resources": "Surowce",
+    "farm": "Zagroda",
+    "army": "Wojsko",
+    "incoming": "Nadchodzące ataki",
+    "firstAt": " · pierwszy {at}",
+    "support": "Wesprzyj",
+    "village": "Wioska",
+    "barbarians": "barbarzyńcy",
+    "ownerPoints": "{name} ({points} pkt)",
+    "bonus": "Bonus",
+    "lastAttack": "Ostatni atak",
+    "loot": " · łup {haul}",
+    "scouted": "Wojsko (zwiad {day})",
+    "none": "brak",
+    "wall": "Mur",
+    "wallLevel": "poziom {n}",
+    "distance": "Odległość",
+    "fields": "{n} pól",
+    "attack": "Atakuj",
+    "scout": "Zwiaduj",
+    "actions": "Akcje"
+  },
+  "bonus": {
+    "wood": "+100 % drewna",
+    "clay": "+100 % gliny",
+    "iron": "+100 % żelaza",
+    "allResources": "+30 % wszystkich surowców",
+    "infantry": "−20 % czasu w Koszarach",
+    "cavalry": "−20 % czasu w Stajni",
+    "farm": "+20 % populacji",
+    "storage": "+50 % spichlerza"
+  },
+  "scene": {
+    "level": "poz. {n}",
+    "notBuilt": "(niewybudowany)",
+    "building": " — budowa {pct} %",
+    "queued": " — w kolejce",
+    "rallyPoint": "Plac zborny",
+    "label": "Ilustracja wioski",
+    "wall": "Mur obronny {level}"
+  },
+  "notice": {
+    "conquered": "🏰 Podbito nową wioskę!",
+    "questDone": "📜 Ukończono zadanie — odbierz nagrodę",
+    "notLoaded": "Gra nie jest załadowana",
+    "dodge": "🏃 Unik zaplanowany — wojsko wyjdzie i wróci tuż po uderzeniu.",
+    "snipe": "🎯 Snajp zaplanowany — wsparcie wejdzie między 1. a 2. hetmana."
+  },
+  "map": {
+    "bonusVillage": "Wioska bonusowa: {bonus}",
+    "cmd": {
+      "attack": "nasz atak",
+      "support": "wsparcie",
+      "return": "powrót",
+      "trade": "kupcy"
+    },
+    "pts": "{n} pkt",
+    "active": " · aktywna",
+    "barbarians": "barbarzyńcy",
+    "close": "Zamknij (Esc)",
+    "population": "Populacja",
+    "queued": " (+{n} w kolejce)",
+    "queueEmpty": "kolejka budowy pusta",
+    "troops": "Wojska:",
+    "noTroops": "brak wojsk w wiosce",
+    "commandsOnWay": {
+      "one": "· # komenda w drodze",
+      "few": "· # komendy w drodze",
+      "many": "· # komend w drodze",
+      "other": "· # komendy w drodze"
+    },
+    "incomingAttacks": {
+      "one": "⚠ Nadchodzi # atak — pierwszy za",
+      "few": "⚠ Nadchodzą # ataki — pierwszy za",
+      "many": "⚠ Nadchodzi # ataków — pierwszy za",
+      "other": "⚠ Nadchodzą # ataki — pierwszy za"
+    },
+    "village": "Wioska",
+    "switch": "Przełącz",
+    "support": "Wesprzyj",
+    "reports": "Raporty",
+    "more": "Więcej…",
+    "travel": "Dystans {d} · LK {lc} · topór {axe}",
+    "garrison": "Załoga ({ago} temu):",
+    "wallLoyalty": " · mur {wall} · lojalność ~{loyalty}",
+    "noIntel": "Brak wywiadu — wyślij zwiad albo atak.",
+    "lastAttack": "Ostatni atak {ago} temu",
+    "loot": " · łup {n}",
+    "losses": " · straty {n}",
+    "noLosses": " · bez strat",
+    "threat": "⚠ Atak stąd na {target} ({units}) za",
+    "arrivesIn": "dotrze za",
+    "reportsCount": "Raporty ({n})",
+    "allReports": "wszystkie →",
+    "noReports": "brak — wioska nie była jeszcze w żadnym raporcie",
+    "r": {
+      "scout": "zwiad",
+      "conquest": "podbój",
+      "support": "wsparcie",
+      "ours": "nasz atak",
+      "theirs": "atak na nas"
+    },
+    "attack": "Atakuj",
+    "scout": "Zwiaduj",
+    "sendA": "Wyślij szablon A",
+    "defineA": "Zdefiniuj szablon A w Punkcie zbiórki",
+    "templateA": "Szablon A",
+    "emptyField": "Puste pole — las i łąki.",
+    "owner": "Właściciel:",
+    "you": "Ty",
+    "points": "Punkty: {n}",
+    "distance": "Dystans: {n} pól",
+    "intelFrom": "Wywiad ({source})",
+    "intelAttack": "ostatni atak {ago} temu",
+    "intelScout": "ze zwiadu",
+    "garrisonShort": "Załoga:",
+    "wallLoyaltyNobles": "Mur: {wall} · Lojalność: ~{loyalty}",
+    "noblesLeft": "(jeszcze ~{n} hetmanów)",
+    "lastLoot": "Ostatni łup: {n} / {cap}",
+    "title": "Mapa",
+    "myVillage": "Moja wioska",
+    "go": "Idź",
+    "playerColors": "Kolory graczy",
+    "hideOver": "Ukryj wioski >",
+    "ptsShort": "pkt",
+    "help1": "Kliknij wioskę, by otworzyć jej menu (Esc zamyka). Mapę przeciągasz myszą lub palcem, przybliżasz kółkiem albo szczyptą dwoma palcami.",
+    "help2": "Osada rośnie z punktami: chata (< 300) → osada z płotem (300) → palisada (1 000) → mur kamienny (3 000) → warownia (9 000) → zamek (11 000).",
+    "help3": "Ciemne łupkowe dachy = barbarzyńcy · czerwone dachy = ty · dachy w kolorze gracza = inni gracze · szare dachy = nieaktywni (porzucone konta) · złota obwódka i niebieska chorągiew = aktywna · złota chorągiew = bonusowa · kropka w rogu = komenda w drodze.",
+    "army": {
+      "ownAttack": "Twój atak",
+      "ownSupport": "Twoje wsparcie",
+      "ownReturn": "Twoja armia wraca",
+      "incomingAttack": "Nadchodzący atak",
+      "incomingSupport": "Nadchodzące wsparcie",
+      "trade": "Kupcy",
+      "ownIntercept": "Twoje wojsko w drodze na spotkanie",
+      "threat": "Idą na twoją armię",
+      "passingAttack": "Przechodzący atak",
+      "passingSupport": "Przechodzące wsparcie",
+      "passingReturn": "Armia wracająca do domu"
+    }
+  },
+  "queue": {
+    "demolish": "Zburz: ",
+    "toLevel": " → poziom {n}",
+    "progress": "Postęp",
+    "left": "Pozostało",
+    "refund90": "Zwrot 90 % surowców",
+    "refund100": "Zwrot 100 % surowców",
+    "stopDemolish": "Przerwij burzenie",
+    "cancel": "Anuluj",
+    "title": "Kolejka budowy",
+    "slots": "({used}/{slots} slotów)",
+    "empty": "Kolejka jest pusta — plac budowy stoi.",
+    "colBuild": "Budowa",
+    "colAction": "Akcja"
+  },
+  "resourceAmount": {
+    "wood": "{n} drewna",
+    "clay": "{n} gliny",
+    "iron": "{n} żelaza"
+  },
+  "buildings": {
+    "notBuilt": "niewybudowany",
+    "perHour": "{n}/h",
+    "capacity": "pojemność {n}",
+    "population": "populacja {n}",
+    "hides": "chroni {n} każdego surowca",
+    "buildTime": "czas budowy ×{n}",
+    "defence": "obrona ×{n}",
+    "merchants": "{n} kupców",
+    "nobles": "maks. {n} hetmanów",
+    "maxLevel": "Maksymalny poziom",
+    "queueFull": "Kolejka pełna ({slots} sloty)",
+    "requires": "Wymaga: {list}",
+    "never": "nigdy (za mały spichlerz)",
+    "in": "za {time}",
+    "missing": "Brakuje {list} — dostępne {eta}",
+    "noPopulation": "Brak populacji: potrzeba {needed}, wolne {free}",
+    "storageTooSmall": "za mały spichlerz",
+    "resourcesIn": "surowce za {time}",
+    "upgradeTitle": "Rozbuduj {building} do poziomu {n}",
+    "max": "Maks.",
+    "upgradeTo": "Rozbuduj do {n}",
+    "demolishTitle": "Zburz poziom {n} (bez zwrotu surowców)",
+    "title": "Budynki",
+    "colBuilding": "Budynek",
+    "colLevel": "Poziom",
+    "colCost": "Koszt",
+    "colPop": "Pop.",
+    "colPopulation": "Populacja",
+    "colTime": "Czas",
+    "colAction": "Akcja"
+  },
+  "plan": {
+    "title": "Plan rozbudowy",
+    "hint": "(szablon dosyła budynki do kolejki, gdy zwolni się slot i starczy surowców)",
+    "apply": "Wgraj do kolejki",
+    "edit": "Edytuj / nowy",
+    "copy": "{name} (kopia)",
+    "newTemplate": "Nowy szablon",
+    "delete": "Usuń szablon",
+    "inPlan": "W planie: {n} kroków · najbliższe: {next}",
+    "clear": "Wyczyść",
+    "clickToRemove": "Kliknij, aby usunąć",
+    "addSteps": "Dodaj kroki przyciskami powyżej.",
+    "save": "Zapisz szablon",
+    "cancel": "Anuluj"
+  },
+  "unitsPanel": {
+    "none": "Brak wojska.",
+    "recruitHint": "Zrekrutuj pikinierów w Koszarach.",
+    "buildHint": "Wybuduj Koszary.",
+    "queued": "w kolejce rekrutacji",
+    "away": "poza wioską (w drodze / wsparcie)",
+    "awayCount": "[{n} poza]",
+    "recruit": "» rekrutuj",
+    "support": "Wsparcie",
+    "arriving": "+{n} w drodze",
+    "supportComing": "Wsparcie jest w drodze"
+  },
+  "buildingScreen": {
+    "notBuilt": "Budynek nie jest jeszcze wybudowany.",
+    "back": "← Wioska",
+    "level": "(poziom {n})"
+  },
+  "academy": {
+    "needsAcademy": "Wymaga Akademii",
+    "noResources": "Za mało surowców",
+    "coinsTitle": "Monety hetmańskie",
+    "youHave": "Masz <b>🪙 {coins}</b> monet (globalnie, wspólne dla wszystkich wiosek). Hetmanów wyszkolonych łącznie: {minted}.",
+    "coinCost": "Koszt monety:",
+    "mint": "Wybij monetę",
+    "nextNoble": "Następny hetman wymaga <b>{coins}</b> monet (wiosek: {villages} + posiadani hetmani) oraz 40 000 / 50 000 / 50 000 surowców i 100 populacji. Limit w tej wiosce: {nobles}/{limit} (poziom Akademii).",
+    "noble": "Hetman",
+    "rulesNoCoins": "W tym świecie nie ma monet: hetman kosztuje tylko surowce i populację. Każdy ocalały hetman w wygranym ataku obniża lojalność wioski barbarzyńców o 20–35, a wioski z właścicielem o {min}–{max}. Przy lojalności ≤ 0 wioska staje się Twoja (lojalność 25, budynki tracą 1–3 poziomy, badania resetują się). Hetman zużywa się przy podboju i może atakować najdalej 70 pól.",
+    "rules": "Każdy ocalały hetman w wygranym ataku obniża lojalność celu o 20–35. Przy lojalności ≤ 0 wioska staje się Twoja (lojalność 25, budynki tracą 1–3 poziomy, badania resetują się). Hetman zużywa się przy podboju i może atakować najdalej 70 pól. Moneta kosztuje zawsze {wood}/{clay}/{iron}."
+  },
+  "quests": {
+    "slot": "+1 slot kolejki budowy",
+    "autoFarm": "odblokowanie auto-farmy",
+    "title": "Zadania",
+    "rewardsTo": "Nagrody trafiają do aktywnej wioski:",
+    "claimable": "Do odebrania",
+    "reward": "Nagroda:",
+    "claim": "Odbierz nagrodę",
+    "active": "Aktywne",
+    "allDone": "Wszystkie zadania ukończone — imperium stoi.",
+    "showDone": "Pokaż ukończone ({n})",
+    "hideDone": "Ukryj ukończone ({n})"
+  },
+  "buildingDescription": {
+    "main": "W Ratuszu wznosisz i rozbudowujesz pozostałe budynki. Im wyższy poziom, tym krócej trwa budowa.",
+    "wood": "Drwale w Tartaku wyrąbują drewno w okolicznych lasach. Im wyższy poziom, tym więcej drewna na godzinę.",
+    "clay": "W Cegielni wydobywa się glinę potrzebną do budowy. Im wyższy poziom, tym więcej gliny na godzinę.",
+    "iron": "W Hucie żelaza wytapia się żelazo na broń i zbroje. Im wyższy poziom, tym więcej żelaza na godzinę.",
+    "storage": "Spichlerz przechowuje surowce. Gdy się zapełni, produkcja danego surowca przepada.",
+    "farm": "Zagroda żywi mieszkańców i wojsko. Każdy budynek i każdy żołnierz zajmuje miejsce w Zagrodzie.",
+    "hide": "W Schowku ukrywasz część surowców — przeciwnik nie zrabuje tego, co w nim leży.",
+    "wall": "Mur obronny wzmacnia obrońców wioski i daje podstawową obronę nawet bez wojska."
+  },
+  "info": {
+    "now": "Teraz",
+    "next": "Następny poziom",
+    "production": "Produkcja (na godzinę)",
+    "capacity": "Pojemność",
+    "resource": "Surowiec",
+    "inStorage": "W spichlerzu",
+    "fullIn": "Pełny za",
+    "full": "pełny",
+    "maxPopulation": "Maksymalna populacja",
+    "used": "Zajęta",
+    "free": "Wolna",
+    "hidden": "Ukryte przed łupieżcami (każdego surowca)",
+    "defenceBonus": "Bonus obronny",
+    "baseDefence": "Podstawowa obrona"
+  },
+  "recruit": {
+    "requires": "Wymaga: {list}",
+    "needsResearch": "Wymaga odblokowania w Kuźni",
+    "noResources": "Za mało surowców",
+    "noPopulation": "Brak populacji (potrzeba {needed}, wolne {free})",
+    "limit": "Maksymalnie {max} w wiosce (łącznie z kolejką i wysłanymi)",
+    "coins": "Brak monet: masz {have}, potrzeba {needed}",
+    "count": "Podaj liczbę ≥ 1",
+    "stats": "atak {attack} · obr. {def}/{defCav}/{defArch} · {speed} min/pole · udźwig {haul}",
+    "colCost": "Koszt",
+    "colPopulation": "Populacja",
+    "colTimeEach": "Czas / szt.",
+    "colInVillage": "W wiosce",
+    "max": "Maks. {n}",
+    "recruitTitle": "Rekrutuj {count}× {unit}",
+    "recruit": "Rekrutuj",
+    "colDone": "Gotowe",
+    "colProgress": "Postęp",
+    "colNext": "Następna",
+    "colEnd": "Koniec",
+    "refund": "Zwrot 100 % za niewyprodukowane sztuki",
+    "cancel": "Anuluj",
+    "colUnit": "Jednostka",
+    "colPop": "Pop.",
+    "colRecruitment": "Rekrutacja",
+    "colAction": "Akcja",
+    "queueTitle": "Kolejka rekrutacji",
+    "queueEmpty": "Plac ćwiczeń stoi pusty."
+  },
+  "research": {
+    "maxLevel": "Maksymalny poziom",
+    "busy": "Kuźnia zajęta — jedno badanie naraz",
+    "noResources": "Za mało surowców",
+    "free": "odblokowany bez badań",
+    "colLevel": "Poziom",
+    "colCost": "Koszt",
+    "colTime": "Czas",
+    "researchTitle": "Badaj poziom {n} (+{pct} % atak i obrona)",
+    "max": "Maks.",
+    "unlock": "Odblokuj",
+    "upgradeTo": "Ulepsz do {n}",
+    "idle": "Palenisko przygasłe — żadne badanie nie trwa.",
+    "colResearch": "Badanie",
+    "colProgress": "Postęp",
+    "colLeft": "Pozostało",
+    "colAction": "Akcja",
+    "toLevel": "{unit} → poziom {n}",
+    "refund": "Zwrot 100 % kosztu",
+    "cancel": "Anuluj",
+    "colUnit": "Jednostka",
+    "running": "Trwające badanie"
+  },
+  "market": {
+    "noMarket": "Brak rynku",
+    "notOwned": "Cel musi być Twoją wioską",
+    "self": "Wybierz inną wioskę",
+    "empty": "Podaj ilości",
+    "noResources": "Za mało surowców",
+    "merchantsShort": "Za mało kupców: potrzeba {needed}, wolnych {available}",
+    "merchants": "Kupcy: {free} / {total} wolnych",
+    "merchantHint": "(1 kupiec = 1000 surowców, 6 min/pole)",
+    "ownOnly": "Handel działa między własnymi wioskami — podbij drugą wioskę.",
+    "toVillage": "Do wioski:",
+    "surplusTitle": "Surowce powyżej 80 % magazynu",
+    "surplus": "Nadmiar",
+    "balanceTitle": "Połowa różnicy między wioskami",
+    "balance": "Rozdziel równo",
+    "clear": "Wyczyść",
+    "sendInfo": "kupców: {merchants} · czas: {time}",
+    "send": "Wyślij surowce",
+    "trader": "Handlarz wędrowny",
+    "nextOffer": "(nowa oferta za",
+    "give": "Oddaj",
+    "get": "→ dostaniesz",
+    "used": "Oferta już wykorzystana",
+    "exchange": "Wymień",
+    "cannotExchange": "Za mało surowców (albo brak rynku)",
+    "usedShort": "Wykorzystano"
+  },
+  "settings": {
+    "interface": "Interfejs",
+    "language": "Język",
+    "animations": "Animacje wioski",
+    "animFull": "pełne",
+    "animLimited": "ograniczone (tylko wskaźniki stanu)",
+    "animOff": "wyłączone",
+    "reducedMotion": "przy „prefers-reduced-motion\" domyślnie ograniczone",
+    "scene": "Ilustracja wioski",
+    "sound": "Dźwięki",
+    "testBuild": "Test: budowa",
+    "testAlarm": "Test: alarm",
+    "shortcuts": "Skróty: <b>1</b>–<b>9</b> widoki, <b>,</b> / <b>.</b> poprzednia / następna wioska.",
+    "credits": "Grafika: własny pixel art; kroje MedievalSharp i Cinzel (SIL OFL 1.1). Pełna lista w pliku ASSETS.md.",
+    "legal": "© 2026 {author} i współautorzy. LibreHold to wolne oprogramowanie na licencji GNU AGPL 3.0, udostępniane bez żadnej gwarancji.",
+    "source": "Kod źródłowy (AGPL-3.0)",
+    "licence": "Licencja",
+    "chartEmpty": "Za mało danych — wykres pojawi się po kilku ukończonych budowach.",
+    "stats": "Statystyki",
+    "points": "Punkty",
+    "villages": "Wioski",
+    "worldTime": "Czas świata",
+    "worldAge": "Wiek świata",
+    "coins": "Monety hetmańskie",
+    "coinsValue": "{coins} (wybito {minted})",
+    "conquered": "Podbite wioski",
+    "research": "Ukończone badania",
+    "attacks": "Wysłane ataki",
+    "battlesWon": "Wygrane bitwy",
+    "scoutsEtc": "Zwiady / wsparcia / transporty",
+    "killed": "Zabite jednostki",
+    "lost": "Stracone jednostki",
+    "looted": "Zrabowane surowce",
+    "today": "Dzisiaj: ataki / łup",
+    "title": "Ustawienia",
+    "lobby": "Lobby",
+    "logout": "Wyloguj"
+  },
+  "ranking": {
+    "tab": {
+      "points": "Punkty",
+      "villages": "Wioski",
+      "od": "Pokonani",
+      "daily": "Dzienne",
+      "conquests": "Przejęcia"
+    },
+    "page": "strona {n} / {pages}",
+    "player": "Gracz",
+    "points": "Punkty",
+    "villages": "Wioski",
+    "od": {
+      "att": "Jako agresor",
+      "def": "Jako obrońca",
+      "sup": "Jako wspierający"
+    },
+    "inactive": " (nieaktywny)",
+    "daily": {
+      "att": "Atakujący dnia",
+      "def": "Obrońca dnia",
+      "loot": "Grabieżca dnia",
+      "farm": "Farmer dnia"
+    },
+    "nobodyToday": "Dziś jeszcze nikt.",
+    "noConquests": "Nikt jeszcze nie przejął wioski.",
+    "when": "Kiedy",
+    "village": "Wioska",
+    "newOwner": "Nowy właściciel",
+    "previous": "Poprzedni",
+    "from": "z",
+    "barbarian": "barbarzyńska",
+    "title": "Ranking",
+    "odKind": {
+      "att": "agresor",
+      "def": "obrońca",
+      "sup": "wspierający"
+    },
+    "dailyKind": {
+      "att": "atakujący",
+      "def": "obrońca",
+      "loot": "grabieżca",
+      "farm": "farmer dnia"
+    },
+    "refresh": "Punkty i miejsca odświeżają się co pełną godzinę świata."
+  },
+  "overview": {
+    "addEverywhere": "Dodaj {building} +1 we wszystkich ({n})",
+    "village": "Wioska",
+    "queue": "Kolejka",
+    "plan": "Plan",
+    "level": "Poziom",
+    "empty": "pusta",
+    "steps": {
+      "one": "# krok",
+      "few": "# kroki",
+      "many": "# kroków",
+      "other": "# kroki"
+    },
+    "total": "Razem",
+    "recruitUpTo": "dokup do",
+    "eachVillage": "w każdej wiosce",
+    "ordered": "Zlecono {n} szt.",
+    "massRecruit": "Rekrutuj masowo ({n} wiosek)",
+    "recruitHint": "Liczone z obecnymi i zakolejkowanymi; pomijane wioski bez wymagań/surowców/populacji.",
+    "storage": "Magazyn",
+    "production": "Produkcja /h",
+    "population": "Populacja",
+    "noMoves": "Brak ruchów.",
+    "type": "Typ",
+    "route": "Trasa",
+    "unitsLoot": "Jednostki / łup",
+    "units": "Jednostki",
+    "arrival": "Przybycie",
+    "tradeHaul": "{n} surowców ({m} kupców)",
+    "merchantsBack": "{m} kupców wraca",
+    "groupName": "Nazwa grupy",
+    "addGroup": "Dodaj grupę",
+    "delete": "Usuń",
+    "title": "Przegląd",
+    "tab": {
+      "build": "Budowa",
+      "units": "Jednostki",
+      "recruit": "Rekrutacja",
+      "resources": "Surowce",
+      "commands": "Komendy",
+      "groups": "Grupy"
+    },
+    "allVillages": "wszystkie wioski"
+  },
+  "reports": {
+    "noUnits": "brak jednostek",
+    "count": "Liczba",
+    "losses": "Straty",
+    "missing": "Raport nie istnieje.",
+    "back": "← Lista",
+    "retry": "Ponów atak (ten sam skład)",
+    "sendA": "Wyślij szablon A",
+    "delete": "Usuń",
+    "result": "Wynik:",
+    "conquered": "Wioska podbita!",
+    "scoutOk": "Zwiad udany",
+    "scoutFail": "Zwiad nieudany",
+    "attackerWon": "Zwycięstwo atakującego",
+    "defenderWon": "Zwycięstwo obrońcy",
+    "morale": "Morale: {n} %",
+    "attacker": "Atakujący",
+    "defender": "Obrońca",
+    "wall": "Mur:",
+    "loot": "Łup:",
+    "fullLoad": "— pełne obciążenie",
+    "partialLoot": "— częściowy łup",
+    "loyalty": "Lojalność:",
+    "villageTaken": " — wioska przejęta",
+    "resources": "Zasoby:",
+    "troops": "Wojsko:",
+    "none": "brak",
+    "title": "Raporty",
+    "filter": {
+      "all": "wszystkie",
+      "unread": "nieprzeczytane",
+      "attack": "ataki",
+      "scout": "zwiady",
+      "conquest": "podboje",
+      "support": "wsparcie"
+    },
+    "villageFilter": "wioska:",
+    "allVillages": "Pokaż wszystkie wioski",
+    "markAll": "Oznacz wszystkie jako przeczytane",
+    "deleteRead": "Usuń przeczytane",
+    "empty": "Brak raportów. Wyślij atak z mapy albo Punktu zbiórki.",
+    "colReport": "Raport",
+    "colLoot": "Łup",
+    "colTime": "Czas",
+    "field": {
+      "at": "Bitwa w polu w {at}",
+      "place": "droga w {at}",
+      "missed": "twoje wojsko nikogo nie zastało: armii już nie było.",
+      "scouted": "Zbadana armia:"
+    }
+  },
+  "farm": {
+    "status": {
+      "untouched": "nietknięta",
+      "full": "pełen łup",
+      "partial": "częściowy łup",
+      "losses": "straty w ostatnim ataku",
+      "inbound": "atak w drodze"
+    },
+    "title": "Asystent farmienia",
+    "today": "Wysłano dziś: <b>{count}</b> ataków · Zrabowano dziś: <b>{looted}</b>",
+    "templates": "Szablony:",
+    "edit": "edytuj",
+    "radius": "Promień",
+    "hideAttacked": "Ukryj atakowane <",
+    "wall": "Mur ≤",
+    "hideLosses": "ukryj ze stratami",
+    "hideInbound": "ukryj z atakiem w drodze",
+    "sort": "Sortuj",
+    "sortBy": {
+      "distance": "dystans",
+      "lastAttackAt": "ostatni atak",
+      "estimatedLoot": "szacowany łup",
+      "points": "punkty"
+    },
+    "autoOn": "Auto-farma wysyła szablon A na cele z filtra co 15 min świata",
+    "autoLocked": "Odblokowanie przy {at} wioskach (masz {n}) albo z zadania „Łupieżca\"",
+    "auto": "Auto-farma",
+    "keys": "Klawisze: ↑↓ wybór, A/B/C wysyłka na podświetlony wiersz. Kliknięcie przycisku wysyła natychmiast.",
+    "none": "Brak celów spełniających filtr w promieniu {n} pól.",
+    "col": {
+      "coords": "Koordynaty",
+      "distance": "Dystans",
+      "pts": "Pkt",
+      "lastAttack": "Ostatni atak",
+      "lastLoot": "Ostatni łup",
+      "estLoot": "Szac. łup",
+      "defenceTitle": "Ostatnio widziana załoga i mur",
+      "defence": "Obrona",
+      "status": "Status",
+      "target": "Cel",
+      "points": "Punkty"
+    },
+    "never": "nigdy",
+    "ago": "{time} temu",
+    "wallValue": " · mur {n}",
+    "defineTemplate": "Zdefiniuj szablon {k}",
+    "sendTemplate": "Wyślij szablon {k}",
+    "defineC": "Zdefiniuj szablon C (skład paczki)",
+    "sendC": "Wyślij tyle paczek C, ile trzeba na ~{n} surowców",
+    "min": "min"
+  },
+  "rally": {
+    "b": {
+      "noUnits": "Wybierz jednostki",
+      "notEnough": "Za mało: {unit} (masz {have})",
+      "noTarget": "Na tym polu nie ma wioski",
+      "self": "Nie można wysłać do własnej wioski źródłowej",
+      "noAttackPower": "Atak wymaga jednostki z atakiem > 0 (same zwiadowcy = zwiad)",
+      "supportTargetNotOwned": "Wsparcie można wysłać tylko do własnej wioski",
+      "supportTargetBarbarian": "Nie można wspierać wioski barbarzyńskiej",
+      "attackOwnVillage": "To twoja wioska — wyślij wsparcie zamiast ataku",
+      "nobleUnescorted": "Hetman bez eskorty zginie!",
+      "nobleTooFar": "Hetman może atakować najdalej {max} pól",
+      "targetProtected": "Gracz jest pod ochroną początkującego jeszcze {time}",
+      "selfProtected": "Jesteś pod ochroną początkującego — możesz atakować tylko barbarzyńców"
+    },
+    "scheduled": "Zaplanowane",
+    "col": {
+      "from": "Z",
+      "target": "Cel",
+      "kind": "Rodzaj",
+      "leaves": "Wyjście",
+      "arrives": "Przybycie",
+      "troops": "Wojsko",
+      "route": "Trasa",
+      "units": "Jednostki",
+      "type": "Typ",
+      "action": "Akcja",
+      "unit": "Jednostka"
+    },
+    "attack": "atak",
+    "support": "wsparcie",
+    "recall": "Odwołaj",
+    "needTime": "Podaj datę i godzinę, np. 14:05:30.250",
+    "planned": "Zaplanowano {kind} na {coords}.",
+    "sent": "Wysłano {kind} na {coords}.",
+    "target": "Cel",
+    "from": "z {coords}",
+    "units": "Jednostki",
+    "noTroops": "Brak wojska w wiosce.",
+    "all": "Wszystkie",
+    "none": "Puste",
+    "catTarget": "Cel katapult:",
+    "randomBuilding": "losowy budynek",
+    "preview": "Podgląd",
+    "distance": "Dystans: <b>{n}</b> pól",
+    "travel": "Czas marszu:",
+    "arrival": "Przybycie:",
+    "scoutMission": "Misja zwiadowcza (same zwiadowcy).",
+    "when": "Kiedy:",
+    "mode": {
+      "now": "Wyślij teraz",
+      "sendAt": "Wyślij o",
+      "arriveAt": "Dotrzyj o"
+    },
+    "on": "dnia",
+    "at": "godz.",
+    "leavesArrives": "Wyjście {leave} · przybycie {arrive}",
+    "attackBtn": "⚔ Atak",
+    "supportBtn": "🛡 Wsparcie",
+    "enterTarget": "Podaj współrzędne celu (albo wybierz wioskę na mapie).",
+    "cmd": {
+      "attack": "Atak",
+      "support": "Wsparcie",
+      "return": "Powrót",
+      "trade": "Handel",
+      "intercept": "Przechwycenie"
+    },
+    "incoming": "NADCHODZĄCY ",
+    "turnBack": "Zawróć wojsko",
+    "cancelWindow": "Odwołanie możliwe tylko przez 10 min od wysłania",
+    "onlyActive": "tylko aktywna wioska",
+    "noneMoving": "Żadne wojsko nie jest w drodze.",
+    "stationed": "Wsparcie stacjonujące w tej wiosce",
+    "sendBack": "Odeślij",
+    "templatesHint": "Szablony to zapisane składy wojsk do wysyłki jednym kliknięciem (mapa → „Szablon A\", Asystent farmienia).",
+    "template": "Szablon {k}",
+    "save": "Zapisz {k}",
+    "title": "Punkt zbiórki",
+    "tab": {
+      "send": "Wyślij wojska",
+      "commands": "Komendy ({n})",
+      "templates": "Szablony"
+    }
+  },
+  "biome": {
+    "grass": "łąka",
+    "water": "jezioro",
+    "forest": "las",
+    "mountain": "góry"
+  },
+  "villageSize": {
+    "0": "chata",
+    "1": "osada",
+    "2": "palisada",
+    "3": "mur kamienny",
+    "4": "warownia",
+    "5": "zamek"
+  },
+  "instant": {
+    "timeLeft": "Do końca",
+    "renameHint": "Zmień pseudonim",
+    "nickname": "Pseudonim",
+    "createAccount": "Załóż konto",
+    "leave": "Opuść świat",
+    "leaveConfirm": "Opuścić tę grę? Twoje wioski przejmą barbarzyńcy.",
+    "leaveYes": "Tak, opuść",
+    "leaveNo": "Zostaję",
+    "results": "Wyniki"
+  },
+  "claimDialog": {
+    "title": "Zatrzymaj tę wioskę",
+    "text": "Wybierz nazwę i hasło. Zostaje ci ta wioska i ta gra, a do tego otwierają się długie światy.",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "confirm": "Powtórz hasło",
+    "submit": "Załóż konto",
+    "later": "Nie teraz"
+  },
+  "tutorial": {
+    "label": "Samouczek",
+    "army": {
+      "title": "Twoje wojsko",
+      "text": "Twoja wioska jest już rozbudowana: masz toporników, lekką kawalerię, zwiadowców i hetmana. Znajdziesz ich na placu."
+    },
+    "barbarian": {
+      "title": "Barbarzyńca za miedzą",
+      "text": "Szare wioski na mapie są niczyje. Ich poparcie jest w tej grze niskie, więc jeden hetman wystarczy. Otwórz mapę i wybierz najbliższą."
+    },
+    "noble": {
+      "title": "Wyślij hetmana",
+      "text": "Na placu wyślij jeden atak z topornikami i hetmanem razem: topornicy torują drogę, a hetman przejmuje wioskę."
+    },
+    "yours": {
+      "title": "Wioska jest twoja",
+      "text": "Gdy hetman dotrze, wioska przechodzi do ciebie. Graj dalej: gra kończy się po godzinie albo wcześniej, gdy ktoś zajmie większość mapy."
+    },
+    "step": "{n} z {total}",
+    "next": "Dalej",
+    "skip": "Pomiń samouczek",
+    "done": "Do dzieła"
+  },
+  "results": {
+    "title": "Gra dobiegła końca",
+    "reason": {
+      "time": "Czas minął. Najwięcej punktów zebrał(a) {winner}.",
+      "domination": "{winner} wygrał(a) przed czasem, trzymając większość mapy.",
+      "host": "Gospodarz zakończył grę. Najwięcej punktów zebrał(a) {winner}."
+    },
+    "leaderboard": "Ranking końcowy",
+    "col": {
+      "player": "Gracz",
+      "points": "Punkty",
+      "villages": "Wioski",
+      "conquered": "Zdobyte"
+    },
+    "details": "Pełne wyniki",
+    "watch": "Obejrzyj mapę",
+    "createAccount": "Załóż konto",
+    "longWorld": "Dołącz do długiego świata",
+    "playAgain": "Zagraj jeszcze raz",
+    "close": "Wróć do wioski"
+  },
+  "armyCard": {
+    "from": "Skąd",
+    "to": "Dokąd",
+    "arrival": "Dotarcie",
+    "threat": "Wygląda na",
+    "cancel": "Anuluj",
+    "openRally": "Otwórz plac",
+    "openTarget": "Otwórz atakowaną wioskę",
+    "scout": "Zwiad",
+    "attackField": "Atak w polu",
+    "turnBack": "Zawróć",
+    "meetsAt": "Spotkanie o {at}",
+    "tooLate": "Za późno: twoje wojsko jej nie dogoni",
+    "send": "Wyślij"
+  },
+  "waiting": {
+    "title": "Czekamy na start",
+    "text": {
+      "one": "Czekamy, aż {host} wystartuje · # gracz na miejscu",
+      "few": "Czekamy, aż {host} wystartuje · # gracze na miejscu",
+      "many": "Czekamy, aż {host} wystartuje · # graczy na miejscu",
+      "other": "Czekamy, aż {host} wystartuje · # gracza na miejscu"
+    },
+    "left": "Gra potrwa",
+    "hostPause": "Pauza gospodarza ({host}) · wznowienie za {time}"
+  },
+  "watch": {
+    "loading": "Wczytywanie gry…",
+    "failed": "Nie udało się wczytać gry. Próbuję ponownie…",
+    "clock": "Czas gry",
+    "waiting": "Czekamy na start",
+    "paused": "Wstrzymana",
+    "wholeMap": "Cała mapa świata",
+    "showWhole": "Cała mapa",
+    "showNormal": "Zwykła mapa",
+    "normalMap": "Zwykła mapa",
+    "zoomIn": "Przybliż",
+    "zoomOut": "Oddal",
+    "ranking": "Ranking",
+    "col": {
+      "player": "Gracz",
+      "points": "Punkty",
+      "villages": "Wioski"
+    },
+    "armies": "Armie na mapie",
+    "noArmies": "Żadna armia nie jest w drodze.",
+    "route": "{owner} → {target}",
+    "arrives": "dotrze {time}",
+    "army": "Armia",
+    "village": "Wioska",
+    "owner": "Właściciel",
+    "target": "Cel",
+    "arrival": "Dotrze o",
+    "troops": "Wojsko",
+    "troopsHome": "Wojsko w wiosce",
+    "noTroops": "brak",
+    "buildings": "Budynki",
+    "points": "Punkty",
+    "close": "Zamknij",
+    "kind": {
+      "attack": "Atak",
+      "support": "Wsparcie",
+      "return": "Powrót",
+      "intercept": "Przechwycenie"
+    }
+  }
+}

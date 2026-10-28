@@ -1,0 +1,150 @@
+{
+  "encyclopedia": {
+    "units": {
+      "title": "Jednostki — LibreHold",
+      "description": "Wszystkie jednostki Osad: koszty, atak, obrona, szybkość i udźwig, prosto z danych gry.",
+      "intro": "Dwanaście jednostek, od pikiniera po hetmana. Każda karta prowadzi do pełnych liczb: ile jednostka kosztuje, jak mocno bije, przed kim się broni i jak szybko maszeruje.",
+      "heading": "Jednostki"
+    },
+    "buildings": {
+      "title": "Budynki — LibreHold",
+      "description": "Wszystkie budynki Osad: koszty, czasy budowy, ludność i punkty każdego poziomu, z danych gry.",
+      "intro": "Wioskę tworzy piętnaście budynków. Każda strona ma pełną tabelę poziomów: ile kosztuje poziom, ile trwa budowa, ilu ludzi zatrudnia i ile jest wart punktów.",
+      "heading": "Budynki"
+    },
+    "label": {
+      "home": "Strona główna",
+      "cost": "Koszt",
+      "wood": "Drewno",
+      "clay": "Glina",
+      "iron": "Żelazo",
+      "pop": "Ludność",
+      "attack": "Atak",
+      "defense": "Obrona przed piechotą",
+      "defenseCavalry": "Obrona przed kawalerią",
+      "defenseArcher": "Obrona przed łucznikami",
+      "speed": "Minut na pole",
+      "carry": "Udźwig",
+      "recruitedIn": "Rekrutacja w",
+      "recruitTime": "Czas rekrutacji",
+      "requirements": "Wymagania",
+      "none": "brak",
+      "coinCost": "Moneta",
+      "maxDistance": "Zasięg",
+      "fields": "{n} pól",
+      "maxLevel": "Najwyższy poziom",
+      "level": "Poziom",
+      "time": "Czas",
+      "popTotal": "Ludność",
+      "pointsTotal": "Punkty",
+      "effect": {
+        "production": "Na godzinę",
+        "storage": "Pojemność",
+        "farm": "Limit ludności",
+        "hide": "Ukryte",
+        "wall": "Premia do obrony"
+      },
+      "percent": "+{n}%",
+      "stats": "Liczby",
+      "levels": "Poziomy",
+      "unitCaption": "Szybkość przy szybkości jednostek 1; czas rekrutacji przy szybkości świata 1 i budynku {building} na poziomie 1.",
+      "levelsCaption": "Czasy przy szybkości świata 1 i Ratuszu na poziomie 1; każdy poziom Ratusza dzieli je przez {factor}.",
+      "prev": "Poprzedni: {name}",
+      "next": "Następny: {name}",
+      "card": {
+        "unit": "Atak {attack} · Obrona {defense}",
+        "building": "Do poziomu {level} · {points} pkt na szczycie"
+      },
+      "breadcrumbs": "Ścieżka"
+    },
+    "unitTitle": "{name}: koszty i statystyki — {app}",
+    "unitMeta": "{name} w LibreHold kosztuje {wood} drewna, {clay} gliny i {iron} żelaza; atak {attack}, obrona {defense}, {speed} minut na pole.",
+    "buildingTitle": "{name}: poziomy, koszty i czasy — {app}",
+    "buildingMeta": "{name} w LibreHold: do poziomu {maxLevel}; poziom 1 kosztuje {wood} drewna, {clay} gliny i {iron} żelaza. Wszystkie poziomy w tabeli.",
+    "unit": {
+      "spear": {
+        "text": "Najtańszy obrońca i kręgosłup każdej załogi. Jego siłą jest obrona przed kawalerią, więc wioska pełna pikinierów zniechęca konnych łupieżców. W ataku jest słaby; zostaw go w domu."
+      },
+      "sword": {
+        "text": "Mocny obrońca przed piechotą i łucznikami, wolniejszy od pikiniera i droższy w żelazie. Razem z pikinierami tworzy obronę, która wytrzyma prawie każdy atak."
+      },
+      "axe": {
+        "text": "Piechota do ataku. Mocno bije jak na swoją cenę, ale prawie się nie broni, więc toporników wysyłaj, a w domu trzymaj inne wojsko. Większość pierwszych podbojów wygrywa ściana toporów."
+      },
+      "archer": {
+        "text": "Obrońca dobry zarówno przeciw kawalerii, jak i piechocie, ale szybko pada przed łucznikami konnymi. Kosztuje więcej drewna niż inni piesi i odpłaca się na murach."
+      },
+      "scout": {
+        "text": "Zwiadowcy wkradają się do wioski i donoszą, co zobaczyli: wojsko, budynki i surowce. Nie walczą, a tylko zwiadowcy w domu zatrzymują cudzych zwiadowców. Wyślij kilku przed każdym dużym atakiem."
+      },
+      "lightCav": {
+        "text": "Szybki, mocny w ataku i zdolny dużo unieść, lekki kawalerzysta jest najlepszy do najazdów. Ginie szybko w starciu z pikinierami, więc najpierw zwiad i wybieraj wioski bez nich."
+      },
+      "mountedArcher": {
+        "text": "Jeździec, który strzela: mocny w ataku i trudny do zatrzymania dla łuczników. Jest drogi i wymaga dobrze rozbudowanej stajni i kuźni, więc pojawia się później."
+      },
+      "heavyCav": {
+        "text": "Drogi i silny we wszystkim. Ciężka kawaleria broni się równie dobrze, jak atakuje, więc pomaga, gdy sąsiad naciera z kilku stron."
+      },
+      "ram": {
+        "text": "Tarany nie walczą; burzą mur, żeby reszta armii mogła. Wysyłaj je z silnym wojskiem, bo taran, który dotrze sam, nic nie zdziała."
+      },
+      "catapult": {
+        "text": "Katapulty niszczą budynek, w który je wycelujesz, od zagrody po ratusz. Są wolne i potrzebują eskorty, ale potrafią rozebrać wioskę rywala poziom po poziomie."
+      },
+      "paladin": {
+        "text": "Jeden rycerz na wioskę, wznoszony na piedestale. Świetnie się broni, przede wszystkim przed kawalerią, i jest mocną eskortą ważnego ataku."
+      },
+      "noble": {
+        "text": "Hetman sprawia, że wioski zmieniają właściciela. Każdy hetman, który przeżyje wygrany atak, obniża lojalność wioski, a przy zerze wioska jest twoja. Potrzebuje monet z Akademii i nie zajdzie zbyt daleko."
+      }
+    },
+    "building": {
+      "main": {
+        "text": "Serce wioski. Każdy poziom przyspiesza budowę wszystkich innych budynków, a wiele z nich wymaga najpierw odpowiedniego poziomu ratusza. Rozbudowuj go wcześnie i bez przerwy."
+      },
+      "barracks": {
+        "text": "Tu szkoli się piechotę: pikinierów, mieczników, toporników i łuczników. Wyższe poziomy szkolą szybciej, co się liczy, gdy załoga jest potrzebna od zaraz."
+      },
+      "stable": {
+        "text": "Szkoli zwiadowców i każdą kawalerię. Wymaga najpierw koszar i kuźni; kiedy stanie, najazdy stają się dużo szybsze."
+      },
+      "workshop": {
+        "text": "Buduje tarany i katapulty, machiny, które burzą mury i budynki. Przychodzi później, po dobrze rozbudowanym ratuszu i kuźni."
+      },
+      "academy": {
+        "text": "Bije monety, którymi płaci się za hetmanów, i szkoli samych hetmanów. Wymaga ratusza 20, rynku 10 i kuźni 20, więc jest znakiem dojrzałej wioski."
+      },
+      "smithy": {
+        "text": "Kuźnia otwiera drogę do lepszego wojska: większość jednostek wymaga odpowiedniego poziomu kuźni. Planuj jej poziomy razem z armią, której chcesz."
+      },
+      "statue": {
+        "text": "Na piedestale wznosi się rycerza, jednego na wioskę. Ma tylko jeden poziom i niewiele kosztuje, więc zbuduj go, gdy w wiosce znajdzie się miejsce."
+      },
+      "market": {
+        "text": "Stąd wyruszają kupcy, którzy wiozą surowce do innej wioski, twojej albo sąsiada. Wyślij nadmiar tam, gdzie go brakuje, a żaden surowiec nie będzie czekać na inny."
+      },
+      "wood": {
+        "text": "Wytwarza drewno, surowiec potrzebny prawie do wszystkiego. Produkcja rośnie z każdym poziomem, więc pierwsze godziny to głównie trzy budynki surowcowe."
+      },
+      "clay": {
+        "text": "Wytwarza glinę na budynki i wojsko. Trzymaj ją blisko poziomu tartaku, inaczej to na glinę będziesz zawsze czekać."
+      },
+      "iron": {
+        "text": "Wytwarza żelazo, które najbardziej waży w cenie dobrego wojska. Wioska, która chce atakować, potrzebuje mocnej huty."
+      },
+      "farm": {
+        "text": "Każdy budynek i każda jednostka potrzebuje ludzi, a zagroda decyduje, ilu wioska wyżywi. Kiedy jest pełna, nic nowego nie powstanie ani się nie wyszkoli."
+      },
+      "storage": {
+        "text": "Ustala, ile każdego surowca zmieści wioska. Produkcja ponad tę granicę przepada, więc rozbuduj go przed dłuższą przerwą od gry."
+      },
+      "hide": {
+        "text": "Schowek trzyma część surowców tam, gdzie łupieżcy ich nie wezmą. Nie zatrzyma ataku, ale sprawia, że twoja wioska jest marnym celem grabieży."
+      },
+      "wall": {
+        "text": "Mur wzmacnia każdego obrońcę w wiosce. Tarany potrafią go obniżyć, dlatego atakujący je zabierają i dlatego dobry mur warto szybko odbudować."
+      }
+    }
+  }
+}

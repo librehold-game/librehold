@@ -1,0 +1,55 @@
+{
+  "name": "librehold",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:account": "vite --config vite.account.config.ts",
+    "build": "tsc -p tsconfig.json --noEmit && npm run build:web",
+    "build:account": "vite build --config vite.account.config.ts && vite build --config vite.account.config.ts --ssr src/account/entry-server.tsx && node scripts/prerender.mjs",
+    "build:game": "vite build",
+    "build:web": "npm run build:account && npm run build:game && node scripts/compress.mjs dist/account dist/game",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "coverage": "vitest run --coverage.enabled --coverage.provider=v8 --coverage.reporter=text --coverage.include='src/**'",
+    "server:test": "cd server && go test ./...",
+    "gen": "cd server && go run ./cmd/gen",
+    "assets:pixel": "python3 scripts/pixel/export.py art/pixel-spike src/assets/pixel/village",
+    "assets:pixel-ui": "python3 scripts/pixel/ui.py art/pixel-spike/ui src/assets/pixel/ui",
+    "assets:pixel-map": "python3 scripts/pixel/map.py art/pixel-spike/map src/assets/pixel/map",
+    "assets:pixel-army": "python3 scripts/pixel/army.py art/pixel-spike src/assets/pixel/army",
+    "assets:og": "python3 scripts/pixel/preview.py public/account/og"
+  },
+  "dependencies": {
+    "idb-keyval": "^6.3.0",
+    "immer": "^11.1.18",
+    "lz-string": "^1.5.0",
+    "qrcode-generator": "^2.0.4",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.1.0",
+    "@vitest/coverage-v8": "^4.1.12",
+    "happy-dom": "^21.0.4",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "terms": {
+    "title": "Terms of play — LibreHold",
+    "description": "The rules of LibreHold in plain words: who runs it, accounts and guests, fair play, moderation, how worlds end, no warranty and how to reach us.",
+    "heading": "Terms of play",
+    "updated": "Draft, 21 October 2026",
+    "sections": {
+      "operator": {
+        "title": "Who runs the game",
+        "body": "LibreHold is a free strategy game for the browser, run by tomcatflow.com. It is a hobby project that started as a game for friends and is now open to anyone.\n\nThere is nothing to buy. No payments exist in the game, there are no ads, and nobody can pay for an advantage over other players. If that ever changes, these terms will change first, and the changelog will say so.\n\nBy playing, you agree to the rules on this page. They are short on purpose and written in plain words."
+      },
+      "accounts": {
+        "title": "Accounts and guests",
+        "body": "You can play in two ways. Play now makes you a guest: a random nickname, no email and no password. A guest plays instant games only, and a guest nobody has seen for {guestDeleteDays} days is deleted, together with its history.\n\nAn account has a name and a password. It keeps the tally of your games and opens the long worlds. A guest can become an account at any time, even in the middle of a game, by pressing Create account.\n\nKeep your password to yourself. Anyone who knows it can play as you, and nobody running the game will ever ask you for it. What the game stores about you is described on the Privacy page."
+      },
+      "fairPlay": {
+        "title": "Fair play",
+        "body": "LibreHold is only fun when everybody plays by the same rules.\n\nOne account per person. Do not keep extra accounts to feed resources or troops to your main one, and do not share an account with someone else.\n\nNo automation. Every order in the game is given by a person: no scripts, bots, macros, extensions that play for you or tools that send orders on their own. The labelled bots on the map are part of the game; you may not bring your own.\n\nNo exploiting bugs. If you find something that gives you resources, troops or speed you should not have, do not use it: report it instead. Reporting a bug never gets you into trouble."
+      },
+      "moderation": {
+        "title": "Names and moderation",
+        "body": "Names are public: they appear on the map, in rankings and in reports.\n\nThe admin may rename or remove names that are abusive, hateful or pretend to be someone else, and may remove accounts that break these rules or are used to harass other players.\n\nIf you think a decision was wrong, say so through the report form, and it will be looked at again."
+      },
+      "worlds": {
+        "title": "How worlds end",
+        "body": "Every world ends one day. An instant game ends after {instantDurationMin} minutes, or earlier if one player takes most of the map. Its data is deleted {instantKeepHours} hours after the end; the results stay: the final ranking and each player's tally of games.\n\nLong worlds run for weeks, but not forever. A long world may be closed to new players, paused, closed for good or reset, for example when its time is up or something goes badly wrong. Whenever possible, this is announced in advance.\n\nNothing you build or win in a world is property, and none of it is worth money: villages, troops and resources exist only inside the game."
+      },
+      "warranty": {
+        "title": "No warranty",
+        "body": "LibreHold is free and provided as it is, without any warranty. It is made and run in spare time.\n\nThe game may be unavailable now and then, for an update, a repair or because something broke. Its rules, numbers and looks may change at any time, in a long world too, and progress can be lost because of a bug or a failure.\n\nPlay because it is fun, not because you depend on it."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "A question, a bug, a player who breaks the rules or a name that should not be there: use the report form, {reportLink}. Anyone can send a report, with or without an account, up to {reportsPerHour} an hour.\n\nLeave an email address if you would like an answer. It is optional and used only to reply to you. Reports are read by the admin, and closed ones are deleted after {reportKeepDays} days."
+      },
+      "changes": {
+        "title": "Changes to these terms",
+        "body": "These terms may change as the game grows. Every change is announced in the changelog, and the date at the top of this page shows which version you are reading.\n\nIf you keep playing after a change, the new terms apply. If you do not agree with them, you can stop at any time: a guest is deleted on its own, and an account can be removed on request through the report form."
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "timelapse": {
+    "watch": "Watch the map",
+    "map": "Map of the game",
+    "play": "Play",
+    "pause": "Pause",
+    "restart": "Restart",
+    "length": "Length",
+    "seconds": "{n} s",
+    "scrub": "Game time",
+    "clock": "{time} of {end}",
+    "legend": "Players on the map",
+    "loading": "Loading the map…",
+    "unavailable": "This game's map can't be replayed.",
+    "download": "Download video",
+    "videoLength": "Video length",
+    "recording": "Recording… {pct} %",
+    "save": "Save video",
+    "wonBy": "Won by {winner}"
+  }
+}

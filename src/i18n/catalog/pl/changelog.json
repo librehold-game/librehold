@@ -1,0 +1,34 @@
+{
+  "changelog": {
+    "title": "Zmiany w grze — LibreHold",
+    "description": "Co się zmieniło w LibreHold, od najnowszych: mapa w pixel arcie, szybkie partie dla gości, serwer gry, boty, wersja na telefon i pierwsza wersja.",
+    "heading": "Zmiany w grze",
+    "intro": "Co się zmieniło w LibreHold, od najnowszych zmian. Drobne poprawki pojawiają się na bieżąco; tutaj trafia to, co zauważysz w grze.",
+    "entries": {
+      "2026-10-26": {
+        "title": "Mapa w pixel arcie, szybkie partie i armie w drodze",
+        "body": "Mapa świata jest narysowana w pixel arcie: lasy, góry i jeziora.\nGraj teraz wrzuca cię jako gościa do godzinnej szybkiej partii, bez zakładania konta.\nArmie maszerują po mapie i widać je w drodze.\nNa armię w drodze możesz wysłać wojsko i stoczyć z nią bitwę w polu."
+      },
+      "2026-10-20": {
+        "title": "Wioska w pixel arcie",
+        "body": "Twoja wioska jest narysowana w pixel arcie, budynek po budynku.\nPanele, przyciski i ikony dostały pasujący, pikselowy wygląd."
+      },
+      "2026-10-19": {
+        "title": "Serwer gry: konta i wspólne światy",
+        "body": "Gra działa teraz na serwerze, więc twoja wioska jest taka sama na każdym urządzeniu.\nKonta z nazwą i hasłem.\nGracze dzielą jeden świat i spotykają się na mapie.\nZmiany przychodzą na żywo: atak, ukończony budynek czy nowy raport pojawiają się bez odświeżania strony."
+      },
+      "2026-10-18": {
+        "title": "Boty, które żyją w świecie",
+        "body": "Boty budują, łupią, bronią się i przejmują wioski, tak jak ludzie.\nKażdy bot ma własny rytm dnia: zagląda do gry, gra przez chwilę i idzie spać.\nBoty pamiętają, kto je zaatakował, i potrafią się odegrać.\nZawsze są oznaczone jako boty."
+      },
+      "2026-08-23": {
+        "title": "Telefon, rosnące budynki i wioski na mapie",
+        "body": "Gra mieści się na ekranie telefonu, a panele są ułożone pod wąski wyświetlacz.\nKażdy budynek zmienia wygląd, kiedy zdobywa kolejne poziomy.\nWioski pojawiają się na mapie, więc widać sąsiadów."
+      },
+      "2026-08-22": {
+        "title": "Pierwsza grywalna wersja",
+        "body": "Pierwsza wersja, w którą dało się naprawdę zagrać.\nWioska z budynkami do rozbudowy, surowcami, które stale przybywają, i wojskiem do zrekrutowania.\nWioski barbarzyńców do zaatakowania i raport po każdej bitwie."
+      }
+    }
+  }
+}

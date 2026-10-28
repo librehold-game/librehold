@@ -1,0 +1,28 @@
+name: Bug report
+description: Something in the game or the server does not work as it should.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start an instant game
+        2. ...
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: librehold.org or your own server, and the browser and device.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Server log lines or browser console errors, if you have them.

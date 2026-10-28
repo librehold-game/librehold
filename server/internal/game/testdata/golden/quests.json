@@ -1,0 +1,619 @@
+[
+  {
+    "order": 0,
+    "id": "wood1",
+    "requires": [],
+    "reward": {
+      "resources": {
+        "wood": 60,
+        "clay": 40,
+        "iron": 20
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 1,
+    "id": "clay1",
+    "requires": [
+      "wood1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 40,
+        "clay": 60,
+        "iron": 20
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 2,
+    "id": "iron1",
+    "requires": [
+      "clay1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 40,
+        "clay": 40,
+        "iron": 60
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 3,
+    "id": "main3",
+    "requires": [
+      "iron1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 100,
+        "clay": 100,
+        "iron": 50
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 4,
+    "id": "storage3",
+    "requires": [
+      "main3"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 150,
+        "clay": 150,
+        "iron": 100
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 5,
+    "id": "wood5",
+    "requires": [
+      "storage3"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 200,
+        "clay": 0,
+        "iron": 0
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 6,
+    "id": "clay5",
+    "requires": [
+      "wood5"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 0,
+        "clay": 200,
+        "iron": 0
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 7,
+    "id": "iron5",
+    "requires": [
+      "clay5"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 200
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 8,
+    "id": "farm5",
+    "requires": [
+      "iron5"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 100,
+        "clay": 100,
+        "iron": 100
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 9,
+    "id": "barracks1",
+    "requires": [
+      "farm5"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 50,
+        "clay": 50,
+        "iron": 50
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 10,
+    "id": "spear10",
+    "requires": [
+      "barracks1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 100,
+        "clay": 100,
+        "iron": 100
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 11,
+    "id": "hide3",
+    "requires": [
+      "spear10"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 150,
+        "clay": 150,
+        "iron": 150
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 12,
+    "id": "smithy1",
+    "requires": [
+      "hide3"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 100,
+        "clay": 100,
+        "iron": 200
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 13,
+    "id": "research_sword",
+    "requires": [
+      "smithy1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 200,
+        "clay": 200,
+        "iron": 200
+      }
+    },
+    "hasProgress": false
+  },
+  {
+    "order": 14,
+    "id": "wall1",
+    "requires": [
+      "research_sword"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 100,
+        "clay": 100,
+        "iron": 100
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 15,
+    "id": "first_attack",
+    "requires": [
+      "wall1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 100,
+        "clay": 100,
+        "iron": 100
+      }
+    },
+    "hasProgress": false
+  },
+  {
+    "order": 16,
+    "id": "first_battle",
+    "requires": [
+      "first_attack"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 500,
+        "clay": 500,
+        "iron": 500
+      }
+    },
+    "hasProgress": false
+  },
+  {
+    "order": 17,
+    "id": "loot5000",
+    "requires": [
+      "first_battle"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 300,
+        "clay": 300,
+        "iron": 300
+      },
+      "autoFarm": true
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 18,
+    "id": "template_a",
+    "requires": [
+      "first_battle"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 200,
+        "clay": 200,
+        "iron": 200
+      }
+    },
+    "hasProgress": false
+  },
+  {
+    "order": 19,
+    "id": "main10",
+    "requires": [
+      "loot5000"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 500,
+        "clay": 500,
+        "iron": 500
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 20,
+    "id": "stable1",
+    "requires": [
+      "main10"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 300,
+        "clay": 300,
+        "iron": 300
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 21,
+    "id": "scout",
+    "requires": [
+      "stable1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 200,
+        "clay": 200,
+        "iron": 100
+      }
+    },
+    "hasProgress": false
+  },
+  {
+    "order": 22,
+    "id": "light_cav10",
+    "requires": [
+      "stable1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 500,
+        "clay": 500,
+        "iron": 500
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 23,
+    "id": "market1",
+    "requires": [
+      "main10"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 300,
+        "clay": 300,
+        "iron": 300
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 24,
+    "id": "trade",
+    "requires": [
+      "market1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 400,
+        "clay": 400,
+        "iron": 400
+      }
+    },
+    "hasProgress": false
+  },
+  {
+    "order": 25,
+    "id": "resources10",
+    "requires": [
+      "main10"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 1000,
+        "clay": 1000,
+        "iron": 1000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 26,
+    "id": "points1000",
+    "requires": [
+      "main10"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 1000,
+        "clay": 1000,
+        "iron": 1000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 27,
+    "id": "workshop1",
+    "requires": [
+      "resources10"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 500,
+        "clay": 500,
+        "iron": 500
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 28,
+    "id": "rams5",
+    "requires": [
+      "workshop1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 600,
+        "clay": 600,
+        "iron": 600
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 29,
+    "id": "wall10",
+    "requires": [
+      "rams5"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 800,
+        "clay": 800,
+        "iron": 800
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 30,
+    "id": "loot100k",
+    "requires": [
+      "loot5000"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 2000,
+        "clay": 2000,
+        "iron": 2000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 31,
+    "id": "main20",
+    "requires": [
+      "points1000"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 3000,
+        "clay": 3000,
+        "iron": 3000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 32,
+    "id": "smithy20",
+    "requires": [
+      "main20"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 3000,
+        "clay": 3000,
+        "iron": 3000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 33,
+    "id": "academy1",
+    "requires": [
+      "smithy20"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 5000,
+        "clay": 5000,
+        "iron": 5000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 34,
+    "id": "coin",
+    "requires": [
+      "academy1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 3000,
+        "clay": 3000,
+        "iron": 3000
+      }
+    },
+    "hasProgress": false
+  },
+  {
+    "order": 35,
+    "id": "noble",
+    "requires": [
+      "coin"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 5000,
+        "clay": 5000,
+        "iron": 5000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 36,
+    "id": "conquest1",
+    "requires": [
+      "noble"
+    ],
+    "reward": {
+      "buildQueueSlot": true
+    },
+    "hasProgress": false
+  },
+  {
+    "order": 37,
+    "id": "villages3",
+    "requires": [
+      "conquest1"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 10000,
+        "clay": 10000,
+        "iron": 10000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 38,
+    "id": "villages5",
+    "requires": [
+      "villages3"
+    ],
+    "reward": {
+      "buildQueueSlot": true
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 39,
+    "id": "points10000",
+    "requires": [
+      "main20"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 10000,
+        "clay": 10000,
+        "iron": 10000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 40,
+    "id": "kills10000",
+    "requires": [
+      "loot100k"
+    ],
+    "reward": {
+      "resources": {
+        "wood": 10000,
+        "clay": 10000,
+        "iron": 10000
+      }
+    },
+    "hasProgress": true
+  },
+  {
+    "order": 41,
+    "id": "villages10",
+    "requires": [
+      "villages5"
+    ],
+    "reward": {
+      "buildQueueSlot": true
+    },
+    "hasProgress": true
+  }
+]

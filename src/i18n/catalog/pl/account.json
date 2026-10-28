@@ -1,0 +1,243 @@
+{
+  "nav": {
+    "lobby": "Lobby",
+    "admin": "Panel admina",
+    "logout": "Wyloguj"
+  },
+  "loading": "Ładowanie…",
+  "login": {
+    "title": "Logowanie",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "submit": "Zaloguj",
+    "noAccount": "Nie masz konta?",
+    "register": "Załóż konto"
+  },
+  "register": {
+    "title": "Rejestracja",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "confirm": "Powtórz hasło",
+    "submit": "Załóż konto",
+    "haveAccount": "Masz już konto?",
+    "login": "Zaloguj się"
+  },
+  "lobby": {
+    "quadrant": {
+      "random": "Losowo",
+      "nw": "Północny zachód",
+      "ne": "Północny wschód",
+      "sw": "Południowy zachód",
+      "se": "Południowy wschód"
+    },
+    "summary": "graczy: {humans} · botów: {bots} · prędkość ×{speed}",
+    "paused": "wstrzymany",
+    "direction": "Kierunek",
+    "join": "Dołącz",
+    "mine": "Moje światy",
+    "mineEmpty": "Nie grasz jeszcze w żadnym świecie.",
+    "open": "Otwarte światy",
+    "openEmpty": "Nie ma światów, do których można dołączyć.",
+    "enter": "Wejdź",
+    "instant": {
+      "title": "Szybka gra",
+      "text": "Godzinny świat na małej mapie. Zaczynasz z rozbudowaną wioską, wojskiem i hetmanem gotowym zająć sąsiednią wioskę barbarzyńców."
+    }
+  },
+  "admin": {
+    "title": "Panel admina",
+    "tab": {
+      "accounts": "Konta",
+      "worlds": "Światy"
+    },
+    "col": {
+      "name": "Nazwa",
+      "role": "Rola",
+      "created": "Założone",
+      "password": "Hasło",
+      "status": "Status",
+      "players": "Gracze",
+      "bots": "Boty",
+      "state": "Stan",
+      "actions": "Akcje"
+    },
+    "role": {
+      "admin": "admin",
+      "player": "gracz",
+      "guest": "gość"
+    },
+    "newPasswordFor": "Nowe hasło dla {name}",
+    "newPassword": "nowe hasło",
+    "setPassword": "Ustaw hasło",
+    "passwordDone": "Ustawiono nowe hasło dla {name}; jego sesje zostały zakończone.",
+    "settingsOf": "Ustawienia: {name}",
+    "save": "Zapisz zmiany",
+    "status": {
+      "open": "otwarty",
+      "closed": "zamknięty",
+      "ended": "zakończony"
+    },
+    "state": {
+      "paused": "wstrzymany",
+      "running": "działa"
+    },
+    "action": {
+      "close": "Zamknij",
+      "open": "Otwórz",
+      "resume": "Wznów",
+      "pause": "Wstrzymaj",
+      "settings": "Ustawienia"
+    },
+    "newWorld": "Nowy świat",
+    "worldName": "Nazwa świata",
+    "create": "Utwórz świat",
+    "creationOnly": "tylko przy tworzeniu",
+    "field": {
+      "worldSpeed": "Prędkość świata",
+      "unitSpeed": "Prędkość jednostek",
+      "mapSize": "Wielkość mapy",
+      "barbarianDensity": "Gęstość barbarzyńców",
+      "botCount": "Liczba botów",
+      "botArrival": "Przybycie botów",
+      "rampUpDays": "Dni narastania",
+      "beginnerProtectionDays": "Ochrona początkujących (dni)",
+      "lastVillage": "Ostatnia wioska",
+      "difficulty": "Trudność",
+      "botStance": "Boty wobec ludzi",
+      "battleLosses": "Straty w bitwach",
+      "humanModifiers": "Mnożniki ludzi",
+      "botModifiers": "Mnożniki botów",
+      "noFieldBattles": "Bez bitew w polu",
+      "sightRadius": "Zasięg wzroku (pola)"
+    },
+    "choice": {
+      "barbarianDensity": {
+        "sparse": "rzadko",
+        "normal": "normalnie",
+        "dense": "gęsto"
+      },
+      "botArrival": {
+        "allAtOnce": "wszystkie od razu",
+        "rampUp": "stopniowo"
+      },
+      "lastVillage": {
+        "protected": "chroniona",
+        "canBeLost": "można stracić"
+      },
+      "difficulty": {
+        "easy": "łatwy",
+        "normal": "normalny",
+        "hard": "trudny",
+        "brutal": "brutalny"
+      },
+      "botStance": {
+        "peacefulRetaliate": "pokojowe — odwet tylko od zaatakowanych",
+        "peacefulReputation": "pokojowe — reputacja",
+        "normal": "normalne",
+        "allAgainstHumans": "wszyscy przeciwko ludziom"
+      },
+      "battleLosses": {
+        "normal": "normalne",
+        "reduced": "zmniejszone"
+      }
+    },
+    "modifier": {
+      "resources": "surowce",
+      "recruitment": "rekrutacja",
+      "building": "budowa"
+    }
+  },
+  "privacy": {
+    "title": "Prywatność",
+    "intro": "LibreHold to hobbystyczna gra robiona dla znajomych. Ta strona mówi, co gra o tobie przechowuje i po co.",
+    "account": "Konto przechowuje pseudonim, skrót hasła, język i datę ostatniej gry. Gość nie ma hasła; gość nieobecny przez 30 dni jest usuwany.",
+    "actions": "Ruchy w grze (rozkazy, dołączanie do światów i odchodzenie z nich) są zapisywane, by ulepszać grę i jej SI. Zapisy używają losowego identyfikatora gracza, nigdy pseudonimu ani adresu IP.",
+    "deletion": "Po usunięciu konta lub gościa jego zapisy zostają, ale nic nie łączy ich już z tobą; dawne rankingi pokazują go jako byłego gracza.",
+    "address": "Adres IP służy tylko w pamięci, do ograniczenia liczby kont zakładanych i zgłoszeń wysyłanych z jednego adresu w ciągu godziny, i nigdy nie jest zapisywany.",
+    "cookies": "Jedno ciasteczko utrzymuje zalogowanie, drugie pamięta język. Nie ma śledzenia ani reklam."
+  },
+  "stats": {
+    "label": "Dotychczasowe szybkie gry",
+    "games": "rozegranych gier",
+    "players": "graczy",
+    "conquests": "zdobytych wiosek",
+    "unitsKilled": "poległych wojsk",
+    "last24h": "W ostatniej dobie: gier {games}, zdobytych wiosek {conquests}."
+  },
+  "claim": {
+    "title": "Zachowaj postępy",
+    "text": "Wybierz nazwę i hasło. Twoje gry i wyniki zostają z tobą, a do tego otwierają się długie światy.",
+    "submit": "Załóż konto"
+  },
+  "footer": {
+    "privacy": "Prywatność"
+  },
+  "publicProfile": {
+    "notFound": "Nie ma gracza o tej nazwie.",
+    "guest": "Gra jako gość.",
+    "tallyLabel": "Szybkie gry",
+    "tally": {
+      "games": "rozegranych gier",
+      "wins": "wygranych",
+      "conquered": "zdobytych wiosek",
+      "killed": "pokonanych wojsk"
+    },
+    "games": "Rozegrane gry",
+    "noGames": "Jeszcze żadnej skończonej gry.",
+    "place": "miejsce {rank} na {players} · {points} pkt"
+  },
+  "archive": {
+    "notFound": "Nie ma skończonej gry o tym numerze.",
+    "bot": "bot",
+    "formerPlayer": "Były gracz",
+    "reason": {
+      "time": "Czas minął. Najwięcej punktów zebrał(a) {winner}.",
+      "domination": "{winner} wygrał(a) przed czasem, trzymając większość mapy."
+    },
+    "summary": "graczy {humans}, botów {bots} · zdobytych wiosek {conquests} · ataków {attacks} · gracze pokonali {killed} wojsk",
+    "leaderboard": "Ranking końcowy",
+    "col": {
+      "player": "Gracz",
+      "points": "Punkty",
+      "villages": "Wioski",
+      "conquered": "Zdobyte",
+      "killed": "Pokonane wojska"
+    },
+    "running": "Gra wciąż trwa · zostało {time}"
+  },
+  "head": {
+    "home": {
+      "title": "LibreHold — pikselowa wojna o wioski w przeglądarce",
+      "description": "Darmowa wojna o wioski w przeglądarce. Godzinne partie z ludźmi i botami albo długie światy na tygodnie."
+    },
+    "privacy": {
+      "title": "Prywatność — LibreHold",
+      "description": "Co LibreHold o tobie zapisuje, po co i jak to usunąć."
+    },
+    "notFound": {
+      "title": "Nie ma takiej strony — LibreHold",
+      "description": "Tej strony nie ma. Wróć na stronę główną i zacznij grę."
+    },
+    "login": {
+      "title": "Logowanie — LibreHold"
+    },
+    "register": {
+      "title": "Załóż konto — LibreHold"
+    },
+    "lobby": {
+      "title": "Lobby — LibreHold"
+    },
+    "admin": {
+      "title": "Panel administratora — LibreHold"
+    }
+  },
+  "notFound": {
+    "title": "Nie ma takiej strony",
+    "text": "Pod tym adresem nic nie ma. Strona mogła się przenieść albo w linku jest literówka.",
+    "home": "Przejdź na stronę główną"
+  },
+  "languageNote": {
+    "text": "Ta strona jest też po polsku →",
+    "close": "Zamknij"
+  }
+}

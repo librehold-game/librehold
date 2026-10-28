@@ -1,0 +1,163 @@
+/*
+ * Pixel-art chrome of the game (assets: `npm run assets:pixel-ui`). The kit is drawn at about two image pixels per art
+ * pixel, so every piece is shown at half size: `border-image` slices are in image pixels, border widths are half of
+ * them. Every rule is scoped to `html.pixel` (set in game.html), which gives it the specificity the cascade below
+ * relies on. Most rules live in the components layer, so Tailwind utilities on an element still win; the few that
+ * utilities must not undo are unlayered at the end of the file.
+ */
+@layer components {
+  html.pixel body {
+    background-color: #2a1a0e;
+    background-image:
+      radial-gradient(ellipse 120% 70% at 50% -8%, rgba(255, 226, 160, 0.12), transparent 72%),
+      url("../assets/pixel/ui/chrome/leather.png");
+    background-size: auto, 61px;
+    image-rendering: pixelated;
+  }
+  html.pixel body * {
+    image-rendering: auto;
+  }
+
+  html.pixel .panel {
+    border-style: solid;
+    border-width: 16px;
+    border-color: transparent;
+    border-radius: 0;
+    border-image: url("../assets/pixel/ui/chrome/panel.png") 32 / 16px stretch;
+    image-rendering: pixelated;
+    background: #e9c69c padding-box;
+    box-shadow: 0 3px 6px rgba(20, 10, 0, 0.45);
+  }
+
+  html.pixel .wood-strip,
+  html.pixel .table-game th,
+  html.pixel .navbar-bottom {
+    background-color: #5a3519;
+    background-image: url("../assets/pixel/ui/chrome/plank.png");
+    background-size: auto 100%;
+    background-repeat: repeat-x;
+    image-rendering: pixelated;
+    box-shadow: none;
+  }
+  html.pixel .map-ruler-y {
+    background-size: auto 16px;
+    background-repeat: repeat;
+  }
+  html.pixel .map-card {
+    background-color: #e9c69c;
+    border: 2px solid #3b2410;
+    box-shadow: 0 3px 6px rgba(20, 10, 0, 0.45);
+  }
+  html.pixel .panel-header {
+    border-style: solid;
+    border-color: transparent;
+    border-width: 6px;
+    border-image: url("../assets/pixel/ui/chrome/header.png") 12 fill / 6px stretch;
+    image-rendering: pixelated;
+    background: none;
+    box-shadow: none;
+    margin-bottom: 4px;
+  }
+
+  html.pixel .btn {
+    border-style: solid;
+    border-color: transparent;
+    border-width: 7px 8px;
+    border-radius: 0;
+    padding: 0 6px;
+    border-image: url("../assets/pixel/ui/chrome/btn.png") 14 16 fill / 7px 8px stretch;
+    image-rendering: pixelated;
+    background: none;
+    box-shadow: none;
+    color: #fbe7b5;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+  }
+  html.pixel .btn:hover:not(:disabled) {
+    background: none;
+    filter: brightness(1.12);
+  }
+  html.pixel .btn:active:not(:disabled) {
+    transform: translateY(1px);
+    filter: brightness(0.92);
+    box-shadow: none;
+  }
+  html.pixel .btn:disabled {
+    filter: grayscale(0.7) brightness(0.85);
+    box-shadow: none;
+  }
+  html.pixel .btn-danger {
+    border-image: url("../assets/pixel/ui/chrome/btn-danger.png") 12 fill / 6px stretch;
+    background: none;
+    color: #fff;
+  }
+  html.pixel .btn-danger:hover:not(:disabled) {
+    background: none;
+  }
+
+  html.pixel .tab {
+    border-style: solid;
+    border-color: transparent;
+    border-width: 6px 6px 2px;
+    border-radius: 0;
+    border-image: url("../assets/pixel/ui/chrome/tab.png") 12 12 4 fill / 6px 6px 2px stretch;
+    image-rendering: pixelated;
+    background: none;
+    box-shadow: none;
+  }
+  html.pixel .tab-active {
+    border-image: url("../assets/pixel/ui/chrome/tab-active.png") 14 14 2 fill / 7px 7px 1px stretch;
+    background: none;
+    box-shadow: none;
+  }
+
+  html.pixel .frame-wood {
+    border-width: 10px;
+    border-image: url("../assets/pixel/ui/chrome/frame.png") 40 / 20px / 10px stretch;
+    border-image-outset: 10px;
+    image-rendering: pixelated;
+  }
+
+  html.pixel .navbtn-active {
+    background: none;
+    box-shadow: none;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 0;
+    border-image: url("../assets/pixel/ui/chrome/iconbtn-active.png") 16 fill / 8px stretch;
+    image-rendering: pixelated;
+  }
+
+  html.pixel ::-webkit-scrollbar-thumb {
+    background: url("../assets/pixel/ui/chrome/thumb.png") center / 100% 100% no-repeat;
+    border: 0;
+    image-rendering: pixelated;
+  }
+}
+
+html.pixel input[type="text"],
+html.pixel input[type="number"],
+html.pixel input[type="search"],
+html.pixel input[type="password"],
+html.pixel input:not([type]),
+html.pixel select,
+html.pixel textarea {
+  border-style: solid;
+  border-color: transparent;
+  border-width: 6px;
+  border-radius: 0;
+  border-image: url("../assets/pixel/ui/chrome/input.png") 12 fill / 6px stretch;
+  image-rendering: pixelated;
+  background: none;
+  box-shadow: none;
+  padding-inline: 4px;
+}
+
+html.pixel .lang-switch { display: inline-flex; }
+html.pixel .bot-tag { background: #5c4528; color: #fbe7b5; letter-spacing: 0.04em; }
+html.pixel .lang-switch .lang-active { opacity: 1; }
+
+@media (pointer: coarse) {
+  html.pixel .btn {
+    padding: 2px 8px;
+  }
+}

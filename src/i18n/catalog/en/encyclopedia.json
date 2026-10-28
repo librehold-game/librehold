@@ -1,0 +1,150 @@
+{
+  "encyclopedia": {
+    "units": {
+      "title": "Units — LibreHold",
+      "description": "Every unit of LibreHold with its costs, attack, defence, speed and carry, straight from the game data.",
+      "intro": "Twelve units, from the spearman to the hetman. Each card leads to the full numbers: what a unit costs, how hard it hits, whom it holds off and how fast it marches.",
+      "heading": "Units"
+    },
+    "buildings": {
+      "title": "Buildings — LibreHold",
+      "description": "Every building of LibreHold with costs, build times, population and points for each level, from the game data.",
+      "intro": "Fifteen buildings make a village. Each page has the full level table: what a level costs, how long it takes, how many people it employs and how many points it is worth.",
+      "heading": "Buildings"
+    },
+    "label": {
+      "home": "Home",
+      "cost": "Cost",
+      "wood": "Wood",
+      "clay": "Clay",
+      "iron": "Iron",
+      "pop": "Population",
+      "attack": "Attack",
+      "defense": "Defence against infantry",
+      "defenseCavalry": "Defence against cavalry",
+      "defenseArcher": "Defence against archers",
+      "speed": "Minutes per field",
+      "carry": "Carries",
+      "recruitedIn": "Recruited in",
+      "recruitTime": "Recruit time",
+      "requirements": "Requirements",
+      "none": "none",
+      "coinCost": "Coin",
+      "maxDistance": "Reach",
+      "fields": "{n} fields",
+      "maxLevel": "Highest level",
+      "level": "Level",
+      "time": "Time",
+      "popTotal": "Population",
+      "pointsTotal": "Points",
+      "effect": {
+        "production": "Per hour",
+        "storage": "Capacity",
+        "farm": "Population limit",
+        "hide": "Hidden",
+        "wall": "Defence bonus"
+      },
+      "percent": "+{n}%",
+      "stats": "Numbers",
+      "levels": "Levels",
+      "unitCaption": "Speed at unit speed 1; recruit time at world speed 1 with a level 1 {building}.",
+      "levelsCaption": "Times at world speed 1 with the Town Hall at level 1; each Town Hall level divides them by {factor}.",
+      "prev": "Previous: {name}",
+      "next": "Next: {name}",
+      "card": {
+        "unit": "Attack {attack} · Defence {defense}",
+        "building": "Up to level {level} · {points} points at the top"
+      },
+      "breadcrumbs": "Breadcrumbs"
+    },
+    "unitTitle": "{name}: costs and stats — {app}",
+    "unitMeta": "{name} in LibreHold costs {wood} wood, {clay} clay and {iron} iron; attack {attack}, defence {defense}, {speed} minutes per field.",
+    "buildingTitle": "{name}: levels, costs and times — {app}",
+    "buildingMeta": "{name} in LibreHold goes up to level {maxLevel}; level 1 costs {wood} wood, {clay} clay and {iron} iron. Every level in one table.",
+    "unit": {
+      "spear": {
+        "text": "The cheapest defender and the backbone of any garrison. Its strength is holding off cavalry, so a village full of spearmen makes raiders on horseback think twice. On the attack it is weak; keep it at home."
+      },
+      "sword": {
+        "text": "A sturdy defender against infantry and archers, slower than the spearman and heavier on iron. Pair the two and a village stands against almost any mix of attackers."
+      },
+      "axe": {
+        "text": "The infantry that attacks. It hits hard for its price but barely defends, so send axemen out and keep other troops at home. Most early conquests are won with a wall of axes."
+      },
+      "archer": {
+        "text": "A defender that shines against cavalry and infantry alike but falls quickly to mounted archers. It costs more wood than the other foot soldiers and pays for it on the wall."
+      },
+      "scout": {
+        "text": "Scouts sneak into a village and report what they saw: troops, buildings and resources. They do not fight, and scouts at home are the only thing that stops enemy scouts. Send a few before every big attack."
+      },
+      "lightCav": {
+        "text": "Fast, strong in attack and able to carry a lot, the light cavalryman is the raider of choice. It dies quickly against spearmen, so scout first and pick villages that have none."
+      },
+      "mountedArcher": {
+        "text": "A rider who shoots: strong in attack and hard for archers to stop. It is costly and needs a well-built Stable and Smithy, so it comes later in a village's life."
+      },
+      "heavyCav": {
+        "text": "Expensive and strong at everything. Heavy cavalry defends as well as it attacks, which makes it a good answer when a neighbour comes at you from several sides."
+      },
+      "ram": {
+        "text": "Rams do not fight; they knock down the wall so the rest of the army can. Send them with a strong force, because a ram that arrives alone achieves nothing."
+      },
+      "catapult": {
+        "text": "Catapults damage the building you aim them at, from the farm to the Town Hall. They are slow and need an escort, but they can take a rival village apart level by level."
+      },
+      "paladin": {
+        "text": "One knight per village, raised at the Pedestal. It defends very well, above all against cavalry, and makes a strong escort for an important attack."
+      },
+      "noble": {
+        "text": "The hetman is how villages change hands. Every hetman that survives a won attack lowers the village's loyalty, and at zero the village is yours. It needs coins minted in the Academy and cannot march too far."
+      }
+    },
+    "building": {
+      "main": {
+        "text": "The heart of the village. Every level makes all other building work faster, and many buildings need a certain Town Hall level first. Raise it early and keep raising it."
+      },
+      "barracks": {
+        "text": "Where infantry is trained: spearmen, swordsmen, axemen and archers. Higher levels train them faster, which matters when you need a garrison in a hurry."
+      },
+      "stable": {
+        "text": "Trains scouts and every kind of cavalry. It needs the Barracks and the Smithy first; once it stands, raiding becomes much faster."
+      },
+      "workshop": {
+        "text": "Builds rams and catapults, the siege engines that break walls and buildings. It comes later, after a well-grown Town Hall and Smithy."
+      },
+      "academy": {
+        "text": "Mints the coins that pay for hetmans and trains the hetmans themselves. It needs Town Hall 20, Market 10 and Smithy 20, so it is the mark of a grown village."
+      },
+      "smithy": {
+        "text": "The Smithy opens the way to better troops: most units need a certain Smithy level before they can be trained. Plan its levels together with the army you want."
+      },
+      "statue": {
+        "text": "The Pedestal raises the knight, one per village. It has a single level and asks for little, so build it once your village has room."
+      },
+      "market": {
+        "text": "Merchants leave from here to carry resources to another village, yours or a neighbour's. Send a surplus where it is short and no resource has to wait for another."
+      },
+      "wood": {
+        "text": "Produces wood, the resource almost everything needs. Its production grows with every level, so the first hours are mostly about the three resource buildings."
+      },
+      "clay": {
+        "text": "Produces clay for buildings and troops. Keep it close to the Lumber Mill in level, or clay will be the thing you always wait for."
+      },
+      "iron": {
+        "text": "Produces iron, which weighs most in the price of good troops. A village that plans to attack needs a strong Ironworks."
+      },
+      "farm": {
+        "text": "Every building and every unit needs people, and the Farmstead sets how many the village can feed. When it is full, nothing new can be built or trained."
+      },
+      "storage": {
+        "text": "Sets how much of each resource the village can hold. Production beyond it is lost, so raise it before long trips away from the game."
+      },
+      "hide": {
+        "text": "The Hideout keeps part of your resources where raiders cannot take them. It does not stop an attack, but it makes your village a poor target for looting."
+      },
+      "wall": {
+        "text": "The wall makes every defender in the village stronger. Rams can lower it, which is why attackers bring them, and why a good wall is worth rebuilding quickly."
+      }
+    }
+  }
+}

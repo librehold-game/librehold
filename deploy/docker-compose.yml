@@ -1,0 +1,100 @@
+name: librehold
+
+services:
+  db:
+    image: postgres:18.6
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: librehold
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: librehold
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "librehold", "-d", "librehold"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  valkey:
+    image: valkey/valkey:9.1.2
+    restart: unless-stopped
+    # The limits' counters only: nothing worth keeping across a restart.
+    command: ["valkey-server", "--save", "", "--appendonly", "no", "--requirepass", "${VALKEY_PASSWORD:?set VALKEY_PASSWORD in .env}"]
+    environment:
+      REDISCLI_AUTH: ${VALKEY_PASSWORD}
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  server:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    image: librehold-server:local
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Caddy's fixed address below: only Caddy can hold it, so trusting it is safe with or without the https profile.
+      LH_TRUSTED_PROXIES: ${LH_TRUSTED_PROXIES:-172.30.0.10}
+    ports:
+      - "${LH_BIND:-0.0.0.0}:${LH_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2.11.7
+    profiles: [https]
+    # A fixed address, so the server can trust X-Forwarded-For from Caddy alone (LH_TRUSTED_PROXIES).
+    networks:
+      default:
+        ipv4_address: 172.30.0.10
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      LH_DOMAIN: ${LH_DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - server
+
+  backup:
+    image: postgres:18.6
+    restart: unless-stopped
+    entrypoint: ["/bin/bash", "/backup.sh"]
+    environment:
+      PGHOST: db
+      PGUSER: librehold
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: librehold
+    volumes:
+      - ./backup.sh:/backup.sh:ro
+      - backups:/backups
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+          ip_range: 172.30.0.128/25
+          # A proxy on the host reaches the server's published port from this address; trust it with
+          # LH_TRUSTED_PROXIES=172.30.0.1/32. Without it Docker would pick the first address of ip_range.
+          gateway: 172.30.0.1
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:
+  backups:
