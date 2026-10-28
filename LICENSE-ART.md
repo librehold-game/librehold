@@ -22,9 +22,6 @@ LibreHold (this repository or a fork of it), as long as:
 3. **It is not altered.** You do not edit, redraw or create derivative works of the artwork itself. A modified version
    may add its own graphics next to it or replace it.
 
-These conditions apply to everyone who uses the artwork under this permission; they do not limit the copyright
-holder.
-
 Under Polish copyright law (articles 50 and 66 of the Act of 4 February 1994 on Copyright and Related Rights), this
 permission is a non-exclusive, free licence, worldwide and for the whole term of the copyright, on these fields of
 exploitation, each only within the conditions above:

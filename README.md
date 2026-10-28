@@ -138,16 +138,12 @@ Please do not report security problems in public issues. Follow [`SECURITY.md`](
 
 ## Licence
 
-In short: the code is open source (AGPL-3.0); anyone may run LibreHold with the art, but nobody else may earn
-from it. Details:
+You are free to play, self-host, study, change and share LibreHold.
 
-- **Code** — [GNU AGPL 3.0](LICENSE) with additional terms in [`LICENSING.md`](LICENSING.md). Every copy and every
-  modified version must show "© 2026 Szymon Kocur and contributors" (or the same notice in its language), say that it
-  is a modified version, and use its own name, logo and domain. Anyone who offers a modified version over a network
-  must also share its code.
-- **Artwork** (`src/assets/pixel/`, `public/account/og/`, `docs/media/`) — © Szymon Kocur, all rights reserved
-  ([`LICENSE-ART.md`](LICENSE-ART.md)). You may use it unchanged to run LibreHold or a modified version of it, as long
-  as nobody pays to play and the server shows no advertising.
+- **Code** — [GNU AGPL 3.0](LICENSE), with a few additional terms in [`LICENSING.md`](LICENSING.md): keep the credits,
+  and give a modified version its own name. If you run a modified version for other people, share its source code.
+- **Artwork** (`src/assets/pixel/`, `public/account/og/`, `docs/media/`) — free to use, unchanged, on any LibreHold
+  server that is not commercial ([`LICENSE-ART.md`](LICENSE-ART.md)).
 - **Fonts** — their authors' licence (SIL OFL 1.1), described in [`ASSETS.md`](ASSETS.md).
 
 ## Credits

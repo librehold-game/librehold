@@ -3,13 +3,12 @@
 Copyright (C) 2026 Szymon Kocur and contributors
 
 > **TL;DR**
+> - **Self-hosting is welcome:** run your own server for friends, a club, a school or a LAN party, art included.
 > - **Code:** open source under the AGPL-3.0. Use it, change it, run it; if you run a changed version for other
->   people, publish your source code. Keep the author notice; a changed version uses its own name, logo and domain.
-> - **Art:** © Szymon Kocur. You may run LibreHold, or a changed version of it, with the art unchanged, as long as
->   nobody earns from it: no paid access, no paid items, no advertising. Donations that only cover hosting are fine.
->   These limits are for other people; the official servers at librehold.org are not bound by them.
-> - **Self-hosting is welcome:** run your own server for friends, a club, a school or a LAN party, with the art.
-> - **Name:** "LibreHold" and librehold.org are not licensed for other projects.
+>   people, publish its source code. Keep the credits, and give a changed version its own name, logo and domain.
+> - **Art:** free to use unchanged with LibreHold or a changed version of it, on servers that are not commercial: no
+>   paid access, no paid items, no advertising. Donations that only cover hosting are fine.
+> - **Name:** "LibreHold" and librehold.org belong to the original project.
 
 ## Code
 

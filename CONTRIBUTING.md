@@ -10,9 +10,9 @@ Before your first pull request can be merged, you need to sign the Contributor L
 - `CLA.md` if you contribute as an individual. A bot asks you to sign with a comment on your first pull request.
 - `CLA-ENTITY.md` if you contribute on behalf of a company or another organisation. It is signed by email.
 
-In short: you keep the copyright to your contribution, Szymon Kocur may license it under any terms, commercial ones
-included, and it always stays available under the project's licence (GNU AGPL 3.0 with the additional terms in
-`LICENSING.md`). The CLA itself is the binding text.
+In short: you keep the copyright to your contribution, and it always stays available under the project's licence
+(GNU AGPL 3.0 with the additional terms in `LICENSING.md`). The CLA also lets the maintainer offer the project under
+other terms, for example to an organisation that cannot use the AGPL. The CLA itself is the binding text.
 
 Add yourself to `CONTRIBUTORS.md` in your first pull request.
 
