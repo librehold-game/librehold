@@ -1,6 +1,6 @@
 # The server image: the Go binary plus both web builds.
 
-FROM --platform=$BUILDPLATFORM node:24.22.1 AS web
+FROM --platform=$BUILDPLATFORM node:26.12.0 AS web
 WORKDIR /src
 COPY package.json package-lock.json ./
 RUN npm ci
