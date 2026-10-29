@@ -1,4 +1,4 @@
-//go:build e2e
+//go:build e2e && perf
 
 package e2e
 
@@ -25,7 +25,7 @@ func percentile(xs []time.Duration, p float64) time.Duration {
 }
 
 // DoD 11: 500 mixed orders from two players in a world of 100 bots, through HTTP, at real time.
-func TestOrderLatencyP95(t *testing.T) {
+func TestPerfOrderLatencyP95(t *testing.T) {
 	s := startServerAt(t, newDB(t), time.Now().UnixMilli(), 1)
 	a := s.admin(t)
 	wid := a.world(func(cfg *game.WorldConfig) { cfg.BotCount, cfg.BeginnerProtectionDays = 100, 0 })
@@ -191,7 +191,7 @@ func catchUp(t *testing.T, svc *app.Service, id int64) int {
 // DoD 11: with 100 bots, events are processed within a second of being due, over ten minutes of real time.
 // Real time on purpose: worker sleeps are measured on the clock, so a sped-up clock would only measure the
 // poll interval.
-func TestEventLateness(t *testing.T) {
+func TestPerfEventLateness(t *testing.T) {
 	const scale = 1
 	clock := newTestClock(scale)
 	svc, store := inProcess(t, clock, 30*time.Second)
@@ -219,7 +219,7 @@ func TestEventLateness(t *testing.T) {
 }
 
 // DoD 11: a world of 100 bots that nobody processed for an hour catches up in under a minute.
-func TestCatchUpOneHour(t *testing.T) {
+func TestPerfCatchUpOneHour(t *testing.T) {
 	clock := newTestClock(1)
 	svc, store := inProcess(t, clock, time.Hour)
 	id := agedWorld(t, svc, store)

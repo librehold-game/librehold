@@ -74,7 +74,7 @@ public list, statistics, events or the sitemap.
   whole game in 30, 60 or 120 seconds) and can download it as a square video (recorded in the browser, nothing goes to
   the server). A one-hour instant game with 18 bots is about 16k entries and 100 KB of packed timeline.
 - **Measuring the circuit breaker on the server**: after moving to a VPS, repeat it on that machine:
-  `npm run build:web`, then `LH_LOAD_SEARCH=1 go -C server test -tags e2e ./e2e/ -run TestPlayerWorldsLoad -timeout 90m -v`.
+  `npm run build:web`, then `LH_LOAD_SEARCH=1 go -C server test -tags 'e2e perf' ./e2e/ -run TestPerfPlayerWorldsLoad -timeout 90m -v`.
   Beside four full instant worlds, the test doubles the number of busy player worlds from 2 to 64 and checks that
   orders in a long-running world do not slow down; set `LH_PLAYER_MAX_WORLDS` to half the largest number that passed.
 

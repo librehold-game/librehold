@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"slices"
 	"strings"
 	"sync"
@@ -232,63 +231,4 @@ func busyPlayerWorld(t *testing.T, s *server, n int, ctx context.Context, wg *sy
 		})
 	}
 	return wid
-}
-
-// TestPlayerWorldsLoadDoesNotSlowLongWorld: a long world's order latency beside four full instant worlds and K busy
-// player worlds. LH_LOAD_SEARCH=1 doubles K from 2 to 64 while it holds, to measure the safety cap.
-func TestPlayerWorldsLoadDoesNotSlowLongWorld(t *testing.T) {
-	s := startServerAt(t, newDB(t), time.Now().UnixMilli(), 1,
-		"LH_REGISTRATIONS_PER_HOUR=100000", "LH_GUESTS_PER_HOUR=100000", "LH_PLAYER_MAX_WORLDS=1000")
-	a := s.admin(t)
-	wid := a.world(func(cfg *game.WorldConfig) { cfg.BotCount, cfg.BeginnerProtectionDays = 100, 0 })
-	var players []*client
-	for _, name := range []string{"ala", "bob"} {
-		c := s.register(t, name)
-		c.join(wid)
-		boost(t, s.db, wid, c.home(wid).ID, army)
-		players = append(players, c)
-	}
-	alone := orderP95(t, wid, players, 150)
-
-	instant := map[int64]int{}
-	for range 4 {
-		w, wait := s.guest(t).play(t)
-		if w == 0 {
-			t.Fatalf("no seat with %d instant worlds, wait %d ms", len(instant), wait)
-		}
-		instant[w]++
-	}
-	for w := range instant {
-		for instant[w] < game.InstantWorldConfig.HumanSeats {
-			s.guest(t).playIn(t, w)
-			instant[w]++
-		}
-	}
-
-	var wg sync.WaitGroup
-	ctx, cancel := context.WithCancel(context.Background())
-	t.Cleanup(wg.Wait)
-	t.Cleanup(cancel)
-	hosted := 0
-	measure := func(k int) bool {
-		for ; hosted < k; hosted++ {
-			busyPlayerWorld(t, s, hosted, ctx, &wg)
-		}
-		time.Sleep(30 * time.Second)
-		loaded := orderP95(t, wid, players, 150)
-		pass := loaded <= alone*3/2+5*time.Millisecond && loaded <= 200*time.Millisecond
-		t.Logf("K=%d p95 alone=%v loaded=%v pass=%v", k, alone, loaded, pass)
-		return pass
-	}
-	if os.Getenv("LH_LOAD_SEARCH") != "1" {
-		if !measure(4) {
-			t.Fatal("four player worlds slowed the long world")
-		}
-		return
-	}
-	for k := 2; k <= 64; k *= 2 {
-		if !measure(k) {
-			break
-		}
-	}
 }

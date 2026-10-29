@@ -44,6 +44,8 @@ cd server
 make db        # Postgres (localhost:5433) and Valkey (localhost:6380) in Docker (make db-down stops them)
 make test      # all Go tests (the Postgres tests start their own container, Docker required)
 make e2e       # end-to-end tests on the built binary; first run: npm run build:web (from the root directory)
+make perf      # performance tests (order latency, event lateness, catch-up, load beside long worlds), about 15 min
+               # in real time; run locally only, CI never runs them
 ```
 
 Server environment variables:
