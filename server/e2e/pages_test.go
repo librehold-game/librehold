@@ -5,7 +5,6 @@ package e2e
 import (
 	"encoding/xml"
 	"fmt"
-	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -26,19 +25,19 @@ func TestPublicSitePages(t *testing.T) {
 	wid, _ := g.play(t)
 	st := g.state(wid)
 	home := g.home(wid)
-	var target *app.MapTile
-	best := math.Inf(1)
-	for _, tile := range g.tiles(wid, home.X, home.Y, 8) {
-		if d := math.Hypot(float64(tile.X-home.X), float64(tile.Y-home.Y)); tile.OwnerID == "" && d > 0 && d < best {
-			tileCopy := tile
-			target, best = &tileCopy, d
+	// A bot may take the barbarian between the map read and the order, so a blocked order picks again.
+	eventually(t, 10*time.Second, "a raid on a barbarian village", func() bool {
+		target := nearest(g.tiles(wid, home.X, home.Y, 8), home, func(t app.MapTile) bool { return t.OwnerID == "" })
+		if target == nil {
+			t.Fatal("no barbarian village near the guest")
 		}
-	}
-	if target == nil {
-		t.Fatal("no barbarian village near the guest")
-	}
-	g.mustOrder(wid, "send", map[string]any{"originId": home.ID, "x": target.X, "y": target.Y, "type": "attack",
-		"units": game.UnitCounts{game.UAxe: 100}})
+		r := g.order(wid, "send", map[string]any{"originId": home.ID, "x": target.X, "y": target.Y, "type": "attack",
+			"units": game.UnitCounts{game.UAxe: 100}})
+		if r.status != 200 && r.code() != "blocked" {
+			t.Fatalf("send: %d %s", r.status, r.body)
+		}
+		return r.status == 200
+	})
 	var live app.LiveStrip
 	eventually(t, 20*time.Second, "the raid on the live strip", func() bool {
 		g.ok("GET", "/api/v1/public/live", nil, &live)

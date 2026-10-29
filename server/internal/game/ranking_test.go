@@ -147,3 +147,36 @@ func TestRankingRefresh(t *testing.T) {
 		}
 	})
 }
+
+func TestInstantRankingRefresh(t *testing.T) {
+	origin := time.Date(2026, 10, 19, 8, 51, 30, 0, time.UTC).UnixMilli()
+	cfg := game.InstantWorldConfig
+	w := gametest.NewMemWorld(3, cfg, origin)
+	if err := game.NewWorld(w); err != nil {
+		t.Fatal(err)
+	}
+
+	t.Run("recount on the next full minute, not the next full hour", func(t *testing.T) {
+		if at, ok := w.ScheduledAt("stats"); !ok || at != 30*game.MsPerSecond {
+			t.Fatalf("stats at %d %v", at, ok)
+		}
+	})
+
+	t.Run("new points show in the ranking within a minute", func(t *testing.T) {
+		p := w.Players()[0]
+		v := game.PlayerVillages(w, p.ID)[0]
+		v.Buildings[game.BWall]++
+		game.RecomputePoints(v)
+		advance(t, w, 30*game.MsPerSecond+game.MsPerMinute)
+		if p.Points != game.PlayerPoints(w, p.ID) {
+			t.Fatalf("points %d, want %d", p.Points, game.PlayerPoints(w, p.ID))
+		}
+	})
+
+	t.Run("history still once an hour", func(t *testing.T) {
+		advance(t, w, 30*game.MsPerSecond+20*game.MsPerMinute)
+		if h := len(w.Players()[0].History.Hourly); h != 1 {
+			t.Fatalf("hourly %d", h)
+		}
+	})
+}

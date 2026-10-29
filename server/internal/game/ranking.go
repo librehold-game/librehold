@@ -18,10 +18,15 @@ func init() {
 	})
 }
 
-// ScheduleRanking schedules the next refresh on the full hour of the local clock (09:00, 10:00…).
+// ScheduleRanking schedules the next refresh on the full hour of the local clock (09:00, 10:00…), or on
+// the full minute in a short world, which would otherwise see one refresh in its whole game.
 func ScheduleRanking(w World) {
-	off := ((MsPerHour-w.ClockOrigin()%MsPerHour)%MsPerHour + MsPerHour) % MsPerHour
-	w.Schedule("stats", NextGridTime(w.Now(), off, MsPerHour))
+	every := int64(MsPerHour)
+	if IsShort(w.Config()) {
+		every = MsPerMinute
+	}
+	off := ((every-w.ClockOrigin()%every)%every + every) % every
+	w.Schedule("stats", NextGridTime(w.Now(), off, every))
 }
 
 // SnapshotRanking sets public points from the start, so the ranking is not all zeros until the first full hour.
@@ -32,13 +37,18 @@ func SnapshotRanking(w World) {
 	}
 }
 
-// onRankingEvent (every full local hour): each player's points go to the hourly history, and at local
-// midnight also to the daily one. Rankings and bots read these.
+// onRankingEvent recounts each player's points. On the full local hour they also go to the hourly
+// history, and at local midnight to the daily one. Rankings and bots read these.
 func onRankingEvent(w World, _ string) error {
-	midnight := LocalMinuteOfDay(w, w.Now()) < 60
+	minute := LocalMinuteOfDay(w, w.Now())
+	fullHour := minute%60 == 0
+	midnight := minute == 0
 	points := w.PointsByOwner()
 	for _, p := range w.Players() {
 		p.Points = points[p.ID]
+		if !fullHour {
+			continue
+		}
 		p.History.Hourly = appendKeep(p.History.Hourly, p.Points, hourlyKeep)
 		if midnight {
 			p.History.Daily = appendKeep(p.History.Daily, p.Points, dailyKeep)
