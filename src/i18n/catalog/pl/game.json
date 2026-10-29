@@ -959,7 +959,8 @@
       "loot": "grabieżca",
       "farm": "farmer dnia"
     },
-    "refresh": "Punkty i miejsca odświeżają się co pełną godzinę świata."
+    "refresh": "Punkty i miejsca odświeżają się co pełną godzinę świata.",
+    "refreshShort": "Punkty i miejsca odświeżają się co pełną minutę."
   },
   "overview": {
     "addEverywhere": "Dodaj {building} +1 we wszystkich ({n})",

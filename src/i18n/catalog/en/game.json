@@ -927,7 +927,8 @@
       "loot": "looter",
       "farm": "farmer of the day"
     },
-    "refresh": "Points and places refresh every full world hour."
+    "refresh": "Points and places refresh every full world hour.",
+    "refreshShort": "Points and places refresh every full minute."
   },
   "overview": {
     "addEverywhere": "Add {building} +1 in all ({n})",

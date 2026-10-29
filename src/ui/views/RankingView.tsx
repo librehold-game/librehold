@@ -60,6 +60,7 @@ export function RankingView() {
   const [odKind, setOdKind] = useState<'att' | 'def' | 'sup'>('att');
   const [dailyKind, setDailyKind] = useState<'att' | 'def' | 'loot' | 'farm'>('att');
   const { players, daily, conquests } = useRankings();
+  const short = useGameStore((s) => s.instant !== null);
   const choose = (next: Tab) => { setTab(next); setPage(0); };
   useT();
 
@@ -142,7 +143,7 @@ export function RankingView() {
           ))}
         </div>
       )}
-      <p className="text-muted text-[11px]">{t('ranking.refresh')}</p>
+      <p className="text-muted text-[11px]">{t(short ? 'ranking.refreshShort' : 'ranking.refresh')}</p>
       <div className="overflow-x-auto">{body}</div>
       <Pager page={page} pages={Math.ceil(total / PAGE)} setPage={setPage} />
     </div>
