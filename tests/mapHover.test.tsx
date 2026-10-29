@@ -5,7 +5,7 @@ import { tileAt } from '../src/ui/map/tiles';
 import type { GameState } from '../src/engine/types';
 import { useGameStore } from '../src/state/gameStore';
 import { useUiStore } from '../src/state/uiStore';
-import { MapHoverCard, type MapHover } from '../src/ui/map/MapHoverCard';
+import { MapHoverCard, OPEN_DELAY_MS, type MapHover } from '../src/ui/map/MapHoverCard';
 import { VillagePopup } from '../src/ui/views/MapView';
 import { blockersText } from '../src/i18n/names';
 import { labelIncoming } from '../src/engine/incoming';
@@ -36,7 +36,10 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-const hoverOn = (p: { x: number; y: number }) => act(() => setHover({ ...p, left: 200, top: 150, tw: 53, th: 38 }));
+const pointAt = (p: { x: number; y: number }) => act(() => setHover({ ...p, left: 200, top: 150, tw: 53, th: 38 }));
+const wait = (ms: number) => act(() => { vi.advanceTimersByTime(ms); });
+/** The cursor rests on the village until its card opens. */
+const hoverOn = (p: { x: number; y: number }) => { pointAt(p); wait(OPEN_DELAY_MS); };
 
 function emptyTile(): { x: number; y: number } {
   for (let dx = 1; dx < 20; dx++) {
@@ -107,11 +110,32 @@ describe('the card shown on hovering a village', () => {
     expect(screen.getByRole('tooltip').textContent).toContain(`(${w.barb.x}|${w.barb.y})`);
   });
 
-  it('shows at once when moving from an empty tile onto a village', () => {
+  it('opens only after the cursor rests on a village for a moment', () => {
     act(() => setHover({ ...emptyTile(), left: 253, top: 150, tw: 53, th: 38 }));
+    pointAt(w.bot);
+    wait(OPEN_DELAY_MS - 1);
     expect(screen.queryByRole('tooltip')).toBeNull();
-    hoverOn(w.bot);
+    pointAt(w.bot);
+    wait(1);
     expect(screen.getByRole('tooltip').textContent).toContain(`(${w.bot.x}|${w.bot.y})`);
+  });
+
+  it('villages the cursor only passes over do not open a card', () => {
+    pointAt(w.bot);
+    wait(OPEN_DELAY_MS - 50);
+    act(() => setHover({ ...w.barb, left: 253, top: 188, tw: 53, th: 38 }));
+    wait(OPEN_DELAY_MS - 1);
+    expect(screen.queryByRole('tooltip')).toBeNull();
+    wait(1);
+    expect(screen.getByRole('tooltip').textContent).toContain(`(${w.barb.x}|${w.barb.y})`);
+  });
+
+  it('leaving the village before the card opens keeps it closed', () => {
+    pointAt(w.bot);
+    wait(OPEN_DELAY_MS - 50);
+    act(() => setHover(null));
+    wait(OPEN_DELAY_MS);
+    expect(screen.queryByRole('tooltip')).toBeNull();
   });
 
   it('cursor moves over the card do not reach the map underneath', () => {

@@ -21,6 +21,8 @@ const GAP = 6;
  * tile — on its way to the card the cursor passes over neighbouring tiles.
  */
 const CLOSE_DELAY_MS = 200;
+/** How long the cursor rests on a tile before its card opens, so villages it only passes over stay quiet. */
+export const OPEN_DELAY_MS = 300;
 
 const sameTile = (a: MapHover | null, b: MapHover | null) => a !== null && b !== null && a.x === b.x && a.y === b.y;
 
@@ -41,6 +43,8 @@ export function MapHoverCard({ register, bounds }: { register: (set: (h: MapHove
   const overCard = useRef(false);
   const next = useRef<MapHover | null>(null);
   const closing = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pending = useRef<MapHover | null>(null);
+  const opening = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const show = useCallback((h: MapHover | null) => {
     shown.current = h;
@@ -59,17 +63,45 @@ export function MapHoverCard({ register, bounds }: { register: (set: (h: MapHove
       if (!overCard.current) show(next.current);
     }, CLOSE_DELAY_MS);
   }, [show]);
+  const cancelOpen = useCallback(() => {
+    if (opening.current) clearTimeout(opening.current);
+    opening.current = null;
+    pending.current = null;
+  }, []);
+  /** With no card open, a tile's card opens OPEN_DELAY_MS after the cursor came to it; another tile starts the wait over. */
+  const scheduleOpen = useCallback((h: MapHover) => {
+    if (sameTile(h, pending.current)) {
+      pending.current = h;
+      return;
+    }
+    cancelOpen();
+    pending.current = h;
+    opening.current = setTimeout(() => {
+      const p = pending.current;
+      opening.current = null;
+      pending.current = null;
+      show(p);
+    }, OPEN_DELAY_MS);
+  }, [show, cancelOpen]);
   const fromMap = useCallback((h: MapHover | null) => {
-    if (h && (!visible.current || sameTile(h, shown.current))) {
+    if (!visible.current) {
+      if (h) scheduleOpen(h);
+      else cancelOpen();
+      return;
+    }
+    if (h && sameTile(h, shown.current)) {
       if (closing.current) clearTimeout(closing.current);
       closing.current = null;
       show(h);
     } else {
       scheduleChange(h);
     }
-  }, [show, scheduleChange]);
+  }, [show, scheduleChange, scheduleOpen, cancelOpen]);
   useEffect(() => register(fromMap), [register, fromMap]);
-  useEffect(() => () => { if (closing.current) clearTimeout(closing.current); }, []);
+  useEffect(() => () => {
+    if (closing.current) clearTimeout(closing.current);
+    if (opening.current) clearTimeout(opening.current);
+  }, []);
 
   const json = useGameStore((s) => (hover && s.game ? JSON.stringify(villageInfo(s.game, hover.x, hover.y, s.game.activeVillageId, s.intel)) : 'null'));
   const info = useMemo(() => JSON.parse(json) as VillageInfo | null, [json]);
