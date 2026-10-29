@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"errors"
 	"strconv"
 
 	"librehold/internal/game"
@@ -170,7 +171,29 @@ func (s *Service) joinWorld(ctx context.Context, acct *Account, worldID int64, q
 // LeaveWorld makes the account's player quit; its villages go barbarian later, as a bot's would, and the
 // account is no longer a member.
 func (s *Service) LeaveWorld(ctx context.Context, acct *Account, worldID int64) error {
-	return s.inWorld(ctx, acct, worldID, func(w WorldTx, me game.PlayerID) error {
+	me, err := s.memberID(ctx, acct, worldID)
+	if errors.Is(err, ErrNotMember) {
+		return nil // already out, say from another tab
+	}
+	if err != nil {
+		return err
+	}
+	return s.worlds.Run(ctx, worldID, func(w WorldTx) error {
+		row := w.Row()
+		if row.State.EndedAt != nil {
+			return nil // nothing is left to leave, and the result stays as it ended
+		}
+		now := WorldNow(row, s.clock.NowMs())
+		w.SetNow(now)
+		if row.PausedAtMs == nil {
+			if _, err := processDue(w, now, 0); err != nil {
+				return err
+			}
+			if game.Ended(w) {
+				return nil
+			}
+			w.SetNow(now)
+		}
 		leaveAs(w, me)
 		return nil
 	})

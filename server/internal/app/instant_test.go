@@ -534,3 +534,55 @@ func TestPausedGameStillCountsAsTheOneGame(t *testing.T) {
 		t.Fatalf("joined a second game while the first is paused: %v", err)
 	}
 }
+
+// Leaving a game that is over just lets the player go; the result stays as it was.
+func TestLeavingAnEndedGameSucceeds(t *testing.T) {
+	ctx := context.Background()
+	f := newInstantFixture(t, app.Config{})
+	a := f.guest(t)
+	id := f.play(t, a).WorldID
+	f.clock.Add(61 * time.Minute.Milliseconds())
+	if _, _, err := f.svc.ProcessDue(ctx, id, 0); err != nil {
+		t.Fatal(err)
+	}
+	if err := f.svc.LeaveWorld(ctx, a, id); err != nil {
+		t.Fatalf("leave: %v", err)
+	}
+	row, _ := f.worlds.Get(ctx, id)
+	if row.State.EndedAt == nil || row.State.EndReason != "time" {
+		t.Fatalf("result changed: %+v", row.State)
+	}
+}
+
+// A player can always get out: of a game the admin paused, and twice (two tabs).
+func TestLeavingAPausedGameSucceeds(t *testing.T) {
+	ctx := context.Background()
+	f := newInstantFixture(t, app.Config{})
+	a := f.guest(t)
+	first := f.play(t, a).WorldID
+	other := f.play(t, f.guest(t)).WorldID
+	if err := f.svc.PauseWorld(ctx, admin, first); err != nil {
+		t.Fatal(err)
+	}
+	if err := f.svc.LeaveWorld(ctx, a, first); err != nil {
+		t.Fatalf("leave: %v", err)
+	}
+	if ms, _ := f.worlds.MembershipsOf(ctx, a.ID); len(ms) != 0 {
+		t.Fatalf("still a member: %+v", ms)
+	}
+	if got := f.playIn(t, a, other).WorldID; got != other {
+		t.Fatalf("went to %d", got)
+	}
+}
+
+func TestLeavingTwiceSucceeds(t *testing.T) {
+	ctx := context.Background()
+	f := newInstantFixture(t, app.Config{})
+	a := f.guest(t)
+	id := f.play(t, a).WorldID
+	for range 2 {
+		if err := f.svc.LeaveWorld(ctx, a, id); err != nil {
+			t.Fatalf("leave: %v", err)
+		}
+	}
+}

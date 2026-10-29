@@ -99,7 +99,7 @@ func TestLeaveThenRejoin(t *testing.T) {
 	f := newAdminFixture(t)
 	ctx := context.Background()
 	id := f.namedWorld(t, "A")
-	if err := f.svc.LeaveWorld(ctx, ala, id); !errors.Is(err, app.ErrNotMember) {
+	if err := f.svc.LeaveWorld(ctx, ala, id); err != nil {
 		t.Fatalf("leave without joining: %v", err)
 	}
 	if _, err := f.svc.JoinWorld(ctx, ala, id, game.QuadrantRandom); err != nil {

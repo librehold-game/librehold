@@ -4,6 +4,13 @@ Notable changes for people who run or develop LibreHold. Players see the same st
 page. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] — 2026-10-29 (alpha)
+
+### Fixed
+
+- Leaving an instant game always works: after the game has ended, while the admin has it paused, and when you
+  already left from another tab.
+
 ## [0.2.0] — 2026-10-29 (alpha)
 
 ### Changed
@@ -34,5 +41,6 @@ The first public release. Worlds and accounts may still be reset between alpha v
   through Valkey.
 - Docker Compose deployment with optional HTTPS through Caddy and nightly database backups.
 
+[0.2.1]: https://github.com/librehold-game/librehold/releases/tag/v0.2.1
 [0.2.0]: https://github.com/librehold-game/librehold/releases/tag/v0.2.0
 [0.1.0]: https://github.com/librehold-game/librehold/releases/tag/v0.1.0
