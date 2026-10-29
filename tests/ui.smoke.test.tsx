@@ -22,6 +22,7 @@ import { BuildPlanPanel } from '../src/ui/views/BuildPlanPanel';
 import { BuildQueuePanel } from '../src/ui/views/BuildQueuePanel';
 import { FarmAssistantView } from '../src/ui/views/FarmAssistantView';
 import { MapView } from '../src/ui/views/MapView';
+import { OPEN_DELAY_MS } from '../src/ui/map/MapHoverCard';
 import { MarketScreen } from '../src/ui/views/MarketScreen';
 import { NewsView } from '../src/ui/views/NewsView';
 import { OverviewView } from '../src/ui/views/OverviewView';
@@ -305,6 +306,8 @@ describe('map: the card shown on hovering a village', () => {
   it('shows the name, coordinates with the continent and points, and hides shortly after leaving the map', async () => {
     const { v, map, at } = hoverOwnVillage();
     fireEvent.pointerMove(map, at);
+    expect(screen.queryByRole('tooltip')).toBeNull();
+    await act(() => new Promise((r) => setTimeout(r, OPEN_DELAY_MS + 50)));
     const card = screen.getByRole('tooltip');
     expect(card.textContent).toContain(`${v.name} (${v.x}|${v.y}) K${Math.floor(v.y / 100)}${Math.floor(v.x / 100)}`);
     expect(card.textContent).toContain('Punkty');
