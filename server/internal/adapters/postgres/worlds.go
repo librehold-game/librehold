@@ -12,13 +12,23 @@ import (
 )
 
 // Worlds is the Postgres WorldStore: every Run is one transaction holding the world's advisory lock.
-type Worlds struct{ pool *pgxpool.Pool }
+type Worlds struct {
+	pool *pgxpool.Pool
+	// lockSlots caps the LockAccount callers that hold a connection each while their function needs more, so the
+	// holders can never use up the pool the function draws from.
+	lockSlots chan struct{}
+}
 
-func NewWorlds(pool *pgxpool.Pool) *Worlds { return &Worlds{pool: pool} }
+func NewWorlds(pool *pgxpool.Pool) *Worlds {
+	return &Worlds{pool: pool, lockSlots: make(chan struct{}, max(1, int(pool.Config().MaxConns)/2))}
+}
 
-const worldLockClass = 42
+const (
+	worldLockClass   = 42
+	accountLockClass = 43
+)
 
-const worldCols = `id, name, status, seed, secret, config, started_at_ms, paused_at_ms, paused_total_ms, state, coalesce(game_number, 0),
+const worldCols = `id, name, status, seed, secret, config, started_at_ms, paused_at_ms, paused_total_ms, state, coalesce(game_number, 0), last_present_ms,
 	host_account_id, invite_code, results_code, host`
 
 func scanWorldRow(row pgx.Row, extra ...any) (*app.WorldRow, error) {
@@ -27,7 +37,7 @@ func scanWorldRow(row pgx.Row, extra ...any) (*app.WorldRow, error) {
 	var config, state, host []byte
 	var hostID *int64
 	var invite, results *string
-	dest := append([]any{&r.ID, &r.Name, &r.Status, &seed, &r.Secret, &config, &r.StartedAtMs, &r.PausedAtMs, &r.PausedTotalMs, &state, &r.GameNumber,
+	dest := append([]any{&r.ID, &r.Name, &r.Status, &seed, &r.Secret, &config, &r.StartedAtMs, &r.PausedAtMs, &r.PausedTotalMs, &state, &r.GameNumber, &r.LastPresentMs,
 		&hostID, &invite, &results, &host}, extra...)
 	if err := row.Scan(dest...); err != nil {
 		return nil, notFound(err)
@@ -148,6 +158,26 @@ func (s *Worlds) MembershipsOf(ctx context.Context, accountID int64) ([]app.Memb
 		var m app.Membership
 		err := r.Scan(&m.WorldID, &m.PlayerID)
 		return m, err
+	})
+}
+
+func (s *Worlds) MarkPresent(ctx context.Context, worldID int64, atMs int64) error {
+	_, err := s.pool.Exec(ctx, `update worlds set last_present_ms = greatest(last_present_ms, $2) where id = $1`, worldID, atMs)
+	return err
+}
+
+func (s *Worlds) LockAccount(ctx context.Context, accountID int64, fn func() error) error {
+	select {
+	case s.lockSlots <- struct{}{}:
+		defer func() { <-s.lockSlots }()
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+	return pgx.BeginFunc(ctx, s.pool, func(tx pgx.Tx) error {
+		if _, err := tx.Exec(ctx, `select pg_advisory_xact_lock($1, $2::int)`, accountLockClass, accountID); err != nil {
+			return err
+		}
+		return fn()
 	})
 }
 

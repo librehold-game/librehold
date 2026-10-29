@@ -161,6 +161,29 @@ func TestGuestFlow(t *testing.T) {
 	expect(t, c.do("POST", "/api/v1/auth/login", map[string]string{"username": "Player_A", "password": "long-password"}), 200, "")
 }
 
+func TestInstantGamesRoute(t *testing.T) {
+	e := newEnv(t)
+	a, b := e.browser(t), e.browser(t)
+	expect(t, a.do("GET", "/api/v1/instant/games", nil), 401, "unauthenticated")
+	expect(t, a.do("POST", "/api/v1/auth/guest", map[string]string{}), 201, "")
+	expect(t, b.do("POST", "/api/v1/auth/guest", map[string]string{}), 201, "")
+	wid := a.do("POST", "/api/v1/instant/play", map[string]string{}).body["worldId"]
+	list := b.do("GET", "/api/v1/instant/games", nil)
+	games, _ := list.body["games"].([]any)
+	if list.status != 200 || len(games) != 1 || list.body["canStart"] != true {
+		t.Fatalf("list %d %s", list.status, list.raw)
+	}
+	r := b.do("POST", "/api/v1/instant/play", map[string]any{"worldId": wid})
+	expect(t, r, 200, "")
+	if r.body["worldId"] != wid {
+		t.Fatalf("joined %s, wanted world %v", r.raw, wid)
+	}
+	other := a.do("POST", "/api/v1/instant/play", map[string]any{"worldId": 999999})
+	if other.status != 400 {
+		t.Fatalf("unknown world: %d %s", other.status, other.raw)
+	}
+}
+
 func TestPlayRoute(t *testing.T) {
 	e := newEnv(t)
 	c := e.browser(t)

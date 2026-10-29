@@ -192,7 +192,8 @@
     "formerPlayer": "Były gracz",
     "reason": {
       "time": "Czas minął. Najwięcej punktów zebrał(a) {winner}.",
-      "domination": "{winner} wygrał(a) przed czasem, trzymając większość mapy."
+      "domination": "{winner} wygrał(a) przed czasem, trzymając większość mapy.",
+      "abandoned": "Wszyscy wyszli, więc gra skończyła się wcześniej. Najwięcej punktów zebrał(a) {winner}."
     },
     "summary": "graczy {humans}, botów {bots} · zdobytych wiosek {conquests} · ataków {attacks} · gracze pokonali {killed} wojsk",
     "leaderboard": "Ranking końcowy",

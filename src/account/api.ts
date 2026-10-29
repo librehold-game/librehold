@@ -36,6 +36,11 @@ export type Quadrant = 'random' | 'nw' | 'ne' | 'sw' | 'se';
 
 /** Where Play puts the player: a world to open, or how long until a seat frees up. */
 export interface PlayResult { worldId?: number; waitMs?: number }
+/** A running instant game in the list a player picks from; `endsAt` is wall ms. */
+export interface InstantGame {
+  id: number; gameNumber: number; endsAt: number; humans: number; seats: number; leader: string; leaderPoints: number; mine: boolean;
+}
+export interface InstantList { games: InstantGame[]; canStart: boolean; waitMs?: number }
 export interface PublicEvent {
   at: number; kind: 'conquest' | 'battle'; worldId: number; worldName: string; gameNumber?: number; instant: boolean;
   attacker: string; defender: string; attackerBot: boolean; defenderBot: boolean; troops: number; x: number; y: number;
@@ -66,7 +71,7 @@ export interface PublicStats {
   visible: boolean; allTime: StatTotals; last24h: StatTotals; open?: { seats: number; closesInMs: number };
 }
 export interface ArchiveSummary {
-  endReason: 'time' | 'domination'; winnerId: string; humans: number; guests: number; bots: number; conquestsHumans: number;
+  endReason: 'time' | 'domination' | 'abandoned'; winnerId: string; humans: number; guests: number; bots: number; conquestsHumans: number;
   conquestsBots: number; attacksSent: number; humanUnitsKilled: number; humanUnitsLost: number; largestBattleUnits: number;
 }
 /** A line of a finished instant game's leaderboard; a former player has an empty name. */
@@ -133,7 +138,8 @@ export const api = {
   guest: () => call<{ account: Account }>('POST', '/api/v1/auth/guest', { locale: getLocale() }),
   claim: (username: string, password: string, passwordConfirm: string) =>
     call<Account>('POST', '/api/v1/auth/claim', { username, password, passwordConfirm }),
-  play: () => call<PlayResult>('POST', '/api/v1/instant/play'),
+  instantGames: () => call<InstantList>('GET', '/api/v1/instant/games'),
+  play: (worldId?: number) => call<PlayResult>('POST', '/api/v1/instant/play', worldId === undefined ? undefined : { worldId }),
   leave: (worldId: number) => call<void>('POST', `/api/v1/worlds/${worldId}/leave`),
   publicStats: () => call<PublicStats>('GET', '/api/v1/public/stats'),
   publicLive: () => call<LiveStrip>('GET', '/api/v1/public/live'),

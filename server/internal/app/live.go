@@ -86,7 +86,7 @@ func (s *Service) Live(ctx context.Context) (LiveStrip, error) {
 func (s *Service) openInstant(worlds []instantInfo) (seats int, closesInMs int64, ok bool) {
 	for _, w := range worlds {
 		if s.takesPlayers(w) {
-			closes := int64(w.Config.JoinWindowMin)*game.MsPerMinute - WorldNow(&w.WorldRow, s.clock.NowMs())
+			closes := int64(w.Config.DurationMin)*game.MsPerMinute - WorldNow(&w.WorldRow, s.clock.NowMs())
 			return w.Config.HumanSeats - w.Humans, closes, true
 		}
 	}

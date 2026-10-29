@@ -44,10 +44,24 @@ afterEach(() => {
 
 const at = (path: string) => history.replaceState(null, '', path);
 
+const row = (id: number, over: Record<string, unknown> = {}) => ({
+  id, gameNumber: id, endsAt: Date.now() + 52 * 60_000, humans: 3, seats: 12, leader: 'Kalbert', leaderPoints: 3410, mine: false, ...over,
+});
+const withGames = (games: unknown[], over: Record<string, unknown> = {}) => {
+  routes['POST /api/v1/auth/guest'] = () => ({ status: 201, body: { account: guestAccount, token: 'x' } });
+  routes['GET /api/v1/instant/games'] = () => ({ status: 200, body: { games, canStart: true, ...over } });
+};
+const openList = async () => {
+  render(<App />);
+  fireEvent.click(await screen.findAllByRole('button', { name: 'Play now' }).then((b) => b[0]!));
+  return screen.findByRole('table', { name: 'Pick a game' });
+};
+
 describe('front door', () => {
   it('Play creates a guest and opens the game', async () => {
     const assign = vi.spyOn(playNavigation, 'assign').mockImplementation(() => {});
     routes['POST /api/v1/auth/guest'] = () => ({ status: 201, body: { account: guestAccount, token: 'x' } });
+    routes['GET /api/v1/instant/games'] = () => ({ status: 200, body: { games: [], canStart: true } });
     routes['POST /api/v1/instant/play'] = () => ({ status: 200, body: { worldId: 5 } });
     render(<App />);
     fireEvent.click(await screen.findAllByRole('button', { name: 'Play now' }).then((b) => b[0]!));
@@ -64,7 +78,10 @@ describe('front door', () => {
     routes['GET /api/v1/me'] = () => ({ status: 200, body: { ...guestAccount, isGuest: false } });
     routes['GET /api/v1/worlds'] = () => ({ status: 200, body: { mine: [], open: [] } });
     let plays = 0;
-    routes['POST /api/v1/instant/play'] = () => ({ status: 200, body: ++plays === 1 ? { waitMs: 1000 } : { worldId: 6 } });
+    routes['GET /api/v1/instant/games'] = () => (plays++ === 0
+      ? { status: 200, body: { games: [row(24, { humans: 12 })], canStart: false, waitMs: 1000 } }
+      : { status: 200, body: { games: [], canStart: true } });
+    routes['POST /api/v1/instant/play'] = () => ({ status: 200, body: { worldId: 6 } });
     at('/lobby');
     render(<App />);
     fireEvent.click(await screen.findAllByRole('button', { name: 'Play now' }).then((b) => b[0]!));
@@ -72,6 +89,105 @@ describe('front door', () => {
     await waitFor(() => expect(assign).toHaveBeenCalledWith('/game/?world=6'), { timeout: 4000 });
     expect(calls.filter((c) => c.key === 'POST /api/v1/auth/guest')).toHaveLength(0);
     expect(plays).toBe(2);
+  });
+
+  it('Play shows the game list', async () => {
+    withGames([row(24), row(23, { humans: 12, leader: 'pwtf' })]);
+    const table = await openList();
+    const rows = within(table).getAllByRole('row');
+    expect(rows).toHaveLength(3);
+    expect(within(rows[1]!).getByText('Game #24')).toBeTruthy();
+    expect(within(rows[1]!).getByText('52 min')).toBeTruthy();
+    expect(within(rows[1]!).getByText('3 / 12')).toBeTruthy();
+    expect(within(rows[1]!).getByText(/Kalbert/)).toBeTruthy();
+    expect(within(rows[1]!).getByRole('button', { name: 'Join' })).toBeTruthy();
+    expect(within(rows[2]!).getByText('Full')).toBeTruthy();
+    expect(within(rows[2]!).queryByRole('button', { name: 'Join' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Start a new game' })).toBeTruthy();
+  });
+
+  it('Join opens the chosen game', async () => {
+    const assign = vi.spyOn(playNavigation, 'assign').mockImplementation(() => {});
+    withGames([row(24)]);
+    routes['POST /api/v1/instant/play'] = () => ({ status: 200, body: { worldId: 24 } });
+    const table = await openList();
+    fireEvent.click(within(table).getByRole('button', { name: 'Join' }));
+    await waitFor(() => expect(assign).toHaveBeenCalledWith('/game/?world=24'));
+    expect(calls.find((c) => c.key === 'POST /api/v1/instant/play')!.body).toEqual({ worldId: 24 });
+  });
+
+  it('own game comes first with Continue, the others cannot be joined, and leaving takes two clicks', async () => {
+    let left = false;
+    withGames([row(24), row(23, { mine: true })], { canStart: false });
+    routes['GET /api/v1/instant/games'] = () => ({ status: 200, body: left
+      ? { games: [row(24), row(23)], canStart: true }
+      : { games: [row(23, { mine: true }), row(24)], canStart: false } });
+    routes['POST /api/v1/worlds/23/leave'] = () => { left = true; return { status: 200 }; };
+    const table = await openList();
+    const rows = within(table).getAllByRole('row');
+    expect(within(rows[1]!).getByText('Your game')).toBeTruthy();
+    expect(within(rows[1]!).getByRole('button', { name: 'Continue' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Join' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Start a new game' })).toBeNull();
+    expect(screen.getByText('Leave your game to join another one.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Leave game' }));
+    expect(calls.some((c) => c.key === 'POST /api/v1/worlds/23/leave')).toBe(false);
+    fireEvent.click(screen.getByRole('button', { name: 'Click again to leave' }));
+    await waitFor(() => expect(screen.getAllByRole('button', { name: 'Join' })).toHaveLength(2));
+    expect(calls.some((c) => c.key === 'POST /api/v1/worlds/23/leave')).toBe(true);
+  });
+
+  it('with no games running Play goes straight into a new game', async () => {
+    const assign = vi.spyOn(playNavigation, 'assign').mockImplementation(() => {});
+    withGames([]);
+    routes['POST /api/v1/instant/play'] = () => ({ status: 200, body: { worldId: 9 } });
+    render(<App />);
+    fireEvent.click(await screen.findAllByRole('button', { name: 'Play now' }).then((b) => b[0]!));
+    await waitFor(() => expect(assign).toHaveBeenCalledWith('/game/?world=9'));
+    expect(calls.find((c) => c.key === 'POST /api/v1/instant/play')!.body).toEqual({});
+  });
+
+  it('Start a new game plays without a world', async () => {
+    const assign = vi.spyOn(playNavigation, 'assign').mockImplementation(() => {});
+    withGames([row(24)]);
+    routes['POST /api/v1/instant/play'] = () => ({ status: 200, body: { worldId: 30 } });
+    await openList();
+    fireEvent.click(screen.getByRole('button', { name: 'Start a new game' }));
+    await waitFor(() => expect(assign).toHaveBeenCalledWith('/game/?world=30'));
+    expect(calls.find((c) => c.key === 'POST /api/v1/instant/play')!.body).toEqual({});
+  });
+
+  it('a game that filled up says so and the list refreshes', async () => {
+    withGames([row(24)]);
+    routes['POST /api/v1/instant/play'] = () => ({ status: 400, body: { error: { code: 'worldClosed', field: 'world' } } });
+    const table = await openList();
+    fireEvent.click(within(table).getByRole('button', { name: 'Join' }));
+    expect(await screen.findByRole('alert')).toHaveProperty('textContent', 'That game is full or has just ended. Pick another one.');
+    await waitFor(() => expect(calls.filter((c) => c.key === 'GET /api/v1/instant/games').length).toBeGreaterThanOrEqual(2));
+  });
+
+  it('the rejoin limit has its own message', async () => {
+    withGames([row(24)]);
+    routes['POST /api/v1/instant/play'] = () => ({ status: 400, body: { error: { code: 'rejoinLimit', field: 'world' } } });
+    const table = await openList();
+    fireEvent.click(within(table).getByRole('button', { name: 'Join' }));
+    expect((await screen.findByRole('alert')).textContent).toBe('You can join one world at most 3 times');
+  });
+
+  it('Join stays usable while the countdown runs', async () => {
+    withGames([row(24)], { waitMs: 60_000 });
+    const table = await openList();
+    expect(await screen.findByText(/All games are full/)).toBeTruthy();
+    expect(within(table).getByRole('button', { name: 'Join' }).hasAttribute('disabled')).toBe(false);
+    expect(screen.getByRole('button', { name: 'Start a new game' }).hasAttribute('disabled')).toBe(false);
+  });
+
+  it('?play opens the list straight away', async () => {
+    withGames([row(24)]);
+    routes['GET /api/v1/me'] = () => ({ status: 200, body: { ...guestAccount } });
+    at('/?play');
+    render(<App />);
+    expect(await screen.findByRole('table', { name: 'Pick a game' })).toBeTruthy();
   });
 
   it('Play waits until the account is known', async () => {
@@ -145,6 +261,17 @@ describe('front door', () => {
     expect(within(rows[3]!).getByText('Former player')).toBeTruthy();
     expect(within(rows[1]!).getByRole('link', { name: 'Lis' }).getAttribute('href')).toBe('/players/Lis');
     expect(screen.getByText(/won early by holding most of the map/)).toBeTruthy();
+  });
+
+  it('a game nobody stayed in says everyone left', async () => {
+    routes['GET /api/v1/public/games/8'] = () => ({ status: 200, body: {
+      worldId: 8, name: 'Instant #8', startedAt: 1_699_996_400_000, endedAt: 1_699_997_000_000, winnerName: 'Lis', winnerIsBot: false,
+      summary: { endReason: 'abandoned', winnerId: 'h9', humans: 1, bots: 1, conquestsHumans: 0, conquestsBots: 0, attacksSent: 0,
+        humanUnitsKilled: 0, humanUnitsLost: 0, largestBattleUnits: 0 },
+      rows: [{ rank: 1, playerId: 'h9', name: 'Lis', isBot: false, accountId: 9, points: 900, villages: 1, conquered: 0, killed: 0 }] } });
+    at('/games/8');
+    render(<App />);
+    expect(await screen.findByText('Everyone left, so the game ended early. Lis finished with the most points.')).toBeTruthy();
   });
 
   it('instant games are named by their number in the page language', async () => {

@@ -78,6 +78,7 @@ func (s *Service) memberID(ctx context.Context, acct *Account, worldID int64) (g
 	}
 	for _, m := range ms {
 		if m.WorldID == worldID {
+			s.MarkPresent(ctx, worldID)
 			return m.PlayerID, nil
 		}
 	}

@@ -1,6 +1,5 @@
 {
   "instantDurationMin": 60,
-  "instantJoinWindowMin": 10,
   "instantSeats": 12,
   "instantBots": 18,
   "instantMapSize": 40,

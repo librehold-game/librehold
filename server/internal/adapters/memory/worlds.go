@@ -53,6 +53,7 @@ func (t *tx) ClockOrigin() int64        { return app.ClockOrigin(t.row, t.Now())
 // Worlds is the in-memory WorldStore. Its feeds publish after a unit of work is kept.
 type Worlds struct {
 	mu           sync.Mutex
+	accountMu    sync.Mutex
 	nextID       int64
 	nextGame     int64
 	worlds       map[int64]*world
@@ -235,6 +236,23 @@ func (s *Worlds) MembershipsOf(_ context.Context, accountID int64) ([]app.Member
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].WorldID < out[j].WorldID })
 	return out, nil
+}
+
+func (s *Worlds) MarkPresent(_ context.Context, worldID int64, atMs int64) error {
+	w, err := s.get(worldID)
+	if err != nil {
+		return err
+	}
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	w.row.LastPresentMs = max(w.row.LastPresentMs, atMs)
+	return nil
+}
+
+func (s *Worlds) LockAccount(_ context.Context, _ int64, fn func() error) error {
+	s.accountMu.Lock()
+	defer s.accountMu.Unlock()
+	return fn()
 }
 
 func (s *Worlds) NextDue(_ context.Context, worldID int64) (int64, bool, error) {

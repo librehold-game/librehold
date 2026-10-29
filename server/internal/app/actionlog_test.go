@@ -288,7 +288,7 @@ func TestReplayReproducesFinalState(t *testing.T) {
 	f := newInstantFixture(t, app.Config{})
 	a, b := f.guest(t), f.guest(t)
 	id := f.play(t, a).WorldID
-	if f.play(t, b).WorldID != id {
+	if f.playIn(t, b, id).WorldID != id {
 		t.Fatal("the two guests play different worlds")
 	}
 	order := func(acct *app.Account, name, body string) {

@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/binary"
 	"encoding/json"
+	"errors"
 	"math"
 	"slices"
 	"strings"
@@ -241,6 +242,9 @@ func (s *Service) ResumeWorld(ctx context.Context, actor *Account, worldID int64
 	})
 	if err == nil {
 		s.wakeWorker(worldID)
+		if err := s.worlds.MarkPresent(ctx, worldID, s.clock.NowMs()); err != nil && !errors.Is(err, ErrNotFound) {
+			return err
+		}
 	}
 	return err
 }

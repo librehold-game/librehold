@@ -228,3 +228,11 @@ a.secondary { font-weight: 600; }
 .host-panel .qr { display: block; width: 180px; height: 180px; margin: 8px 0; color: #3b2410; background: #fbe7b5; }
 .host-players { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .host-players .row { justify-content: space-between; }
+
+.game-list { align-self: stretch; margin-top: 8px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.game-list h2 { margin: 0; }
+.game-list table { width: 100%; }
+.game-list tr.full { opacity: 0.55; }
+.game-list tr.mine { background: rgba(255, 255, 255, 0.35); }
+.game-list td.actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.game-list td.actions:empty { display: none; }

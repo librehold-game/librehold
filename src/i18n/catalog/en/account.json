@@ -192,7 +192,8 @@
     "formerPlayer": "Former player",
     "reason": {
       "time": "Time ran out. {winner} finished with the most points.",
-      "domination": "{winner} won early by holding most of the map."
+      "domination": "{winner} won early by holding most of the map.",
+      "abandoned": "Everyone left, so the game ended early. {winner} finished with the most points."
     },
     "summary": "{humans} players and {bots} bots · {conquests} villages changed hands · {attacks} attacks · players killed {killed} troops",
     "leaderboard": "Leaderboard",

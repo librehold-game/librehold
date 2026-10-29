@@ -99,11 +99,30 @@ func (s *Service) JoinWorld(ctx context.Context, acct *Account, worldID int64, q
 	if acct.IsGuest && !game.IsInstant(&target.Config) || target.Config.Kind == game.KindPlayer {
 		return "", ErrForbidden
 	}
+	if !game.IsInstant(&target.Config) {
+		return s.joinWorld(ctx, acct, worldID, q)
+	}
+	var id game.PlayerID
+	err = s.worlds.LockAccount(ctx, acct.ID, func() error {
+		current, err := s.runningInstantOf(ctx, acct.ID)
+		if err != nil {
+			return err
+		}
+		if current != 0 && current != worldID {
+			return &ErrValidation{Field: "world", Code: "inAnotherGame"}
+		}
+		id, err = s.joinWorld(ctx, acct, worldID, q)
+		return err
+	})
+	return id, err
+}
+
+func (s *Service) joinWorld(ctx context.Context, acct *Account, worldID int64, q game.Quadrant) (game.PlayerID, error) {
 	if _, _, err := s.ProcessDue(ctx, worldID, 0); err != nil {
 		return "", err
 	}
 	var id game.PlayerID
-	err = s.worlds.Run(ctx, worldID, func(w WorldTx) error {
+	err := s.worlds.Run(ctx, worldID, func(w WorldTx) error {
 		row := w.Row()
 		if row.Status != "open" {
 			return &ErrValidation{Field: "world", Code: "worldClosed"}
@@ -121,7 +140,7 @@ func (s *Service) JoinWorld(ctx context.Context, acct *Account, worldID int64, q
 					humans++
 				}
 			}
-			if humans >= cfg.HumanSeats || WorldNow(row, s.clock.NowMs()) >= int64(cfg.JoinWindowMin)*game.MsPerMinute {
+			if humans >= cfg.HumanSeats || WorldNow(row, s.clock.NowMs()) >= int64(cfg.DurationMin)*game.MsPerMinute {
 				return &ErrValidation{Field: "world", Code: "worldClosed"}
 			}
 		}

@@ -34,8 +34,8 @@ func longWorld(t *testing.T, f *instantFixture, bots int) int64 {
 
 func TestLiveCountsRunningInstantGames(t *testing.T) {
 	f := newInstantFixture(t, app.Config{})
-	f.play(t, f.guest(t))
-	f.play(t, f.guest(t))
+	id := f.play(t, f.guest(t)).WorldID
+	f.playIn(t, f.guest(t), id)
 	l := live(t, f)
 	cfg := game.InstantWorldConfig
 	if l.Games != 1 || l.Humans != 2 || l.Bots != cfg.BotCount || l.OpenSeats != cfg.HumanSeats-2 {

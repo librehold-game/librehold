@@ -194,12 +194,18 @@ func TestInstantLoadDoesNotSlowLongWorld(t *testing.T) {
 	alone := orderP95(t, wid, players, 150)
 
 	worlds := map[int64]int{}
-	for len(worlds) < 4 || worlds[maxKey(worlds)] < game.InstantWorldConfig.HumanSeats {
+	for range 4 {
 		w, wait := s.guest(t).play(t)
 		if w == 0 {
 			t.Fatalf("no seat with %d instant worlds (%v), wait %d ms", len(worlds), worlds, wait)
 		}
 		worlds[w]++
+	}
+	for w := range worlds {
+		for worlds[w] < game.InstantWorldConfig.HumanSeats {
+			s.guest(t).playIn(t, w)
+			worlds[w]++
+		}
 	}
 	if _, wait := s.guest(t).play(t); wait == 0 {
 		t.Fatal("a fifth instant world opened past the cap")
@@ -212,10 +218,25 @@ func TestInstantLoadDoesNotSlowLongWorld(t *testing.T) {
 	}
 }
 
-func maxKey(m map[int64]int) int64 {
-	var k int64
-	for id := range m {
-		k = max(k, id)
+func TestGuestJoinsRunningGameLate(t *testing.T) {
+	s := startServer(t, newDB(t), time.Now().UnixMilli())
+	first := s.guest(t)
+	wid, _ := first.play(t)
+	eventually(t, time.Minute, "30 game minutes", func() bool {
+		return first.state(wid).Now >= 30*game.MsPerMinute
+	})
+	late := s.guest(t)
+	var list app.InstantList
+	late.ok("GET", "/api/v1/instant/games", nil, &list)
+	if len(list.Games) != 1 || list.Games[0].ID != wid || list.Games[0].Humans != 1 || list.Games[0].Seats != game.InstantWorldConfig.HumanSeats {
+		t.Fatalf("list %+v", list)
 	}
-	return k
+	var res app.PlayResult
+	late.ok("POST", "/api/v1/instant/play", map[string]int64{"worldId": wid}, &res)
+	if res.WorldID != wid {
+		t.Fatalf("play %+v", res)
+	}
+	if st := late.state(wid); st.Instant == nil || len(st.Villages) != 1 {
+		t.Fatalf("late joiner's state %+v", st.Instant)
+	}
 }

@@ -26,7 +26,6 @@ func TestSiteFactsMatchTheServer(t *testing.T) {
 	days := func(d time.Duration) float64 { return d.Hours() / 24 }
 	want := map[string]float64{
 		"instantDurationMin":      float64(inst.DurationMin),
-		"instantJoinWindowMin":    float64(inst.JoinWindowMin),
 		"instantSeats":            float64(inst.HumanSeats),
 		"instantBots":             float64(inst.BotCount),
 		"instantMapSize":          float64(inst.MapSize),

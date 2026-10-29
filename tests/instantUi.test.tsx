@@ -145,6 +145,13 @@ describe('instant game in the client', () => {
     expect(screen.queryByRole('dialog', { name: 'Keep this village' })).toBeNull();
   });
 
+  it('results overlay explains a game that ended because everyone left', async () => {
+    const ended: InstantView = { ...running(0), ended: { reason: 'abandoned', at: g.now, winnerId: 'bot_1', winnerName: 'Borko', winnerIsBot: true } };
+    await boot({ instant: ended, account: guest, routes: {} });
+    const results = await screen.findByRole('dialog', { name: 'The game is over' });
+    expect(within(results).getByText(/Everyone left, so the game ended early\. Borko finished with the most points\./)).toBeTruthy();
+  });
+
   it('results overlay appears when the world ends', async () => {
     const ended: InstantView = { ...running(0), ended: { reason: 'time', at: g.now, winnerId: 'bot_1', winnerName: 'Borko', winnerIsBot: true } };
     await boot({ instant: ended, account: guest, routes: {
@@ -163,7 +170,7 @@ describe('instant game in the client', () => {
     expect(board.querySelectorAll('.bot-tag')).toHaveLength(1);
     expect(within(results).getByText(/Borko/, { selector: 'p' }).querySelector('.bot-tag')).toBeTruthy();
     expect(within(results).getByRole('link', { name: 'Full results' }).getAttribute('href')).toBe('/games/1');
-    expect(within(results).getByRole('button', { name: 'Play again' })).toBeTruthy();
+    expect(within(results).getByRole('link', { name: 'Play again' }).getAttribute('href')).toBe('/?play');
     expect(within(results).getByRole('button', { name: 'Create account' })).toBeTruthy();
     expect(screen.queryByRole('timer', { name: 'Time left' })?.textContent ?? '0:00:00').toBe('0:00:00');
 

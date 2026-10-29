@@ -43,6 +43,7 @@
     "fixedAtCreation": "Tego ustawienia nie można zmienić po utworzeniu świata",
     "alreadyMember": "Już grasz w tym świecie",
     "worldClosed": "Ten świat jest zamknięty dla nowych graczy",
+    "inAnotherGame": "Grasz już w innej szybkiej partii",
     "rejoinLimit": "Do jednego świata można dołączyć najwyżej 3 razy",
     "tooLarge": "Za duży obszar mapy",
     "invalid": "Nieprawidłowe dane",
@@ -84,7 +85,22 @@
   "play": {
     "button": "Graj teraz",
     "full": "Wszystkie gry są pełne. Miejsce zwolni się za {time} i wtedy spróbujemy ponownie.",
-    "continue": "Wróć do swojej gry"
+    "continue": "Wróć do swojej gry",
+    "pick": "Wybierz grę",
+    "game": "Gra",
+    "timeLeft": "Do końca",
+    "players": "Gracze",
+    "leader": "Prowadzi",
+    "join": "Dołącz",
+    "fullRow": "Pełna",
+    "yours": "Twoja gra",
+    "resume": "Wróć",
+    "leave": "Opuść grę",
+    "leaveConfirm": "Kliknij jeszcze raz, by wyjść",
+    "startNew": "Zacznij nową grę",
+    "inAnotherGame": "Opuść swoją grę, żeby dołączyć do innej.",
+    "gone": "Ta gra jest już pełna albo właśnie się skończyła. Wybierz inną.",
+    "minutes": "{n} min"
   },
   "world": {
     "gameName": "Gra #{n}"

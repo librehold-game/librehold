@@ -19,7 +19,7 @@ func TestReplayWithFieldBattles(t *testing.T) {
 	a, b, c := f.guest(t), f.guest(t), f.guest(t)
 	id := f.play(t, a).WorldID
 	for _, g := range []*app.Account{b, c} {
-		if f.play(t, g).WorldID != id {
+		if f.playIn(t, g, id).WorldID != id {
 			t.Fatal("the guests play different worlds")
 		}
 	}

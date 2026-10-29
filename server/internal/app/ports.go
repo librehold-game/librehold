@@ -106,6 +106,7 @@ type WorldRow struct {
 	PausedTotalMs int64
 	State         game.WorldState // set when an instant world ends, with its running totals
 	GameNumber    int             // an instant world's number from the global sequence; 0 for long worlds
+	LastPresentMs int64           // wall ms a human last had the world open; set by MarkPresent, never by a Run
 	Host          *HostedWorld    // a player world's host; nil for every other world
 }
 
@@ -193,6 +194,11 @@ type WorldStore interface {
 	List(ctx context.Context) ([]WorldSummary, error)
 	Get(ctx context.Context, worldID int64) (*WorldRow, error)
 	MembershipsOf(ctx context.Context, accountID int64) ([]Membership, error)
+	// LockAccount runs fn while holding a lock on the account that every process shares, so a rule that spans
+	// several worlds (one running instant game per account) cannot be raced.
+	// MarkPresent records that a human had the world open at atMs; an earlier time never moves it back.
+	MarkPresent(ctx context.Context, worldID int64, atMs int64) error
+	LockAccount(ctx context.Context, accountID int64, fn func() error) error
 	NextDue(ctx context.Context, worldID int64) (at int64, ok bool, err error)
 	// Delete removes the world and everything in it; ErrNotFound if there is none.
 	Delete(ctx context.Context, worldID int64) error

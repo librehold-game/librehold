@@ -6,16 +6,26 @@ The kinds of worlds, their settings, the bots and the quests.
 
 The game's front door: one-hour worlds on a 40×40 map, world and unit speed ×100, 12 seats for humans and 18 bots
 (`game.InstantWorldConfig`). A player starts with a developed village, an army and a hetman; barbarians start at 15
-loyalty, so the first conquest is a few minutes away. Players join during the first 10 minutes. The game ends after an
-hour, or earlier when one human holds 60% of the villages.
+loyalty, so the first conquest is a few minutes away. Players can join at any time until the game ends, as long as it
+has a free seat, so a late joiner starts with the same village as everyone else. The game ends after an hour, or earlier
+when one human holds 60% of the villages.
 
 - **Instant rules**: no coins, a hetman costs 18k of each resource, an academy holds its level + 1 hetmans, and a
   hetman takes 50–60 loyalty from a village with an owner, so two in a row take it. The last village can be lost.
 - A **guest** is an account without a password (at most `LH_GUESTS_PER_HOUR` per hour from one address, 10 by
   default); they can create a full account at any time (`/auth/claim`) and keep playing the same village. Guests
   absent for 30 days are deleted.
+- **Choosing a game**: Play now shows the running games (`GET /api/v1/instant/games`): name, time left, players,
+  the leader and a Join button while a seat is free. `POST /api/v1/instant/play` with `{"worldId": N}` joins that game;
+  without it, it continues the player's own game or starts a new one. A player is in one running instant game at a
+  time (leave it with `POST /api/v1/worlds/{wid}/leave` to join another). When nothing is running, Play now starts a
+  game straight away.
 - The **server** runs at most `LH_INSTANT_MAX_WORLDS` playing worlds at once (4 by default; when all are full, a
   player is told how long until one ends) and always keeps one ready, paused until the first player arrives.
+- **Abandoned games**: a request from a human in the game, or a live connection, counts as presence (stored in
+  `worlds.last_present_ms`, so every server process sees it). A running instant game with no presence for 5 minutes
+  ends early with the reason `abandoned`, is archived like any other and frees its place under the cap. The ready
+  world and paused worlds are never ended this way.
   Everything lives in the database, so a restart loses nothing.
 - **After the end** the world becomes read-only and its result goes to the archive (`instant_archive`,
   `instant_leaderboard`). After `LH_INSTANT_KEEP_MIN` minutes (24 h by default) the world is deleted; the archive

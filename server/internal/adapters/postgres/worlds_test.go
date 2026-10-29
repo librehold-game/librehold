@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -186,4 +187,33 @@ func TestDeletedHostKeepsTheWorld(t *testing.T) {
 	if got.Host == nil || got.Host.HostID != 0 || got.Host.InviteCode != "invite-code" {
 		t.Fatalf("host after the deletion %+v", got.Host)
 	}
+}
+
+// Review finding: LockAccount holds a connection while fn needs more; with a small pool and many callers the
+// holders must not use up the pool.
+func TestLockAccountNeverStarvesTheirOwnQueries(t *testing.T) {
+	base := pgtest.New(t)
+	cfg := base.Config().Copy()
+	cfg.MaxConns = 4
+	pool, err := pgxpool.NewWithConfig(context.Background(), cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(pool.Close)
+	s := postgres.NewWorlds(pool)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	var wg sync.WaitGroup
+	for i := range 16 {
+		wg.Go(func() {
+			err := s.LockAccount(ctx, int64(i+1), func() error {
+				_, err := s.List(ctx)
+				return err
+			})
+			if err != nil {
+				t.Errorf("caller %d: %v", i, err)
+			}
+		})
+	}
+	wg.Wait()
 }

@@ -251,12 +251,18 @@ func TestPlayerWorldsLoadDoesNotSlowLongWorld(t *testing.T) {
 	alone := orderP95(t, wid, players, 150)
 
 	instant := map[int64]int{}
-	for len(instant) < 4 || instant[maxKey(instant)] < game.InstantWorldConfig.HumanSeats {
+	for range 4 {
 		w, wait := s.guest(t).play(t)
 		if w == 0 {
 			t.Fatalf("no seat with %d instant worlds, wait %d ms", len(instant), wait)
 		}
 		instant[w]++
+	}
+	for w := range instant {
+		for instant[w] < game.InstantWorldConfig.HumanSeats {
+			s.guest(t).playIn(t, w)
+			instant[w]++
+		}
 	}
 
 	var wg sync.WaitGroup

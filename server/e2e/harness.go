@@ -299,6 +299,16 @@ func (c *client) play(t *testing.T) (worldID, waitMs int64) {
 	return out.WorldID, out.WaitMs
 }
 
+// playIn joins the running instant game worldID.
+func (c *client) playIn(t *testing.T, worldID int64) {
+	t.Helper()
+	var out app.PlayResult
+	c.ok("POST", "/api/v1/instant/play", map[string]int64{"worldId": worldID}, &out)
+	if out.WorldID != worldID {
+		t.Fatalf("joined %d, wanted %d", out.WorldID, worldID)
+	}
+}
+
 // claim turns the guest into a player named name, with the harness password.
 func (c *client) claim(t *testing.T, name string) {
 	t.Helper()

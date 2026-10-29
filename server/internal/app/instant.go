@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	"sort"
 	"strconv"
 	"time"
 
@@ -17,10 +18,12 @@ type PlayResult struct {
 }
 
 const (
-	instantMaxWorlds  = 4
-	instantKeep       = 24 * time.Hour
-	instantSweepEvery = time.Minute
-	minWaitMs         = 1000
+	instantMaxWorlds    = 4
+	instantAbandonAfter = 5 * time.Minute
+	presenceWriteEvery  = 30 * time.Second
+	instantKeep         = 24 * time.Hour
+	instantSweepEvery   = time.Minute
+	minWaitMs           = 1000
 )
 
 // instantInfo is an instant world's row read against the wall clock.
@@ -28,6 +31,7 @@ type instantInfo struct {
 	WorldSummary
 	ready    bool // created in advance, paused until opened
 	running  bool // opened and not yet over
+	held     bool // running, or paused by the admin with players in it: the players' game all the same
 	endsAtMs int64
 }
 
@@ -65,50 +69,126 @@ func instantInfoOf(w WorldSummary, now int64) instantInfo {
 	case w.State.EndedAt != nil:
 	case w.PausedAtMs != nil:
 		info.ready = w.Humans == 0
+		info.held = !info.ready && now < info.endsAtMs
 	default:
 		info.running = now < info.endsAtMs
+		info.held = info.running
 	}
 	return info
 }
 
-// takesPlayers: a running instant world still inside its join window with a free seat.
+// takesPlayers: a running instant world with a free seat (it accepts players until it ends).
 func (s *Service) takesPlayers(w instantInfo) bool {
-	return w.running && WorldNow(&w.WorldRow, s.clock.NowMs()) < int64(w.Config.JoinWindowMin)*game.MsPerMinute &&
+	return w.running && WorldNow(&w.WorldRow, s.clock.NowMs()) < int64(w.Config.DurationMin)*game.MsPerMinute &&
 		w.Humans < w.Config.HumanSeats
 }
 
-// Play puts the account into an instant game: the one it already plays, else the open one, else a newly opened
-// one while fewer than Config.InstantMaxWorlds run; with all of them full, it says how long until one ends.
-func (s *Service) Play(ctx context.Context, acct *Account) (PlayResult, error) {
+// InstantGame is one row of the list a player picks a game from.
+type InstantGame struct {
+	ID           int64  `json:"id"`
+	GameNumber   int    `json:"gameNumber"`
+	EndsAt       int64  `json:"endsAt"` // wall ms
+	Humans       int    `json:"humans"`
+	Seats        int    `json:"seats"`
+	Leader       string `json:"leader"` // "" while nobody has points
+	LeaderPoints int    `json:"leaderPoints"`
+	Mine         bool   `json:"mine"`
+}
+
+// InstantList is the running instant games, the account's own first, then the newest.
+type InstantList struct {
+	Games    []InstantGame `json:"games"`
+	CanStart bool          `json:"canStart"`         // fewer games run than the cap and the account is in none
+	WaitMs   int64         `json:"waitMs,omitempty"` // set when nothing has a free seat and no game can be started
+}
+
+// runningInstantOf is the running instant game the account plays in, or 0.
+func (s *Service) runningInstantOf(ctx context.Context, accountID int64) (int64, error) {
+	worlds, err := s.instantWorlds(ctx)
+	if err != nil {
+		return 0, err
+	}
+	members, err := s.worlds.MembershipsOf(ctx, accountID)
+	if err != nil {
+		return 0, err
+	}
+	for _, m := range members {
+		for _, w := range worlds {
+			if w.ID == m.WorldID && w.held {
+				return w.ID, nil
+			}
+		}
+	}
+	return 0, nil
+}
+
+// InstantGames lists the running instant games for the account to choose from.
+func (s *Service) InstantGames(ctx context.Context, acct *Account) (InstantList, error) {
+	worlds, err := s.instantWorlds(ctx)
+	if err != nil {
+		return InstantList{}, err
+	}
+	mine, err := s.runningInstantOf(ctx, acct.ID)
+	if err != nil {
+		return InstantList{}, err
+	}
+	out := InstantList{Games: []InstantGame{}}
+	running, free, wait := 0, false, int64(0)
+	for _, w := range worlds {
+		if !w.running {
+			continue
+		}
+		running++
+		if left := w.endsAtMs - s.clock.NowMs(); wait == 0 || left < wait {
+			wait = left
+		}
+		if w.Humans < w.Config.HumanSeats {
+			free = true
+		}
+		g := InstantGame{ID: w.ID, GameNumber: w.GameNumber, EndsAt: w.endsAtMs, Humans: w.Humans, Seats: w.Config.HumanSeats, Mine: w.ID == mine}
+		err := s.worlds.Read(ctx, w.ID, func(tx WorldTx) error {
+			if p, points := game.Leader(tx); p != nil && points > 0 {
+				g.Leader, g.LeaderPoints = p.Name, points
+			}
+			return nil
+		})
+		if err != nil {
+			return InstantList{}, err
+		}
+		out.Games = append(out.Games, g)
+	}
+	sort.SliceStable(out.Games, func(i, j int) bool {
+		if out.Games[i].Mine != out.Games[j].Mine {
+			return out.Games[i].Mine
+		}
+		return out.Games[i].EndsAt > out.Games[j].EndsAt
+	})
+	out.CanStart = mine == 0 && running < s.cfg.InstantMaxWorlds
+	if !out.CanStart && !free && mine == 0 {
+		out.WaitMs = max(minWaitMs, wait)
+	}
+	return out, nil
+}
+
+// Play puts the account into an instant game. With a world id it joins that running game (the one it already plays
+// included); without, it continues the account's game or opens a new one while fewer than Config.InstantMaxWorlds
+// run, and with all of them running it says how long until one ends.
+func (s *Service) Play(ctx context.Context, acct *Account, worldID int64) (PlayResult, error) {
 	s.instantMu.Lock()
 	defer s.instantMu.Unlock()
 	worlds, err := s.instantWorlds(ctx)
 	if err != nil {
 		return PlayResult{}, err
 	}
-	members, err := s.worlds.MembershipsOf(ctx, acct.ID)
+	mine, err := s.runningInstantOf(ctx, acct.ID)
 	if err != nil {
 		return PlayResult{}, err
 	}
-	for _, m := range members {
-		for _, w := range worlds {
-			if w.ID == m.WorldID && w.running {
-				return PlayResult{WorldID: w.ID}, nil
-			}
-		}
+	if worldID != 0 {
+		return s.playIn(ctx, acct, worlds, mine, worldID)
 	}
-	for _, w := range worlds {
-		if !s.takesPlayers(w) {
-			continue
-		}
-		// The join window may close, or the world end or pause, while its due events run, and a player who left this
-		// one too often may not come back; the player then gets the next game instead.
-		res, err := s.joinInstant(ctx, acct, w.ID)
-		var ve *ErrValidation
-		closed := errors.As(err, &ve) && (ve.Code == "worldClosed" || ve.Code == "rejoinLimit")
-		if !closed && !errors.Is(err, ErrWorldEnded) && !errors.Is(err, ErrWorldPaused) {
-			return res, err
-		}
+	if mine != 0 {
+		return PlayResult{WorldID: mine}, nil
 	}
 	running, wait := 0, int64(0)
 	var ready *instantInfo
@@ -145,10 +225,35 @@ func (s *Service) Play(ctx context.Context, acct *Account) (PlayResult, error) {
 	return res, nil
 }
 
+func (s *Service) playIn(ctx context.Context, acct *Account, worlds []instantInfo, mine, worldID int64) (PlayResult, error) {
+	if mine == worldID {
+		return PlayResult{WorldID: mine}, nil
+	}
+	if mine != 0 {
+		return PlayResult{}, &ErrValidation{Field: "world", Code: "inAnotherGame"}
+	}
+	closed := &ErrValidation{Field: "world", Code: "worldClosed"}
+	for _, w := range worlds {
+		if w.ID != worldID {
+			continue
+		}
+		if !w.running || w.Humans >= w.Config.HumanSeats {
+			return PlayResult{}, closed
+		}
+		res, err := s.joinInstant(ctx, acct, worldID)
+		if errors.Is(err, ErrWorldEnded) || errors.Is(err, ErrWorldPaused) {
+			return PlayResult{}, closed
+		}
+		return res, err
+	}
+	return PlayResult{}, closed
+}
+
 func (s *Service) joinInstant(ctx context.Context, acct *Account, id int64) (PlayResult, error) {
 	if _, err := s.JoinWorld(ctx, acct, id, game.QuadrantRandom); err != nil {
 		return PlayResult{}, err
 	}
+	s.MarkPresent(ctx, id)
 	return PlayResult{WorldID: id}, nil
 }
 
@@ -186,6 +291,75 @@ func (s *Service) resumeInstant(ctx context.Context, id int64) error {
 		s.wakeWorker(id)
 	}
 	return err
+}
+
+// MarkPresent records that a human has the world open, at most once per presenceWriteEvery per world and process.
+func (s *Service) MarkPresent(ctx context.Context, worldID int64) {
+	now := s.clock.NowMs()
+	s.presenceMu.Lock()
+	if last, ok := s.presentAt[worldID]; ok && now-last < presenceWriteEvery.Milliseconds() {
+		s.presenceMu.Unlock()
+		return
+	}
+	if s.presentAt == nil {
+		s.presentAt = map[int64]int64{}
+	}
+	s.presentAt[worldID] = now
+	s.presenceMu.Unlock()
+	if err := s.worlds.MarkPresent(ctx, worldID, now); err != nil && !errors.Is(err, ErrNotFound) && ctx.Err() == nil {
+		slog.Error("instant: presence", "world", worldID, "err", err)
+	}
+}
+
+// EndAbandonedInstant ends the running instant worlds no human has had open for instantAbandonAfter, counted from
+// the later of the last presence and the moment the world started running. The ready and the paused worlds wait on
+// purpose and are left alone.
+func (s *Service) EndAbandonedInstant(ctx context.Context) (int, error) {
+	worlds, err := s.instantWorlds(ctx)
+	if err != nil {
+		return 0, err
+	}
+	n := 0
+	for _, w := range worlds {
+		if !w.running || s.clock.NowMs()-s.lastActive(&w.WorldRow) < instantAbandonAfter.Milliseconds() {
+			continue
+		}
+		ended := false
+		err := s.worlds.Run(ctx, w.ID, func(tx WorldTx) error {
+			row := tx.Row()
+			wall := s.clock.NowMs()
+			if row.PausedAtMs != nil || row.State.EndedAt != nil || wall-s.lastActive(row) < instantAbandonAfter.Milliseconds() {
+				return nil
+			}
+			now := WorldNow(row, wall)
+			tx.SetNow(now)
+			if _, err := processDue(tx, now, 0); err != nil {
+				return err
+			}
+			if game.Ended(tx) {
+				return nil
+			}
+			tx.SetNow(now)
+			tx.LogAction(actorWorld, false, "abandon", struct{}{})
+			game.EndAbandoned(tx)
+			ended = true
+			return nil
+		})
+		if err != nil {
+			return n, err
+		}
+		if ended {
+			n++
+			s.wakeWorker(w.ID)
+		}
+	}
+	return n, nil
+}
+
+// lastActive is the wall time a human last had the world open, or else when it started running; this process
+// cannot have seen anyone before it started, so a restart gives everyone the full grace time again.
+func (s *Service) lastActive(row *WorldRow) int64 {
+	return max(row.LastPresentMs, row.StartedAtMs+row.PausedTotalMs, s.bootMs)
 }
 
 // EnsureReadyInstant keeps one paused instant world waiting, so Play never waits for map generation.
@@ -240,6 +414,9 @@ func (s *Service) RunInstant(ctx context.Context) error {
 	sweep := func() {
 		if err := s.EnsureReadyInstant(ctx); err != nil && ctx.Err() == nil {
 			slog.Error("instant: ready world", "err", err)
+		}
+		if _, err := s.EndAbandonedInstant(ctx); err != nil && ctx.Err() == nil {
+			slog.Error("instant: abandoned", "err", err)
 		}
 		if err := s.ArchiveEnded(ctx); err != nil && ctx.Err() == nil {
 			slog.Error("instant: archive", "err", err)

@@ -8,7 +8,7 @@
       "items": {
         "instantVsLong": {
           "q": "What is the difference between an instant game and a long world?",
-          "a": "An instant game lasts {instantDurationMin} minutes and has seats for {instantSeats} players and {instantBots} bots. You start with a built-up village and a hetman, and you can join during its first {instantJoinWindowMin} minutes. A long world runs for weeks, at speed ×{longDefaultSpeed} by default, and you start small: one modest village that you grow yourself."
+          "a": "An instant game lasts {instantDurationMin} minutes and has seats for {instantSeats} players and {instantBots} bots. You start with a built-up village and a hetman, and you can join at any time until it ends. A long world runs for weeks, at speed ×{longDefaultSpeed} by default, and you start small: one modest village that you grow yourself."
         },
         "guestVsAccount": {
           "q": "Do I need an account?",

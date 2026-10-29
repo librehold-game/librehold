@@ -46,6 +46,9 @@ type Service struct {
 	mu           sync.Mutex
 	workers      *workers
 	instantMu    sync.Mutex
+	presenceMu   sync.Mutex
+	bootMs       int64           // wall ms this process started; nobody can have been seen before it
+	presentAt    map[int64]int64 // wall ms of the last presence write per world, in this process
 	hostMu       sync.Mutex
 	stats        *statsCache
 	liveGames    map[int64]liveGame
@@ -94,7 +97,7 @@ func NewService(accounts AccountStore, worlds WorldStore, counters Counters, clo
 	if cfg.PlayerSweepEvery == 0 {
 		cfg.PlayerSweepEvery = playerSweepEvery
 	}
-	return &Service{accounts: accounts, worlds: worlds, counters: counters, clock: clock, hasher: hasher, tokens: tokens, cfg: cfg,
+	return &Service{bootMs: clock.NowMs(), accounts: accounts, worlds: worlds, counters: counters, clock: clock, hasher: hasher, tokens: tokens, cfg: cfg,
 		registrations: limit{"registration", cfg.RegistrationsPerHour, registrationWindow, true},
 		guests:        limit{"guest", cfg.GuestsPerHour, guestWindow, true},
 		pace:          limit{"pace", cfg.WorldRequestsPerMinute, time.Minute, false}}

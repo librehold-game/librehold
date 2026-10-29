@@ -22,7 +22,7 @@ var InstantWorldConfig = func() WorldConfig {
 	cfg := DefaultWorldConfig
 	cfg.Kind = KindInstant
 	cfg.DurationMin = 60
-	cfg.JoinWindowMin = 10
+	cfg.JoinWindowMin = cfg.DurationMin
 	cfg.HumanSeats = 12
 	cfg.BotCount = 18
 	cfg.MapSize = 40
@@ -202,6 +202,20 @@ func topPlayer(w World) PlayerID {
 		return ""
 	}
 	return ps[0].ID
+}
+
+// EndAbandoned ends an instant world early because no human has had it open for a while; the top player wins.
+func EndAbandoned(w World) {
+	endWorld(w, "abandoned", topPlayer(w))
+}
+
+// Leader is the player with the most points (ties by id, as topPlayer), or nil in a world without players.
+func Leader(w World) (*Player, int) {
+	id := topPlayer(w)
+	if id == "" {
+		return nil, 0
+	}
+	return w.Player(id), w.PointsByOwner()[id]
 }
 
 // checkDomination ends an instant world early when a human holds the domination share of its villages.

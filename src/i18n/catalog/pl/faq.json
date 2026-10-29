@@ -8,7 +8,7 @@
       "items": {
         "instantVsLong": {
           "q": "Czym szybka partia różni się od długiego świata?",
-          "a": "Szybka partia trwa {instantDurationMin} min i ma miejsca dla {instantSeats} graczy i {instantBots} botów. Zaczynasz z rozbudowaną wioską i hetmanem, a dołączyć można w ciągu pierwszych {instantJoinWindowMin} min. Długi świat toczy się tygodniami, domyślnie z prędkością ×{longDefaultSpeed}, a start jest skromny: jedna mała wioska, którą rozbudowujesz od podstaw."
+          "a": "Szybka partia trwa {instantDurationMin} min i ma miejsca dla {instantSeats} graczy i {instantBots} botów. Zaczynasz z rozbudowaną wioską i hetmanem, a dołączyć można w dowolnej chwili, aż do końca partii. Długi świat toczy się tygodniami, domyślnie z prędkością ×{longDefaultSpeed}, a start jest skromny: jedna mała wioska, którą rozbudowujesz od podstaw."
         },
         "guestVsAccount": {
           "q": "Czy potrzebuję konta?",

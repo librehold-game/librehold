@@ -120,6 +120,53 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 		}
 	})
 
+	t.Run("TestMarkPresentKeepsTheLatestTime", func(t *testing.T) {
+		s := newStore(t)
+		id := createWorld(t, s, 1)
+		if err := s.MarkPresent(ctx, id, 5000); err != nil {
+			t.Fatal(err)
+		}
+		if err := s.MarkPresent(ctx, id, 3000); err != nil {
+			t.Fatal(err)
+		}
+		row, _ := s.Get(ctx, id)
+		list, _ := s.List(ctx)
+		if row.LastPresentMs != 5000 || list[0].LastPresentMs != 5000 {
+			t.Fatalf("get %d, list %d", row.LastPresentMs, list[0].LastPresentMs)
+		}
+		if err := s.Run(ctx, id, func(w app.WorldTx) error { w.Row().Name = "Renamed"; return nil }); err != nil {
+			t.Fatal(err)
+		}
+		if row, _ = s.Get(ctx, id); row.LastPresentMs != 5000 || row.Name != "Renamed" {
+			t.Fatalf("a run changed presence: %+v", row)
+		}
+	})
+
+	t.Run("TestLockAccountRunsOneAtATime", func(t *testing.T) {
+		s := newStore(t)
+		var inside, overlaps atomic.Int32
+		var wg sync.WaitGroup
+		for range 6 {
+			wg.Go(func() {
+				err := s.LockAccount(ctx, 7, func() error {
+					if inside.Add(1) > 1 {
+						overlaps.Add(1)
+					}
+					time.Sleep(5 * time.Millisecond)
+					inside.Add(-1)
+					return nil
+				})
+				if err != nil {
+					t.Error(err)
+				}
+			})
+		}
+		wg.Wait()
+		if overlaps.Load() != 0 {
+			t.Fatalf("%d overlapping runs", overlaps.Load())
+		}
+	})
+
 	t.Run("TestEndedWorldPersists", func(t *testing.T) {
 		s := newStore(t)
 		id := createWorld(t, s, 2)

@@ -77,6 +77,9 @@ func replayEntry(w WorldTx, e game.LoggedAction, players map[string]game.PlayerI
 		}
 		w.Row().PausedTotalMs = r.PausedTotalMs
 		return nil
+	case "abandon":
+		game.EndAbandoned(w)
+		return nil
 	case "end":
 		game.EndByHost(w)
 		return nil

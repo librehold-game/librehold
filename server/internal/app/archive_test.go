@@ -117,7 +117,7 @@ func TestPurgedLeaverBecomesFormerPlayer(t *testing.T) {
 	f := newInstantFixture(t, app.Config{})
 	stay, leave := f.guest(t), f.guest(t)
 	id := f.play(t, stay).WorldID
-	if f.play(t, leave).WorldID != id {
+	if f.playIn(t, leave, id).WorldID != id {
 		t.Fatal("the guests play different worlds")
 	}
 	if err := f.svc.LeaveWorld(ctx, leave, id); err != nil {

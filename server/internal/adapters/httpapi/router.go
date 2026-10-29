@@ -42,6 +42,7 @@ func New(svc *app.Service, opts Options) http.Handler {
 	mux.HandleFunc("GET /api/v1/public/games/{ref}/timeline", a.publicTimeline)
 	mux.HandleFunc("GET /api/v1/public/profiles/{username}", a.publicProfile)
 
+	mux.HandleFunc("GET /api/v1/instant/games", a.authed(a.instantGames))
 	mux.HandleFunc("POST /api/v1/instant/play", a.authed(a.play))
 	mux.HandleFunc("POST /api/v1/hosted", a.authed(a.createHosted))
 	mux.HandleFunc("GET /api/v1/public/invites/{code}", a.inviteInfo)

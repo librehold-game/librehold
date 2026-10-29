@@ -68,9 +68,7 @@ func TestFieldBattleBetweenGuests(t *testing.T) {
 		guests := []*client{s.guest(t), s.guest(t), s.guest(t), s.guest(t), s.guest(t)}
 		wid, _ = guests[0].play(t)
 		for _, g := range guests[1:] {
-			if w, _ := g.play(t); w != wid {
-				t.Fatal("the guests play different worlds")
-			}
+			g.playIn(t, wid)
 		}
 		if a, c, home, watch, target, found = fieldScene(wid, guests); found {
 			break
@@ -80,7 +78,10 @@ func TestFieldBattleBetweenGuests(t *testing.T) {
 		t.Fatal("no attacker, bystander and barbarian in a line on three maps")
 	}
 	// Beginner protection (ten world minutes) keeps everyone out of field battles at first.
-	time.Sleep(time.Duration(10*60*1000/scale+2000) * time.Millisecond)
+	// A player keeps looking at the game meanwhile: an instant world nobody has open for five minutes ends.
+	for until := time.Now().Add(time.Duration(10*60*1000/scale+2000) * time.Millisecond); time.Now().Before(until); time.Sleep(2 * time.Second) {
+		a.state(wid)
+	}
 
 	// Strong enough against cavalry (about 1500) to outlive the bystander's horsemen (650) and be turned back.
 	a.ok("POST", wpath(wid, "/orders/send"), map[string]any{"originId": home.ID, "x": target.X, "y": target.Y,

@@ -43,7 +43,7 @@ export interface MeView {
 }
 
 export interface EndedView {
-  reason: 'time' | 'domination' | 'host'; at: number; winnerId: string; winnerName: string; winnerIsBot: boolean;
+  reason: 'time' | 'domination' | 'host' | 'abandoned'; at: number; winnerId: string; winnerName: string; winnerIsBot: boolean;
   /** What the results page is reached by: the world id, or a player world's results code. */
   resultsRef?: string;
 }

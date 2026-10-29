@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { ArchivedGame } from '../../account/api';
-import { usePlay } from '../../account/play';
 import { pathFor } from '../../account/routes';
 import { useLocale, useT } from '../../i18n/i18n';
 import { api, navigation } from '../../net/api';
 import { useGameStore } from '../../state/gameStore';
 import { BotTag } from '../components/BotTag';
-import { formatDuration, formatNumber } from '../format';
+import { formatNumber } from '../format';
 import { Overlay } from './Overlay';
 
 /** The end of an instant game: who won, the final leaderboard, and what to do next. */
@@ -19,7 +18,6 @@ export function Results() {
   const openClaim = useGameStore((s) => s.openClaim);
   const hidden = useGameStore((s) => s.resultsHidden);
   const hide = useGameStore((s) => s.setResultsHidden);
-  const play = usePlay(true);
   const [game, setGame] = useState<ArchivedGame | null>(null);
   const endedAt = ended?.at;
   const ref = ended?.resultsRef ?? (worldId === null ? null : String(worldId));
@@ -52,8 +50,6 @@ export function Results() {
             </tbody>
           </table>
         )}
-        {play.waitMs !== null && <p role="status" className="text-muted">{t('play.full', { time: formatDuration(play.waitMs) })}</p>}
-        {play.error && <p role="alert" className="text-bad">{play.error}</p>}
         <div className="flex flex-wrap items-center gap-2">
           <a href={pathFor('game', locale, { id: ref ?? '' })}>{t('results.details')}</a>
           <a href={`${pathFor('game', locale, { id: ref ?? '' })}#watch`}>{t('results.watch')}</a>
@@ -62,7 +58,7 @@ export function Results() {
             {guest
               ? <button className="btn" onClick={openClaim}>{t('results.createAccount')}</button>
               : <button className="btn" onClick={() => navigation.assign(pathFor('lobby', locale))}>{t('results.longWorld')}</button>}
-            <button className="btn" onClick={() => void play.start()} disabled={play.busy}>{t('results.playAgain')}</button>
+            <a className="btn" href={`${pathFor('home', locale)}?play`}>{t('results.playAgain')}</a>
           </span>
         </div>
       </div>

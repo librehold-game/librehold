@@ -1253,7 +1253,8 @@
     "reason": {
       "time": "Czas minął. Najwięcej punktów zebrał(a) {winner}.",
       "domination": "{winner} wygrał(a) przed czasem, trzymając większość mapy.",
-      "host": "Gospodarz zakończył grę. Najwięcej punktów zebrał(a) {winner}."
+      "host": "Gospodarz zakończył grę. Najwięcej punktów zebrał(a) {winner}.",
+      "abandoned": "Wszyscy wyszli, więc gra skończyła się wcześniej. Najwięcej punktów zebrał(a) {winner}."
     },
     "leaderboard": "Ranking końcowy",
     "col": {

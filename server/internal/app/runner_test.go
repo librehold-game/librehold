@@ -266,7 +266,7 @@ func TestStateCarriesTheInstantClock(t *testing.T) {
 		t.Fatal(err)
 	}
 	st, err := svc.State(ctx, ala, id)
-	if err != nil || st.Instant == nil || st.Instant.EndsAt != 60*game.MsPerMinute || st.Instant.JoinUntil != 10*game.MsPerMinute || st.Instant.Ended != nil {
+	if err != nil || st.Instant == nil || st.Instant.EndsAt != 60*game.MsPerMinute || st.Instant.JoinUntil != 60*game.MsPerMinute || st.Instant.Ended != nil {
 		t.Fatalf("instant view %+v %v", st.Instant, err)
 	}
 	clock.Add(61 * game.MsPerMinute)
