@@ -4,6 +4,27 @@ Notable changes for people who run or develop LibreHold. Players see the same st
 page. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Every `v*` tag publishes the server image to `ghcr.io/librehold-game/librehold` (amd64 and arm64), tagged with
+  the version, its minor line (`0.2`) and `latest`. Only org admins can create release tags.
+
+### Changed
+
+- The version lives in the release tag only: `package.json` has no version, and the README badge shows the latest
+  tag.
+
+### Fixed
+
+- The ranking in instant games refreshes every minute instead of every full hour, so points from a capture show
+  within a minute ([#10](https://github.com/librehold-game/librehold/issues/10)).
+- A village's card on the map opens only after the cursor rests on it for 300 ms, so moving the mouse across the
+  map no longer flashes cards ([#9](https://github.com/librehold-game/librehold/issues/9)).
+- The admin panel shows finished worlds as ended, with the reason and time, instead of running, and hides Pause and
+  Open/Close for them.
+
 ## [0.2.1] — 2026-10-29 (alpha)
 
 ### Fixed
@@ -41,6 +62,7 @@ The first public release. Worlds and accounts may still be reset between alpha v
   through Valkey.
 - Docker Compose deployment with optional HTTPS through Caddy and nightly database backups.
 
+[Unreleased]: https://github.com/librehold-game/librehold/compare/v0.2.1...HEAD
 [0.2.1]: https://github.com/librehold-game/librehold/releases/tag/v0.2.1
 [0.2.0]: https://github.com/librehold-game/librehold/releases/tag/v0.2.0
 [0.1.0]: https://github.com/librehold-game/librehold/releases/tag/v0.1.0

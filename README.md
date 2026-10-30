@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/status-alpha%200.1-orange" alt="Status: alpha 0.1">
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/github/v/tag/librehold-game/librehold?filter=v*&sort=semver&label=alpha&color=orange" alt="Latest version (alpha)"></a>
   <a href="https://github.com/librehold-game/librehold/actions/workflows/ci.yml"><img src="https://github.com/librehold-game/librehold/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/code-AGPL--3.0-blue" alt="Code licence: AGPL-3.0"></a>
   <img src="https://img.shields.io/badge/server-Go-00ADD8" alt="Server: Go">
@@ -37,7 +37,7 @@ LibreHold is a multiplayer village strategy game that runs in the browser. Every
 villages keep growing and your armies keep marching while you are away. Bots fill the map, so a world is never empty,
 even with a handful of friends.
 
-> **Alpha 0.1:** the rules and balance still change, and worlds or accounts may be reset between updates.
+> **Alpha:** the rules and balance still change, and worlds or accounts may be reset between updates.
 
 - **Instant games** — one-hour matches on a small map at ×100 speed. Press *Play now*, get a guest nickname and a
   developed village, and make your first conquest within minutes. No sign-up needed.
