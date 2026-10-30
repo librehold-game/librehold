@@ -2,7 +2,8 @@ import { buildingName, unitName } from '../../i18n/names';
 import { t, useT } from '../../i18n/i18n';
 import { BUILDINGS } from '../../data/buildings.data';
 import { UNITS } from '../../data/units.data';
-import { checkResearch, researchBonus, unitNeedsResearch, type ResearchBlocker } from '../../engine/units';
+import { researchBonus, unitNeedsResearch } from '../../engine/research';
+import { checkResearch, type ResearchBlocker } from '../../engine/units';
 import { UNIT_IDS, type UnitId } from '../../engine/types';
 import { selectActiveVillage, useGameStore, type GameStore } from '../../state/gameStore';
 import { selectNow } from '../../state/selectors';
@@ -10,6 +11,7 @@ import { CostRow } from '../components/CostRow';
 import { Countdown } from '../components/Countdown';
 import { ProgressBar } from '../components/ProgressBar';
 import { UnitIcon } from '../components/UnitIcon';
+import { InfoLink } from '../info/InfoLink';
 import { formatDuration } from '../format';
 
 function blockerText(b: ResearchBlocker): string {
@@ -42,7 +44,7 @@ function ResearchRow({ unit }: { unit: UnitId }) {
   return (
     <tr className={m.currentLevel === 0 ? 'text-muted' : ''}>
       <td>
-        <div className="flex items-center gap-2 font-semibold"><UnitIcon unit={unit} />{unitName(unit)}</div>
+        <InfoLink to={{ kind: 'unit', id: unit }} className="flex items-center gap-2 font-semibold cursor-pointer"><UnitIcon unit={unit} />{unitName(unit)}</InfoLink>
         {free && <div className="text-[11px] text-muted">{t('research.free')}</div>}
       </td>
       <td className="tabular-nums" data-label={t('research.colLevel')}>

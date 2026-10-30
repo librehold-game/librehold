@@ -7,7 +7,8 @@ import { travelTimeMs } from '../src/engine/commands';
 import { loyaltyAt, noblesNeededFor } from '../src/engine/conquest';
 import { checkBuild } from '../src/engine/queues';
 import { villageProductionPerHour } from '../src/engine/resources';
-import { nobleLimit, recruitTimeMs, researchBonus, researchCost } from '../src/engine/units';
+import { researchBonus, researchCost } from '../src/engine/research';
+import { nobleLimit, recruitTimeMs } from '../src/engine/units';
 import { HUMAN_ID, type BuildingId, type GameState, type Resource, type UnitId, type VillageBonusKind, type WorldConfig } from '../src/engine/types';
 import { activeVillage, newTestGame } from './helpers';
 

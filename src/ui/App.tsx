@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useGameStore } from '../state/gameStore';
 import { useUiStore } from '../state/uiStore';
 import { Header } from './layout/Header';
@@ -25,6 +25,13 @@ import { ReportDialog } from './components/ReportDialog';
 import { Results } from './instant/Results';
 import { HostPause, Waiting } from './instant/Waiting';
 import { Tutorial } from './instant/Tutorial';
+
+const InfoWindow = lazy(() => import('./info/InfoWindow').then((m) => ({ default: m.InfoWindow })));
+
+function InfoMount() {
+  const open = useUiStore((s) => s.info.length > 0);
+  return open ? <Suspense fallback={null}><InfoWindow /></Suspense> : null;
+}
 
 function Shell() {
   useT();
@@ -80,6 +87,7 @@ function Shell() {
       <Waiting />
       <ClaimDialog />
       <ReportDialog />
+      <InfoMount />
       <ErrorToast />
     </div>
   );

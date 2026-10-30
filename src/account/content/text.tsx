@@ -1,7 +1,7 @@
 import { registerCatalog, t } from '../../i18n/i18n';
 import enGuides from '../../i18n/catalog/en/guides.json';
 import plGuides from '../../i18n/catalog/pl/guides.json';
-import '../encyclopedia/catalog';
+import '../../shared/encyclopedia/catalog';
 import { guideParams } from './params';
 
 registerCatalog('en', enGuides);

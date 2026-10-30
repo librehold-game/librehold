@@ -292,3 +292,15 @@
 /* The host panel comes from the account site; in the god view it sits on a game panel. */
 .host-panel > * + * { margin-top: 0.5rem; }
 .host-panel input[readonly] { min-width: 0; flex: 1 1 200px; }
+
+.req-chain { margin: 4px 0 8px; padding-left: 20px; list-style: disc; }
+.req-chain .req-chain { margin: 2px 0; }
+.req-met { color: var(--color-ok); }
+.req-missing { color: var(--color-bad); }
+.row-current { background: rgb(200 160 64 / 0.25); font-weight: 600; }
+.info-entry .levels, .info-entry .stats { border-collapse: collapse; margin-bottom: 8px; }
+.info-entry .levels th, .info-entry .levels td, .info-entry .stats th, .info-entry .stats td { padding: 2px 8px; text-align: left; }
+.info-entry .table-scroll { overflow-x: auto; }
+.chip { display: inline-block; border: 1px solid currentColor; border-radius: 10px; padding: 0 8px; margin: 2px 4px 2px 0; font-size: 11px; }
+.info-entry h2 { font-size: 15px; margin: 14px 0 4px; }
+.info-entry p { margin: 6px 0; }

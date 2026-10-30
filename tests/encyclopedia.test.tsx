@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { BUILDINGS } from '../src/data/buildings.data';
 import { UNITS } from '../src/data/units.data';
 import { buildingCost, buildingPoints, buildingPopulation, buildTimeMs } from '../src/engine/buildings';
-import { buildingLevels, unitFacts } from '../src/account/encyclopedia/tables';
+import { buildingLevels, unitFacts } from '../src/shared/encyclopedia/facts';
 import { render } from '../src/account/entry-server';
 import { pathFor } from '../src/account/routes';
 import { SLUGS } from '../src/account/slugs';
@@ -72,6 +72,31 @@ describe('encyclopedia', () => {
     for (const n of ['50', '30', '10', '18']) expect(spear).toContain(`>${n}<`);
     expect(levelRows(render('/buildings/town-hall').html)).toBe(30);
     expect(levelRows(render(buildingUrl('statue', 'en')).html)).toBe(1);
+  });
+
+  it('the stable page lists what it unlocks and the whole requirement chain', () => {
+    const html = render('/buildings/stable').html;
+    expect(html).toContain('Unlocks');
+    for (const id of ['scout', 'lightCav', 'mountedArcher', 'heavyCav'] as const) expect(html, id).toContain(`href="${unitUrl(id, 'en')}"`);
+    const chain = /<ul class="req-chain">([\s\S]*?)<\/ul><\/li><\/ul>/.exec(html)?.[0] ?? '';
+    expect(chain).toContain(`href="${buildingUrl('main', 'en')}"`);
+    expect(chain).toContain(`href="${buildingUrl('smithy', 'en')}"`);
+  });
+
+  it('a unit page shows the stats at every research level, a noble none', () => {
+    const html = render(unitUrl('lightCav', 'en')).html;
+    expect(html).toContain('Stats by research level');
+    for (const n of ['163', '182']) expect(html, n).toContain(`>${n}<`);
+    expect(render(unitUrl('noble', 'en')).html).not.toContain('Stats by research level');
+  });
+
+  it('public pages never speak of a village: no progress, no colours', () => {
+    for (const url of allUrls()) {
+      const html = render(url).html;
+      expect(html, url).not.toContain('you have');
+      expect(html, url).not.toContain('req-met');
+      expect(html, url).not.toContain('req-missing');
+    }
   });
 
   it('titles and descriptions are unique and at most 160 characters', () => {

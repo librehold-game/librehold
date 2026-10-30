@@ -7,13 +7,9 @@ import { formatNumber } from '../../i18n/format';
 import { useLocale, useT } from '../../i18n/i18n';
 import type { BuildingId } from '../../engine/types';
 import { BUILDING_ORDER, buildingPath, trail } from './entries';
-import { BUILDING_SPRITES } from './sprites';
-import { buildingLevels } from './tables';
-
-export function BuildingSprite({ id }: { id: BuildingId }) {
-  if (id === 'wall') return <span className="building-sprite wall-sprite" style={{ backgroundImage: `url(${BUILDING_SPRITES.wall})` }} />;
-  return <img className="building-sprite" src={BUILDING_SPRITES[id]} alt="" loading="lazy" />;
-}
+import { BUILDING_SPRITES } from '../../shared/encyclopedia/sprites';
+import { buildingLevels } from '../../shared/encyclopedia/facts';
+import { BuildingSprite } from '../../shared/encyclopedia/sections';
 
 export function BuildingsPage() {
   const t = useT();

@@ -713,7 +713,9 @@
     "colPop": "Pop.",
     "colPopulation": "Populacja",
     "colTime": "Czas",
-    "colAction": "Akcja"
+    "colAction": "Akcja",
+    "locked": "Jeszcze niedostępne ({n})",
+    "subNeeds": "{building} wymaga: {list}"
   },
   "plan": {
     "title": "Plan rozbudowy",
@@ -772,16 +774,6 @@
     "showDone": "Pokaż ukończone ({n})",
     "hideDone": "Ukryj ukończone ({n})"
   },
-  "buildingDescription": {
-    "main": "W Ratuszu wznosisz i rozbudowujesz pozostałe budynki. Im wyższy poziom, tym krócej trwa budowa.",
-    "wood": "Drwale w Tartaku wyrąbują drewno w okolicznych lasach. Im wyższy poziom, tym więcej drewna na godzinę.",
-    "clay": "W Cegielni wydobywa się glinę potrzebną do budowy. Im wyższy poziom, tym więcej gliny na godzinę.",
-    "iron": "W Hucie żelaza wytapia się żelazo na broń i zbroje. Im wyższy poziom, tym więcej żelaza na godzinę.",
-    "storage": "Spichlerz przechowuje surowce. Gdy się zapełni, produkcja danego surowca przepada.",
-    "farm": "Zagroda żywi mieszkańców i wojsko. Każdy budynek i każdy żołnierz zajmuje miejsce w Zagrodzie.",
-    "hide": "W Schowku ukrywasz część surowców — przeciwnik nie zrabuje tego, co w nim leży.",
-    "wall": "Mur obronny wzmacnia obrońców wioski i daje podstawową obronę nawet bez wojska."
-  },
   "info": {
     "now": "Teraz",
     "next": "Następny poziom",
@@ -796,7 +788,10 @@
     "free": "Wolna",
     "hidden": "Ukryte przed łupieżcami (każdego surowca)",
     "defenceBonus": "Bonus obronny",
-    "baseDefence": "Podstawowa obrona"
+    "baseDefence": "Podstawowa obrona",
+    "back": "Wstecz",
+    "close": "Zamknij",
+    "details": "Szczegóły"
   },
   "recruit": {
     "requires": "Wymaga: {list}",

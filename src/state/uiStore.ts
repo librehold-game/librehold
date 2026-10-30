@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { BuildingId, UnitId } from '../engine/types';
+import type { EntryRef } from '../shared/encyclopedia/EntryLink';
 
 export type ViewId = 'village' | 'map' | 'rally' | 'farm' | 'reports' | 'overview' | 'news' | 'quests' | 'ranking' | 'settings';
 export type AnimationMode = 'full' | 'limited' | 'off';
@@ -16,13 +17,15 @@ export interface UiPrefs {
   sound: boolean;
   /** Village illustration shown above the buildings table. */
   showScene: boolean;
+  /** The list of buildings that are not yet available is unfolded. */
+  lockedOpen: boolean;
 }
 
 const PREFS_KEY = 'lh-ui-prefs';
 
 function defaultPrefs(): UiPrefs {
   const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return { animations: reduced ? 'limited' : 'full', sound: false, showScene: true };
+  return { animations: reduced ? 'limited' : 'full', sound: false, showScene: true, lockedOpen: true };
 }
 
 function loadPrefs(): UiPrefs {
@@ -83,6 +86,11 @@ interface UiStore {
   setFocusBuilding: (b: string | null) => void;
   prefs: UiPrefs;
   setPrefs: (patch: Partial<UiPrefs>) => void;
+  /** Details windows, newest last; empty means closed. */
+  info: EntryRef[];
+  openInfo: (ref: EntryRef) => void;
+  infoBack: () => void;
+  closeInfo: () => void;
   /** The report-a-problem dialog is open. */
   reportOpen: boolean;
   setReportOpen: (open: boolean) => void;
@@ -91,6 +99,13 @@ interface UiStore {
 export const useUiStore = create<UiStore>()((set, get) => ({
   view: 'village',
   setView: (view) => set({ view }),
+  info: [],
+  openInfo: (ref) => set((s) => {
+    const top = s.info[s.info.length - 1];
+    return top && top.kind === ref.kind && top.id === ref.id ? s : { info: [...s.info, ref] };
+  }),
+  infoBack: () => set((s) => ({ info: s.info.slice(0, -1) })),
+  closeInfo: () => set({ info: [] }),
   reportOpen: false,
   setReportOpen: (reportOpen) => set({ reportOpen }),
   navigate: (view) => set({ view, buildingScreen: null }),

@@ -8,11 +8,6 @@ import { ResourceIcon } from '../components/ResourceIcon';
 import { formatDurationHuman, formatNumber } from '../format';
 import { t, useT } from '../../i18n/i18n';
 
-const DESCRIBED: readonly BuildingId[] = ['main', 'wood', 'clay', 'iron', 'storage', 'farm', 'hide', 'wall'];
-
-/** The building's own page text, if it has one. */
-export const buildingDescription = (b: BuildingId): string | null => (DESCRIBED.includes(b) ? t(`buildingDescription.${b}`) : null);
-
 const RESOURCE_OF: Partial<Record<BuildingId, Resource>> = { wood: 'wood', clay: 'clay', iron: 'iron' };
 
 function Table({ rows }: { rows: [string, React.ReactNode, React.ReactNode?][] }) {

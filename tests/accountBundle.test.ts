@@ -11,8 +11,10 @@ const isShared = (file: string) => sharedAssets.some((d) => file.startsWith(d));
 /** The encyclopedia and the guides show the game's own numbers and pictures; nothing else may reach game code. */
 const ALLOWED_FROM: Record<string, string[]> = {
   'src/account/encyclopedia/': ['src/data/units.data.ts', 'src/data/buildings.data.ts', 'src/data/conquest.data.ts',
-    'src/data/balance.json', 'src/engine/buildings.ts', 'src/engine/types.ts', 'src/assets/pixel/army/', 'src/assets/pixel/village/buildings/',
-    'src/assets/pixel/village/walls/'],
+    'src/data/balance.json', 'src/engine/buildings.ts', 'src/engine/types.ts'],
+  'src/shared/encyclopedia/': ['src/data/units.data.ts', 'src/data/buildings.data.ts', 'src/data/conquest.data.ts',
+    'src/data/research.data.ts', 'src/data/balance.json', 'src/engine/buildings.ts', 'src/engine/research.ts', 'src/engine/types.ts',
+    'src/assets/pixel/army/', 'src/assets/pixel/village/buildings/', 'src/assets/pixel/village/walls/'],
   'src/account/worldConfig.ts': ['src/data/world.config.ts', 'src/data/balance.json'],
   'src/account/content/': ['src/data/units.data.ts', 'src/data/buildings.data.ts', 'src/data/conquest.data.ts', 'src/data/balance.json',
     'src/engine/types.ts'],

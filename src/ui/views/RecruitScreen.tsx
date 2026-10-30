@@ -6,13 +6,16 @@ import { UNITS } from '../../data/units.data';
 import {
   checkRecruit, maxRecruitable, unitsForBuilding, type RecruitBlocker,
 } from '../../engine/units';
-import type { RecruitBuilding, UnitId } from '../../engine/types';
+import type { BuildingId, RecruitBuilding, UnitId } from '../../engine/types';
 import { selectActiveVillage, useGameStore, type GameStore } from '../../state/gameStore';
 import { selectNow } from '../../state/selectors';
 import { CostRow } from '../components/CostRow';
 import { Countdown } from '../components/Countdown';
 import { ProgressBar } from '../components/ProgressBar';
 import { UnitIcon } from '../components/UnitIcon';
+import { InfoLink } from '../info/InfoLink';
+import { RequirementChips } from '../info/RequirementChips';
+import { requirementChain } from '../../shared/encyclopedia/facts';
 import { formatDuration, formatNumber } from '../format';
 
 function blockerText(b: RecruitBlocker): string {
@@ -31,6 +34,7 @@ function UnitRow({ unit }: { unit: UnitId }) {
   const [count, setCount] = useState(1);
   const villageId = useGameStore((s) => selectActiveVillage(s).id);
   const recruit = useGameStore((s) => s.recruit);
+  const levelsJson = useGameStore((s) => JSON.stringify(selectActiveVillage(s).buildings));
   useT();
   const json = useGameStore((s: GameStore) => {
     if (!s.game) return '';
@@ -56,9 +60,9 @@ function UnitRow({ unit }: { unit: UnitId }) {
   return (
     <tr className={locked ? 'text-muted' : ''}>
       <td>
-        <div className="flex items-center gap-2 font-semibold">
+        <InfoLink to={{ kind: 'unit', id: unit }} className="flex items-center gap-2 font-semibold cursor-pointer">
           <UnitIcon unit={unit} />{unitName(unit)}
-        </div>
+        </InfoLink>
         <div className="text-[11px] text-muted">
           {t('recruit.stats', { attack: def.attack, def: def.defense, defCav: def.defenseCavalry, defArch: def.defenseArcher, speed: def.speed, haul: def.haul })}
         </div>
@@ -69,7 +73,12 @@ function UnitRow({ unit }: { unit: UnitId }) {
       <td className="tabular-nums" data-label={t('recruit.colInVillage')}>{formatNumber(m.present)}</td>
       <td className="whitespace-nowrap stack-inline">
         {locked ? (
-          <span className="text-[11px]">{m.blockers.filter((b) => b.kind === 'requirements' || b.kind === 'research').map(blockerText).join('; ')}</span>
+          <span className="text-[11px]">
+            {m.blockers.some((b) => b.kind === 'requirements') && (
+              <RequirementChips nodes={requirementChain(def.requirements, JSON.parse(levelsJson) as Record<BuildingId, number>)} />
+            )}
+            {m.blockers.filter((b) => b.kind === 'research').map(blockerText).join('; ')}
+          </span>
         ) : (
           <span className="inline-flex items-center gap-1">
             <input

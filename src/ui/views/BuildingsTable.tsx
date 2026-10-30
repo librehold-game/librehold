@@ -1,7 +1,12 @@
 import { buildingName } from '../../i18n/names';
 import { t, useT } from '../../i18n/i18n';
 import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
+import { meetsRequirements } from '../../engine/buildings';
 import { storageCapacity, farmCapacity, hideCapacity } from '../../engine/buildings';
+import { requirementChain } from '../../shared/encyclopedia/facts';
+import { InfoLink } from '../info/InfoLink';
+import { RequirementChips } from '../info/RequirementChips';
+import { useUiStore } from '../../state/uiStore';
 import { canDemolish, checkBuild, effectiveBuildingLevels, type BuildBlocker } from '../../engine/queues';
 import { msUntilAmount, villageProductionPerHour } from '../../engine/resources';
 import { RESOURCES, type BuildingId, type ResourceSet, type Village, type WorldConfig } from '../../engine/types';
@@ -116,7 +121,7 @@ function BuildingRow({ id, onOpen, focused }: { id: BuildingId; onOpen: (b: Buil
             {buildingName(id)}
           </button>
         ) : (
-          <div className="font-semibold">{buildingName(id)}</div>
+          <InfoLink to={{ kind: 'building', id }}>{buildingName(id)}</InfoLink>
         )}
         <div className="text-[11px] text-muted">{m.effect}</div>
       </td>
@@ -158,6 +163,32 @@ function BuildingRow({ id, onOpen, focused }: { id: BuildingId; onOpen: (b: Buil
   );
 }
 
+/** Buildings whose requirements are not met yet, with what each one is missing. */
+function LockedBuildings() {
+  const t = useT();
+  const levelsJson = useGameStore((s) => JSON.stringify(effectiveBuildingLevels(selectActiveVillage(s))));
+  const open = useUiStore((s) => s.prefs.lockedOpen);
+  const setPrefs = useUiStore((s) => s.setPrefs);
+  const levels = JSON.parse(levelsJson) as Record<BuildingId, number>;
+  const locked = BUILDING_ORDER.filter((id) => !meetsRequirements(levels, id));
+  if (locked.length === 0) return null;
+  return (
+    <details className="mt-3" open={open} onToggle={(e) => setPrefs({ lockedOpen: e.currentTarget.open })}>
+      <summary className="cursor-pointer font-semibold">{t('buildings.locked', { n: locked.length })}</summary>
+      <table className="table-game mt-1">
+        <tbody>
+          {locked.map((id) => (
+            <tr key={id}>
+              <td><InfoLink to={{ kind: 'building', id }}>{buildingName(id)}</InfoLink></td>
+              <td><RequirementChips nodes={requirementChain(BUILDINGS[id].requirements, levels)} /></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </details>
+  );
+}
+
 /** Buildings table with upgrades — in the village overview and on the Headquarters page. A building's name opens its page. */
 export function BuildingsTable({ onOpen, focus }: { onOpen: (b: BuildingId) => void; focus?: string | null }) {
   const t = useT();
@@ -181,6 +212,7 @@ export function BuildingsTable({ onOpen, focus }: { onOpen: (b: BuildingId) => v
           </tbody>
         </table>
       </div>
+      <LockedBuildings />
     </>
   );
 }

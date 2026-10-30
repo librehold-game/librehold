@@ -6,7 +6,7 @@ import { RecruitScreen } from './RecruitScreen';
 import { ResearchScreen } from './ResearchScreen';
 import { AcademyScreen } from './AcademyScreen';
 import { MarketScreen } from './MarketScreen';
-import { BuildingInfo, buildingDescription } from './BuildingInfo';
+import { BuildingInfo } from './BuildingInfo';
 import { BuildingsTable } from './BuildingsTable';
 import { BuildPlanPanel } from './BuildPlanPanel';
 import { BuildQueuePanel } from './BuildQueuePanel';
@@ -19,6 +19,7 @@ export function BuildingScreen({ building, onBack }: { building: BuildingId; onB
   const level = useGameStore((s) => selectActiveVillage(s).buildings[building]);
   const villageId = useGameStore((s) => selectActiveVillage(s).id);
   const openBuilding = useUiStore((s) => s.openBuilding);
+  const openInfo = useUiStore((s) => s.openInfo);
   const t = useT();
   let body: React.ReactNode;
   if (level === 0) {
@@ -47,8 +48,9 @@ export function BuildingScreen({ building, onBack }: { building: BuildingId; onB
       <div className="flex items-center gap-3 mb-3">
         <button className="btn" onClick={onBack}>{t('buildingScreen.back')}</button>
         <h2 className="text-lg">{buildingName(building)} <span className="text-muted font-body text-[13px]">{t('buildingScreen.level', { n: level })}</span></h2>
+        <button className="btn" onClick={() => openInfo({ kind: 'building', id: building })}>{t('info.details')}</button>
       </div>
-      {buildingDescription(building) && <p className="text-[12px] mb-3 max-w-[640px]">{buildingDescription(building)}</p>}
+      <p className="text-[12px] mb-3 max-w-[640px]">{t(`encyclopedia.building.${building}.text`)}</p>
       {body}
     </div>
   );

@@ -11,7 +11,7 @@ export function UnitCountList({ units, size = 16 }: { units: Partial<Record<Unit
     <span className="inline-flex flex-wrap gap-2">
       {present.map((u) => (
         <span key={u} className="inline-flex items-center gap-0.5 tabular-nums" title={unitName(u)}>
-          <UnitIcon unit={u} size={size} />{formatNumber(units[u] ?? 0)}
+          <UnitIcon unit={u} size={size} info />{formatNumber(units[u] ?? 0)}
         </span>
       ))}
     </span>

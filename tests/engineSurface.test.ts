@@ -16,7 +16,7 @@ describe('the browser keeps no simulation', () => {
   it('src/engine holds only the display helpers', () => {
     expect(readdirSync('src/engine').sort()).toEqual([
       'blockers.ts', 'buildings.ts', 'clock.ts', 'commands.ts', 'conquest.ts', 'farm.ts', 'fieldGeometry.ts', 'incoming.ts',
-      'market.ts', 'modifiers.ts', 'players.ts', 'quests.ts', 'queues.ts', 'reports.ts', 'resources.ts', 'rng.ts', 'types.ts',
+      'market.ts', 'modifiers.ts', 'players.ts', 'quests.ts', 'queues.ts', 'reports.ts', 'research.ts', 'resources.ts', 'rng.ts', 'types.ts',
       'units.ts', 'world.ts',
     ]);
   });

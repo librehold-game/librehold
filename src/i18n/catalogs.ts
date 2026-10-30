@@ -7,6 +7,8 @@ import enSite from './catalog/en/site.json';
 import plSite from './catalog/pl/site.json';
 import enGame from './catalog/en/game.json';
 import plGame from './catalog/pl/game.json';
+import enEncyclopedia from './catalog/en/encyclopedia.json';
+import plEncyclopedia from './catalog/pl/encyclopedia.json';
 
 export function loadAccountCatalogs(): void {
   registerCatalog('en', enCommon);
@@ -22,4 +24,6 @@ export function loadGameCatalogs(): void {
   registerCatalog('pl', plCommon);
   registerCatalog('en', enGame);
   registerCatalog('pl', plGame);
+  registerCatalog('en', enEncyclopedia);
+  registerCatalog('pl', plEncyclopedia);
 }

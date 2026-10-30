@@ -236,3 +236,8 @@ a.secondary { font-weight: 600; }
 .game-list tr.mine { background: rgba(255, 255, 255, 0.35); }
 .game-list td.actions { display: flex; flex-wrap: wrap; gap: 6px; }
 .game-list td.actions:empty { display: none; }
+.req-chain { margin: 4px 0 8px; padding-left: 20px; }
+.req-chain .req-chain { margin: 2px 0; }
+.req-met { color: var(--ok, #3a8a3a); }
+.req-missing { color: var(--bad, #b04030); }
+.row-current { background: rgba(200, 160, 64, 0.25); font-weight: 600; }

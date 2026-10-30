@@ -15,6 +15,7 @@ import { stubServer } from './serverStub';
 import { navigation } from '../src/net/api';
 import { App } from '../src/ui/App';
 import { setLocale } from '../src/i18n/i18n';
+import plEncyclopedia from '../src/i18n/catalog/pl/encyclopedia.json';
 
 import { AcademyScreen } from '../src/ui/views/AcademyScreen';
 import { BuildingScreen } from '../src/ui/views/BuildingScreen';
@@ -228,6 +229,17 @@ describe('building pages', () => {
     ['main', /Kolejka budowy/], ['wood', /Produkcja/], ['clay', /Produkcja/], ['iron', /Produkcja/],
     ['storage', /Pojemność/], ['farm', /Maksymalna populacja/], ['hide', /Ukryte przed łupieżcami/], ['wall', /Bonus obronny/],
   ];
+
+  it('every building page opens with the encyclopedia text', () => {
+    const g = useGameStore.getState().game!;
+    Object.assign(activeVillage(g).buildings, { smithy: 1, market: 1 });
+    useGameStore.setState({ game: { ...g } });
+    for (const id of BUILDING_IDS) {
+      render(<BuildingScreen building={id} onBack={() => {}} />);
+      expect(screen.getByText(plEncyclopedia.encyclopedia.building[id].text), id).toBeTruthy();
+      cleanup();
+    }
+  });
 
   it('every building has a page with its current and next level', () => {
     const g = useGameStore.getState().game!;

@@ -7,15 +7,9 @@ import { formatNumber } from '../../i18n/format';
 import { useLocale, useT } from '../../i18n/i18n';
 import type { UnitId } from '../../engine/types';
 import { trail, UNIT_ORDER, unitPath } from './entries';
-import { UNIT_SPRITES } from './sprites';
-import { unitFacts } from './tables';
-
-/** A unit's first walking frame, drawn at twice its size. */
-export function UnitSprite({ id }: { id: UnitId }) {
-  const s = UNIT_SPRITES[id];
-  const style: CSSProperties = { backgroundImage: `url(${s.src})`, backgroundSize: `${s.frames * 96}px 96px` };
-  return <div className="unit-sprite" style={style} aria-hidden="true" />;
-}
+import { UNIT_SPRITES } from '../../shared/encyclopedia/sprites';
+import { unitFacts } from '../../shared/encyclopedia/facts';
+import { UnitSprite } from '../../shared/encyclopedia/sections';
 
 export function UnitsPage() {
   const t = useT();

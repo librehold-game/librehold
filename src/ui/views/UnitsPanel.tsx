@@ -45,7 +45,7 @@ export function UnitsPanel({ onRecruit }: { onRecruit?: () => void }) {
         <ul className="divide-y divide-wood-border/40">
           {present.map((u) => (
             <li key={u} className="flex items-center gap-1.5 py-[3px] tabular-nums" title={unitName(u)}>
-              <UnitIcon unit={u} size={16} />
+              <UnitIcon unit={u} size={16} info />
               {u === 'paladin' ? <span className="font-semibold">{unitName(u)}</span> : <><span className="font-bold">{formatNumber(units[u])}</span> <span>{unitName(u, units[u])}</span></>}
               {(queued[u] ?? 0) > 0 && <span className="text-muted text-[11px]" title={t('unitsPanel.queued')}>(+{formatNumber(queued[u] ?? 0)})</span>}
               {away[u] > 0 && <span className="text-muted text-[11px]" title={t('unitsPanel.away')}>{t('unitsPanel.awayCount', { n: formatNumber(away[u]) })}</span>}

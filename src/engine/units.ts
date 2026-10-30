@@ -1,5 +1,6 @@
 import { BONUS_BALANCE } from '../data/buildings.data';
-import { RESEARCH_BALANCE, RESEARCH_UNLOCK_COST } from '../data/research.data';
+import { RESEARCH_BALANCE } from '../data/research.data';
+import { researchCost, researchTimeMs, unitNeedsResearch } from './research';
 import { UNITS, UNIT_BALANCE } from '../data/units.data';
 import { coinsForNextNoble } from './conquest';
 import { unitsAway } from './commands';
@@ -13,34 +14,10 @@ import { playerVillages } from './players';
 
 // ---------- Research ----------
 
-/**
- * Whether a unit must be unlocked in the Smithy (yes if its requirements include the Smithy). The others (spear, ram,
- * paladin) get level 1 for free and are upgraded to levels 2–3 in the Smithy like every other unit.
- */
-export function unitNeedsResearch(unit: UnitId): boolean {
-  return UNITS[unit].requirements.some((r) => r.building === 'smithy');
-}
-
 /** Current research level, counting the free unlock. */
 export function effectiveResearchLevel(v: Village, unit: UnitId): number {
   const lvl = v.research[unit] ?? 0;
   return unitNeedsResearch(unit) ? lvl : Math.max(1, lvl);
-}
-
-export function researchBonus(level: number): number {
-  return UNIT_BALANCE.researchBonus[Math.max(0, Math.min(level, RESEARCH_BALANCE.maxLevel))] ?? 0;
-}
-
-export function researchCost(unit: UnitId, level: number): ResourceSet {
-  const base = RESEARCH_UNLOCK_COST[unit];
-  const mult = UNIT_BALANCE.researchCostMultiplier[level] ?? 0;
-  return { wood: base.wood * mult, clay: base.clay * mult, iron: base.iron * mult };
-}
-
-export function researchTimeMs(unit: UnitId, level: number, worldSpeed: number): number {
-  const c = researchCost(unit, level);
-  const ms = ((c.wood + c.clay + c.iron) * UNIT_BALANCE.researchTimePerResourceSec * 1000) / worldSpeed;
-  return Math.max(RESEARCH_BALANCE.minResearchTimeMs, Math.round(ms));
 }
 
 export type ResearchBlocker =

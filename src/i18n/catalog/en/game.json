@@ -681,7 +681,9 @@
     "colPop": "Pop.",
     "colPopulation": "Population",
     "colTime": "Time",
-    "colAction": "Action"
+    "colAction": "Action",
+    "locked": "Not yet available ({n})",
+    "subNeeds": "{building} needs {list}"
   },
   "plan": {
     "title": "Build plan",
@@ -740,16 +742,6 @@
     "showDone": "Show completed ({n})",
     "hideDone": "Hide completed ({n})"
   },
-  "buildingDescription": {
-    "main": "In the Town Hall you raise and upgrade every other building. The higher its level, the faster construction goes.",
-    "wood": "Woodcutters at the Lumber Mill fell timber in the nearby forests. The higher its level, the more wood per hour.",
-    "clay": "The Brickworks digs the clay you need for building. The higher its level, the more clay per hour.",
-    "iron": "The Ironworks smelts iron for weapons and armour. The higher its level, the more iron per hour.",
-    "storage": "The Storehouse keeps your resources. Once it is full, any more production of that resource is lost.",
-    "farm": "The Farmstead feeds your people and your army. Every building and every soldier takes up room in it.",
-    "hide": "The Hideout keeps part of your resources out of sight — raiders can't take what is inside.",
-    "wall": "The Wall strengthens the village's defenders and gives a basic defence even without troops."
-  },
   "info": {
     "now": "Now",
     "next": "Next level",
@@ -764,7 +756,10 @@
     "free": "Free",
     "hidden": "Hidden from raiders (of each resource)",
     "defenceBonus": "Defence bonus",
-    "baseDefence": "Basic defence"
+    "baseDefence": "Basic defence",
+    "back": "Back",
+    "close": "Close",
+    "details": "Details"
   },
   "recruit": {
     "requires": "Requires: {list}",

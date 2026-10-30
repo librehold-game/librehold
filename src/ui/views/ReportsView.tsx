@@ -29,7 +29,7 @@ function UnitsTable({ title, side }: { title: string; side: Report['attacker'] }
       ) : (
         <div className="overflow-x-auto"><table className="table-game">
           <thead>
-            <tr><th></th>{units.map((u) => <th key={u} className="text-center" title={unitName(u)}><UnitIcon unit={u} /></th>)}</tr>
+            <tr><th></th>{units.map((u) => <th key={u} className="text-center" title={unitName(u)}><UnitIcon unit={u} info /></th>)}</tr>
           </thead>
           <tbody>
             <tr><td>{t('reports.count')}</td>{units.map((u) => <td key={u} className="text-center tabular-nums">{formatNumber(side.units[u] ?? 0)}</td>)}</tr>

@@ -9,7 +9,7 @@ import scoutingFieldReport from '../../assets/pixel/account/guides/scouting-fiel
 import noblesAcademy from '../../assets/pixel/account/guides/nobles-academy.webp';
 import noblesConquest from '../../assets/pixel/account/guides/nobles-conquest.webp';
 import type { GUIDE_IDS } from '../slugs';
-import type { BuildingId, UnitId } from '../encyclopedia/tables';
+import type { BuildingId, UnitId } from '../../shared/encyclopedia/facts';
 
 export type GuideId = (typeof GUIDE_IDS)[number];
 export interface GuideShot { id: string; src: string; width: number; height: number; after: string }

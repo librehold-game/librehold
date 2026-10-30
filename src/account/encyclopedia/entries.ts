@@ -2,7 +2,7 @@ import { BUILDING_ORDER } from '../../data/buildings.data';
 import { UNIT_IDS, type BuildingId, type UnitId } from '../../engine/types';
 import { pathFor, slugFor } from '../routes';
 import { t, type Locale } from '../../i18n/i18n';
-import './catalog';
+import '../../shared/encyclopedia/catalog';
 
 export const UNIT_ORDER: readonly UnitId[] = UNIT_IDS;
 export { BUILDING_ORDER };
