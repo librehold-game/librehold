@@ -31,7 +31,7 @@ jobs:
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           if ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then echo code=true >> "$GITHUB_OUTPUT"; exit 0; fi
-          skip='^(.*\.md|docs/.*|deploy/.*|LICENSE.*|\.github/(ISSUE_TEMPLATE/.*|dependabot\.yml|workflows/(cla|image)\.yml))$'
+          skip='^(.*\.md|docs/.*|deploy/.*|LICENSE.*|cliff\.toml|scripts/release\.sh|\.github/(ISSUE_TEMPLATE/.*|dependabot\.yml|workflows/(cla|release)\.yml))$'
           code=$(git diff --name-only "$BASE" HEAD | grep -vE "$skip" || true)
           echo "code=$([ -n "$code" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 

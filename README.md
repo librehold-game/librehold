@@ -60,13 +60,13 @@ Open [librehold.org](https://librehold.org) and press **Play now**.
 
 ### Host your own server
 
-You need a Linux server with Docker and Docker Compose.
+You need a Linux server with Docker and Docker Compose. The server runs the latest published image
+`ghcr.io/librehold-game/librehold` (amd64 and arm64), so nothing is built on your machine.
 
 ```sh
-git clone https://github.com/librehold-game/librehold.git
+git clone --depth 1 https://github.com/librehold-game/librehold.git
 cd librehold/deploy
 cp .env.example .env        # set the passwords and the admin account
-docker compose build
 docker compose up -d
 ```
 
@@ -122,7 +122,7 @@ deploy/          Docker Compose, Caddy, backups
 | [`docs/interface.md`](docs/interface.md) | village view, map, art layers, phone layout |
 | [`deploy/README.md`](deploy/README.md) | production deployment, HTTPS, backups and restore |
 | [`ASSETS.md`](ASSETS.md) | origin and licence of every art and font file |
-| [`CHANGELOG.md`](CHANGELOG.md) | notable changes per version |
+| [`CHANGELOG.md`](CHANGELOG.md) | changes per version, written from the git history by `scripts/release.sh` |
 
 ## Contributing
 

@@ -7,23 +7,31 @@ By default the game listens on `0.0.0.0:8080` (plain HTTP), and the database and
 other compose services — no port is exposed. Ports published by Docker bypass UFW, so on a server where HTTPS is handled by Caddy
 (from this compose file or a system one), set `LH_BIND=127.0.0.1`.
 
-The image is built on the server from a clone of <https://github.com/librehold-game/librehold> (`docker compose build`).
+The server runs the latest published image, `ghcr.io/librehold-game/librehold:latest`, built for amd64 and arm64
+(a Raspberry Pi works too). What changed in each release: <https://github.com/librehold-game/librehold/releases>.
 
 ## First run
 
-1. Copy `deploy/.env.example` to `deploy/.env` and fill in:
-   - `POSTGRES_PASSWORD` and the same password in `LH_DATABASE_URL`;
-   - `VALKEY_PASSWORD` and the same password in `LH_VALKEY_URL`;
-   - `LH_ADMIN_USERNAME` and `LH_ADMIN_PASSWORD` — the admin account, created on first start,
-     only if the database has no admin yet. You can remove these variables afterwards;
-   - `LH_BIND` and `LH_PORT` — where the game listens (`0.0.0.0:8080` by default).
-2. Build and start:
+You need Docker with Docker Compose and the files of this directory. Cloning the repository is the easiest way:
+
+```sh
+git clone --depth 1 https://github.com/librehold-game/librehold.git
+cd librehold/deploy
+```
+
+1. Copy `.env.example` to `.env` and set three passwords:
+   - `POSTGRES_PASSWORD` and `VALKEY_PASSWORD`, letters and digits only;
+   - `LH_ADMIN_PASSWORD` — the admin account (`LH_ADMIN_USERNAME`, `admin` by default) is created on the first
+     start, only if the database has no admin yet.
+
+   The game listens on port 8080; change `LH_BIND` and `LH_PORT` for another address or port.
+2. Start:
 
    ```sh
-   cd deploy
-   docker compose build
    docker compose up -d
    ```
+
+   Docker downloads the image on the first start.
 
 3. Open `http://<server>:8080/` and log in as admin. Instant games start on their own; long worlds are created in
    the admin panel. Players sign up on the registration page or press **Play now** as guests.
@@ -46,8 +54,26 @@ A proxy already running on the host (outside compose) reaches the published port
 gateway, so set `LH_TRUSTED_PROXIES=172.30.0.1/32` and `LH_BIND=127.0.0.1` instead of using the profile. The proxy
 must replace `X-Forwarded-For` with the visitor's address rather than pass on what the client sent.
 
-Updating: `git pull`, then `docker compose build server && docker compose up -d server`. Database migrations
-run automatically when the server starts.
+## Updating
+
+```sh
+docker compose pull
+docker compose up -d
+```
+
+This fetches the latest release and restarts the server with it; database migrations run on start. Read the
+release notes first: an alpha release may reset worlds or need a change in `.env`. A `git pull` now and then brings
+newer versions of this directory's files.
+
+## Running your own build
+
+To run a modified version, build the image and change the `server` image in `docker-compose.yml` to its tag:
+
+```sh
+docker build -t librehold:dev ..
+# docker-compose.yml: image: librehold:dev
+docker compose up -d server
+```
 
 ## Limits
 
@@ -91,12 +117,12 @@ docker compose start server
 
 | variable | default | meaning |
 |---|---|---|
-| `LH_DATABASE_URL` | — (required) | Postgres connection |
+| `LH_DATABASE_URL` | set by `docker-compose.yml` from `POSTGRES_PASSWORD` | Postgres connection |
 | `LH_HTTP_ADDR` | `:8080` | listen address |
 | `LH_WEB_DIR` | `/app/web` | directory with `account/` and `game/` |
 | `LH_COOKIE_SECURE` | `true` | session cookie over HTTPS only |
 | `LH_TRUSTED_PROXIES` | `172.30.0.10` in compose | addresses or CIDR ranges of reverse proxies whose `X-Forwarded-For` names the client |
-| `LH_VALKEY_URL` | — | Valkey for the limits, shared by every server process; empty counts them in the one process |
+| `LH_VALKEY_URL` | set by `docker-compose.yml` from `VALKEY_PASSWORD` | Valkey for the limits, shared by every server process; empty counts them in the one process |
 | `LH_WORLD_REQUESTS_PER_MINUTE` | 300 | how many state reads and orders one account can send per minute, over all its worlds |
 | `LH_ADMIN_USERNAME`, `LH_ADMIN_PASSWORD` | — | admin account on first start |
 | `LH_PUBLIC_URL` | — | site address, e.g. `https://example.com`; empty = address from the request (canonical links, previews, sitemap) |

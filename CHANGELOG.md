@@ -1,72 +1,54 @@
 # Changelog
 
-Notable changes for people who run or develop LibreHold. Players see the same story in the game's own changelog
-page. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
-[Semantic Versioning](https://semver.org/).
+Changes for people who run or develop LibreHold. Players see the same story in the game's own changelog page. The
+format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
+[Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
+edit it by hand.
 
-## [Unreleased]
-
-## [0.3.0] — 2026-10-30 (alpha)
-
-### Added
-
-- Every `v*` tag publishes the server image to `ghcr.io/librehold-game/librehold` (amd64 and arm64), tagged with
-  the version, its minor line (`0.3`) and `latest`.
-
-### Changed
-
-- The version lives in the release tag only: `package.json` has no version, and the README badge shows the latest
-  tag.
-- CI skips the test jobs for changes to docs only, and keeps a smaller Actions cache.
-
-### Fixed
-
-- The ranking in instant games refreshes every minute instead of every full hour, so points from a capture show
-  within a minute ([#10](https://github.com/librehold-game/librehold/issues/10)).
-- A village's card on the map opens only after the cursor rests on it for 300 ms, so moving the mouse across the
-  map no longer flashes cards ([#9](https://github.com/librehold-game/librehold/issues/9)).
-- The admin panel shows finished worlds as ended, with the reason and time, instead of running, and hides Pause and
-  Open/Close for them.
-
-## [0.2.1] — 2026-10-29 (alpha)
-
-### Fixed
-
-- Leaving an instant game always works: after the game has ended, while the admin has it paused, and when you
-  already left from another tab.
-
-## [0.2.0] — 2026-10-29 (alpha)
-
-### Changed
-
-- **Play now** shows the running instant games (time left, players, leader) and you choose which one to join, instead
-  of being placed in one. With no game running it starts a new one as before.
-- Instant games accept players until they end, not only in the first 10 minutes. A player is in one running instant
-  game at a time; leaving it frees the seat.
-- An instant game that no human has had open for 5 minutes ends early (reason `abandoned`), keeps its results and no
-  longer holds a place under `LH_INSTANT_MAX_WORLDS`.
-- The results screen's **Play again** opens the game list.
-
-## [0.1.0] — 2026-10-28 (alpha)
-
-The first public release. Worlds and accounts may still be reset between alpha versions.
+## [0.3.0](https://github.com/librehold-game/librehold/releases/tag/v0.3.0) — 2026-10-30 (alpha)
 
 ### Added
 
-- Browser village strategy game: 15 buildings, 12 unit types, scouting, supports, field battles between marching
-  armies, loyalty and conquest, a market and a farm assistant.
-- Instant games: one-hour matches at ×100 speed that guests join with **Play now**, no account needed.
-- Private worlds that a registered player hosts for friends, with an invite link and a QR code.
-- Long worlds created by the admin, played over days.
-- Bots that build, farm, defend and wage war, with their own daily rhythm.
-- A public site in English and Polish: home page, guides, unit and building pages, player
-  profiles and game results.
-- Go game server on Postgres, with every order and event in one transaction under a per-world lock; limits shared
-  through Valkey.
-- Docker Compose deployment with optional HTTPS through Caddy and nightly database backups.
+- Open the village card on the map only after the cursor rests on it ([#13](https://github.com/librehold-game/librehold/pull/13)) by @SKocur
 
-[Unreleased]: https://github.com/librehold-game/librehold/compare/v0.3.0...HEAD
-[0.3.0]: https://github.com/librehold-game/librehold/releases/tag/v0.3.0
-[0.2.1]: https://github.com/librehold-game/librehold/releases/tag/v0.2.1
-[0.2.0]: https://github.com/librehold-game/librehold/releases/tag/v0.2.0
-[0.1.0]: https://github.com/librehold-game/librehold/releases/tag/v0.1.0
+### Changed
+
+- Move the performance tests out of e2e and make the late-join test steady ([0e785bf](https://github.com/librehold-game/librehold/commit/0e785bf33450a9b2d9ef7c3d1f4838aafc25b344)) by @SKocur
+- Show ended worlds as ended in the admin panel ([1e393fd](https://github.com/librehold-game/librehold/commit/1e393fd4ec3a4bc4385355c40537ffa1cb0395e0)) by @SKocur
+- Publish the server image to GHCR on every version tag ([aad24dc](https://github.com/librehold-game/librehold/commit/aad24dcbcbe2981f6f6625e96c62d6edaacede95)) by @SKocur
+- Use less Actions cache in CI and skip tests for docs-only changes ([3ed4d90](https://github.com/librehold-game/librehold/commit/3ed4d901fec6b0dc1270f57bbdb27395584859e4)) by @SKocur
+
+### Fixed
+
+- Refresh the ranking every minute in instant games ([#12](https://github.com/librehold-game/librehold/pull/12)) by @SKocur
+
+### Contributors
+
+@SKocur
+
+## [0.2.1](https://github.com/librehold-game/librehold/releases/tag/v0.2.1) — 2026-10-29 (alpha)
+
+### Changed
+
+- Gameplay clip and play link in the README; Dependabot for compose files ([7324086](https://github.com/librehold-game/librehold/commit/7324086412c97a910210e272d64038d2b904761d)) by @SKocur
+- Friendlier licence summaries ([f609917](https://github.com/librehold-game/librehold/commit/f609917442a2e84d4989278be1614f36f764447f)) by @SKocur
+- Unmount React roots after hydration tests; build before tests in CI ([0a41ec5](https://github.com/librehold-game/librehold/commit/0a41ec53176219abe3fbd317e6aedeb54899c629)) by @SKocur
+- Choose an instant game from a list, join until it ends, end abandoned games ([96b0631](https://github.com/librehold-game/librehold/commit/96b0631f56396157c64bed0fc2253dc92d3d9953)) by @SKocur
+- Let a player leave an instant game in any state ([08b8bd2](https://github.com/librehold-game/librehold/commit/08b8bd207d41b77bd05e44fe90b185d2a181d5f6)) by @SKocur
+
+### Contributors
+
+@SKocur
+
+## [0.1.0](https://github.com/librehold-game/librehold/releases/tag/v0.1.0) — 2026-10-28 (alpha)
+
+### Changed
+
+- LibreHold, a browser village strategy game ([e680f73](https://github.com/librehold-game/librehold/commit/e680f7323ce4e3b1678860bf3934365522878067)) by @SKocur
+
+### Contributors
+
+@SKocur
+
+- @SKocur made their first contribution
+

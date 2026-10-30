@@ -1,0 +1,73 @@
+# git-cliff: writes CHANGELOG.md and each release's GitHub notes from the git history. A pull request's labels pick
+# its section; a commit pushed without one lands under Changed.
+# scripts/release.sh runs it; to preview the next release: GITHUB_TOKEN=$(gh auth token) git cliff --unreleased
+
+[remote.github]
+owner = "librehold-game"
+repo = "librehold"
+
+[changelog]
+header = """
+# Changelog
+
+Changes for people who run or develop LibreHold. Players see the same story in the game's own changelog page. The
+format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow
+[Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
+edit it by hand.
+
+"""
+body = """
+{%- set repo = "https://github.com/librehold-game/librehold" -%}
+{% if version -%}
+## [{{ version | trim_start_matches(pat="v") }}]({{ repo }}/releases/tag/{{ version }}) — {{ timestamp | date(format="%Y-%m-%d") }}{% if version is starting_with("v0.") %} (alpha){% endif %}
+{%- else -%}
+## Unreleased
+{%- endif %}
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | striptags | trim }}
+{% for commit in commits %}
+- {{ commit.message | split(pat="\n") | first | trim }}
+  {%- if commit.remote.pr_number %} ([#{{ commit.remote.pr_number }}]({{ repo }}/pull/{{ commit.remote.pr_number }}))
+  {%- else %} ([{{ commit.id | truncate(length=7, end="") }}]({{ repo }}/commit/{{ commit.id }}))
+  {%- endif %}
+  {%- if commit.remote.pr_author or commit.remote.username %} by @{{ commit.remote.pr_author | default(value=commit.remote.username) }}{% endif %}
+{%- endfor %}
+{% endfor %}
+{%- set people = github.contributors | filter(attribute="username") | map(attribute="username") | unique | sort -%}
+{%- set humans = [] -%}
+{%- for p in people %}{% if p is not ending_with("[bot]") %}{% set_global humans = humans | concat(with=p) %}{% endif %}{% endfor -%}
+{% if humans | length > 0 %}
+### Contributors
+
+{% for p in humans %}@{{ p }}{% if not loop.last %}, {% endif %}{% endfor %}
+{% for c in github.contributors | filter(attribute="is_first_time", value=true) %}{% if c.username is not ending_with("[bot]") %}
+- @{{ c.username }} made their first contribution{% if c.pr_number %} in [#{{ c.pr_number }}]({{ repo }}/pull/{{ c.pr_number }}){% endif %}
+{%- endif %}{% endfor %}
+{% endif %}
+"""
+# trim drops the body's stray blank lines; the footer's newline keeps one blank line before the previous release.
+trim = true
+footer = """
+
+"""
+
+[git]
+conventional_commits = false
+filter_unconventional = false
+filter_commits = false
+tag_pattern = "v[0-9]+\\.[0-9]+\\.[0-9]+.*"
+sort_commits = "oldest"
+commit_preprocessors = [
+  # The squash-merge suffix " (#12)"; the link is added from the pull request itself.
+  { pattern = '(?m) \(#[0-9]+\)$', replace = "" },
+]
+commit_parsers = [
+  { message = "^Release [0-9]", skip = true },
+  { message = "^Merge pull request", skip = true },
+  { field = "author.name", pattern = "dependabot", skip = true },
+  { field = "remote.pr_labels", pattern = "dependencies", skip = true },
+  { field = "remote.pr_labels", pattern = "security", group = "<!-- 3 -->Security" },
+  { field = "remote.pr_labels", pattern = "bug", group = "<!-- 2 -->Fixed" },
+  { field = "remote.pr_labels", pattern = "enhancement|idea", group = "<!-- 0 -->Added" },
+  { message = ".*", group = "<!-- 1 -->Changed" },
+]

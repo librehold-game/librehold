@@ -123,6 +123,22 @@ tests and `cmd/sim`.
 - `?dev=1` — exposes the store as `window.__lh` on the console (debugging, e2e tests). Nothing else: time and
   resources cannot be changed from the browser.
 
+## Releasing
+
+Versions follow [Semantic Versioning](https://semver.org/): a patch release for fixes only, a minor one when anything
+is added or changed (and, before 1.0, for breaking changes too). Only org admins can push `v*` tags. From a clean
+`main`:
+
+```sh
+scripts/release.sh 0.4.0       # rewrites CHANGELOG.md with git-cliff, up to 0.4.0, commits and tags it
+git push origin main v0.4.0    # after reading CHANGELOG.md
+```
+
+The tag starts `.github/workflows/release.yml`: it publishes `ghcr.io/librehold-game/librehold` as `0.4.0`, `0.4`
+and `latest`, then creates the GitHub release with the same notes. `cliff.toml` sorts merged pull requests by label
+(`enhancement` or `idea` → Added, `bug` → Fixed, `security` → Security, anything else → Changed) and credits their
+authors; `GITHUB_TOKEN=$(gh auth token) git cliff --unreleased` previews the next release.
+
 ## Game state
 
 The state of every world lives in Postgres on the server — the browser stores nothing except UI preferences,

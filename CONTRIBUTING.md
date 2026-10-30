@@ -32,7 +32,10 @@ Good places to start:
 1. Fork the repository and create a branch from `main`.
 2. Make your change, with a test that fails without it.
 3. Run the checks below; CI runs the same ones on your pull request.
-4. Open a pull request that says what changed and why. Link the issue it fixes, if there is one.
+4. Open a pull request that says what changed and why. Link the issue it fixes, if there is one. Its title becomes
+   the line in `CHANGELOG.md`, so say what players or hosts notice, not what the code does: "Refresh the ranking
+   every minute in instant games", not "Schedule the stats event per minute in short worlds". A maintainer's label
+   picks the section (`bug` → Fixed, `enhancement` or `idea` → Added).
 
 ```sh
 npm run typecheck && npm test           # client

@@ -30,13 +30,12 @@ services:
       retries: 20
 
   server:
-    build:
-      context: ..
-      dockerfile: Dockerfile
-    image: librehold-server:local
+    image: ghcr.io/librehold-game/librehold:latest
     restart: unless-stopped
     env_file: .env
     environment:
+      LH_DATABASE_URL: postgres://librehold:${POSTGRES_PASSWORD}@db:5432/librehold?sslmode=disable
+      LH_VALKEY_URL: redis://:${VALKEY_PASSWORD}@valkey:6379/0
       # Caddy's fixed address below: only Caddy can hold it, so trusting it is safe with or without the https profile.
       LH_TRUSTED_PROXIES: ${LH_TRUSTED_PROXIES:-172.30.0.10}
     ports:
