@@ -79,7 +79,14 @@
     },
     "state": {
       "paused": "wstrzymany",
-      "running": "działa"
+      "running": "działa",
+      "ended": "{reason}, {at}"
+    },
+    "endReason": {
+      "time": "skończył się czas",
+      "domination": "wygrana przez dominację",
+      "host": "zakończył go gospodarz",
+      "abandoned": "wszyscy wyszli"
     },
     "action": {
       "close": "Zamknij",

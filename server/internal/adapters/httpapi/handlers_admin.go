@@ -23,6 +23,13 @@ type adminWorldJSON struct {
 	Paused    bool             `json:"paused"`
 	StartedAt int64            `json:"startedAt"`
 	Settings  game.WorldConfig `json:"settings"`
+	Ended     *adminEndJSON    `json:"ended,omitempty"`
+}
+
+// adminEndJSON is when (wall ms) and why a world's game ended.
+type adminEndJSON struct {
+	At     int64  `json:"at"`
+	Reason string `json:"reason"`
 }
 
 func (a *api) accounts(w http.ResponseWriter, r *http.Request, acct *app.Account) {
@@ -64,8 +71,12 @@ func (a *api) adminWorlds(w http.ResponseWriter, r *http.Request, acct *app.Acco
 	}
 	out := make([]adminWorldJSON, 0, len(list))
 	for _, s := range list {
-		out = append(out, adminWorldJSON{ID: s.ID, Name: s.Name, Status: s.Status, Humans: s.Humans, Bots: s.Bots,
-			Paused: s.PausedAtMs != nil, StartedAt: s.StartedAtMs, Settings: s.Config})
+		row := adminWorldJSON{ID: s.ID, Name: s.Name, Status: s.Status, Humans: s.Humans, Bots: s.Bots,
+			Paused: s.PausedAtMs != nil, StartedAt: s.StartedAtMs, Settings: s.Config}
+		if end := s.State.EndedAt; end != nil {
+			row.Ended = &adminEndJSON{At: s.StartedAtMs + s.PausedTotalMs + *end, Reason: s.State.EndReason}
+		}
+		out = append(out, row)
 	}
 	writeJSON(w, http.StatusOK, out)
 }

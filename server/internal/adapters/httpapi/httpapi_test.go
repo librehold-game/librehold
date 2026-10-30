@@ -671,3 +671,38 @@ func TestWatchRoutes(t *testing.T) {
 	expect(t, host.do("GET", base+"/villages/nonsense", nil), 404, "notFound")
 	expect(t, guest.do("GET", base+"/villages/"+village, nil), 403, "forbidden")
 }
+
+func TestAdminWorldsShowTheEnd(t *testing.T) {
+	e := newEnv(t)
+	adm := admin(t, e)
+	running := world(t, e, adm)
+	host := e.browser(t)
+	register(t, host, "ala")
+	created := host.do("POST", "/api/v1/hosted", map[string]any{"name": "Friday"})
+	expect(t, created, 201, "")
+	ended := jsonNumber(created.body["worldId"])
+	base := "/api/v1/worlds/" + ended + "/host"
+	guest := e.browser(t)
+	expect(t, guest.do("POST", "/api/v1/auth/guest", map[string]string{"locale": "en"}), 201, "")
+	expect(t, guest.do("POST", "/api/v1/invites/"+created.body["inviteCode"].(string)+"/join", map[string]any{}), 200, "")
+	expect(t, host.do("POST", base+"/start", map[string]any{}), 200, "")
+	expect(t, host.do("POST", base+"/end", map[string]any{}), 200, "")
+
+	r := adm.do("GET", "/api/v1/admin/worlds", nil)
+	expect(t, r, 200, "")
+	var rows []map[string]any
+	if err := json.Unmarshal([]byte(r.raw), &rows); err != nil {
+		t.Fatal(err)
+	}
+	byID := map[string]map[string]any{}
+	for _, row := range rows {
+		byID[jsonNumber(row["id"])] = row
+	}
+	if _, ok := byID[running]["ended"]; ok {
+		t.Fatalf("running world %v", byID[running])
+	}
+	end, ok := byID[ended]["ended"].(map[string]any)
+	if !ok || end["reason"] != "host" || end["at"] != float64(e.clock.ms.Load()) {
+		t.Fatalf("ended world %v", byID[ended])
+	}
+}

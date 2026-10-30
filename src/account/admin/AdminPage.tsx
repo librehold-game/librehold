@@ -108,17 +108,25 @@ function WorldsTab() {
           {(items ?? []).map((w) => (
             <tr key={w.id}>
               <td data-label={t('admin.col.name')}>{w.name}</td>
-              <td data-label={t('admin.col.status')}>{t(`admin.status.${w.status}`)}</td>
+              <td data-label={t('admin.col.status')}>{t(`admin.status.${w.ended ? 'ended' : w.status}`)}</td>
               <td data-label={t('admin.col.players')}>{w.humans}</td>
               <td data-label={t('admin.col.bots')}>{w.bots}</td>
-              <td data-label={t('admin.col.state')}>{t(w.paused ? 'admin.state.paused' : 'admin.state.running')}</td>
+              <td data-label={t('admin.col.state')}>
+                {w.ended
+                  ? t('admin.state.ended', { reason: t(`admin.endReason.${w.ended.reason}`), at: new Date(w.ended.at).toLocaleString(getLocale()) })
+                  : t(w.paused ? 'admin.state.paused' : 'admin.state.running')}
+              </td>
               <td data-label={t('admin.col.actions')} className="row">
-                <button onClick={() => act(() => adminApi.updateWorld(w.id, { status: w.status === 'open' ? 'closed' : 'open' }))}>
-                  {t(w.status === 'open' ? 'admin.action.close' : 'admin.action.open')}
-                </button>
-                <button onClick={() => act(() => (w.paused ? adminApi.resumeWorld(w.id) : adminApi.pauseWorld(w.id)))}>
-                  {t(w.paused ? 'admin.action.resume' : 'admin.action.pause')}
-                </button>
+                {!w.ended && (
+                  <>
+                    <button onClick={() => act(() => adminApi.updateWorld(w.id, { status: w.status === 'open' ? 'closed' : 'open' }))}>
+                      {t(w.status === 'open' ? 'admin.action.close' : 'admin.action.open')}
+                    </button>
+                    <button onClick={() => act(() => (w.paused ? adminApi.resumeWorld(w.id) : adminApi.pauseWorld(w.id)))}>
+                      {t(w.paused ? 'admin.action.resume' : 'admin.action.pause')}
+                    </button>
+                  </>
+                )}
                 <button onClick={() => setEditing(editing === w.id ? null : w.id)}>{t('admin.action.settings')}</button>
               </td>
             </tr>

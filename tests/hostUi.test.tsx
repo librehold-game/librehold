@@ -161,3 +161,24 @@ describe('admin limits for player worlds', () => {
     expect(await screen.findByText('Saved')).toBeTruthy();
   });
 });
+
+describe('admin worlds list', () => {
+  it('an ended world shows why it ended and has no pause or open/close', async () => {
+    const world = { status: 'open', humans: 0, bots: 3, paused: false, startedAt: 0, settings };
+    routes['GET /api/v1/admin/accounts'] = () => ({ status: 200, body: [] });
+    routes['GET /api/v1/admin/worlds'] = () => ({ status: 200, body: [
+      { ...world, id: 1, name: 'W1' },
+      { ...world, id: 2, name: 'Game #3', ended: { at: Date.UTC(2026, 9, 29, 8, 37), reason: 'abandoned' } },
+    ] });
+    render(<AdminPage />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Worlds' }));
+    const running = within((await screen.findByText('W1')).closest('tr')!);
+    expect(running.getByText('running')).toBeTruthy();
+    expect(running.getByRole('button', { name: 'Pause' })).toBeTruthy();
+    const ended = within(screen.getByText('Game #3').closest('tr')!);
+    expect(ended.getByText('ended')).toBeTruthy();
+    expect(ended.getByText(/everyone left/)).toBeTruthy();
+    expect(ended.queryByText('running')).toBeNull();
+    for (const name of ['Pause', 'Resume', 'Close', 'Open']) expect(ended.queryByRole('button', { name })).toBeNull();
+  });
+});

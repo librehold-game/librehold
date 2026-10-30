@@ -31,6 +31,8 @@ export interface AdminAccount extends Account { createdAt: string }
 export interface AdminWorld {
   id: number; name: string; status: 'open' | 'closed'; humans: number; bots: number; paused: boolean; startedAt: number;
   settings: WorldConfig;
+  /** Set once the world's game is over: wall ms and why. */
+  ended?: { at: number; reason: 'time' | 'domination' | 'host' | 'abandoned' };
 }
 export type Quadrant = 'random' | 'nw' | 'ne' | 'sw' | 'se';
 
