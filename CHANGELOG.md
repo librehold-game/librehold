@@ -6,15 +6,18 @@ page. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-10-30 (alpha)
+
 ### Added
 
 - Every `v*` tag publishes the server image to `ghcr.io/librehold-game/librehold` (amd64 and arm64), tagged with
-  the version, its minor line (`0.2`) and `latest`. Only org admins can create release tags.
+  the version, its minor line (`0.3`) and `latest`.
 
 ### Changed
 
 - The version lives in the release tag only: `package.json` has no version, and the README badge shows the latest
   tag.
+- CI skips the test jobs for changes to docs only, and keeps a smaller Actions cache.
 
 ### Fixed
 
@@ -62,7 +65,8 @@ The first public release. Worlds and accounts may still be reset between alpha v
   through Valkey.
 - Docker Compose deployment with optional HTTPS through Caddy and nightly database backups.
 
-[Unreleased]: https://github.com/librehold-game/librehold/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/librehold-game/librehold/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/librehold-game/librehold/releases/tag/v0.3.0
 [0.2.1]: https://github.com/librehold-game/librehold/releases/tag/v0.2.1
 [0.2.0]: https://github.com/librehold-game/librehold/releases/tag/v0.2.0
 [0.1.0]: https://github.com/librehold-game/librehold/releases/tag/v0.1.0
