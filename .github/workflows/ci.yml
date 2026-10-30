@@ -1,4 +1,5 @@
-# Typecheck, unit tests, end-to-end tests and the Docker build on every push to main and every pull request.
+# Typecheck, unit tests, end-to-end tests and the Docker build on every push to main and every pull request that
+# changes more than docs.
 name: CI
 
 on:
@@ -14,8 +15,30 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    name: Changes
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.check.outputs.code }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      # Docs, licences, deploy files, templates and the other workflows need no tests; a skipped job still
+      # passes the required checks. A push with no earlier commit (a new branch) runs everything.
+      - id: check
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then echo code=true >> "$GITHUB_OUTPUT"; exit 0; fi
+          skip='^(.*\.md|docs/.*|deploy/.*|LICENSE.*|\.github/(ISSUE_TEMPLATE/.*|dependabot\.yml|workflows/(cla|image)\.yml))$'
+          code=$(git diff --name-only "$BASE" HEAD | grep -vE "$skip" || true)
+          echo "code=$([ -n "$code" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
   web:
     name: Client (typecheck, tests, build)
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -36,6 +59,8 @@ jobs:
 
   server:
     name: Server (vet, tests, vulnerabilities)
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -62,7 +87,7 @@ jobs:
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: server/go.mod
-          cache-dependency-path: server/go.sum
+          cache: false
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: dist
@@ -72,6 +97,8 @@ jobs:
 
   docker:
     name: Docker image
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -80,5 +107,3 @@ jobs:
         with:
           context: .
           push: false
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
