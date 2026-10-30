@@ -60,18 +60,54 @@ Open [librehold.org](https://librehold.org) and press **Play now**.
 
 ### Host your own server
 
-You need a Linux server with Docker and Docker Compose. The server runs the latest published image
-`ghcr.io/librehold-game/librehold` (amd64 and arm64), so nothing is built on your machine.
+You need a machine with Docker (amd64 or arm64). Save this as `docker-compose.yml`:
+
+```yaml
+services:
+  db:
+    image: postgres:18.6
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: librehold
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "librehold"]
+      interval: 5s
+
+  server:
+    image: ghcr.io/librehold-game/librehold:latest
+    restart: unless-stopped
+    environment:
+      LH_DATABASE_URL: postgres://librehold:${DB_PASSWORD}@db:5432/librehold?sslmode=disable
+      LH_COOKIE_SECURE: "false"
+      LH_ADMIN_USERNAME: admin
+      LH_ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+```
+
+Next to it, create `.env` with two passwords of your own (letters and digits; the admin one at least 8 characters) and start the game:
 
 ```sh
-git clone --depth 1 https://github.com/librehold-game/librehold.git
-cd librehold/deploy
-cp .env.example .env        # set the passwords and the admin account
+DB_PASSWORD=
+ADMIN_PASSWORD=
+```
+
+```sh
 docker compose up -d
 ```
 
-The game is then at `http://<server>:8080/`. Before you open it to the internet, read
-[`deploy/README.md`](deploy/README.md): it covers HTTPS, running behind a reverse proxy, backups and updates.
+The game is then at `http://<server>:8080/`; log in as `admin` to reach the admin panel. Update with
+`docker compose pull && docker compose up -d`. This is enough for friends or a LAN party; before you open the game
+to the internet, use the full setup in [`deploy/`](deploy/README.md): HTTPS, nightly backups and limits shared through Valkey.
 
 ### Develop
 
