@@ -5,6 +5,18 @@ format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and ver
 [Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
 edit it by hand.
 
+## [0.4.0](https://github.com/librehold-game/librehold/releases/tag/v0.4.0) — 2026-10-30 (alpha)
+
+### Changed
+
+- Self-host from the published image and write the changelog with git-cliff ([8aaeff4](https://github.com/librehold-game/librehold/commit/8aaeff4975a11ac653d516e4f7ce762dc441e424)) by @SKocur
+- Show a minimal compose file for self-hosting in the README ([05f92a9](https://github.com/librehold-game/librehold/commit/05f92a9529547537a08f94a6468587d6031a1d87)) by @SKocur
+- Show what unlocks buildings and units inside the game ([db83bb0](https://github.com/librehold-game/librehold/commit/db83bb0abf1c4edc03852586a374458bfaafdbb4)) by @SKocur
+
+### Contributors
+
+@SKocur
+
 ## [0.3.0](https://github.com/librehold-game/librehold/releases/tag/v0.3.0) — 2026-10-30 (alpha)
 
 ### Added
