@@ -5,6 +5,17 @@ format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and ver
 [Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
 edit it by hand.
 
+## [0.6.1](https://github.com/librehold-game/librehold/releases/tag/v0.6.1) — 2026-10-31 (alpha)
+
+### Fixed
+
+- Keep battles out of the public feed ([16dc738](https://github.com/librehold-game/librehold/commit/16dc73898f3ab0e5a6b7a6ec324f6831a6862969)) by @SKocur
+- Farm assistant counts the local day and estimates only from own reports ([8f78d2c](https://github.com/librehold-game/librehold/commit/8f78d2c5f62475bf2968bb817c5760f3babedaef)) by @SKocur
+
+### Contributors
+
+@SKocur
+
 ## [0.6.0](https://github.com/librehold-game/librehold/releases/tag/v0.6.0) — 2026-10-31 (alpha)
 
 ### Added
