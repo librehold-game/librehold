@@ -268,7 +268,32 @@
       "at": 7963675,
       "units": {},
       "wall": 0,
-      "loyalty": 100
+      "loyalty": 100,
+      "scouted": {
+        "at": 7963675,
+        "resources": {
+          "wood": 508,
+          "clay": 508,
+          "iron": 508
+        },
+        "buildings": {
+          "main": 1,
+          "barracks": 0,
+          "stable": 0,
+          "workshop": 0,
+          "academy": 0,
+          "smithy": 0,
+          "statue": 0,
+          "market": 0,
+          "wood": 0,
+          "clay": 0,
+          "iron": 0,
+          "farm": 1,
+          "storage": 1,
+          "hide": 1,
+          "wall": 0
+        }
+      }
     },
     "farmTargetFlags": {
       "hasWall": false,

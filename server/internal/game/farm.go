@@ -44,33 +44,41 @@ func ownInbound(w World, actor PlayerID) map[string]bool {
 	return out
 }
 
-// EstimateLoot: the last known state (haul plus what stayed above the hiding place) plus production since the
-// last attack, capped by capacity.
-func EstimateLoot(w World, actor PlayerID, target *Village) float64 {
-	capacity := VillageStorageCapacity(target) * 3
-	in := w.Intel(actor, target.ID)
-	var since *int64
-	if in != nil {
-		if in.LastFarmedAt != nil {
-			since = in.LastFarmedAt
-		} else if in.Intel != nil {
-			since = &in.Intel.At
+// EstimateLoot is what the actor may expect in a village from their own reports only: what their scout saw, or
+// what their last raid left, plus production since then; the bonus is on the map for anyone. An unscouted village
+// is taken as a fresh barbarian one: mines at 0, warehouse at 1. Without a scouting or a won raid it is 0, unknown.
+func EstimateLoot(w World, actor PlayerID, villageID string, bonus *VillageBonus) float64 {
+	in := w.Intel(actor, villageID)
+	if in == nil {
+		return 0
+	}
+	known := Village{Bonus: bonus}
+	known.Buildings[BStorage] = 1
+	var scouted *Scouted
+	if in.Intel != nil && in.Intel.Scouted != nil {
+		scouted = in.Intel.Scouted
+		known.Buildings = scouted.Buildings
+	}
+	var since int64
+	start := 0.0
+	switch {
+	case scouted != nil && (in.LastFarmedAt == nil || scouted.At >= *in.LastFarmedAt):
+		since, start = scouted.At, SumResources(scouted.Resources)
+	case in.LastFarmedAt != nil:
+		since = *in.LastFarmedAt
+		if vi := in.Intel; vi != nil && vi.LastHaul != nil && vi.LastHaulCapacity != nil && *vi.LastHaulCapacity > 0 &&
+			SumResources(*vi.LastHaul) >= *vi.LastHaulCapacity {
+			start = VillageStorageCapacity(&known) * 0.5
 		}
+	default:
+		return 0
 	}
-	if since == nil {
-		return math.Min(capacity, math.Floor(VillageStorageCapacity(target)*3*0.6))
-	}
-	hours := math.Max(0, float64(w.Now()-*since)) / float64(MsPerHour)
+	hours := math.Max(0, float64(w.Now()-since)) / float64(MsPerHour)
 	prod := 0.0
 	for _, r := range ResourceIDs {
-		prod += VillageProductionPerHour(target, r, w.Config()) * hours
+		prod += VillageProductionPerHour(&known, r, w.Config()) * hours
 	}
-	leftover := 0.0
-	if vi := in.Intel; vi != nil && vi.LastHaul != nil && vi.LastHaulCapacity != nil && *vi.LastHaulCapacity > 0 &&
-		SumResources(*vi.LastHaul) >= *vi.LastHaulCapacity {
-		leftover = VillageStorageCapacity(target) * 0.5
-	}
-	return math.Min(capacity, math.Floor(prod+leftover))
+	return math.Min(VillageStorageCapacity(&known)*3, math.Floor(start+prod))
 }
 
 func FarmTargets(w World, actor PlayerID, villageID string) []FarmTarget {
@@ -118,31 +126,32 @@ func farmTargetFor(w World, actor PlayerID, from *Village, t Tile, inbound map[s
 			ft.Status = "full"
 		}
 	}
-	if mat := w.Village(t.ID); mat != nil {
-		ft.EstimatedLoot = EstimateLoot(w, actor, mat)
-	}
+	ft.EstimatedLoot = EstimateLoot(w, actor, t.ID, t.Bonus)
 	return ft
 }
 
-func PassesFilters(w World, actor PlayerID, t FarmTarget) bool {
+// FilterReason is why the actor's filters hide a target: inbound | losses | wall | recent; "" when it is shown.
+func FilterReason(w World, actor PlayerID, t FarmTarget) string {
 	h := w.Human(actor)
 	if h == nil {
-		return false
+		return "none"
 	}
 	f := h.FarmAssistant.Filters
-	if f.HideInbound && t.Inbound {
-		return false
+	switch {
+	case f.HideInbound && t.Inbound:
+		return "inbound"
+	case f.HideLosses && t.LastLosses != nil && *t.LastLosses > 0:
+		return "losses"
+	case t.Wall != nil && *t.Wall > f.MaxWall:
+		return "wall"
+	case t.LastAttackAt != nil && float64(w.Now()-*t.LastAttackAt) < f.MinMinutesSinceAttack*float64(MsPerMinute):
+		return "recent"
 	}
-	if f.HideLosses && t.LastLosses != nil && *t.LastLosses > 0 {
-		return false
-	}
-	if t.Wall != nil && *t.Wall > f.MaxWall {
-		return false
-	}
-	if t.LastAttackAt != nil && float64(w.Now()-*t.LastAttackAt) < f.MinMinutesSinceAttack*float64(MsPerMinute) {
-		return false
-	}
-	return true
+	return ""
+}
+
+func PassesFilters(w World, actor PlayerID, t FarmTarget) bool {
+	return FilterReason(w, actor, t) == ""
 }
 
 // TemplateHaul is the carrying capacity of one "pack" of a template.

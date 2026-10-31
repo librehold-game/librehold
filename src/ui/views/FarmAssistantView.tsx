@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from 'react';
 import { PixelIcon } from '../pixelIcons';
-import { autoFarmUnlocked, type FarmTarget } from '../../engine/farm';
+import { autoFarmUnlocked, type FarmHideReason, type FarmTarget } from '../../engine/farm';
+import { localDayIndex } from '../../engine/clock';
 import { selectActiveVillage, useGameStore } from '../../state/gameStore';
 import { useUiStore } from '../../state/uiStore';
 import { UnitCountList } from '../components/UnitCountList';
@@ -21,6 +22,9 @@ function StatusMark({ status }: { status: FarmTarget['status'] }) {
 
 type SortKey = 'distance' | 'lastAttackAt' | 'estimatedLoot' | 'points';
 
+const HIDE_REASONS: FarmHideReason[] = ['recent', 'inbound', 'losses', 'wall'];
+const RETRY_MS = 5000;
+
 export function FarmAssistantView() {
   const villageId = useGameStore((s) => selectActiveVillage(s).id);
   const [sort, setSort] = useState<SortKey>('distance');
@@ -29,23 +33,39 @@ export function FarmAssistantView() {
   const stateRev = useGameStore((s) => s.stateRev);
   const loadTargets = useGameStore((s) => s.loadFarmTargets);
   const [targets, setTargets] = useState<FarmTarget[]>([]);
+  const [hidden, setHidden] = useState<Partial<Record<FarmHideReason, number>>>({});
+  // A failed fetch keeps the old rows but says so, and tries again shortly.
+  const [failed, setFailed] = useState(false);
+  const [retry, setRetry] = useState(0);
   useEffect(() => {
     let live = true;
-    void loadTargets(villageId).then((t) => { if (live && t) setTargets(t); });
-    return () => { live = false; };
-  }, [villageId, stateRev, loadTargets]);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    void loadTargets(villageId).then((list) => {
+      if (!live) return;
+      setFailed(!list);
+      if (list) {
+        setTargets(list.targets);
+        setHidden(list.hidden);
+      } else {
+        timer = setTimeout(() => setRetry((n) => n + 1), RETRY_MS);
+      }
+    });
+    return () => { live = false; clearTimeout(timer); };
+  }, [villageId, stateRev, loadTargets, retry]);
   const json = useGameStore((s) => {
     const g = s.game!;
     return JSON.stringify({
       filters: g.farmAssistant.filters, templates: g.farmAssistant.templates,
-      today: g.stats.attacksToday, looted: g.stats.lootedToday, now: g.now,
+      // The counters are kept per local day; yesterday's numbers read zero until the first attack of today.
+      today: g.stats.attacksToday.day === localDayIndex(g, g.now) ? g.stats.attacksToday.count : 0,
+      looted: g.stats.lootedToday.day === localDayIndex(g, g.now) ? g.stats.lootedToday.total : 0, now: g.now,
       autoUnlocked: autoFarmUnlocked(g), autoUnlockAt: FARM_BALANCE.autoFarmUnlockVillages, autoEnabled: g.farmAssistant.autoFarmEnabled, autoVillages: g.farmAssistant.autoFarmVillages,
       units: selectActiveVillage(s).units, villages: humanVillageIds(g).length,
     });
   });
   const m = { targets, ...JSON.parse(json) } as {
     targets: FarmTarget[]; filters: { radius: number; minMinutesSinceAttack: number; maxWall: number; hideLosses: boolean; hideInbound: boolean };
-    templates: Record<'A' | 'B' | 'C' | 'D', { units: Record<string, number> }>; today: { count: number }; looted: { total: number }; now: number;
+    templates: Record<'A' | 'B' | 'C' | 'D', { units: Record<string, number> }>; today: number; looted: number; now: number;
     autoUnlocked: boolean; autoUnlockAt: number; autoEnabled: boolean; autoVillages: string[]; units: Record<string, number>; villages: number;
   };
   const sendTemplate = useGameStore((s) => s.sendTemplate);
@@ -86,7 +106,7 @@ export function FarmAssistantView() {
     <div className="text-[12px]">
       <div className="flex items-center gap-3 flex-wrap mb-2">
         <h2 className="text-lg">{t('farm.title')}</h2>
-        <span><RichText text={t('farm.today', { count: m.today.count, looted: formatNumber(m.looted.total) })} /></span>
+        <span><RichText text={t('farm.today', { count: m.today, looted: formatNumber(m.looted) })} /></span>
         <span className="text-muted">{t('farm.templates')} A <UnitCountList units={m.templates.A.units} size={12} /> · B <UnitCountList units={m.templates.B.units} size={12} /> · C <UnitCountList units={m.templates.C.units} size={12} /> <button className="underline" onClick={() => setView('rally')}>{t('farm.edit')}</button></span>
       </div>
       <div className="flex flex-wrap items-center gap-3 mb-2 panel p-2">
@@ -111,6 +131,12 @@ export function FarmAssistantView() {
         </span>
       </div>
       <p className="text-muted mb-1">{t('farm.keys')}</p>
+      {failed && <p role="status" className="mb-1">{t('farm.refreshFailed')}</p>}
+      {HIDE_REASONS.some((r) => hidden[r]) && (
+        <p className="text-muted mb-1">{t('farm.hidden', {
+          list: HIDE_REASONS.filter((r) => hidden[r]).map((r) => t(`farm.hiddenBy.${r}`, { n: hidden[r]! })).join(' · '),
+        })}</p>
+      )}
       {sorted.length === 0 ? (
         <p className="text-muted italic">{t('farm.none', { n: m.filters.radius })}</p>
       ) : (

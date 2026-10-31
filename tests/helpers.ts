@@ -2,7 +2,7 @@ import worldDefault from './fixtures/world-default.json';
 import worldTest from './fixtures/world-test.json';
 import worldTestBot from './fixtures/world-test-bot.json';
 import { toGameState } from '../src/net/toGameState';
-import type { FarmTarget } from '../src/engine/farm';
+import type { FarmTargetList } from '../src/engine/farm';
 import { HUMAN_ID, MS_PER_HOUR, MS_PER_MINUTE, emptyRecruitQueues, emptyUnits, type Command, type GameState, type Village } from '../src/engine/types';
 import type { CommandView, MapTile, PlayerState } from '../src/net/types';
 
@@ -12,7 +12,7 @@ import type { CommandView, MapTile, PlayerState } from '../src/net/types';
  * player `bot_test` on the nearest free field.
  */
 export type WorldKind = 'default' | 'test' | 'test-bot';
-export type WorldFixture = { state: PlayerState; map: MapTile[]; farmTargets: FarmTarget[]; botVillage?: Village };
+export type WorldFixture = { state: PlayerState; map: MapTile[]; farmTargets: FarmTargetList; botVillage?: Village };
 
 const FIXTURES: Record<WorldKind, unknown> = { default: worldDefault, test: worldTest, 'test-bot': worldTestBot };
 const fixtureOfGame = new WeakMap<GameState, WorldFixture>();

@@ -252,18 +252,40 @@ func TestNewsShowsOnlyPublicAndOwn(t *testing.T) {
 func TestFarmTargetsView(t *testing.T) {
 	d := newDuel(t)
 	ctx := context.Background()
-	targets, err := d.svc.FarmTargets(ctx, ala, d.world, d.v1)
-	if err != nil || len(targets) == 0 {
-		t.Fatalf("targets %d %v", len(targets), err)
+	list, err := d.svc.FarmTargets(ctx, ala, d.world, d.v1)
+	if err != nil || len(list.Targets) == 0 || list.Hidden == nil {
+		t.Fatalf("targets %+v %v", list, err)
 	}
-	for _, ft := range targets {
+	for _, ft := range list.Targets {
 		if ft.Status == "" || ft.Distance <= 0 {
 			t.Fatalf("target %+v", ft)
 		}
 	}
 	foreign, err := d.svc.FarmTargets(ctx, ala, d.world, d.v2)
-	if err != nil || foreign == nil || len(foreign) != 0 {
-		t.Fatalf("someone else's village: %v %v", foreign, err)
+	if err != nil || foreign.Targets == nil || len(foreign.Targets) != 0 {
+		t.Fatalf("someone else's village: %+v %v", foreign, err)
+	}
+}
+
+func TestFarmTargetsCountWhatTheFiltersHide(t *testing.T) {
+	d := newDuel(t)
+	ctx := context.Background()
+	all, err := d.svc.FarmTargets(ctx, ala, d.world, d.v1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	hit := all.Targets[0]
+	err = d.worlds.Run(ctx, d.world, func(w app.WorldTx) error {
+		now := w.Now()
+		w.PutIntel("h1", hit.ID, &game.Intel{LastFarmedAt: &now})
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	after, err := d.svc.FarmTargets(ctx, ala, d.world, d.v1)
+	if err != nil || len(after.Targets) != len(all.Targets)-1 || after.Hidden["recent"] != 1 {
+		t.Fatalf("after a raid: %d targets, hidden %v, err %v", len(after.Targets), after.Hidden, err)
 	}
 }
 
@@ -393,7 +415,7 @@ func nullPaths(v any, path string) []string {
 	case map[string]any:
 		var out []string
 		for k, x := range v {
-			if x == nil && strings.HasPrefix(path, "farm[") && slices.Contains(unknownFarmFields, k) {
+			if x == nil && strings.HasPrefix(path, "farm.targets[") && slices.Contains(unknownFarmFields, k) {
 				continue
 			}
 			out = append(out, nullPaths(x, path+"."+k)...)

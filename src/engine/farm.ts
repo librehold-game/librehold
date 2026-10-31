@@ -25,6 +25,14 @@ export interface FarmTarget {
   estimatedLoot: number;
 }
 
+export type FarmHideReason = 'inbound' | 'losses' | 'wall' | 'recent';
+
+/** GET …/farm-targets: the targets the filters let through and how many each filter hid. */
+export interface FarmTargetList {
+  targets: FarmTarget[];
+  hidden: Partial<Record<FarmHideReason, number>>;
+}
+
 export function autoFarmUnlocked(state: GameState): boolean {
   return state.farmAssistant.autoFarmUnlocked || humanVillageIds(state).length >= FARM_BALANCE.autoFarmUnlockVillages;
 }

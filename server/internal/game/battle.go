@@ -225,6 +225,8 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			}
 			if scoutOK {
 				vi.Units, vi.Wall, vi.Loyalty = defenderUnits, target.Buildings[BWall], target.Loyalty
+				vi.Scouted = &Scouted{At: w.Now(), Buildings: target.Buildings, Resources: Resources{math.Floor(target.Resources.Wood),
+					math.Floor(target.Resources.Clay), math.Floor(target.Resources.Iron)}}
 				in.FarmTargetFlags = &FarmTargetFlags{HasWall: target.Buildings[BWall] > 0, ScoutedAt: ptrTo(w.Now())}
 			}
 			in.Intel = vi
@@ -281,7 +283,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 				s.ResourcesLooted.Wood += haul.Wood
 				s.ResourcesLooted.Clay += haul.Clay
 				s.ResourcesLooted.Iron += haul.Iron
-				day := w.Now() / MsPerDay
+				day := LocalDayIndex(w, w.Now())
 				if s.LootedToday.Day != day {
 					s.LootedToday = DayTotal{Day: day}
 				}
@@ -321,8 +323,13 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 	if A != "" {
 		in := intelCopy(w.Intel(A, target.ID))
 		h := haul
+		var scouted *Scouted
+		if in.Intel != nil {
+			scouted = in.Intel.Scouted
+		}
 		in.Intel = &VillageIntel{At: w.Now(), Units: defenderUnits, Wall: result.WallAfter, Loyalty: loyaltyAfter,
-			LastHaul: &h, LastHaulCapacity: ptrTo(result.HaulCapacity), LastLosses: ptrTo(attackerLost), LastOutcome: result.Outcome}
+			LastHaul: &h, LastHaulCapacity: ptrTo(result.HaulCapacity), LastLosses: ptrTo(attackerLost), LastOutcome: result.Outcome,
+			Scouted: scouted}
 		var scoutedAt *int64
 		if in.FarmTargetFlags != nil {
 			scoutedAt = in.FarmTargetFlags.ScoutedAt

@@ -115,8 +115,11 @@ type worldFixture struct {
 		Players  map[string]json.RawMessage `json:"players"`
 	} `json:"state"`
 	Map         []json.RawMessage `json:"map"`
-	FarmTargets []json.RawMessage `json:"farmTargets"`
-	BotVillage  *fixtureVillage   `json:"botVillage"`
+	FarmTargets struct {
+		Targets []json.RawMessage `json:"targets"`
+		Hidden  map[string]int    `json:"hidden"`
+	} `json:"farmTargets"`
+	BotVillage *fixtureVillage `json:"botVillage"`
 }
 
 func loadWorldFixture(t *testing.T, kind string) worldFixture {

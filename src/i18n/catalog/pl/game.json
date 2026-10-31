@@ -1014,6 +1014,14 @@
     "auto": "Auto-farma",
     "keys": "Klawisze: ↑↓ wybór, A/B/C wysyłka na podświetlony wiersz. Kliknięcie przycisku wysyła natychmiast.",
     "none": "Brak celów spełniających filtr w promieniu {n} pól.",
+    "hidden": "Ukryte przez filtry: {list}",
+    "hiddenBy": {
+      "recent": "niedawno atakowane: {n}",
+      "inbound": "z atakiem w drodze: {n}",
+      "losses": "ze stratami: {n}",
+      "wall": "z wyższym murem: {n}"
+    },
+    "refreshFailed": "Nie udało się odświeżyć listy, ponawiam…",
     "col": {
       "coords": "Koordynaty",
       "distance": "Dystans",

@@ -162,7 +162,7 @@ func countHumanAttack(w World, actor PlayerID, sent UnitCounts) {
 	} else {
 		h.Stats.AttacksSent++
 	}
-	day := w.Now() / MsPerDay
+	day := LocalDayIndex(w, w.Now())
 	if h.Stats.AttacksToday.Day != day {
 		h.Stats.AttacksToday = DayCount{Day: day}
 	}

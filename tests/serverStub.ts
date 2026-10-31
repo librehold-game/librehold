@@ -88,7 +88,8 @@ export function stubServer(g: GameState, opts: StubOptions = {}): string[] {
         history: p.history,
       };
     } else if (farm) {
-      body = decodeURIComponent(farm[1]!) === g.activeVillageId ? fixtureOf(g)?.farmTargets ?? [] : [];
+      const none = { targets: [], hidden: {} };
+      body = decodeURIComponent(farm[1]!) === g.activeVillageId ? fixtureOf(g)?.farmTargets ?? none : none;
     } else if (region) {
       const [x0, y0, x1, y1] = region.slice(1).map(Number) as [number, number, number, number];
       body = mapTiles(x0, y0, x1, y1);

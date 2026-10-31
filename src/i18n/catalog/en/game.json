@@ -980,6 +980,14 @@
     "auto": "Auto-farming",
     "keys": "Keys: ↑↓ to choose, A/B/C to send at the highlighted row. Clicking a button sends right away.",
     "none": "No targets match the filter within {n} fields.",
+    "hidden": "Hidden by the filters: {list}",
+    "hiddenBy": {
+      "recent": "{n} attacked recently",
+      "inbound": "{n} with an attack on the way",
+      "losses": "{n} with losses",
+      "wall": "{n} behind a higher wall"
+    },
+    "refreshFailed": "The list could not be refreshed; trying again…",
     "col": {
       "coords": "Coordinates",
       "distance": "Distance",

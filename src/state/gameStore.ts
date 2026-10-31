@@ -5,7 +5,7 @@ import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import { errorMessage, newsText } from '../i18n/names';
 import type { UnitCounts } from '../engine/commands';
-import type { FarmTarget } from '../engine/farm';
+import type { FarmTargetList } from '../engine/farm';
 import { humanVillageIds } from '../engine/players';
 import { accrue } from '../engine/resources';
 import { settleRecruitQueues } from '../engine/units';
@@ -76,7 +76,7 @@ export interface GameStore {
   /** New map tiles arrived: redraw the map. */
   mapLoaded: () => void;
   /** The farm assistant's targets around one of the player's villages, after their filters. */
-  loadFarmTargets: (villageId: string) => Promise<FarmTarget[] | null>;
+  loadFarmTargets: (villageId: string) => Promise<FarmTargetList | null>;
   /** Ends the session and leaves for the account site. */
   logout: () => Promise<void>;
 
@@ -405,7 +405,7 @@ export const useGameStore = create<GameStore>()(
       loadFarmTargets: async (villageId) => {
         if (!server.state) return null;
         try {
-          return await api.get<FarmTarget[]>(worldPath(`/farm-targets?village=${encodeURIComponent(villageId)}`));
+          return await api.get<FarmTargetList>(worldPath(`/farm-targets?village=${encodeURIComponent(villageId)}`));
         } catch {
           return null;
         }

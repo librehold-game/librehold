@@ -418,6 +418,14 @@ type VillageIntel struct {
 	LastHaulCapacity *float64   `json:"lastHaulCapacity,omitempty"`
 	LastLosses       *int       `json:"lastLosses,omitempty"`
 	LastOutcome      string     `json:"lastOutcome,omitempty"`
+	Scouted          *Scouted   `json:"scouted,omitempty"` // the last successful scouting; raids keep it
+}
+
+// Scouted is what a scout saw in a village: its resources and buildings at that moment.
+type Scouted struct {
+	At        int64     `json:"at"`
+	Resources Resources `json:"resources"`
+	Buildings Buildings `json:"buildings"`
 }
 
 type FarmTargetFlags struct {

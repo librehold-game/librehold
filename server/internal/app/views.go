@@ -485,14 +485,22 @@ func profileOf(w WorldTx, p *game.Player) Profile {
 	return out
 }
 
-// FarmTargets is the farm assistant's list for one of the player's villages, after the player's filters;
-// empty for a village that is not theirs.
-func (s *Service) FarmTargets(ctx context.Context, acct *Account, worldID int64, villageID string) ([]game.FarmTarget, error) {
-	out := []game.FarmTarget{}
+// FarmTargetList is the farm assistant's list for one of the player's villages after the player's filters, and how
+// many targets each filter hid (inbound | losses | wall | recent).
+type FarmTargetList struct {
+	Targets []game.FarmTarget `json:"targets"`
+	Hidden  map[string]int    `json:"hidden"`
+}
+
+// FarmTargets is empty for a village that is not the player's.
+func (s *Service) FarmTargets(ctx context.Context, acct *Account, worldID int64, villageID string) (FarmTargetList, error) {
+	out := FarmTargetList{Targets: []game.FarmTarget{}, Hidden: map[string]int{}}
 	err := s.view(ctx, acct, worldID, func(w WorldTx, me game.PlayerID) error {
 		for _, t := range game.FarmTargets(w, me, villageID) {
-			if game.PassesFilters(w, me, t) {
-				out = append(out, t)
+			if r := game.FilterReason(w, me, t); r != "" {
+				out.Hidden[r]++
+			} else {
+				out.Targets = append(out.Targets, t)
 			}
 		}
 		return nil
