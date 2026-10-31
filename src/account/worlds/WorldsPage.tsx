@@ -8,6 +8,7 @@ import { loadHeadCatalog } from '../../i18n/headCatalog';
 import { formatDurationHuman } from '../../i18n/format';
 import { useLocale, useT } from '../../i18n/i18n';
 import { worldDisplayName } from '../../i18n/names';
+import './catalog';
 
 loadHeadCatalog();
 
@@ -47,7 +48,7 @@ export function WorldsPage() {
           <Section title={t('site.worlds.running')} empty={t('site.worlds.noRunning')}>
             {list.running.map((w) => (
               <li key={w.id} className="world-card">
-                <h3><Link to={pathFor('game', locale, { id: String(w.id) })}>{worldDisplayName(w)}</Link></h3>
+                <h3><Link to={pathFor('world', locale, { id: String(w.id) })}>{worldDisplayName(w)}</Link></h3>
                 <p>{playersAndBots(w)}</p>
                 <p className="muted">{t('site.worlds.timeLeft', { time: formatDurationHuman(Math.max(0, (w.endsAt ?? now) - now)) })}</p>
               </li>

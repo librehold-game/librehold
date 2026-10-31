@@ -121,12 +121,21 @@ describe('front page', () => {
     expect(region.textContent).not.toContain('Closed');
     expect(region.textContent).not.toContain('Dormant');
     expect(region.textContent).toContain('4 players · 30 bots');
+    expect(within(region).getByRole('link', { name: 'Kraina' }).getAttribute('href')).toBe('/worlds/3');
     cleanup();
     stubWorlds([card({ status: 'closed' })]);
     render(<App />);
     await screen.findByRole('heading', { name: 'FAQ' });
     await waitFor(() => expect(calls.filter((c) => c.key === 'GET /api/v1/public/worlds')).toHaveLength(2));
     expect(screen.queryByRole('region', { name: 'Open worlds' })).toBeNull();
+  });
+
+  it('the Polish front page links the world title to the Polish world page', async () => {
+    stubWorlds([card({})]);
+    history.replaceState(null, '', '/pl/');
+    render(<App />);
+    const region = await screen.findByRole('region', { name: 'Otwarte światy' });
+    expect(within(region).getByRole('link', { name: 'Kraina' }).getAttribute('href')).toBe('/pl/swiaty/3');
   });
 
   it('Join while signed out goes to registration with the world', async () => {

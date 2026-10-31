@@ -2,6 +2,8 @@ package httpapi
 
 import (
 	"net/http"
+
+	"librehold/internal/game"
 )
 
 func (a *api) publicStats(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +59,38 @@ func (a *api) publicMap(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, m)
+}
+
+func (a *api) publicRanking(w http.ResponseWriter, r *http.Request) {
+	wid, err := pathID(r, "wid")
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	tab := r.URL.Query().Get("tab")
+	if tab == "" {
+		tab = "points"
+	}
+	rows, err := a.svc.PublicRanking(r.Context(), wid, tab)
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, rows)
+}
+
+func (a *api) publicWorldPlayer(w http.ResponseWriter, r *http.Request) {
+	wid, err := pathID(r, "wid")
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	p, err := a.svc.PublicWorldPlayer(r.Context(), wid, game.PlayerID(r.PathValue("pid")))
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, p)
 }
 
 func (a *api) publicGame(w http.ResponseWriter, r *http.Request) {

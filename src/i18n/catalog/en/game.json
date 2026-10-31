@@ -468,27 +468,6 @@
     "siege": "rams/catapults",
     "noble": "hetman?"
   },
-  "profile": {
-    "tooFewData": "not enough data",
-    "sparkline": "Points day by day",
-    "statusQuit": "inactive",
-    "statusEliminated": "eliminated",
-    "from": "from: {name}",
-    "barbarians": "the barbarians",
-    "took": "taken by: {name}",
-    "dialog": "Profile: {name}",
-    "you": " (you)",
-    "rank": "Rank",
-    "points": "points",
-    "villages": "villages",
-    "villagesTitle": "Villages",
-    "none": "none",
-    "colVillage": "Village",
-    "colCoords": "Coordinates",
-    "colPoints": "Points",
-    "conquests": "Conquests",
-    "othersSee": "This is how other players see you."
-  },
   "mapCard": {
     "points": "Points",
     "player": "Player",
@@ -877,53 +856,6 @@
     "title": "Settings",
     "lobby": "Lobby",
     "logout": "Log out"
-  },
-  "ranking": {
-    "tab": {
-      "points": "Points",
-      "villages": "Villages",
-      "od": "Defeated",
-      "daily": "Daily",
-      "conquests": "Conquests"
-    },
-    "page": "page {n} / {pages}",
-    "player": "Player",
-    "points": "Points",
-    "villages": "Villages",
-    "od": {
-      "att": "As attacker",
-      "def": "As defender",
-      "sup": "As supporter"
-    },
-    "inactive": " (inactive)",
-    "daily": {
-      "att": "Attacker of the day",
-      "def": "Defender of the day",
-      "loot": "Looter of the day",
-      "farm": "Farmer of the day"
-    },
-    "nobodyToday": "Nobody yet today.",
-    "noConquests": "Nobody has conquered a village yet.",
-    "when": "When",
-    "village": "Village",
-    "newOwner": "New owner",
-    "previous": "Previous",
-    "from": "from",
-    "barbarian": "barbarian",
-    "title": "Ranking",
-    "odKind": {
-      "att": "attacker",
-      "def": "defender",
-      "sup": "supporter"
-    },
-    "dailyKind": {
-      "att": "attacker",
-      "def": "defender",
-      "loot": "looter",
-      "farm": "farmer of the day"
-    },
-    "refresh": "Points and places refresh every full world hour.",
-    "refreshShort": "Points and places refresh every full minute."
   },
   "overview": {
     "addEverywhere": "Add {building} +1 in all ({n})",

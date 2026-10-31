@@ -50,6 +50,14 @@
     "join": {
       "title": "{name} — join the game",
       "description": "{host} invites you to a private game of LibreHold. Join in one click."
+    },
+    "instantWorld": {
+      "title": "{name} — live · {players} and {bots}",
+      "description": "A running instant game of LibreHold: its settings, the ranking and every player."
+    },
+    "worldPlayer": {
+      "title": "{name} in {world} — {points} points",
+      "description": "{name}'s rank, points, villages and conquests in {world}, a LibreHold world."
     }
   }
 }

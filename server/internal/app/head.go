@@ -108,6 +108,8 @@ func (s *Service) Head(ctx context.Context, route, locale string, params map[str
 		h, err = s.joinHead(ctx, locale, params["code"])
 	case "world":
 		h, err = s.worldHead(ctx, locale, params["id"])
+	case "worldPlayer":
+		h, err = s.worldPlayerHead(ctx, locale, params["id"], params["pid"])
 	case "worlds":
 		t := s.cfg.HeadText
 		return PageHead{Title: t.Format(locale, "head.worlds.title", nil), Description: t.Format(locale, "head.worlds.description", nil)},
@@ -193,7 +195,8 @@ func (s *Service) joinHead(ctx context.Context, locale, code string) (PageHead, 
 	return PageHead{Title: t.Format(locale, "head.join.title", p), Description: t.Format(locale, "head.join.description", p), NoIndex: true}, nil
 }
 
-// worldHead covers long worlds only: instant games have their page at /games/:id, player worlds none.
+// worldHead follows the visibility of the public world endpoints: long worlds, running instant games and, so a link
+// shared during the game still lands, finished instant games that have an archive; the last two are kept out of search.
 func (s *Service) worldHead(ctx context.Context, locale, rawID string) (PageHead, error) {
 	id, ok := positiveID(rawID)
 	if !ok {
@@ -203,20 +206,77 @@ func (s *Service) worldHead(ctx context.Context, locale, rawID string) (PageHead
 	if err != nil {
 		return PageHead{}, err
 	}
+	t := s.cfg.HeadText
 	for _, w := range list {
-		if w.ID != id || w.Config.Kind != game.KindLong {
+		if w.ID != id {
 			continue
 		}
-		t := s.cfg.HeadText
-		p := map[string]string{
-			"name":    w.Name,
-			"day":     strconv.FormatInt(WorldNow(&w.WorldRow, s.clock.NowMs())/game.MsPerDay+1, 10),
-			"players": t.Count(locale, "head.count.players", w.Humans),
-			"bots":    t.Count(locale, "head.count.bots", w.Bots),
+		switch {
+		case w.Config.Kind == game.KindLong:
+			p := map[string]string{
+				"name":    w.Name,
+				"day":     strconv.FormatInt(WorldNow(&w.WorldRow, s.clock.NowMs())/game.MsPerDay+1, 10),
+				"players": t.Count(locale, "head.count.players", w.Humans),
+				"bots":    t.Count(locale, "head.count.bots", w.Bots),
+			}
+			return PageHead{Title: t.Format(locale, "head.world.title", p), Description: t.Format(locale, "head.world.description", p)}, nil
+		case game.IsInstant(&w.Config) && instantInfoOf(w, s.clock.NowMs()).running:
+			return s.instantWorldHead(locale, w.Name, w.GameNumber, w.Humans, w.Bots), nil
+		case game.IsInstant(&w.Config):
+			if g, ok := archivedGame(&w.WorldRow); ok {
+				return s.instantWorldHead(locale, g.Name, g.GameNumber, g.Summary.Humans, g.Summary.Bots), nil
+			}
 		}
-		return PageHead{Title: t.Format(locale, "head.world.title", p), Description: t.Format(locale, "head.world.description", p)}, nil
+		break
 	}
-	return PageHead{}, ErrNotFound
+	g, err := s.worlds.ArchivedGame(ctx, id)
+	if err != nil || g.Kind == game.KindPlayer {
+		return PageHead{}, ErrNotFound
+	}
+	return s.instantWorldHead(locale, g.Name, g.GameNumber, g.Summary.Humans, g.Summary.Bots), nil
+}
+
+// worldPlayerHead is the page of one player in a public world; it is kept out of search.
+func (s *Service) worldPlayerHead(ctx context.Context, locale, rawID, playerID string) (PageHead, error) {
+	id, ok := positiveID(rawID)
+	if !ok || playerID == "" {
+		return PageHead{}, ErrNotFound
+	}
+	p, err := s.PublicWorldPlayer(ctx, id, game.PlayerID(playerID))
+	if errors.Is(err, ErrNotFound) {
+		if _, public := s.publicWorldRow(ctx, id); errors.Is(public, ErrNotFound) {
+			return s.worldHead(ctx, locale, rawID)
+		}
+	}
+	if err != nil {
+		return PageHead{}, err
+	}
+	world, err := s.PublicWorld(ctx, id)
+	if err != nil {
+		return PageHead{}, err
+	}
+	t := s.cfg.HeadText
+	name := world.Name
+	if world.GameNumber > 0 {
+		name = t.Format(locale, "world.gameName", map[string]string{"n": strconv.Itoa(world.GameNumber)})
+	}
+	params := map[string]string{"name": p.Player.Name, "world": name, "points": strconv.Itoa(p.Player.Points)}
+	return PageHead{Title: t.Format(locale, "head.worldPlayer.title", params),
+		Description: t.Format(locale, "head.worldPlayer.description", params), NoIndex: true}, nil
+}
+
+func (s *Service) instantWorldHead(locale, name string, number, humans, bots int) PageHead {
+	t := s.cfg.HeadText
+	if number > 0 {
+		name = t.Format(locale, "world.gameName", map[string]string{"n": strconv.Itoa(number)})
+	}
+	p := map[string]string{
+		"name":    name,
+		"players": t.Count(locale, "head.count.players", humans),
+		"bots":    t.Count(locale, "head.count.bots", bots),
+	}
+	return PageHead{Title: t.Format(locale, "head.instantWorld.title", p),
+		Description: t.Format(locale, "head.instantWorld.description", p), NoIndex: true}
 }
 
 // SitemapEntries lists the dynamic pages worth indexing: long worlds, finished games and the registered players in them.

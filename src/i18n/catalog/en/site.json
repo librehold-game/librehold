@@ -117,50 +117,6 @@
           "a": "A quick game takes {instantDurationMin} minutes. A long world needs a few short visits a day."
         }
       }
-    },
-    "worlds": {
-      "title": "Worlds",
-      "running": "Instant games now",
-      "long": "Long worlds",
-      "finished": "Finished games",
-      "noRunning": "No instant game is running right now.",
-      "noLong": "No long world yet.",
-      "noFinished": "No finished game yet.",
-      "timeLeft": "{time} left",
-      "day": "day {day}",
-      "ended": "ended {date}",
-      "status": {
-        "open": "open to new players",
-        "closed": "closed to new players",
-        "paused": "paused"
-      },
-      "settings": "Settings",
-      "setting": {
-        "speed": "World speed",
-        "unitSpeed": "Unit speed",
-        "mapSize": "Map",
-        "protection": "Beginner protection",
-        "lastVillage": "Last village",
-        "fieldBattles": "Field battles"
-      },
-      "days": {
-        "one": "# day",
-        "other": "# days"
-      },
-      "lastVillage": {
-        "protected": "cannot be lost",
-        "canBeLost": "can be lost"
-      },
-      "yes": "on",
-      "no": "off",
-      "map": "Map",
-      "mapLabel": "Map of {name}",
-      "legend": "Each dot is a village in its owner's colour, players and bots alike; grey dots are barbarian villages.",
-      "top": "Top ten",
-      "player": "Player",
-      "points": "Points",
-      "villages": "Villages",
-      "events": "Latest large battles"
     }
   }
 }

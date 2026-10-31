@@ -16,6 +16,7 @@ lazyRoute('game', () => import('./GamePage'));
 lazyRoute('join', () => import('./JoinPage'));
 lazyRoute('worlds', () => import('./worlds/WorldsPage'));
 lazyRoute('world', () => import('./worlds/WorldPage'));
+lazyRoute('worldPlayer', () => import('./worlds/WorldPlayerPage'));
 lazyRoute('units', () => import('./encyclopedia/UnitsPage'));
 lazyRoute('unit', () => import('./encyclopedia/UnitPage'));
 lazyRoute('buildings', () => import('./encyclopedia/BuildingsPage'));

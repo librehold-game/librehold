@@ -382,49 +382,57 @@ func (s *Service) Ranking(ctx context.Context, acct *Account, worldID int64, tab
 	}
 	var out any
 	err := s.view(ctx, acct, worldID, func(w WorldTx, _ game.PlayerID) error {
-		players := w.Players()
-		name := func(id game.PlayerID) string {
-			if p := w.Player(id); p != nil {
-				return p.Name
-			}
-			return "?"
-		}
-		isBot := func(id game.PlayerID) bool {
-			p := w.Player(id)
-			return p != nil && !p.IsHuman
-		}
-		switch tab {
-		case "daily":
-			today := game.LocalDayIndex(w, w.Now())
-			rows := []DailyRow{}
-			for _, p := range players {
-				for _, d := range p.Daily {
-					if d.Day == today {
-						rows = append(rows, DailyRow{ID: p.ID, Name: p.Name, Att: d.Att, Def: d.Def, Loot: d.Loot, Farm: d.Farm, IsBot: !p.IsHuman})
-					}
-				}
-			}
-			out = rows
-		case "conquests":
-			list := w.ConquestsSince(math.MinInt64)
-			rows := make([]ConquestRow, 0, len(list))
-			for i := len(list) - 1; i >= 0; i-- {
-				c := list[i]
-				row := ConquestRow{T: c.T, X: c.X, Y: c.Y, ToID: c.ToID, To: name(c.ToID), FromID: c.FromID, ToIsBot: isBot(c.ToID)}
-				if c.FromID != "" {
-					from := name(game.PlayerID(c.FromID))
-					row.From = &from
-					row.FromIsBot = isBot(game.PlayerID(c.FromID))
-				}
-				rows = append(rows, row)
-			}
-			out = rows
-		default:
-			out = playerRows(players)
-		}
+		out = rankingRows(w, tab)
 		return nil
 	})
 	return out, err
+}
+
+// rankingRows are one tab's rows of a world at the time its tx is set to; the tab is already checked.
+func rankingRows(w WorldTx, tab string) any {
+	players := w.Players()
+	switch tab {
+	case "daily":
+		today := game.LocalDayIndex(w, w.Now())
+		rows := []DailyRow{}
+		for _, p := range players {
+			for _, d := range p.Daily {
+				if d.Day == today {
+					rows = append(rows, DailyRow{ID: p.ID, Name: p.Name, Att: d.Att, Def: d.Def, Loot: d.Loot, Farm: d.Farm, IsBot: !p.IsHuman})
+				}
+			}
+		}
+		return rows
+	case "conquests":
+		list := w.ConquestsSince(math.MinInt64)
+		rows := make([]ConquestRow, 0, len(list))
+		for i := len(list) - 1; i >= 0; i-- {
+			rows = append(rows, conquestRow(w, list[i]))
+		}
+		return rows
+	default:
+		return playerRows(players)
+	}
+}
+
+func conquestRow(w WorldTx, c game.Conquest) ConquestRow {
+	name := func(id game.PlayerID) string {
+		if p := w.Player(id); p != nil {
+			return p.Name
+		}
+		return "?"
+	}
+	isBot := func(id game.PlayerID) bool {
+		p := w.Player(id)
+		return p != nil && !p.IsHuman
+	}
+	row := ConquestRow{T: c.T, X: c.X, Y: c.Y, ToID: c.ToID, To: name(c.ToID), FromID: c.FromID, ToIsBot: isBot(c.ToID)}
+	if c.FromID != "" {
+		from := name(game.PlayerID(c.FromID))
+		row.From = &from
+		row.FromIsBot = isBot(game.PlayerID(c.FromID))
+	}
+	return row
 }
 
 // playerRows are the ranking's rows of every player who has joined.
@@ -461,15 +469,20 @@ func (s *Service) Profile(ctx context.Context, acct *Account, worldID int64, pla
 		if p == nil {
 			return ErrNotFound
 		}
-		out = Profile{Player: publicPlayer(p), Villages: []ProfileVillage{}, History: p.History}
-		for _, id := range p.VillageIDs {
-			if v := w.Village(id); v != nil {
-				out.Villages = append(out.Villages, ProfileVillage{ID: v.ID, Name: v.Name, X: v.X, Y: v.Y, Points: v.Points})
-			}
-		}
+		out = profileOf(w, p)
 		return nil
 	})
 	return out, err
+}
+
+func profileOf(w WorldTx, p *game.Player) Profile {
+	out := Profile{Player: publicPlayer(p), Villages: []ProfileVillage{}, History: p.History}
+	for _, id := range p.VillageIDs {
+		if v := w.Village(id); v != nil {
+			out.Villages = append(out.Villages, ProfileVillage{ID: v.ID, Name: v.Name, X: v.X, Y: v.Y, Points: v.Points})
+		}
+	}
+	return out
 }
 
 // FarmTargets is the farm assistant's list for one of the player's villages, after the player's filters;

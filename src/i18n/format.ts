@@ -13,6 +13,16 @@ export function formatNumber(n: number): string {
   return f.format(Math.floor(n));
 }
 
+const decimalFormats = new Map<string, Intl.NumberFormat>();
+
+/** A number with up to two decimals, for factors such as ×1.5. */
+export function formatDecimal(n: number): string {
+  const locale = getLocale();
+  let f = decimalFormats.get(locale);
+  if (!f) decimalFormats.set(locale, (f = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 })));
+  return f.format(n);
+}
+
 /** H:MM:SS (hours may exceed 24). */
 export function formatDuration(ms: number): string {
   if (!Number.isFinite(ms)) return '∞';

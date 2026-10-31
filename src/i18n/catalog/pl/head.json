@@ -60,6 +60,14 @@
     "join": {
       "title": "{name} — dołącz do gry",
       "description": "{host} zaprasza cię do prywatnej gry w LibreHold. Dołączasz jednym kliknięciem."
+    },
+    "instantWorld": {
+      "title": "{name} — trwa · {players} i {bots}",
+      "description": "Trwająca szybka gra w LibreHold: jej ustawienia, ranking i wszyscy gracze."
+    },
+    "worldPlayer": {
+      "title": "{name} — {world} · {points} pkt",
+      "description": "Pozycja, punkty, wioski i podboje gracza {name} w świecie {world} w LibreHold."
     }
   }
 }

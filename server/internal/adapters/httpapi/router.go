@@ -38,6 +38,8 @@ func New(svc *app.Service, opts Options) http.Handler {
 	mux.HandleFunc("GET /api/v1/public/worlds", a.publicWorlds)
 	mux.HandleFunc("GET /api/v1/public/worlds/{wid}", a.publicWorld)
 	mux.HandleFunc("GET /api/v1/public/worlds/{wid}/villages", a.publicMap)
+	mux.HandleFunc("GET /api/v1/public/worlds/{wid}/ranking", a.publicRanking)
+	mux.HandleFunc("GET /api/v1/public/worlds/{wid}/players/{pid}", a.publicWorldPlayer)
 	mux.HandleFunc("GET /api/v1/public/games/{ref}", a.publicGame)
 	mux.HandleFunc("GET /api/v1/public/games/{ref}/timeline", a.publicTimeline)
 	mux.HandleFunc("GET /api/v1/public/profiles/{username}", a.publicProfile)

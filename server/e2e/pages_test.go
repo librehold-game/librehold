@@ -60,8 +60,11 @@ func TestPublicSitePages(t *testing.T) {
 	if m.Size != game.DefaultWorldConfig.MapSize || len(m.Villages) == 0 {
 		t.Fatalf("map of the long world: size %d, %d villages", m.Size, len(m.Villages))
 	}
-	if r := g.do("GET", fmt.Sprintf("/api/v1/public/worlds/%d", wid), nil); r.status != 404 {
-		t.Fatalf("an instant world as a public world: %d", r.status)
+	if r := g.do("GET", fmt.Sprintf("/api/v1/public/worlds/%d", wid), nil); r.status != 200 {
+		t.Fatalf("a running instant game as a public world: %d", r.status)
+	}
+	if r := g.do("GET", fmt.Sprintf("/api/v1/public/worlds/%d/ranking", wid), nil); r.status != 200 {
+		t.Fatalf("its ranking: %d", r.status)
 	}
 
 	// Five reports an hour from one internet address; the server's own network is not limited per address.
@@ -101,10 +104,14 @@ func TestPublicSitePages(t *testing.T) {
 			t.Errorf("%s: noindex %v", path, noindex)
 		}
 	}
-	for _, path := range []string{"/units/nope", "/pl/jak-grac/nic", "/worlds/" + strconv.FormatInt(wid, 10)} {
+	for _, path := range []string{"/units/nope", "/pl/jak-grac/nic", "/worlds/999999"} {
 		if p := s.fetch(t, "GET", path, ""); p.status != 404 {
 			t.Errorf("%s: %d, want 404", path, p.status)
 		}
+	}
+
+	if p := s.fetch(t, "GET", "/worlds/"+strconv.FormatInt(wid, 10), ""); p.status != 200 || !strings.Contains(p.body, `content="noindex`) {
+		t.Errorf("a running instant game's world page: %d, noindex %v", p.status, strings.Contains(p.body, `content="noindex`))
 	}
 
 	var sm struct {

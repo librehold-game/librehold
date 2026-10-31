@@ -3,7 +3,7 @@ import { SLUGS, type SlugKind } from './slugs';
 
 export type RouteId =
   | 'home' | 'howToPlay' | 'guide' | 'units' | 'unit' | 'buildings' | 'building' | 'faq'
-  | 'changelog' | 'privacy' | 'terms' | 'report' | 'worlds' | 'world' | 'game' | 'player' | 'login' | 'register'
+  | 'changelog' | 'privacy' | 'terms' | 'report' | 'worlds' | 'world' | 'worldPlayer' | 'game' | 'player' | 'login' | 'register'
   | 'lobby' | 'admin' | 'join' | 'notFound';
 
 export interface RouteDef {
@@ -29,6 +29,7 @@ export const ROUTES: RouteDef[] = [
   { id: 'report', en: '/report', pl: '/pl/zglos', index: 'no', build: 'prerender' },
   { id: 'worlds', en: '/worlds', pl: '/pl/swiaty', index: 'yes', build: 'dynamic' },
   { id: 'world', en: '/worlds/:id', pl: '/pl/swiaty/:id', index: 'yes', build: 'dynamic' },
+  { id: 'worldPlayer', en: '/worlds/:id/players/:pid', pl: '/pl/swiaty/:id/graczy/:pid', index: 'no', build: 'dynamic' },
   { id: 'game', en: '/games/:id', pl: '/pl/gry/:id', index: 'yes', build: 'dynamic' },
   { id: 'player', en: '/players/:name', pl: '/pl/gracze/:name', index: 'registered', build: 'dynamic' },
   { id: 'login', en: '/login', pl: '/pl/logowanie', index: 'no', build: 'app' },

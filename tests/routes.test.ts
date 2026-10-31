@@ -14,7 +14,7 @@ function sampleParams(pattern: string, locale: Locale): Record<string, string> {
     if (name === 'guide') params[name] = slugFor('guide', GUIDE_IDS[0], locale);
     else if (name === 'unit') params[name] = slugFor('unit', UNIT_IDS[0]!, locale);
     else if (name === 'building') params[name] = slugFor('building', BUILDING_IDS[0]!, locale);
-    else params[name] = ({ id: '7', name: 'kind-otter', code: 'x1' } as Record<string, string>)[name]!;
+    else params[name] = ({ id: '7', pid: 'h2', name: 'kind-otter', code: 'x1' } as Record<string, string>)[name]!;
   }
   return params;
 }
@@ -36,6 +36,15 @@ describe('routes', () => {
     expect(pathFor('report', 'pl')).toBe('/pl/zglos');
     expect(pathFor('join', 'pl', { code: 'x1' })).toBe('/pl/dolacz/x1');
     expect(pathFor('changelog', 'pl')).toBe('/pl/zmiany');
+  });
+
+  it('a player in a world has an address in both languages and stays out of search', () => {
+    expect(pathFor('worldPlayer', 'en', { id: '3', pid: 'p:7' })).toBe('/worlds/3/players/p%3A7');
+    expect(pathFor('worldPlayer', 'pl', { id: '3', pid: 'h2' })).toBe('/pl/swiaty/3/graczy/h2');
+    expect(matchPath('/worlds/3/players/p%3A7')).toEqual({ id: 'worldPlayer', locale: 'en', params: { id: '3', pid: 'p:7' } });
+    const route = ROUTES.find((r) => r.id === 'worldPlayer')!;
+    expect(route.index).toBe('no');
+    expect(route.build).toBe('dynamic');
   });
 
   it('missing params and notFound throw', () => {

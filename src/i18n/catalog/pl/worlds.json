@@ -1,0 +1,78 @@
+{
+  "site": {
+    "worlds": {
+      "title": "Światy",
+      "running": "Szybkie partie teraz",
+      "long": "Długie światy",
+      "finished": "Zakończone partie",
+      "noRunning": "Teraz nie trwa żadna szybka partia.",
+      "noLong": "Nie ma jeszcze długiego świata.",
+      "noFinished": "Nie ma jeszcze zakończonej partii.",
+      "timeLeft": "zostało {time}",
+      "day": "dzień {day}",
+      "ended": "koniec {date}",
+      "status": {
+        "open": "otwarty dla nowych graczy",
+        "closed": "zamknięty dla nowych graczy",
+        "paused": "wstrzymany"
+      },
+      "settings": "Ustawienia",
+      "setting": {
+        "speed": "Szybkość świata",
+        "unitSpeed": "Szybkość jednostek",
+        "mapSize": "Mapa",
+        "protection": "Ochrona początkujących",
+        "lastVillage": "Ostatnia wioska",
+        "fieldBattles": "Bitwy w polu",
+        "duration": "Czas trwania partii",
+        "seats": "Miejsca dla graczy",
+        "dominationShare": "Koniec przy udziale wiosek",
+        "barbarianDensity": "Wioski barbarzyńców",
+        "botCount": "Boty",
+        "botArrival": "Przybycie botów",
+        "rampUpDays": "Przybywają przez",
+        "difficulty": "Trudność botów",
+        "botStance": "Boty wobec graczy",
+        "battleLosses": "Straty w bitwach",
+        "sightRadius": "Zasięg widzenia",
+        "coins": "Monety",
+        "nobleCost": "Cena hetmana (drewno · glina · żelazo)",
+        "nobleLoyalty": "Lojalność, którą hetman zabiera z wioski gracza",
+        "academyNobles": "Dodatkowi hetmani na akademię"
+      },
+      "days": {
+        "one": "# dzień",
+        "few": "# dni",
+        "many": "# dni",
+        "other": "# dnia"
+      },
+      "lastVillage": {
+        "protected": "nie można jej stracić",
+        "canBeLost": "można ją stracić"
+      },
+      "yes": "tak",
+      "no": "nie",
+      "map": "Mapa",
+      "mapLabel": "Mapa świata {name}",
+      "legend": "Każda kropka to wioska w kolorze właściciela, gracza albo bota; szare kropki to wioski barbarzyńców.",
+      "events": "Ostatnie duże bitwy",
+      "group": {
+        "pace": "Tempo",
+        "map": "Mapa i boty",
+        "rules": "Zasady",
+        "modifiers": "Mnożniki"
+      },
+      "off": "wyłączone",
+      "tiles": {
+        "one": "# pole",
+        "few": "# pola",
+        "many": "# pól",
+        "other": "# pola"
+      },
+      "modifierValue": "gracze {humans} · boty {bots}",
+      "rankingNote": "Ranking odświeża się mniej więcej raz na minutę.",
+      "globalProfile": "Profil globalny",
+      "backToWorld": "Wróć do świata"
+    }
+  }
+}

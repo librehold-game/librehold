@@ -1,0 +1,71 @@
+{
+  "ranking": {
+    "tab": {
+      "points": "Punkty",
+      "villages": "Wioski",
+      "od": "Pokonani",
+      "daily": "Dzienne",
+      "conquests": "Przejęcia"
+    },
+    "page": "strona {n} / {pages}",
+    "player": "Gracz",
+    "points": "Punkty",
+    "villages": "Wioski",
+    "od": {
+      "att": "Jako agresor",
+      "def": "Jako obrońca",
+      "sup": "Jako wspierający"
+    },
+    "inactive": " (nieaktywny)",
+    "daily": {
+      "att": "Atakujący dnia",
+      "def": "Obrońca dnia",
+      "loot": "Grabieżca dnia",
+      "farm": "Farmer dnia"
+    },
+    "nobodyToday": "Dziś jeszcze nikt.",
+    "noConquests": "Nikt jeszcze nie przejął wioski.",
+    "when": "Kiedy",
+    "village": "Wioska",
+    "newOwner": "Nowy właściciel",
+    "previous": "Poprzedni",
+    "from": "z",
+    "barbarian": "barbarzyńska",
+    "title": "Ranking",
+    "odKind": {
+      "att": "agresor",
+      "def": "obrońca",
+      "sup": "wspierający"
+    },
+    "dailyKind": {
+      "att": "atakujący",
+      "def": "obrońca",
+      "loot": "grabieżca",
+      "farm": "farmer dnia"
+    },
+    "refresh": "Punkty i miejsca odświeżają się co pełną godzinę świata.",
+    "refreshShort": "Punkty i miejsca odświeżają się co pełną minutę.",
+    "bot": "bot"
+  },
+  "profile": {
+    "tooFewData": "za mało danych",
+    "sparkline": "Punkty dzień po dniu",
+    "statusQuit": "nieaktywny",
+    "statusEliminated": "wyeliminowany",
+    "from": "od: {name}",
+    "barbarians": "barbarzyńcy",
+    "took": "przejął: {name}",
+    "dialog": "Profil: {name}",
+    "you": " (ty)",
+    "rank": "Miejsce w rankingu",
+    "points": "punkty",
+    "villages": "wioski",
+    "villagesTitle": "Wioski",
+    "none": "brak",
+    "colVillage": "Wioska",
+    "colCoords": "Współrzędne",
+    "colPoints": "Punkty",
+    "conquests": "Przejęcia",
+    "othersSee": "Tak widzą cię inni gracze."
+  }
+}

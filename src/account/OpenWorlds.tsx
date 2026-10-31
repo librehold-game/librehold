@@ -39,7 +39,7 @@ export function OpenWorlds({ me }: { me: Account | null | undefined }) {
           else action = <button type="button" className="secondary" aria-label={label} onClick={() => void join(w.id)}>{t('site.home.worlds.join')}</button>;
           return (
             <li key={w.id} className="world-card">
-              <h3>{w.name}</h3>
+              <h3><Link to={pathFor('world', locale, { id: String(w.id) })}>{w.name}</Link></h3>
               <p className="muted">
                 {t('site.home.worlds.speed', { speed: w.speed })} · {t('site.home.worlds.started', { date: date.format(w.startedAt) })}
               </p>

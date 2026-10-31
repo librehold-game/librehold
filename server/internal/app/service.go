@@ -56,6 +56,8 @@ type Service struct {
 	publicWorlds ttlCache[struct{}, PublicWorldList]
 	publicWorld  ttlCache[int64, *PublicWorld]
 	publicMap    ttlCache[int64, *PublicMap]
+	publicRank   ttlCache[rankKey, any]
+	publicPlayer ttlCache[playerKey, *PublicWorldPlayer]
 
 	counters      Counters
 	registrations limit

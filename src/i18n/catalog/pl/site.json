@@ -125,52 +125,6 @@
           "a": "Szybka partia trwa {instantDurationMin} minut. W długim świecie wystarczy parę krótkich wejść dziennie."
         }
       }
-    },
-    "worlds": {
-      "title": "Światy",
-      "running": "Szybkie partie teraz",
-      "long": "Długie światy",
-      "finished": "Zakończone partie",
-      "noRunning": "Teraz nie trwa żadna szybka partia.",
-      "noLong": "Nie ma jeszcze długiego świata.",
-      "noFinished": "Nie ma jeszcze zakończonej partii.",
-      "timeLeft": "zostało {time}",
-      "day": "dzień {day}",
-      "ended": "koniec {date}",
-      "status": {
-        "open": "otwarty dla nowych graczy",
-        "closed": "zamknięty dla nowych graczy",
-        "paused": "wstrzymany"
-      },
-      "settings": "Ustawienia",
-      "setting": {
-        "speed": "Szybkość świata",
-        "unitSpeed": "Szybkość jednostek",
-        "mapSize": "Mapa",
-        "protection": "Ochrona początkujących",
-        "lastVillage": "Ostatnia wioska",
-        "fieldBattles": "Bitwy w polu"
-      },
-      "days": {
-        "one": "# dzień",
-        "few": "# dni",
-        "many": "# dni",
-        "other": "# dnia"
-      },
-      "lastVillage": {
-        "protected": "nie można jej stracić",
-        "canBeLost": "można ją stracić"
-      },
-      "yes": "tak",
-      "no": "nie",
-      "map": "Mapa",
-      "mapLabel": "Mapa świata {name}",
-      "legend": "Każda kropka to wioska w kolorze właściciela, gracza albo bota; szare kropki to wioski barbarzyńców.",
-      "top": "Najlepsza dziesiątka",
-      "player": "Gracz",
-      "points": "Punkty",
-      "villages": "Wioski",
-      "events": "Ostatnie duże bitwy"
     }
   }
 }

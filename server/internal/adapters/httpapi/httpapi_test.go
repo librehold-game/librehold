@@ -236,6 +236,36 @@ func TestPublicRoutesNeedNoSession(t *testing.T) {
 	}
 }
 
+func TestPublicRankingAndPlayerEndpoints(t *testing.T) {
+	e := newEnv(t)
+	adm := admin(t, e)
+	wid, other := world(t, e, adm), world(t, e, adm)
+	ala := e.browser(t)
+	register(t, ala, "ala")
+	expect(t, ala.do("POST", "/api/v1/worlds/"+wid+"/join", map[string]string{}), 200, "")
+	anon := e.browser(t)
+	base := "/api/v1/public/worlds/" + wid
+	for _, q := range []string{"", "?tab=villages", "?tab=conquests"} {
+		expect(t, anon.do("GET", base+"/ranking"+q, nil), 200, "")
+	}
+	expect(t, anon.do("GET", base+"/ranking?tab=nope", nil), 400, "")
+	expect(t, anon.do("GET", "/api/v1/public/worlds/999/ranking", nil), 404, "notFound")
+	expect(t, anon.do("GET", "/api/v1/public/worlds/999/players/h1", nil), 404, "notFound")
+	expect(t, anon.do("GET", base+"/players/nobody", nil), 404, "notFound")
+	var rows []struct {
+		ID string `json:"id"`
+	}
+	if err := json.Unmarshal([]byte(anon.do("GET", base+"/ranking", nil).raw), &rows); err != nil || len(rows) != 1 {
+		t.Fatalf("ranking %v %v", rows, err)
+	}
+	p := anon.do("GET", base+"/players/"+rows[0].ID, nil)
+	expect(t, p, 200, "")
+	if p.body["username"] != "ala" || p.body["rank"] != float64(1) {
+		t.Fatalf("player %s", p.raw)
+	}
+	expect(t, anon.do("GET", "/api/v1/public/worlds/"+other+"/players/"+rows[0].ID, nil), 404, "notFound")
+}
+
 func TestReportRoutes(t *testing.T) {
 	e := newEnv(t)
 	visitor := e.browser(t)

@@ -93,7 +93,7 @@ func TestPublicWorldsHidesReadyGamesAndOtherKinds(t *testing.T) {
 	}
 }
 
-func TestPublicWorldTopTenAndEvents(t *testing.T) {
+func TestPublicWorldCardAndEvents(t *testing.T) {
 	ctx := context.Background()
 	f := newInstantFixture(t, app.Config{})
 	id, other := longWorld(t, f, 15), longWorld(t, f, 0)
@@ -110,16 +110,15 @@ func TestPublicWorldTopTenAndEvents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(pw.Top) != 10 || pw.Bots != 15 || pw.Ended || pw.Settings.MapSize == 0 || !pw.Settings.FieldBattles {
+	if pw.Bots != 15 || pw.Ended || pw.Settings.MapSize == 0 || !pw.Settings.FieldBattles {
 		t.Fatalf("world %+v", pw)
-	}
-	for i, r := range pw.Top {
-		if r.Rank != i+1 || !r.IsBot || r.Name == "" || (i > 0 && r.Points > pw.Top[i-1].Points) {
-			t.Fatalf("top %+v", pw.Top)
-		}
 	}
 	if len(pw.Events) != 1 || pw.Events[0].WorldID != id || pw.Events[0].Troops != 500 {
 		t.Fatalf("events %+v", pw.Events)
+	}
+	raw, _ := json.Marshal(pw)
+	if strings.Contains(string(raw), `"top"`) {
+		t.Fatalf("the world page has one ranking, the ranking endpoint: %s", raw)
 	}
 }
 
@@ -184,20 +183,86 @@ func TestPublicMapHasEveryVillageAndNoSeed(t *testing.T) {
 	}
 }
 
-// Review focus 5: only long worlds have a public page.
-func TestPublicWorldNotFoundCases(t *testing.T) {
+// Review focus 1 and 2: long worlds and running instant games are public; everything else is not found.
+func TestPublicWorldVisibility(t *testing.T) {
 	ctx := context.Background()
 	f := newInstantFixture(t, app.Config{})
-	instant := f.play(t, f.guest(t)).WorldID
-	other := longWorld(t, f, 0)
-	change(t, f, other, func(w app.WorldTx) { w.Row().Config.Kind = game.WorldKind("player") })
-	for _, id := range []int64{999, instant, other} {
+	long := longWorld(t, f, 0)
+	running := f.play(t, f.guest(t)).WorldID
+	paused := f.play(t, f.guest(t)).WorldID
+	change(t, f, paused, func(w app.WorldTx) { at := f.clock.NowMs(); w.Row().PausedAtMs = &at })
+	hosted := longWorld(t, f, 0)
+	change(t, f, hosted, func(w app.WorldTx) { w.Row().Config.Kind = game.WorldKind("player") })
+	for _, id := range []int64{long, running} {
+		if _, err := f.svc.PublicWorld(ctx, id); err != nil {
+			t.Fatalf("world %d: %v", id, err)
+		}
+		if _, err := f.svc.PublicMap(ctx, id); err != nil {
+			t.Fatalf("map %d: %v", id, err)
+		}
+	}
+	pw, _ := f.svc.PublicWorld(ctx, running)
+	if !pw.Instant || pw.Settings.DurationMin <= 0 {
+		t.Fatalf("instant world %+v", pw)
+	}
+	for _, id := range []int64{999, paused, hosted} {
 		if _, err := f.svc.PublicWorld(ctx, id); !errors.Is(err, app.ErrNotFound) {
 			t.Fatalf("world %d: %v", id, err)
 		}
 		if _, err := f.svc.PublicMap(ctx, id); !errors.Is(err, app.ErrNotFound) {
 			t.Fatalf("map %d: %v", id, err)
 		}
+	}
+	f.clock.Add(int64(game.InstantWorldConfig.DurationMin)*game.MsPerMinute + time.Minute.Milliseconds())
+	if _, err := f.svc.PublicWorld(ctx, running); !errors.Is(err, app.ErrNotFound) {
+		t.Fatalf("finished game: %v", err)
+	}
+	if _, err := f.svc.PublicMap(ctx, running); !errors.Is(err, app.ErrNotFound) {
+		t.Fatalf("finished game map: %v", err)
+	}
+}
+
+func TestPublicWorldSettingsAreComplete(t *testing.T) {
+	ctx := context.Background()
+	f := newInstantFixture(t, app.Config{})
+	long := longWorld(t, f, 3)
+	human := game.SideModifiers{Resources: 1.5, Recruitment: 1.2, Building: 0.8}
+	bots := game.SideModifiers{Resources: 0.9, Recruitment: 1.1, Building: 1}
+	change(t, f, long, func(w app.WorldTx) {
+		c := &w.Row().Config
+		c.HumanModifiers, c.BotModifiers = human, bots
+		c.Difficulty, c.BotStance = game.Difficulty("hard"), game.BotStance("aggressive")
+	})
+	pw, err := f.svc.PublicWorld(ctx, long)
+	if err != nil {
+		t.Fatal(err)
+	}
+	row, _ := f.worlds.Get(ctx, long)
+	s := pw.Settings
+	if s.HumanModifiers != human || s.BotModifiers != bots || s.BotCount != row.Config.BotCount ||
+		s.Difficulty != "hard" || s.BotStance != "aggressive" || s.BarbarianDensity != string(row.Config.BarbarianDensity) ||
+		s.BattleLosses != string(row.Config.BattleLosses) || s.SightRadius != game.SightRadiusOf(&row.Config) ||
+		s.NobleCost != nil || s.NoCoins || s.HumanSeats != 0 {
+		t.Fatalf("long settings %+v", s)
+	}
+
+	instant := f.play(t, f.guest(t)).WorldID
+	price := game.Resources{Wood: 100, Clay: 200, Iron: 300}
+	change(t, f, instant, func(w app.WorldTx) {
+		c := &w.Row().Config
+		c.NoCoins, c.NobleCost = true, price
+		c.OwnedNobleDropMin, c.OwnedNobleDropMax, c.AcademyExtraNobles = 10, 20, 2
+	})
+	f.clock.Add(time.Minute.Milliseconds())
+	iw, err := f.svc.PublicWorld(ctx, instant)
+	if err != nil {
+		t.Fatal(err)
+	}
+	row, _ = f.worlds.Get(ctx, instant)
+	s = iw.Settings
+	if !s.NoCoins || s.NobleCost == nil || *s.NobleCost != price || s.OwnedNobleDropMin != 10 || s.OwnedNobleDropMax != 20 ||
+		s.AcademyExtraNobles != 2 || s.HumanSeats != row.Config.HumanSeats || s.DominationShare != row.Config.DominationShare {
+		t.Fatalf("instant settings %+v", s)
 	}
 }
 

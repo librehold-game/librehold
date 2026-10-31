@@ -21,6 +21,7 @@ import ProfileRoute from './ProfilePage';
 import RegisterRoute from './RegisterPage';
 import ReportRoute from './ReportPage';
 import WorldRoute from './worlds/WorldPage';
+import WorldPlayerRoute from './worlds/WorldPlayerPage';
 import WorldsRoute from './worlds/WorldsPage';
 
 provideRoute('home', LandingPage);
@@ -35,6 +36,7 @@ provideRoute('game', GameRoute);
 provideRoute('join', JoinRoute);
 provideRoute('worlds', WorldsRoute);
 provideRoute('world', WorldRoute);
+provideRoute('worldPlayer', WorldPlayerRoute);
 provideRoute('units', UnitsRoute);
 provideRoute('unit', UnitRoute);
 provideRoute('buildings', BuildingsRoute);

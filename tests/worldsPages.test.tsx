@@ -17,8 +17,9 @@ const running = { id: 41, name: 'Game #41', gameNumber: 41, instant: true, statu
   endsAt: now + 50 * 60_000, humans: 3, bots: 18, speed: 100, openSeats: 9 };
 const world = {
   ...long, ended: false,
-  settings: { worldSpeed: 8, unitSpeed: 1, mapSize: 200, beginnerProtectionDays: 7, lastVillage: 'protected', fieldBattles: true },
-  top: [{ rank: 1, name: 'Ala', isBot: false, points: 900, villages: 3 }, { rank: 2, name: 'Wolf', isBot: true, points: 800, villages: 2 }],
+  settings: { worldSpeed: 8, unitSpeed: 1, mapSize: 200, beginnerProtectionDays: 7, lastVillage: 'protected', fieldBattles: true,
+    barbarianDensity: 'normal', battleLosses: 'normal', botCount: 30, botArrival: 'allAtOnce', difficulty: 'normal', botStance: 'normal',
+    humanModifiers: { resources: 1, recruitment: 1, building: 1 }, botModifiers: { resources: 1, recruitment: 1, building: 1 }, sightRadius: 1 },
   events: [{ at: now - 60_000 * 5, kind: 'battle', worldId: 3, worldName: 'Kraina', instant: false, attacker: 'Ala', defender: 'Wolf',
     attackerBot: false, defenderBot: true, troops: 300, x: 1, y: 2 }],
 };
@@ -33,6 +34,11 @@ beforeEach(() => {
       finished: [{ worldId: 40, name: 'Game #40', gameNumber: 40, endedAt: now - 86_400_000 }] } }),
     'GET /api/v1/public/worlds/3': () => ({ status: 200, body: world }),
     'GET /api/v1/public/worlds/3/villages': () => ({ status: 200, body: map }),
+    'GET /api/v1/public/worlds/3/ranking?tab=points': () => ({ status: 200, body: [
+      { id: 'h1', name: 'Ala', color: '#f00', points: 900, villages: 3, att: 0, def: 0, sup: 0, quit: false, isBot: false },
+      { id: 'b1', name: 'Wolf', color: '#00f', points: 800, villages: 2, att: 0, def: 0, sup: 0, quit: false, isBot: true }] }),
+    'GET /api/v1/public/worlds/3/ranking?tab=daily': () => ({ status: 200, body: [] }),
+    'GET /api/v1/public/worlds/3/ranking?tab=conquests': () => ({ status: 200, body: [] }),
   };
   vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
     const key = `${init?.method ?? 'GET'} ${url}`;
@@ -56,7 +62,7 @@ describe('worlds pages', () => {
     at('/worlds');
     render(<App />);
     const game = await screen.findByRole('link', { name: 'Game #41' });
-    expect(game.getAttribute('href')).toBe('/games/41');
+    expect(game.getAttribute('href')).toBe('/worlds/41');
     expect(screen.getByRole('link', { name: 'Kraina' }).getAttribute('href')).toBe('/worlds/3');
     expect(screen.getByRole('link', { name: 'Game #40' }).getAttribute('href')).toBe('/games/40');
     const runningSection = screen.getByRole('region', { name: 'Instant games now' });
@@ -74,16 +80,16 @@ describe('worlds pages', () => {
     expect(screen.getByText('No finished game yet.')).toBeTruthy();
   });
 
-  it('a world page shows settings, top ten with bot tags, the map box and events', async () => {
+  it('a world page shows settings, the ranking with bot tags, the map box and events', async () => {
     at('/worlds/3');
     const { container } = render(<App />);
     expect(await screen.findByRole('heading', { level: 1, name: 'Kraina' })).toBeTruthy();
     const settings = screen.getByRole('region', { name: 'Settings' });
     expect(settings.textContent).toContain('×8');
     expect(settings.textContent).toContain('200×200');
-    const top = screen.getByRole('table');
-    expect(within(top).getAllByRole('row')).toHaveLength(3);
-    expect(top.querySelectorAll('.bot-tag')).toHaveLength(1);
+    const ranking = await screen.findByRole('table');
+    expect(within(ranking).getAllByRole('row')).toHaveLength(3);
+    expect(ranking.querySelectorAll('.bot-tag')).toHaveLength(1);
     expect(await screen.findByRole('img', { name: 'Map of Kraina' })).toBeTruthy();
     expect(container.querySelector('.event-list li')?.textContent).toContain('Ala attacked Wolf (bot)');
     expect(document.title).toContain('Kraina');
@@ -106,7 +112,7 @@ describe('worlds pages', () => {
     at('/pl/swiaty');
     render(<App />);
     const game = await screen.findByRole('link', { name: 'Gra #41' });
-    expect(game.getAttribute('href')).toBe('/pl/gry/41');
+    expect(game.getAttribute('href')).toBe('/pl/swiaty/41');
     expect(screen.getByRole('link', { name: 'Kraina' }).getAttribute('href')).toBe('/pl/swiaty/3');
   });
 });

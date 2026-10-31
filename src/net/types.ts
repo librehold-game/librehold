@@ -4,6 +4,7 @@ import type {
   BuildTemplate, BuildingId, Command, FarmAssistantState, NewsItem, Player, PlayerId, PlayerStats, PlayerStatus, QuestState, Report,
   ScheduledSend, TraderState, UnitId, Village, VillageBonus, VillageGroup, VillageIntel, WorldConfig,
 } from '../engine/types';
+import type { PlayerRow } from '../shared/ranking/types';
 
 /** One player's knowledge of one village (the engine's Village.intel, farmTargetFlags and lastFarmedAt). */
 export interface Intel {
@@ -116,20 +117,7 @@ export interface MapTile {
 export type NewsEntry = NewsItem & { for?: PlayerId };
 export type { Report };
 
-export interface PlayerRow {
-  id: PlayerId; name: string; color: string; points: number; villages: number; att: number; def: number; sup: number; quit: boolean;
-  isBot: boolean;
-}
-export interface DailyRow { id: PlayerId; name: string; att: number; def: number; loot: number; farm: number; isBot: boolean }
-export interface ConquestRow {
-  t: number; x: number; y: number; toId: PlayerId; to: string; fromId: PlayerId | null; from: string | null; toIsBot: boolean; fromIsBot: boolean;
-}
-
-export interface Profile {
-  player: PublicPlayer;
-  villages: { id: string; name: string; x: number; y: number; points: number }[];
-  history: { hourly: number[]; daily: number[] };
-}
+export type { ConquestRow, DailyRow, PlayerRow, Profile } from '../shared/ranking/types';
 
 export type Topic = 'state' | 'reports' | 'map' | 'ranking' | 'news';
 

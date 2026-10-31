@@ -44,6 +44,10 @@ var testHeadText = app.HeadText{
 		"head.player.description":       text("{name} in LibreHold."),
 		"head.world.title":              text("{name} — day {day} · {players} and {bots}"),
 		"head.world.description":        text("A long world."),
+		"head.worldPlayer.title":        text("{name} in {world} — {points}"),
+		"head.worldPlayer.description":  text("{name}'s page in {world}."),
+		"head.instantWorld.title":       text("{name} — live · {players} and {bots}"),
+		"head.instantWorld.description": text("A live game's ranking."),
 		"head.worlds.title":             text("Worlds — LibreHold"),
 		"head.worlds.description":       text("Every world."),
 		"head.join.title":               text("{name} — join the game"),
@@ -165,26 +169,78 @@ func TestHeadMissingIsNotFound(t *testing.T) {
 	}
 }
 
-func TestHeadWorldIsOnlyForLongWorlds(t *testing.T) {
+func TestWorldHeadFollowsVisibility(t *testing.T) {
 	ctx := context.Background()
 	f := newHeadFixture(t)
-	running := f.play(t, f.guest(t)).WorldID
 	ended, _ := endedGame(t, f)
-	for _, id := range []int64{running, ended} {
-		if h, ok := head(t, f, "world", "en", map[string]string{"id": itoa(id)}); ok {
-			t.Fatalf("instant world %d as a world page: %+v", id, h)
-		}
-	}
+	running := f.play(t, f.guest(t)).WorldID
+	expired := f.play(t, f.guest(t)).WorldID
+	hosted := f.play(t, f.guest(t)).WorldID
+	f.changeHost(t, hosted, func(w app.WorldTx) { w.Row().Config.Kind = game.KindPlayer })
 	long, err := f.worlds.Create(ctx, apptest.NewWorldRow(2), func(w app.WorldTx) error { return game.NewWorld(w) })
 	if err != nil {
 		t.Fatal(err)
 	}
-	h, ok := head(t, f, "world", "en", map[string]string{"id": itoa(long)})
-	if !ok || !strings.Contains(h.Title, " — day 1 · 0 players and 2 bots") {
+	world := func(id int64) (app.PageHead, bool) {
+		return head(t, f, "world", "en", map[string]string{"id": itoa(id)})
+	}
+
+	h, ok := world(long)
+	if !ok || h.NoIndex || !strings.Contains(h.Title, " — day 1 · 0 players and 2 bots") {
 		t.Fatalf("long world %+v %v", h, ok)
+	}
+	h, ok = world(running)
+	if !ok || !h.NoIndex || !strings.Contains(h.Title, "Game #") || strings.Contains(h.Title, "day") {
+		t.Fatalf("running instant %+v %v", h, ok)
+	}
+	if h, ok := world(ended); !ok || !h.NoIndex {
+		t.Fatalf("archived instant %+v %v", h, ok)
+	}
+	f.clock.Add(int64(game.InstantWorldConfig.DurationMin)*game.MsPerMinute + time.Minute.Milliseconds())
+	for name, id := range map[string]int64{"finished without archive": expired, "hosted": hosted, "unknown": 999999} {
+		if h, ok := world(id); ok {
+			t.Fatalf("%s: %+v", name, h)
+		}
 	}
 	if h, ok := head(t, f, "worlds", "en", nil); !ok || h.Title != "Worlds — LibreHold" {
 		t.Fatalf("worlds %+v %v", h, ok)
+	}
+}
+
+func TestHeadForAPlayerInAWorld(t *testing.T) {
+	f := newHeadFixture(t)
+	r := rankedLongWorld(t, f, 1000)
+	row, _ := f.worlds.Get(context.Background(), r.id)
+	h, ok := head(t, f, "worldPlayer", "en", map[string]string{"id": itoa(r.id), "pid": string(r.kasiaID)})
+	if !ok || !h.NoIndex || !strings.Contains(h.Title, "kasia in "+row.Name) || !strings.Contains(h.Title, "500") {
+		t.Fatalf("player %+v %v", h, ok)
+	}
+	change(t, f, r.id, func(w app.WorldTx) { w.Player(r.olaID).Status = game.StatusPending })
+	f.clock.Add(time.Minute.Milliseconds())
+	hosted := longWorld(t, f, 1)
+	change(t, f, hosted, func(w app.WorldTx) { w.Row().Config.Kind = game.KindPlayer })
+	for name, p := range map[string]map[string]string{
+		"pending":       {"id": itoa(r.id), "pid": string(r.olaID)},
+		"unknown":       {"id": itoa(r.id), "pid": "nobody"},
+		"hosted world":  {"id": itoa(hosted), "pid": "b1"},
+		"unknown world": {"id": "999999", "pid": string(r.kasiaID)},
+	} {
+		if h, ok := head(t, f, "worldPlayer", "en", p); ok {
+			t.Fatalf("%s: %+v", name, h)
+		}
+	}
+}
+
+func TestHeadForAPlayerOfAnEndedGameFollowsTheWorldHead(t *testing.T) {
+	f := newHeadFixture(t)
+	ended, _ := endedGame(t, f)
+	h, ok := head(t, f, "worldPlayer", "en", map[string]string{"id": itoa(ended), "pid": "h1"})
+	if !ok || !h.NoIndex {
+		t.Fatalf("ended game's player %+v %v", h, ok)
+	}
+	long := longWorld(t, f, 1)
+	if h, ok := head(t, f, "worldPlayer", "en", map[string]string{"id": itoa(long), "pid": "nobody"}); ok {
+		t.Fatalf("missing player of a long world: %+v", h)
 	}
 }
 

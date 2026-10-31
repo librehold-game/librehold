@@ -3,6 +3,8 @@ package app
 import (
 	"cmp"
 	"context"
+	"errors"
+	"math"
 	"slices"
 	"time"
 
@@ -12,7 +14,6 @@ import (
 const (
 	publicCacheFor   = time.Minute
 	finishedShown    = 20
-	topShown         = 10
 	worldEventsShown = 10
 )
 
@@ -54,21 +55,33 @@ type PublicSettings struct {
 	LastVillage            string  `json:"lastVillage"`
 	FieldBattles           bool    `json:"fieldBattles"`
 	DurationMin            int     `json:"durationMin,omitempty"`
-}
 
-type PublicRankRow struct {
-	Rank     int    `json:"rank"`
-	Name     string `json:"name"`
-	IsBot    bool   `json:"isBot"`
-	Points   int    `json:"points"`
-	Villages int    `json:"villages"`
+	BarbarianDensity string             `json:"barbarianDensity"`
+	BattleLosses     string             `json:"battleLosses"`
+	BotCount         int                `json:"botCount"`
+	BotArrival       string             `json:"botArrival"`
+	RampUpDays       float64            `json:"rampUpDays,omitempty"`
+	Difficulty       string             `json:"difficulty"`
+	BotStance        string             `json:"botStance"`
+	HumanModifiers   game.SideModifiers `json:"humanModifiers"`
+	BotModifiers     game.SideModifiers `json:"botModifiers"`
+	SightRadius      float64            `json:"sightRadius"`
+	NoSight          bool               `json:"noSight,omitempty"`
+
+	// Instant games only.
+	NoCoins            bool            `json:"noCoins,omitempty"`
+	NobleCost          *game.Resources `json:"nobleCost,omitempty"`
+	OwnedNobleDropMin  int             `json:"ownedNobleDropMin,omitempty"`
+	OwnedNobleDropMax  int             `json:"ownedNobleDropMax,omitempty"`
+	AcademyExtraNobles int             `json:"academyExtraNobles,omitempty"`
+	HumanSeats         int             `json:"humanSeats,omitempty"`
+	DominationShare    float64         `json:"dominationShare,omitempty"`
 }
 
 type PublicWorld struct {
 	PublicWorldCard
 	Ended    bool              `json:"ended"`
 	Settings PublicSettings    `json:"settings"`
-	Top      []PublicRankRow   `json:"top"`    // the topShown best by points, then by id; pending players left out
 	Events   []PublicEventView `json:"events"` // the latest worldEventsShown large ones
 }
 
@@ -138,30 +151,45 @@ func openFirst(c PublicWorldCard) int {
 	return 1
 }
 
-// publicLongWorld is the row of a long world; any other world has no public page.
-func (s *Service) publicLongWorld(ctx context.Context, worldID int64) (*WorldRow, error) {
+// publicWorldRow is the row of a world anyone may look at: a long world, or an instant game that is running.
+func (s *Service) publicWorldRow(ctx context.Context, worldID int64) (*WorldRow, error) {
 	row, err := s.worlds.Get(ctx, worldID)
 	if err != nil {
 		return nil, err
 	}
-	if row.Config.Kind != game.KindLong {
-		return nil, ErrNotFound
+	if row.Config.Kind == game.KindLong ||
+		game.IsInstant(&row.Config) && instantInfoOf(WorldSummary{WorldRow: *row}, s.clock.NowMs()).running {
+		return row, nil
 	}
-	return row, nil
+	return nil, ErrNotFound
 }
 
-// PublicWorld is a long world's page: its card, settings, top ten and latest large battles; cached publicCacheFor.
+func publicSettingsOf(cfg *game.WorldConfig) PublicSettings {
+	st := PublicSettings{WorldSpeed: cfg.WorldSpeed, UnitSpeed: cfg.UnitSpeed, MapSize: cfg.MapSize,
+		BeginnerProtectionDays: cfg.BeginnerProtectionDays, LastVillage: cfg.LastVillage, FieldBattles: game.FieldBattlesOn(cfg),
+		DurationMin: cfg.DurationMin, BarbarianDensity: string(cfg.BarbarianDensity), BattleLosses: string(cfg.BattleLosses),
+		BotCount: cfg.BotCount, BotArrival: cfg.BotArrival, RampUpDays: cfg.RampUpDays, Difficulty: string(cfg.Difficulty),
+		BotStance: string(cfg.BotStance), HumanModifiers: cfg.HumanModifiers, BotModifiers: cfg.BotModifiers,
+		SightRadius: game.SightRadiusOf(cfg), NoSight: cfg.NoSight, NoCoins: cfg.NoCoins, OwnedNobleDropMin: cfg.OwnedNobleDropMin,
+		OwnedNobleDropMax: cfg.OwnedNobleDropMax, AcademyExtraNobles: cfg.AcademyExtraNobles, HumanSeats: cfg.HumanSeats,
+		DominationShare: cfg.DominationShare}
+	if cfg.NobleCost != (game.Resources{}) {
+		cost := cfg.NobleCost
+		st.NobleCost = &cost
+	}
+	return st
+}
+
+// PublicWorld is the page of a long world or a running instant game: its card, settings and latest large battles; cached publicCacheFor.
 func (s *Service) PublicWorld(ctx context.Context, worldID int64) (*PublicWorld, error) {
 	now := s.clock.NowMs()
 	return s.publicWorld.get(worldID, now, publicCacheFor, func() (*PublicWorld, error) {
-		if _, err := s.publicLongWorld(ctx, worldID); err != nil {
+		if _, err := s.publicWorldRow(ctx, worldID); err != nil {
 			return nil, err
 		}
 		var out PublicWorld
 		err := s.worlds.Read(ctx, worldID, func(w WorldTx) error {
 			sum := WorldSummary{WorldRow: *w.Row()}
-			points := w.PointsByOwner()
-			var ranked []*game.Player
 			for _, p := range w.Players() {
 				if p.Status == game.StatusActive {
 					if p.IsHuman {
@@ -170,23 +198,11 @@ func (s *Service) PublicWorld(ctx context.Context, worldID int64) (*PublicWorld,
 						sum.Bots++
 					}
 				}
-				if p.Status != game.StatusPending {
-					ranked = append(ranked, p)
-				}
-			}
-			slices.SortFunc(ranked, func(a, b *game.Player) int {
-				return cmp.Or(cmp.Compare(points[b.ID], points[a.ID]), cmp.Compare(a.ID, b.ID))
-			})
-			out.Top = []PublicRankRow{}
-			for i, p := range ranked[:min(len(ranked), topShown)] {
-				out.Top = append(out.Top, PublicRankRow{Rank: i + 1, Name: p.Name, IsBot: !p.IsHuman, Points: points[p.ID],
-					Villages: len(p.VillageIDs)})
 			}
 			cfg := w.Config()
 			out.PublicWorldCard = s.worldCard(sum, now)
 			out.Ended = sum.State.EndedAt != nil
-			out.Settings = PublicSettings{WorldSpeed: cfg.WorldSpeed, UnitSpeed: cfg.UnitSpeed, MapSize: cfg.MapSize,
-				BeginnerProtectionDays: cfg.BeginnerProtectionDays, LastVillage: cfg.LastVillage, FieldBattles: game.FieldBattlesOn(cfg)}
+			out.Settings = publicSettingsOf(cfg)
 			return nil
 		})
 		if err != nil {
@@ -201,11 +217,11 @@ func (s *Service) PublicWorld(ctx context.Context, worldID int64) (*PublicWorld,
 	})
 }
 
-// PublicMap is a long world's villages as dots: stored ones with their owner, generated ones as barbarians; cached
+// PublicMap is a world's villages as dots: stored ones with their owner, generated ones as barbarians; cached
 // publicCacheFor.
 func (s *Service) PublicMap(ctx context.Context, worldID int64) (*PublicMap, error) {
 	return s.publicMap.get(worldID, s.clock.NowMs(), publicCacheFor, func() (*PublicMap, error) {
-		if _, err := s.publicLongWorld(ctx, worldID); err != nil {
+		if _, err := s.publicWorldRow(ctx, worldID); err != nil {
 			return nil, err
 		}
 		var out PublicMap
@@ -239,6 +255,104 @@ func (s *Service) PublicMap(ctx context.Context, worldID int64) (*PublicMap, err
 		})
 		if err != nil {
 			return nil, err
+		}
+		return &out, nil
+	})
+}
+
+// PublicWorldPlayer is a player's page in one world: the in-game profile plus where they rank and their conquests.
+type PublicWorldPlayer struct {
+	Profile
+	Username  string        `json:"username,omitempty"` // a human with an account only
+	Rank      int           `json:"rank"`               // by points among the players who have joined, 1-based
+	Conquests []ConquestRow `json:"conquests"`          // this player's, newest first; T in wall ms
+}
+
+const playerConquestsShown = 20
+
+type rankKey struct {
+	world int64
+	tab   string
+}
+
+type playerKey struct {
+	world  int64
+	player game.PlayerID
+}
+
+// wallAt maps an instant in a world's own time to wall-clock ms; a pause does not move it.
+func wallAt(row *WorldRow, t int64) int64 { return row.StartedAtMs + row.PausedTotalMs + t }
+
+// PublicRanking is one tab of a public world's ranking, whole; conquest times are wall ms. Cached publicCacheFor.
+func (s *Service) PublicRanking(ctx context.Context, worldID int64, tab string) (any, error) {
+	if !slices.Contains([]string{"points", "villages", "od", "daily", "conquests"}, tab) {
+		return nil, &ErrValidation{Field: "tab", Code: "unknown"}
+	}
+	now := s.clock.NowMs()
+	return s.publicRank.get(rankKey{worldID, tab}, now, publicCacheFor, func() (any, error) {
+		row, err := s.publicWorldRow(ctx, worldID)
+		if err != nil {
+			return nil, err
+		}
+		var out any
+		err = s.worlds.Read(ctx, worldID, func(w WorldTx) error {
+			w.SetNow(WorldNow(w.Row(), now))
+			out = rankingRows(w, tab)
+			return nil
+		})
+		if rows, ok := out.([]ConquestRow); ok {
+			for i := range rows {
+				rows[i].T = wallAt(row, rows[i].T)
+			}
+		}
+		return out, err
+	})
+}
+
+// PublicWorldPlayer is one joined player of a public world; cached publicCacheFor.
+func (s *Service) PublicWorldPlayer(ctx context.Context, worldID int64, playerID game.PlayerID) (*PublicWorldPlayer, error) {
+	now := s.clock.NowMs()
+	return s.publicPlayer.get(playerKey{worldID, playerID}, now, publicCacheFor, func() (*PublicWorldPlayer, error) {
+		row, err := s.publicWorldRow(ctx, worldID)
+		if err != nil {
+			return nil, err
+		}
+		var out PublicWorldPlayer
+		var accountID int64
+		err = s.worlds.Read(ctx, worldID, func(w WorldTx) error {
+			p := w.Player(playerID)
+			if p == nil || p.Status == game.StatusPending {
+				return ErrNotFound
+			}
+			w.SetNow(WorldNow(w.Row(), now))
+			out = PublicWorldPlayer{Profile: profileOf(w, p), Rank: 1, Conquests: []ConquestRow{}}
+			for _, q := range w.Players() {
+				if q.Status != game.StatusPending && (q.Points > p.Points || q.Points == p.Points && q.ID < p.ID) {
+					out.Rank++
+				}
+			}
+			list := w.ConquestsSince(math.MinInt64)
+			for i := len(list) - 1; i >= 0 && len(out.Conquests) < playerConquestsShown; i-- {
+				if c := list[i]; c.ToID == playerID || c.FromID == game.PlayerRef(playerID) {
+					r := conquestRow(w, c)
+					r.T = wallAt(row, r.T)
+					out.Conquests = append(out.Conquests, r)
+				}
+			}
+			if p.IsHuman {
+				accountID = p.AccountID
+			}
+			return nil
+		})
+		if err != nil {
+			return nil, err
+		}
+		if accountID != 0 {
+			if acct, err := s.accounts.ByID(ctx, accountID); err == nil {
+				out.Username = acct.Username
+			} else if !errors.Is(err, ErrNotFound) {
+				return nil, err
+			}
 		}
 		return &out, nil
 	})

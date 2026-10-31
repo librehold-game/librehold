@@ -4,6 +4,7 @@ import { useT } from '../../i18n/i18n';
 import { minimapPixels } from '../../shared/terrain/minimap';
 import { ONLINE_TERRAIN_SEED } from '../../shared/terrain/seed';
 import { mapPixels } from './mapPixels';
+import './catalog';
 
 /** The whole world at one pixel per field (at most 200 a side): terrain and a dot per village. */
 export function WorldMap({ map, name }: { map: PublicMap; name: string }) {

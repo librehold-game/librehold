@@ -1,6 +1,8 @@
 import type { ReportInput } from '../net/report';
 import type { WorldConfig } from './worldConfig';
 import { getLocale, hasKey, t, type Locale } from '../i18n/i18n';
+import type { RankingTab } from '../shared/ranking/RankingTable';
+import type { ConquestRow, Profile } from '../shared/ranking/types';
 
 export interface Account {
   id: number; username: string; isAdmin: boolean; isGuest: boolean; locale: Locale; tutorialDone: boolean;
@@ -53,12 +55,19 @@ export interface PublicWorldCard {
 }
 export interface FinishedGameCard { worldId: number; name: string; gameNumber?: number; endedAt: number }
 export interface PublicWorldList { running: PublicWorldCard[]; long: PublicWorldCard[]; finished: FinishedGameCard[] }
+export interface SideModifiers { resources: number; recruitment: number; building: number }
 export interface PublicSettings {
   worldSpeed: number; unitSpeed: number; mapSize: number; beginnerProtectionDays: number; lastVillage: string;
   fieldBattles: boolean; durationMin?: number;
+  barbarianDensity: string; battleLosses: string; botCount: number; botArrival: string; rampUpDays?: number;
+  difficulty: string; botStance: string; humanModifiers: SideModifiers; botModifiers: SideModifiers;
+  sightRadius: number; noSight?: boolean;
+  noCoins?: boolean; nobleCost?: { wood: number; clay: number; iron: number };
+  ownedNobleDropMin?: number; ownedNobleDropMax?: number; academyExtraNobles?: number;
+  humanSeats?: number; dominationShare?: number;
 }
-export interface PublicRankRow { rank: number; name: string; isBot: boolean; points: number; villages: number }
-export interface PublicWorld extends PublicWorldCard { ended: boolean; settings: PublicSettings; top: PublicRankRow[]; events: PublicEvent[] }
+export interface PublicWorld extends PublicWorldCard { ended: boolean; settings: PublicSettings; events: PublicEvent[] }
+export type PublicWorldPlayer = Profile & { username?: string; rank: number; conquests: ConquestRow[] };
 export interface PublicMapPlayer { name: string; color: string; isBot: boolean }
 /** Villages as [x, y, index into players or -1 for barbarians]. */
 export interface PublicMap { size: number; players: PublicMapPlayer[]; villages: [number, number, number][] }
@@ -148,6 +157,9 @@ export const api = {
   report: (input: ReportInput) => call<{ id: number }>('POST', '/api/v1/reports', input),
   publicWorlds: () => call<PublicWorldList>('GET', '/api/v1/public/worlds'),
   publicWorld: (id: number) => call<PublicWorld>('GET', `/api/v1/public/worlds/${id}`),
+  publicRanking: (id: number, tab: RankingTab) => call<unknown[]>('GET', `/api/v1/public/worlds/${id}/ranking?tab=${tab}`),
+  publicWorldPlayer: (id: number, pid: string) =>
+    call<PublicWorldPlayer>('GET', `/api/v1/public/worlds/${id}/players/${encodeURIComponent(pid)}`),
   publicMap: (id: number) => call<PublicMap>('GET', `/api/v1/public/worlds/${id}/villages`),
   publicGame: (ref: string) => call<ArchivedGame>('GET', `/api/v1/public/games/${encodeURIComponent(ref)}`),
   publicProfile: (username: string) => call<PublicProfile>('GET', `/api/v1/public/profiles/${encodeURIComponent(username)}`),

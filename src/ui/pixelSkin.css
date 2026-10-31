@@ -30,6 +30,7 @@
   }
 
   html.pixel .wood-strip,
+  html.pixel .ranking-table th,
   html.pixel .table-game th,
   html.pixel .navbar-bottom {
     background-color: #5a3519;
@@ -59,6 +60,7 @@
     margin-bottom: 4px;
   }
 
+  html.pixel .ranking-btn,
   html.pixel .btn {
     border-style: solid;
     border-color: transparent;
@@ -72,15 +74,21 @@
     color: #fbe7b5;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
   }
+  html.pixel .ranking-btn:hover:not(:disabled),
   html.pixel .btn:hover:not(:disabled) {
     background: none;
     filter: brightness(1.12);
   }
+  html.pixel .ranking-btn:active:not(:disabled),
   html.pixel .btn:active:not(:disabled) {
     transform: translateY(1px);
     filter: brightness(0.92);
     box-shadow: none;
   }
+  html.pixel .ranking-btn[aria-pressed="true"] {
+    filter: brightness(1.3) saturate(1.2);
+  }
+  html.pixel .ranking-btn:disabled,
   html.pixel .btn:disabled {
     filter: grayscale(0.7) brightness(0.85);
     box-shadow: none;
@@ -157,6 +165,7 @@ html.pixel .bot-tag { background: #5c4528; color: #fbe7b5; letter-spacing: 0.04e
 html.pixel .lang-switch .lang-active { opacity: 1; }
 
 @media (pointer: coarse) {
+  html.pixel .ranking-btn,
   html.pixel .btn {
     padding: 2px 8px;
   }
