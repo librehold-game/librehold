@@ -72,7 +72,7 @@ describe('pixel village scene', () => {
     const c = scene('limited');
     const bar = c.querySelector('[data-marks="main"] [data-progress]');
     expect(bar?.getAttribute('data-progress')).toBe('0.5');
-    expect(c.querySelector('[data-marks="barracks"]')!.textContent).toContain('⏳');
+    expect(c.querySelector('[data-marks="barracks"] [data-icon="hourglass"]')).toBeTruthy();
   });
 
   it('level badges draw above the wall towers and still open their building', () => {

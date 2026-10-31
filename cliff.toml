@@ -1,5 +1,6 @@
 # git-cliff: writes CHANGELOG.md and each release's GitHub notes from the git history. A pull request's labels pick
-# its section; a commit pushed without one lands under Changed.
+# its section; a commit pushed straight to main picks it with its prefix (feat:, fix:, fix(security):, docs:, …), and
+# one without a prefix lands under Changed.
 # scripts/release.sh runs it; to preview the next release: GITHUB_TOKEN=$(gh auth token) git cliff --unreleased
 
 [remote.github]
@@ -26,7 +27,7 @@ body = """
 {% for group, commits in commits | group_by(attribute="group") %}
 ### {{ group | striptags | trim }}
 {% for commit in commits %}
-- {{ commit.message | split(pat="\n") | first | trim }}
+- {{ commit.message | split(pat="\n") | first | trim | upper_first }}
   {%- if commit.remote.pr_number %} ([#{{ commit.remote.pr_number }}]({{ repo }}/pull/{{ commit.remote.pr_number }}))
   {%- else %} ([{{ commit.id | truncate(length=7, end="") }}]({{ repo }}/commit/{{ commit.id }}))
   {%- endif %}
@@ -52,7 +53,7 @@ footer = """
 """
 
 [git]
-conventional_commits = false
+conventional_commits = true
 filter_unconventional = false
 filter_commits = false
 tag_pattern = "v[0-9]+\\.[0-9]+\\.[0-9]+.*"
@@ -63,11 +64,19 @@ commit_preprocessors = [
 ]
 commit_parsers = [
   { message = "^Release [0-9]", skip = true },
+  # Pushed before the prefixes were read.
+  { sha = "307b3ecf2436e0cf80815fba207c9e7ca3060b87", group = "<!-- 0 -->Added" },
+  { sha = "db55e8947fae7b0ab9c420cee95faed23662eaac", group = "<!-- 2 -->Fixed" },
+  { sha = "bc43ec7eb338877d6188703bdf0d1361da982ab0", group = "<!-- 0 -->Added" },
   { message = "^Merge pull request", skip = true },
   { field = "author.name", pattern = "dependabot", skip = true },
   { field = "remote.pr_labels", pattern = "dependencies", skip = true },
   { field = "remote.pr_labels", pattern = "security", group = "<!-- 3 -->Security" },
   { field = "remote.pr_labels", pattern = "bug", group = "<!-- 2 -->Fixed" },
   { field = "remote.pr_labels", pattern = "enhancement|idea", group = "<!-- 0 -->Added" },
+  { message = "^fix\\(security\\)", group = "<!-- 3 -->Security" },
+  { message = "^feat", group = "<!-- 0 -->Added" },
+  { message = "^fix", group = "<!-- 2 -->Fixed" },
+  { message = "^(test|ci|chore|style|build)", skip = true },
   { message = ".*", group = "<!-- 1 -->Changed" },
 ]

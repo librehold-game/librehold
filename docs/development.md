@@ -140,6 +140,17 @@ and `latest`, then creates the GitHub release with the same notes. `cliff.toml` 
 (`enhancement` or `idea` → Added, `bug` → Fixed, `security` → Security, anything else → Changed) and credits their
 authors; `GITHUB_TOKEN=$(gh auth token) git cliff --unreleased` previews the next release.
 
+A commit pushed straight to `main` has no labels, so its prefix picks the section, and the changelog shows the rest of
+the subject with a capital first letter:
+
+| prefix | section |
+|---|---|
+| `feat:` | Added |
+| `fix:` | Fixed |
+| `fix(security):` | Security |
+| `test:`, `ci:`, `chore:`, `style:`, `build:` | left out |
+| `docs:`, `refactor:`, `perf:`, anything else, or no prefix | Changed |
+
 ## Game state
 
 The state of every world lives in Postgres on the server — the browser stores nothing except UI preferences,

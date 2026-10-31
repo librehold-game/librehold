@@ -6,17 +6,17 @@ import { useLocale, useT } from '../../i18n/i18n';
 import { worldDisplayName } from '../../i18n/names';
 import { pathFor } from '../../account/routes';
 
-export const TABS: { id: ViewId; icon: string; enabled: boolean; key: string; primary: boolean }[] = [
-  { id: 'village', icon: '🏰', enabled: true, key: '1', primary: true },
-  { id: 'map', icon: '🗺️', enabled: true, key: '2', primary: true },
-  { id: 'rally', icon: '⚔️', enabled: true, key: '3', primary: true },
-  { id: 'farm', icon: '🎯', enabled: true, key: '4', primary: false },
-  { id: 'reports', icon: '📜', enabled: true, key: '5', primary: true },
-  { id: 'overview', icon: '📋', enabled: true, key: '6', primary: false },
-  { id: 'news', icon: '🗣️', enabled: true, key: '7', primary: false },
-  { id: 'quests', icon: '📖', enabled: true, key: '8', primary: false },
-  { id: 'ranking', icon: '🏆', enabled: true, key: '0', primary: false },
-  { id: 'settings', icon: '⚙️', enabled: true, key: '9', primary: false },
+export const TABS: { id: ViewId; enabled: boolean; key: string; primary: boolean }[] = [
+  { id: 'village', enabled: true, key: '1', primary: true },
+  { id: 'map', enabled: true, key: '2', primary: true },
+  { id: 'rally', enabled: true, key: '3', primary: true },
+  { id: 'farm', enabled: true, key: '4', primary: false },
+  { id: 'reports', enabled: true, key: '5', primary: true },
+  { id: 'overview', enabled: true, key: '6', primary: false },
+  { id: 'news', enabled: true, key: '7', primary: false },
+  { id: 'quests', enabled: true, key: '8', primary: false },
+  { id: 'ranking', enabled: true, key: '0', primary: false },
+  { id: 'settings', enabled: true, key: '9', primary: false },
 ];
 
 export const PRIMARY_TABS = TABS.filter((t) => t.primary);

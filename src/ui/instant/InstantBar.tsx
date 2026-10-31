@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PixelIcon } from '../pixelIcons';
 import { useT } from '../../i18n/i18n';
 import { useGameStore } from '../../state/gameStore';
 import { formatDuration } from '../format';
@@ -40,7 +41,7 @@ export function InstantBar() {
   if (endsAt === null) return null;
   return (
     <div className="px-2 sm:px-3 py-1 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-wood-border font-body text-[12px]">
-      <span>⏳ {t('instant.timeLeft')}: <strong role="timer" aria-label={t('instant.timeLeft')}>{formatDuration(Math.max(0, endsAt - now))}</strong></span>
+      <span><PixelIcon name="hourglass" size={16} /> {t('instant.timeLeft')}: <strong role="timer" aria-label={t('instant.timeLeft')}>{formatDuration(Math.max(0, endsAt - now))}</strong></span>
       {resultsClosed && <button className="btn !py-0" onClick={() => showResults(false)}>{t('instant.results')}</button>}
       {account?.isGuest && <Nickname name={account.username} />}
       {account?.isGuest && <button className="btn !py-0" onClick={openClaim}>{t('instant.createAccount')}</button>}

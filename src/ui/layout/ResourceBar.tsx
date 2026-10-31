@@ -1,4 +1,5 @@
 import { RESOURCE_BALANCE } from '../../data/buildings.data';
+import { PixelIcon } from '../pixelIcons';
 import { msUntilFull, villageProductionPerHour } from '../../engine/resources';
 import { RESOURCES, type Resource } from '../../engine/types';
 import { selectActiveVillage, useGameStore } from '../../state/gameStore';
@@ -30,7 +31,7 @@ function ResourceCell({ r, compact }: { r: Resource; compact: boolean }) {
       <ResourceIcon r={r} />
       {formatNumber(amount)}
       {!compact && <span className="text-muted font-normal">/{formatNumber(cap)}</span>}
-      {warn && <span aria-hidden title={t('resourceBar.nearlyFull')}>⚠</span>}
+      {warn && <span className="inline-flex" title={t('resourceBar.nearlyFull')}><PixelIcon name="warning" size={14} /></span>}
     </span>
   );
 }

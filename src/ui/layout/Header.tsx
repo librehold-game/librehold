@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PixelIcon } from '../pixelIcons';
 import { useGameStore, selectActiveVillage } from '../../state/gameStore';
 import { selectActiveFarmCap, selectActivePoints, selectActivePopUsed, selectActiveStorageCap } from '../../state/selectors';
 import { formatCoords, formatNumber } from '../format';
@@ -66,7 +67,7 @@ export function Header() {
             <span className="text-muted hidden sm:inline">{t('header.villageCount', { count: villages.length })}</span>
           </span>
         )}
-        {coins > 0 && <span className="font-body text-[12px]" title={t('header.coins')}>🪙 {coins}</span>}
+        {coins > 0 && <span className="font-body text-[12px]" title={t('header.coins')}><PixelIcon name="coin" size={16} /> {coins}</span>}
         <LanguageSwitch className="ml-auto font-body text-[11px] gap-0.5" buttonClassName="btn !px-1 !py-0 opacity-70" onChange={(locale) => useGameStore.getState().setLocale(locale)} />
       </div>
       <div className="px-2 sm:px-3 py-1.5 sm:py-2 flex flex-wrap items-center gap-x-3 sm:gap-x-6 gap-y-1">
@@ -79,7 +80,7 @@ export function Header() {
           {formatNumber(popUsed)}/{formatNumber(popCap)}
         </span>
         <span className="flex items-center gap-1" title={t('header.points')}>
-          <span aria-hidden>⭐</span>
+          <PixelIcon name="star" size={16} />
           {t('header.pointsShort', { n: formatNumber(points) })}
         </span>
         <WorldClock />

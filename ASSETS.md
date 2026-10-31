@@ -46,7 +46,7 @@ element kits (`ui-sample.png`, `kit-a.png`, `kit-b.png`), background `bg/`, all 
 | Directory | Contents |
 |---|---|
 | `chrome/` | panel, header bar and plain plank, normal and red button, tab and active tab, text field, picture frame, active icon button, slider, background leather tile |
-| `icons/` | 32×32: resources and population, 11 navigation icons, 12 units |
+| `icons/` | 32×32: resources and population, 11 navigation icons, 12 units, and 18 interface signs (lock, warning, attack, shield, return, cart, lightning, coin, hourglass, clock, hammer, running figure, dust, magnifier, closed eye, skull, laurel, star) |
 
 ### Account site (public)
 

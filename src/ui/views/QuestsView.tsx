@@ -1,4 +1,5 @@
 import { questDescription, questTitle } from '../../i18n/names';
+import { PixelIcon } from '../pixelIcons';
 import { useT } from '../../i18n/i18n';
 import { villageLabelOf } from '../villageName';
 import { useState } from 'react';
@@ -81,7 +82,7 @@ export function QuestsView() {
               const q = QUEST_BY_ID[row.id]!;
               return (
                 <div key={row.id} className="panel p-2">
-                  <div className="font-semibold">📜 {questTitle(q.id)}</div>
+                  <div className="font-semibold"><PixelIcon name="nav-quests" size={16} /> {questTitle(q.id)}</div>
                   <div className="text-muted">{questDescription(q.id)}</div>
                   {row.progress !== null && <div className="mt-1 w-40"><ProgressBar ratio={row.progress} label={`${Math.round(row.progress * 100)}%`} /></div>}
                   <div className="mt-1">{t('quests.reward')} <RewardLabel reward={q.reward} /></div>

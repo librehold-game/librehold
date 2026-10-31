@@ -325,7 +325,7 @@
     "respawn": "Twoje ostatnie wioski upadły. Zaczynasz od nowa w {x}|{y}.",
     "newPlayer": "Nowy gracz {player} osiedlił się w okolicy {x}|{y}.",
     "title": "Pogłoski",
-    "protection": "🛡 Okres ochronny: jeszcze {time}",
+    "protection": "[icon:shield] Okres ochronny: jeszcze {time}",
     "empty": "Cisza. W karczmach jeszcze nic nie słychać."
   },
   "gossip": {
@@ -542,11 +542,12 @@
     "wall": "Mur obronny {level}"
   },
   "notice": {
-    "conquered": "🏰 Podbito nową wioskę!",
-    "questDone": "📜 Ukończono zadanie — odbierz nagrodę",
+    "rewardClaimed": "[icon:nav-quests] Nagroda odebrana",
+    "conquered": "[icon:nav-village] Podbito nową wioskę!",
+    "questDone": "[icon:nav-quests] Ukończono zadanie — odbierz nagrodę",
     "notLoaded": "Gra nie jest załadowana",
-    "dodge": "🏃 Unik zaplanowany — wojsko wyjdzie i wróci tuż po uderzeniu.",
-    "snipe": "🎯 Snajp zaplanowany — wsparcie wejdzie między 1. a 2. hetmana."
+    "dodge": "[icon:running] Unik zaplanowany — wojsko wyjdzie i wróci tuż po uderzeniu.",
+    "snipe": "[icon:nav-farm] Snajp zaplanowany — wsparcie wejdzie między 1. a 2. hetmana."
   },
   "map": {
     "bonusVillage": "Wioska bonusowa: {bonus}",
@@ -572,10 +573,10 @@
       "other": "· # komendy w drodze"
     },
     "incomingAttacks": {
-      "one": "⚠ Nadchodzi # atak — pierwszy za",
-      "few": "⚠ Nadchodzą # ataki — pierwszy za",
-      "many": "⚠ Nadchodzi # ataków — pierwszy za",
-      "other": "⚠ Nadchodzą # ataki — pierwszy za"
+      "one": "[icon:warning] Nadchodzi # atak — pierwszy za",
+      "few": "[icon:warning] Nadchodzą # ataki — pierwszy za",
+      "many": "[icon:warning] Nadchodzi # ataków — pierwszy za",
+      "other": "[icon:warning] Nadchodzą # ataki — pierwszy za"
     },
     "village": "Wioska",
     "switch": "Przełącz",
@@ -590,7 +591,7 @@
     "loot": " · łup {n}",
     "losses": " · straty {n}",
     "noLosses": " · bez strat",
-    "threat": "⚠ Atak stąd na {target} ({units}) za",
+    "threat": "[icon:warning] Atak stąd na {target} ({units}) za",
     "arrivesIn": "dotrze za",
     "reportsCount": "Raporty ({n})",
     "allReports": "wszystkie →",
@@ -732,7 +733,7 @@
     "needsAcademy": "Wymaga Akademii",
     "noResources": "Za mało surowców",
     "coinsTitle": "Monety hetmańskie",
-    "youHave": "Masz <b>🪙 {coins}</b> monet (globalnie, wspólne dla wszystkich wiosek). Hetmanów wyszkolonych łącznie: {minted}.",
+    "youHave": "Masz <b>[icon:coin] {coins}</b> monet (globalnie, wspólne dla wszystkich wiosek). Hetmanów wyszkolonych łącznie: {minted}.",
     "coinCost": "Koszt monety:",
     "mint": "Wybij monetę",
     "nextNoble": "Następny hetman wymaga <b>{coins}</b> monet (wiosek: {villages} + posiadani hetmani) oraz 40 000 / 50 000 / 50 000 surowców i 100 populacji. Limit w tej wiosce: {nobles}/{limit} (poziom Akademii).",
@@ -1092,8 +1093,8 @@
     "on": "dnia",
     "at": "godz.",
     "leavesArrives": "Wyjście {leave} · przybycie {arrive}",
-    "attackBtn": "⚔ Atak",
-    "supportBtn": "🛡 Wsparcie",
+    "attackBtn": "[icon:attack] Atak",
+    "supportBtn": "[icon:shield] Wsparcie",
     "enterTarget": "Podaj współrzędne celu (albo wybierz wioskę na mapie).",
     "cmd": {
       "attack": "Atak",

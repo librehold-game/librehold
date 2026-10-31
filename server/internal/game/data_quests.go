@@ -95,7 +95,8 @@ func r(resources *Resources) QuestReward { return QuestReward{Resources: resourc
 func points(w World, h PlayerID) float64   { return float64(PlayerPoints(w, h)) }
 func villages(w World, h PlayerID) float64 { return float64(villageCount(w, h)) }
 
-// Quests is the chain from the first clay pit to an empire.
+// Quests run from the first clay pit to an empire. After the farm they split into lines that do not wait for each
+// other: raiding (spearmen, battles, loot, auto-farm), defence (hiding place, wall), the smithy and the economy.
 var Quests = []QuestDef{
 	buildingQuest("wood1", BWood, 1, nil, r(res(60, 40, 20))),
 	buildingQuest("clay1", BClay, 1, []string{"wood1"}, r(res(40, 60, 20))),
@@ -108,12 +109,12 @@ var Quests = []QuestDef{
 	buildingQuest("farm5", BFarm, 5, []string{"iron5"}, r(res(100, 100, 100))),
 	buildingQuest("barracks1", BBarracks, 1, []string{"farm5"}, r(res(50, 50, 50))),
 	unitsQuest("spear10", USpear, 10, []string{"barracks1"}, r(res(100, 100, 100))),
-	buildingQuest("hide3", BHide, 3, []string{"spear10"}, r(res(150, 150, 150))),
-	buildingQuest("smithy1", BSmithy, 1, []string{"hide3"}, r(res(100, 100, 200))),
+	buildingQuest("hide3", BHide, 3, []string{"farm5"}, r(res(150, 150, 150))),
+	buildingQuest("smithy1", BSmithy, 1, []string{"barracks1"}, r(res(100, 100, 200))),
 	statQuest("research_sword", []string{"smithy1"}, r(res(200, 200, 200)),
 		func(w World, h PlayerID) bool { return maxResearchOf(w, h, USword) >= 1 }),
-	buildingQuest("wall1", BWall, 1, []string{"research_sword"}, r(res(100, 100, 100))),
-	statQuest("first_attack", []string{"wall1"}, r(res(100, 100, 100)),
+	buildingQuest("wall1", BWall, 1, []string{"hide3"}, r(res(100, 100, 100))),
+	statQuest("first_attack", []string{"spear10"}, r(res(100, 100, 100)),
 		func(w World, h PlayerID) bool { return statsOf(w, h).AttacksSent >= 1 }),
 	statQuest("first_battle", []string{"first_attack"}, r(res(500, 500, 500)),
 		func(w World, h PlayerID) bool { return statsOf(w, h).BattlesWon >= 1 }),
@@ -124,7 +125,7 @@ var Quests = []QuestDef{
 			hs := w.Human(h)
 			return hs != nil && hs.FarmAssistant.Templates["A"].Units.Total() > 0
 		}),
-	buildingQuest("main10", BMain, 10, []string{"loot5000"}, r(res(500, 500, 500))),
+	buildingQuest("main10", BMain, 10, []string{"farm5"}, r(res(500, 500, 500))),
 	buildingQuest("stable1", BStable, 1, []string{"main10"}, r(res(300, 300, 300))),
 	statQuest("scout", []string{"stable1"}, r(res(200, 200, 100)),
 		func(w World, h PlayerID) bool { return statsOf(w, h).ScoutsSent >= 1 }),

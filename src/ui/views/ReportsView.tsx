@@ -1,4 +1,5 @@
 import { buildingName, unitName } from '../../i18n/names';
+import { PixelIcon } from '../pixelIcons';
 import { useEffect, useState } from 'react';
 import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
 import { UNITS } from '../../data/units.data';
@@ -98,7 +99,7 @@ function ReportDetail({ id, onBack }: { id: string; onBack: () => void }) {
     <div className="space-y-3 text-[12px]">
       <div className="flex items-center gap-2 flex-wrap">
         <button className="btn" onClick={onBack}>{t('reports.back')}</button>
-        <h3 className="text-[15px]">{reportIcon(r)} {reportVillageLabel(r.origin)}{r.origin.ownerIsBot && <BotTag />} → {targetLabel(r)}{r.target.ownerIsBot && <BotTag />}</h3>
+        <h3 className="text-[15px]"><PixelIcon name={reportIcon(r)} size={18} /> {reportVillageLabel(r.origin)}{r.origin.ownerIsBot && <BotTag />} → {targetLabel(r)}{r.target.ownerIsBot && <BotTag />}</h3>
         <span className="text-muted ml-auto">{clock.at(r.time)}</span>
       </div>
       <div className="flex gap-2 flex-wrap">
@@ -215,7 +216,7 @@ export function ReportsView() {
           <tbody>
             {rows.map((r) => (
               <tr key={r.id} className={`cursor-pointer ${r.read ? 'text-muted' : 'font-semibold'}`} onClick={() => { markRead(r.id); setSelected(r.id); }}>
-                <td className="text-center w-8 stack-inline">{r.icon}</td>
+                <td className="text-center w-8 stack-inline"><PixelIcon name={r.icon} size={16} /></td>
                 <td className="stack-inline">{r.o} → {r.t}</td>
                 <td className="tabular-nums" data-label={t('reports.colLoot')}>{r.haul !== null ? `${formatNumber(r.haul)}${r.cap ? ` / ${formatNumber(r.cap)}` : ''}` : '—'}</td>
                 <td className="tabular-nums whitespace-nowrap" data-label={t('reports.colTime')}>{clock.at(r.time)}</td>

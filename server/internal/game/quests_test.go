@@ -327,3 +327,43 @@ func TestQuestProgressCoversActiveQuestsWithBars(t *testing.T) {
 		t.Fatal("unknown human")
 	}
 }
+
+// questAncestors are every quest that must be completed before id opens.
+func questAncestors(id string) map[string]bool {
+	out := map[string]bool{}
+	var walk func(string)
+	walk = func(q string) {
+		for _, r := range game.QuestByID[q].Requires {
+			if !out[r] {
+				out[r] = true
+				walk(r)
+			}
+		}
+	}
+	walk(id)
+	return out
+}
+
+func TestQuestLinesStandOnTheirOwn(t *testing.T) {
+	t.Run("auto-farm comes from raiding alone: no hiding place, smithy, swordsmen or wall on the way", func(t *testing.T) {
+		before := questAncestors("loot5000")
+		for _, q := range []string{"hide3", "smithy1", "research_sword", "wall1"} {
+			if before[q] {
+				t.Errorf("loot5000 waits for %s", q)
+			}
+		}
+		if !before["first_battle"] || !before["barracks1"] {
+			t.Fatalf("loot5000 should follow the raiding line: %v", before)
+		}
+	})
+	t.Run("the economy goes on without raiding", func(t *testing.T) {
+		for _, q := range []string{"main10", "resources10", "points1000", "market1"} {
+			before := questAncestors(q)
+			for _, raid := range []string{"spear10", "first_attack", "first_battle", "loot5000"} {
+				if before[raid] {
+					t.Errorf("%s waits for %s", q, raid)
+				}
+			}
+		}
+	})
+}

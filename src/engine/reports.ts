@@ -24,13 +24,13 @@ export function reportVillageOf(state: GameState, id: string): ReportVillage {
   return { id, name: '', x: m ? Number(m[1]) : 0, y: m ? Number(m[2]) : 0 };
 }
 
-/** Outcome icon for the report list. */
+/** The pixel icon of a report's outcome, for the report list. */
 export function reportIcon(r: Report): string {
-  if (r.type === 'conquest') return '🏰';
-  if (r.field?.missed) return '💨';
-  if (r.type === 'scout' || r.type === 'fieldScout') return r.outcome === 'attackerWon' ? '🔍' : '🕶';
-  if (r.type === 'support') return '🛡';
-  if (r.outcome === 'defenderWon') return '💀';
+  if (r.type === 'conquest') return 'nav-village';
+  if (r.field?.missed) return 'dust';
+  if (r.type === 'scout' || r.type === 'fieldScout') return r.outcome === 'attackerWon' ? 'magnifier' : 'eye-closed';
+  if (r.type === 'support') return 'shield';
+  if (r.outcome === 'defenderWon') return 'skull';
   const lost = Object.values(r.attacker.losses).some((n) => (n ?? 0) > 0);
-  return lost ? '⚔️' : '✅';
+  return lost ? 'attack' : 'laurel';
 }

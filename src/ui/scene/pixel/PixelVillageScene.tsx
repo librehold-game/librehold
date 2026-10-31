@@ -1,4 +1,5 @@
 import { t } from '../../../i18n/i18n';
+import { pixelIcon } from '../../pixelIcons';
 import { buildingName } from '../../../i18n/names';
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { BUILDINGS } from '../../../data/buildings.data';
@@ -160,7 +161,7 @@ export function PixelVillageScene({ villageId, mode }: { villageId: string; mode
               <rect x="1.5" y="1.5" width={Math.max(2, 23 * job.ratio)} height="4" rx="1" fill="#2f7d32" />
             </g>
           )}
-          {level > 0 && building && !job && <text x={bx - 20} y={top.top + 17} fontSize="12" textAnchor="middle">⏳</text>}
+          {level > 0 && building && !job && <image data-icon="hourglass" href={pixelIcon('hourglass')} x={bx - 26} y={top.top + 5} width={12} height={12} />}
           {bonus && <text x={sx - Math.min(40, top.w / 2 - 8)} y={top.top + 16} fontSize="14" fill={GOLD} stroke="#2e1a05" strokeWidth="0.6">★</text>}
         </g>,
       );

@@ -40,3 +40,14 @@ describe('pixel icons', () => {
     expect(srcs).toEqual([expect.stringMatching(/nav-map/), expect.stringMatching(/nav-menu/)]);
   });
 });
+
+describe('icons named in text and tables', () => {
+  it('every [icon:name] in the catalogues and every army icon is an exported icon', async () => {
+    const { COMMAND_ICON } = await import('../src/ui/villageName');
+    const catalogues = import.meta.glob<string>('../src/i18n/catalog/*/*.json', { eager: true, query: '?raw', import: 'default' });
+    const names = new Set(Object.values(COMMAND_ICON));
+    for (const text of Object.values(catalogues)) for (const m of text.matchAll(/\[icon:([a-z0-9-]+)\]/g)) names.add(m[1]!);
+    expect(names.size).toBeGreaterThan(5);
+    for (const n of names) expect(() => pixelIcon(n), n).not.toThrow();
+  });
+});

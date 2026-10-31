@@ -166,7 +166,7 @@
     "order": 11,
     "id": "hide3",
     "requires": [
-      "spear10"
+      "farm5"
     ],
     "reward": {
       "resources": {
@@ -181,7 +181,7 @@
     "order": 12,
     "id": "smithy1",
     "requires": [
-      "hide3"
+      "barracks1"
     ],
     "reward": {
       "resources": {
@@ -211,7 +211,7 @@
     "order": 14,
     "id": "wall1",
     "requires": [
-      "research_sword"
+      "hide3"
     ],
     "reward": {
       "resources": {
@@ -226,7 +226,7 @@
     "order": 15,
     "id": "first_attack",
     "requires": [
-      "wall1"
+      "spear10"
     ],
     "reward": {
       "resources": {
@@ -287,7 +287,7 @@
     "order": 19,
     "id": "main10",
     "requires": [
-      "loot5000"
+      "farm5"
     ],
     "reward": {
       "resources": {

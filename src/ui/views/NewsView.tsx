@@ -1,4 +1,6 @@
 import { newsText } from '../../i18n/names';
+import { PixelIcon } from '../pixelIcons';
+import { RichText } from '../components/RichText';
 import { useT } from '../../i18n/i18n';
 import { humanPlayer } from '../../engine/players';
 import type { NewsItem } from '../../engine/types';
@@ -21,12 +23,12 @@ export function NewsView() {
     <div className="text-[12px]">
       <div className="flex items-center gap-3 flex-wrap mb-2">
         <h2 className="text-lg">{t('news.title')}</h2>
-        {m.protection > 0 && <span className="text-ok font-semibold">{t('news.protection', { time: formatDurationHuman(m.protection) })}</span>}
+        {m.protection > 0 && <span className="text-ok font-semibold"><RichText text={t('news.protection', { time: formatDurationHuman(m.protection) })} /></span>}
       </div>
       <div className="space-y-1">
         {m.news.length === 0 ? <p className="text-muted italic">{t('news.empty')}</p> : m.news.map((n) => (
           <div key={n.id} className="panel px-2 py-1 flex gap-2 items-start">
-            <span>🗣️</span>
+            <PixelIcon name="nav-news" size={16} />
             <span className="flex-1"><span className="text-muted italic">{clock.day(n.time)}</span> — {newsText(n)}</span>
           </div>
         ))}

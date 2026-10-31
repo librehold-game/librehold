@@ -301,7 +301,7 @@
     "respawn": "Your last villages fell. You start again at {x}|{y}.",
     "newPlayer": "New player {player} settled near {x}|{y}.",
     "title": "Rumours",
-    "protection": "🛡 Beginner protection: {time} left",
+    "protection": "[icon:shield] Beginner protection: {time} left",
     "empty": "Quiet. Nothing is heard in the taverns yet."
   },
   "gossip": {
@@ -514,11 +514,12 @@
     "wall": "Wall {level}"
   },
   "notice": {
-    "conquered": "🏰 New village conquered!",
-    "questDone": "📜 Quest complete — collect the reward",
+    "rewardClaimed": "[icon:nav-quests] Reward collected",
+    "conquered": "[icon:nav-village] New village conquered!",
+    "questDone": "[icon:nav-quests] Quest complete — collect the reward",
     "notLoaded": "The game is not loaded",
-    "dodge": "🏃 Dodge planned — the troops leave and come back right after the hit.",
-    "snipe": "🎯 Snipe planned — the support lands between the 1st and the 2nd hetman."
+    "dodge": "[icon:running] Dodge planned — the troops leave and come back right after the hit.",
+    "snipe": "[icon:nav-farm] Snipe planned — the support lands between the 1st and the 2nd hetman."
   },
   "map": {
     "bonusVillage": "Bonus village: {bonus}",
@@ -542,8 +543,8 @@
       "other": "· # commands on the way"
     },
     "incomingAttacks": {
-      "one": "⚠ # attack incoming — the first in",
-      "other": "⚠ # attacks incoming — the first in"
+      "one": "[icon:warning] # attack incoming — the first in",
+      "other": "[icon:warning] # attacks incoming — the first in"
     },
     "village": "Village",
     "switch": "Switch",
@@ -558,7 +559,7 @@
     "loot": " · loot {n}",
     "losses": " · losses {n}",
     "noLosses": " · no losses",
-    "threat": "⚠ Attack from here on {target} ({units}) in",
+    "threat": "[icon:warning] Attack from here on {target} ({units}) in",
     "arrivesIn": "arrives in",
     "reportsCount": "Reports ({n})",
     "allReports": "all →",
@@ -700,7 +701,7 @@
     "needsAcademy": "Requires the Academy",
     "noResources": "Not enough resources",
     "coinsTitle": "Hetman coins",
-    "youHave": "You have <b>🪙 {coins}</b> coins (shared by all your villages). Hetmans trained so far: {minted}.",
+    "youHave": "You have <b>[icon:coin] {coins}</b> coins (shared by all your villages). Hetmans trained so far: {minted}.",
     "coinCost": "Coin cost:",
     "mint": "Mint a coin",
     "nextNoble": "The next hetman needs <b>{coins}</b> coins (villages: {villages} + hetmans you own) plus 40,000 / 50,000 / 50,000 resources and 100 population. Limit in this village: {nobles}/{limit} (Academy level).",
@@ -1058,8 +1059,8 @@
     "on": "on",
     "at": "at",
     "leavesArrives": "Leaves {leave} · arrives {arrive}",
-    "attackBtn": "⚔ Attack",
-    "supportBtn": "🛡 Support",
+    "attackBtn": "[icon:attack] Attack",
+    "supportBtn": "[icon:shield] Support",
     "enterTarget": "Enter the target's coordinates (or pick a village on the map).",
     "cmd": {
       "attack": "Attack",

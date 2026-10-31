@@ -1,4 +1,5 @@
 import { buildingName, unitName } from '../../i18n/names';
+import { PixelIcon } from '../pixelIcons';
 import { useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
@@ -200,10 +201,10 @@ function SendTab() {
                   : t('rally.leavesArrives', { leave: clock.at(at - parsed.attack.travelMs, true), arrive: clock.at(at, true) })}
               </div>
             )}
-            {parsed.attack.warnings.map((w) => <div key={w.kind} className="text-bad font-semibold">⚠ {blockerText(w, parsed.now)}</div>)}
+            {parsed.attack.warnings.map((w) => <div key={w.kind} className="text-bad font-semibold"><PixelIcon name="warning" size={16} /> {blockerText(w, parsed.now)}</div>)}
             <div className="flex gap-2 pt-2">
-              <button className="btn" disabled={parsed.attack.blockers.length > 0} title={parsed.attack.blockers.map((b) => blockerText(b, parsed.now)).join('\n')} onClick={() => doSend('attack')}>{t('rally.attackBtn')}</button>
-              <button className="btn" disabled={parsed.support.blockers.length > 0} title={parsed.support.blockers.map((b) => blockerText(b, parsed.now)).join('\n')} onClick={() => doSend('support')}>{t('rally.supportBtn')}</button>
+              <button className="btn" disabled={parsed.attack.blockers.length > 0} title={parsed.attack.blockers.map((b) => blockerText(b, parsed.now)).join('\n')} onClick={() => doSend('attack')}><RichText text={t('rally.attackBtn')} /></button>
+              <button className="btn" disabled={parsed.support.blockers.length > 0} title={parsed.support.blockers.map((b) => blockerText(b, parsed.now)).join('\n')} onClick={() => doSend('support')}><RichText text={t('rally.supportBtn')} /></button>
             </div>
             {parsed.attack.blockers.length > 0 && (
               <ul className="text-muted list-disc pl-4 pt-1">{parsed.attack.blockers.map((b, i) => <li key={i}>{blockerText(b, parsed.now)}</li>)}</ul>
@@ -239,7 +240,7 @@ function CommandRow({ cmd }: { cmd: Command }) {
   const label = t(`rally.cmd.${cmd.type}`);
   return (
     <tr className={incoming ? 'text-bad font-semibold' : ''}>
-      <td className="whitespace-nowrap">{icon} {incoming ? t('rally.incoming') : ''}{label}</td>
+      <td className="whitespace-nowrap"><PixelIcon name={icon} size={16} /> {incoming ? t('rally.incoming') : ''}{label}</td>
       <td className="text-[11px]" data-label={t('rally.col.route')}>{o}<br />→ {to}</td>
       <td data-label={t('rally.col.units')}><UnitCountList units={cmd.units} /></td>
       <td className="tabular-nums" data-label={t('rally.col.arrives')}><Countdown until={cmd.arrivesAt} /><div className="text-[10px] text-muted">{clock.at(cmd.arrivesAt)}</div></td>

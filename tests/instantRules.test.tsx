@@ -98,6 +98,6 @@ describe('instant worlds without coins', () => {
   it('the header shows no coin badge', () => {
     mount(game(true));
     const { container } = render(<Header />);
-    expect(container.textContent).not.toContain('🪙');
+    expect(container.querySelector('img[src*="coin"]')).toBeNull();
   });
 });

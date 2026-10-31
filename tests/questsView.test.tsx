@@ -13,7 +13,7 @@ describe('quest bars show the server\'s progress', () => {
   it('a quest with progress shows its bar; one without shows none', () => {
     setLocale('en');
     const g = newTestGame();
-    g.quests = { completed: ['wall1'], active: ['wood1', 'first_attack'], claimed: [], progress: { wood1: 0.5 } };
+    g.quests = { completed: ['spear10'], active: ['wood1', 'first_attack'], claimed: [], progress: { wood1: 0.5 } };
     useGameStore.setState({ game: g, phase: 'ready' });
     render(<QuestsView />);
     const panel = (id: string) => screen.getByText(questTitle(id), { exact: false }).closest('.panel')!;

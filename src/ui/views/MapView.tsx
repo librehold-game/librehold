@@ -1,4 +1,7 @@
 import { t as tr, useT } from '../../i18n/i18n';
+import { COMMAND_ICON } from '../villageName';
+import { PixelIcon } from '../pixelIcons';
+import { RichText } from '../components/RichText';
 import { villageName } from '../../i18n/names';
 import { BotTag } from '../components/BotTag';
 import { unitName } from '../../i18n/names';
@@ -91,7 +94,6 @@ const selectCommandDots = (s: GameStore): string => {
 };
 
 const POPUP_W = 256;
-const CMD_ICON = { attack: '⚔', support: '🛡', return: '↩', trade: '🛒' } as const;
 
 /** Small menu next to the clicked village — different for an own one (economy, threats) and a foreign one (intel, reports, movements). */
 export function VillagePopup({ sel, anchor, bounds, sheet, onClose, onDetails }: {
@@ -168,7 +170,7 @@ export function VillagePopup({ sel, anchor, bounds, sheet, onClose, onDetails }:
             <span title={t('map.population')} className="inline-flex items-center gap-1"><PopIcon size={14} /> {formatNumber(info.popUsed)}/{formatNumber(info.popMax)}</span>
           </div>
           <div className="mt-0.5">
-            🔨 {info.build
+            <PixelIcon name="hammer" size={16} /> {info.build
               ? <>{info.build.name} {info.build.level} — <Countdown until={info.build.completesAt} />{info.queueLength > 1 && <span className="text-muted">{t('map.queued', { n: info.queueLength - 1 })}</span>}</>
               : <span className="text-muted">{t('map.queueEmpty')}</span>}
           </div>
@@ -178,7 +180,7 @@ export function VillagePopup({ sel, anchor, bounds, sheet, onClose, onDetails }:
             {info.outgoing > 0 && <span className="text-muted">{t('map.commandsOnWay', { count: info.outgoing })}</span>}
           </div>
           {info.incoming.count > 0 && info.incoming.firstAt !== null && (
-            <div className="mt-0.5 text-bad font-semibold">{t('map.incomingAttacks', { count: info.incoming.count })} <Countdown until={info.incoming.firstAt} /></div>
+            <div className="mt-0.5 text-bad font-semibold"><RichText text={t('map.incomingAttacks', { count: info.incoming.count })} /> <Countdown until={info.incoming.firstAt} /></div>
           )}
           <div className="flex flex-wrap gap-1 mt-1.5">
             <button className="btn" onClick={() => { setActive(info.id); setView('village'); }}>{t('map.village')}</button>
@@ -209,9 +211,9 @@ export function VillagePopup({ sel, anchor, bounds, sheet, onClose, onDetails }:
               {info.intel && (info.intel.lastLosses ? <span className="text-bad">{t('map.losses', { n: info.intel.lastLosses })}</span> : <span className="text-ok">{t('map.noLosses')}</span>)}
             </div>
           )}
-          {info.threat && <div className="text-bad font-semibold">{t('map.threat', { target: info.threat.targetName, units: info.threat.units })} <Countdown until={info.threat.arrivesAt} /></div>}
+          {info.threat && <div className="text-bad font-semibold"><RichText text={t('map.threat', { target: info.threat.targetName, units: info.threat.units })} /> <Countdown until={info.threat.arrivesAt} /></div>}
           {info.ours.map((c) => (
-            <div key={c.id}>{CMD_ICON[c.kind]} {t(`map.cmd.${c.kind}`)}{c.units > 0 ? ` (${c.units})` : ''} {t('map.arrivesIn')} <Countdown until={c.arrivesAt} /></div>
+            <div key={c.id}><PixelIcon name={COMMAND_ICON[c.kind]} size={16} /> {t(`map.cmd.${c.kind}`)}{c.units > 0 ? ` (${c.units})` : ''} {t('map.arrivesIn')} <Countdown until={c.arrivesAt} /></div>
           ))}
           <div className="mt-1 border-t border-wood-border/60 pt-1">
             <div className="flex items-center justify-between">
@@ -222,7 +224,7 @@ export function VillagePopup({ sel, anchor, bounds, sheet, onClose, onDetails }:
               <div className="text-muted italic">{t('map.noReports')}</div>
             ) : info.reports.map((r) => (
               <button key={r.id} className={`block w-full text-left px-1 rounded hover:bg-white/40 ${r.read ? '' : 'font-semibold'}`} onClick={() => openReport(r.id)}>
-                {r.icon} {t(`map.r.${r.type === 'scout' || r.type === 'conquest' || r.type === 'support' ? r.type : r.ours ? 'ours' : 'theirs'}`)} · {clock.at(r.time)}{r.haul !== null ? t('map.loot', { n: formatNumber(r.haul) }) : ''}
+                <PixelIcon name={r.icon} size={16} /> {t(`map.r.${r.type === 'scout' || r.type === 'conquest' || r.type === 'support' ? r.type : r.ours ? 'ours' : 'theirs'}`)} · {clock.at(r.time)}{r.haul !== null ? t('map.loot', { n: formatNumber(r.haul) }) : ''}
               </button>
             ))}
           </div>

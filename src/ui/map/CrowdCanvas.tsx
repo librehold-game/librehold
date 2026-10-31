@@ -38,15 +38,12 @@ export function drawFigure(ctx: CanvasRenderingContext2D, s: Walk, dir: keyof Wa
   ctx.drawImage(img, f * s.w, 0, s.w, s.h, Math.round(x - s.anchor[0] * k), Math.round(y - s.anchor[1] * k), Math.round(s.w * k), Math.round(s.h * k));
 }
 
-/** The return arrow over a foreign army heading home. */
+/** The return arrow over a foreign army heading home; nothing until the icon has loaded. */
 function drawReturnBadge(ctx: CanvasRenderingContext2D, x: number, y: number, scale: number): void {
-  ctx.font = `700 ${Math.round(16 * scale)}px sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.lineWidth = 3 * scale;
-  ctx.strokeStyle = '#3b2410';
-  ctx.fillStyle = '#fbe7b5';
-  ctx.strokeText('↩', x, y);
-  ctx.fillText('↩', x, y);
+  const icon = image(pixelIcon('return'));
+  if (!icon) return;
+  const size = Math.round(16 * scale);
+  ctx.drawImage(icon, Math.round(x - size / 2), Math.round(y - size + 4 * scale), size, size);
 }
 
 /** Stand-in boat: a brown hull with the army's icon riding it. */

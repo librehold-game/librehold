@@ -42,7 +42,7 @@ function Homeward() {
   return (
     <g>
       <g opacity={0.5}><Shield /></g>
-      <text x={7} y={-3} textAnchor="middle" fontSize={9} fontWeight={700} fill="#fbe7b5" stroke="#3b2410" strokeWidth={2} paintOrder="stroke">{'↩'}</text>
+      <image href={pixelIcon('return')} x={1} y={-10} width={12} height={12} style={{ imageRendering: 'pixelated' }} />
     </g>
   );
 }
@@ -51,7 +51,7 @@ function ArmyIcon({ army }: { army: MapArmy }) {
   if (TORCH_KINDS.has(army.kind)) return <Torch />;
   if (army.kind === 'passingReturn') return <Homeward />;
   if (FOREIGN_KINDS.has(army.kind)) return <Shield />;
-  if (army.kind === 'trade' || !army.units) return <text textAnchor="middle" y={4} fontSize={10}>{'🛒'}</text>;
+  if (army.kind === 'trade' || !army.units) return <image href={pixelIcon('cart')} x={-8} y={-8} width={16} height={16} style={{ imageRendering: 'pixelated' }} />;
   return <image href={pixelIcon(`unit-${leadUnit(army.units)}`)} x={-8} y={-8} width={16} height={16} style={{ imageRendering: 'pixelated' }} />;
 }
 

@@ -1,4 +1,5 @@
 import { buildingName, resourceName, unitName } from '../../i18n/names';
+import { PixelIcon } from '../pixelIcons';
 import { useT } from '../../i18n/i18n';
 import { COMMAND_ICON, commandEnds, villageLabelOf } from '../villageName';
 import { useState } from 'react';
@@ -113,7 +114,7 @@ function ResourcesTab({ ids }: { ids: string[] }) {
           const full = RESOURCES.some((res) => r.res[res] >= r.cap * 0.9);
           return (
             <tr key={r.id} className={full ? 'text-bad' : ''}>
-              <td>{r.name} <span className="text-muted">{formatCoords(r.x, r.y)}</span>{full && ' ⚠'}</td>
+              <td>{r.name} <span className="text-muted">{formatCoords(r.x, r.y)}</span>{full && <> <PixelIcon name="warning" size={14} /></>}</td>
               {RESOURCES.map((res) => <td key={res} className="tabular-nums" data-label={resourceName(res)}>{formatNumber(r.res[res])}</td>)}
               <td className="tabular-nums" data-label={t('overview.storage')}>{formatNumber(r.cap)}</td>
               <td className="tabular-nums" data-label={t('overview.production')}>{r.prod.join(' / ')}</td>
@@ -140,7 +141,7 @@ function CommandsTab({ ids }: { ids: string[] }) {
       <tbody>
         {cmds.map((c) => (
           <tr key={c.id}>
-            <td>{COMMAND_ICON[c.type]}</td>
+            <td><PixelIcon name={COMMAND_ICON[c.type]} size={16} /></td>
             <td className="text-[11px]" data-label={t('overview.route')}>{commandEnds(game, c).from} → {commandEnds(game, c).to}</td>
             <td data-label={t('overview.units')}>{c.type === 'trade' ? (c.haul ? t('overview.tradeHaul', { n: formatNumber(c.haul.wood + c.haul.clay + c.haul.iron), m: c.merchants ?? 0 }) : t('overview.merchantsBack', { m: c.merchants ?? 0 })) : <UnitCountList units={c.units} />}</td>
             <td className="tabular-nums" data-label={t('overview.arrival')}><Countdown until={c.arrivesAt} /> <span className="text-muted text-[10px]">{clock.at(c.arrivesAt)}</span></td>

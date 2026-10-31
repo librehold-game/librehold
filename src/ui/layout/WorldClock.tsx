@@ -1,4 +1,5 @@
 import { useGameStore } from '../../state/gameStore';
+import { PixelIcon } from '../pixelIcons';
 import { selectNow, selectConfig } from '../../state/selectors';
 import { formatServerTime, worldDayLabel } from '../format';
 import { useT } from '../../i18n/i18n';
@@ -12,7 +13,7 @@ export function WorldClock() {
   const paused = useGameStore((s) => selectConfig(s).paused);
   return (
     <span className="flex items-center gap-1 ml-auto text-muted tabular-nums" title={t('clock.title')}>
-      <span aria-hidden>⏱</span>
+      <PixelIcon name="clock" size={16} />
       {formatServerTime(origin, now)}
       <span className="text-[10px]">{worldDayLabel(now)}</span>
       {speed !== 1 && <span className="text-gold font-semibold">×{speed}</span>}

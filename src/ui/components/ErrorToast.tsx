@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useGameStore } from '../../state/gameStore';
+import { RichText } from './RichText';
 
 export function ErrorToast() {
   const error = useGameStore((s) => s.lastError);
@@ -19,7 +20,7 @@ export function ErrorToast() {
   return (
     <div className="fixed bottom-4 right-4 flex flex-col gap-2 items-end">
       {notice && (
-        <div className="panel px-3 py-2 text-ok font-semibold shadow-lg cursor-pointer" onClick={clearNotice}>{notice}</div>
+        <div className="panel px-3 py-2 text-ok font-semibold shadow-lg cursor-pointer" onClick={clearNotice}><RichText text={notice} /></div>
       )}
       {error && (
         <div className="panel px-3 py-2 text-bad font-semibold shadow-lg cursor-pointer" onClick={clear}>{error}</div>

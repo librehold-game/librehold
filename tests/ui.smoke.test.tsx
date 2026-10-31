@@ -444,3 +444,23 @@ describe('from the server: views from the player state', () => {
     await vi.waitFor(() => expect(calls).toContain(`GET /api/v1/worlds/1/farm-targets?village=${encodeURIComponent(vid)}`));
   });
 });
+
+describe('locked auto-farm', () => {
+  afterEach(() => cleanup());
+
+  it('says why it is locked over the whole control, the disabled box included', async () => {
+    useGameStore.getState().shutdown();
+    stubServer(structuredClone(game()));
+    await useGameStore.getState().boot();
+    render(<FarmAssistantView />);
+    const box = screen.getByRole('checkbox', { name: /Auto-farm/ }) as HTMLInputElement;
+    expect(box.disabled).toBe(true);
+    const label = box.closest('label')!;
+    expect(label.getAttribute('title')).toMatch(/3/);
+    expect(label.getAttribute('title')).toMatch(/Łupieżca/);
+    // A disabled input swallows the hover, so the label's tooltip must reach through it.
+    expect(box.className).toMatch(/pointer-events-none/);
+    expect(box.getAttribute('aria-describedby')).toBeTruthy();
+    expect(document.getElementById(box.getAttribute('aria-describedby')!)?.textContent).toMatch(/Łupieżca/);
+  });
+});

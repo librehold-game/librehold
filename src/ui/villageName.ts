@@ -28,4 +28,5 @@ export function commandEnds(g: GameState, c: Command): { from: string; to: strin
   return { from: end(c.originId, ends?.from), to: end(c.targetId, ends?.to) };
 }
 
-export const COMMAND_ICON: Record<Command['type'], string> = { attack: '⚔', support: '🛡', return: '↩', trade: '🛒', intercept: '⚡' };
+/** The pixel icon of each kind of army on the move. */
+export const COMMAND_ICON: Record<Command['type'], string> = { attack: 'attack', support: 'shield', return: 'return', trade: 'cart', intercept: 'lightning' };

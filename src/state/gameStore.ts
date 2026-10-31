@@ -230,7 +230,7 @@ export const useGameStore = create<GameStore>()(
       const before = new Set(server.news.map((n) => n.id));
       server.news = await api.get<NewsEntry[]>(worldPath('/news?limit=50'));
       const alert = server.news.find((n) => n.alert && !before.has(n.id));
-      if (alert && before.size > 0) set((s) => { s.notice = `🗣️ ${newsText(alert)}`; });
+      if (alert && before.size > 0) set((s) => { s.notice = `[icon:nav-news] ${newsText(alert)}`; });
       rebuild();
     };
     const quietly = (p: Promise<unknown>) => { p.catch(() => undefined); };
@@ -474,7 +474,7 @@ export const useGameStore = create<GameStore>()(
       },
 
       claimQuestReward: (questId, villageId) =>
-        run('claim-quest', { questId, villageId: villageId ?? active() }, '📜 Nagroda odebrana'),
+        run('claim-quest', { questId, villageId: villageId ?? active() }, t('notice.rewardClaimed')),
       build: (villageId, building) => run('build', { villageId, building }),
       demolish: (villageId, building) => run('demolish', { villageId, building }),
       cancelBuildJob: (villageId, jobId) => run('cancel-build', { villageId, jobId }),

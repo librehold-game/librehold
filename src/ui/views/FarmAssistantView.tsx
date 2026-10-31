@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
+import { PixelIcon } from '../pixelIcons';
 import { autoFarmUnlocked, type FarmTarget } from '../../engine/farm';
 import { selectActiveVillage, useGameStore } from '../../state/gameStore';
 import { useUiStore } from '../../state/uiStore';
@@ -10,7 +11,13 @@ import { useT } from '../../i18n/i18n';
 import { RichText } from '../components/RichText';
 
 
-const STATUS_ICON: Record<FarmTarget['status'], string> = { untouched: '⚪', full: '🟢', partial: '🟡', losses: '🔴', inbound: '⏳' };
+/** A target's state at a glance: a square pixel in the state's colour, or the hourglass while an attack is on its way. */
+const STATUS_COLOR: Record<Exclude<FarmTarget['status'], 'inbound'>, string> = { untouched: '#e8e0cc', full: '#2f7d32', partial: '#d9a51e', losses: '#b3261e' };
+
+function StatusMark({ status }: { status: FarmTarget['status'] }) {
+  if (status === 'inbound') return <PixelIcon name="hourglass" size={16} />;
+  return <span data-status={status} className="inline-block w-2.5 h-2.5 border border-[#2e1a05]" style={{ background: STATUS_COLOR[status] }} />;
+}
 
 type SortKey = 'distance' | 'lastAttackAt' | 'estimatedLoot' | 'points';
 
@@ -47,6 +54,8 @@ export function FarmAssistantView() {
   const setAutoFarm = useGameStore((s) => s.setAutoFarm);
   const setView = useUiStore((s) => s.setView);
   const t = useT();
+  const autoHintId = useId();
+  const autoHint = m.autoUnlocked ? t('farm.autoOn') : t('farm.autoLocked', { at: m.autoUnlockAt, n: m.villages });
 
   const sorted = [...m.targets].sort((a, b) => {
     if (sort === 'lastAttackAt') return (a.lastAttackAt ?? -1) - (b.lastAttackAt ?? -1);
@@ -87,13 +96,17 @@ export function FarmAssistantView() {
         <label className="inline-flex items-center gap-1"><input type="checkbox" checked={m.filters.hideLosses} onChange={(e) => setFilters({ hideLosses: e.target.checked })} /> {t('farm.hideLosses')}</label>
         <label className="inline-flex items-center gap-1"><input type="checkbox" checked={m.filters.hideInbound} onChange={(e) => setFilters({ hideInbound: e.target.checked })} /> {t('farm.hideInbound')}</label>
         <label>{t('farm.sort')} <select className="px-1 border border-wood-border rounded bg-white/50" value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>{(['distance', 'lastAttackAt', 'estimatedLoot', 'points'] as const).map((k) => <option key={k} value={k}>{t(`farm.sortBy.${k}`)}</option>)}</select></label>
-        <span className="ml-auto" title={m.autoUnlocked ? t('farm.autoOn') : t('farm.autoLocked', { at: m.autoUnlockAt, n: m.villages })}>
-          <label className="inline-flex items-center gap-1">
-            <input type="checkbox" disabled={!m.autoUnlocked} checked={m.autoEnabled && m.autoVillages.includes(villageId)} onChange={(e) => {
-              const ids = new Set(m.autoVillages);
-              if (e.target.checked) ids.add(villageId); else ids.delete(villageId);
-              setAutoFarm(ids.size > 0, [...ids]);
-            }} /> {t('farm.auto')} {m.autoUnlocked ? '' : '🔒'}
+        <span className="ml-auto">
+          {/* A disabled input swallows the hover, so it lets the pointer through to the label and its tooltip. */}
+          <label className={`inline-flex items-center gap-1${m.autoUnlocked ? '' : ' cursor-help'}`} title={autoHint}>
+            <input type="checkbox" disabled={!m.autoUnlocked} aria-describedby={m.autoUnlocked ? undefined : autoHintId}
+              className={m.autoUnlocked ? undefined : 'pointer-events-none'}
+              checked={m.autoEnabled && m.autoVillages.includes(villageId)} onChange={(e) => {
+                const ids = new Set(m.autoVillages);
+                if (e.target.checked) ids.add(villageId); else ids.delete(villageId);
+                setAutoFarm(ids.size > 0, [...ids]);
+              }} /> {t('farm.auto')} {!m.autoUnlocked && <PixelIcon name="lock" size={16} />}
+            {!m.autoUnlocked && <span id={autoHintId} className="sr-only">{autoHint}</span>}
           </label>
         </span>
       </div>
@@ -106,7 +119,7 @@ export function FarmAssistantView() {
           <tbody>
             {sorted.map((row, i) => (
               <tr key={row.id} className={i === sel ? 'outline outline-2 outline-gold' : ''} onClick={() => setSel(i)}>
-                <td title={t(`farm.status.${row.status}`)} data-label={t('farm.col.status')}>{STATUS_ICON[row.status]}</td>
+                <td title={t(`farm.status.${row.status}`)} data-label={t('farm.col.status')}><StatusMark status={row.status} /></td>
                 <td className="tabular-nums" data-label={t('farm.col.target')}>{formatCoords(row.x, row.y)}</td>
                 <td className="tabular-nums" data-label={t('farm.col.distance')}>{row.distance.toFixed(1)}</td>
                 <td className="tabular-nums" data-label={t('farm.col.points')}>{formatNumber(row.points)}</td>
