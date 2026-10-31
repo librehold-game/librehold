@@ -5,13 +5,26 @@ format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and ver
 [Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
 edit it by hand.
 
+## [0.6.0](https://github.com/librehold-game/librehold/releases/tag/v0.6.0) — 2026-10-31 (alpha)
+
+### Added
+
+- Draw the interface's signs as pixel icons and open the quest lines side by side ([7c6b813](https://github.com/librehold-game/librehold/commit/7c6b81371c8404fc8dc7b6dfce48dc840a5c8c9a)) by @SKocur
+
+### Contributors
+
+@SKocur
+
 ## [0.5.0](https://github.com/librehold-game/librehold/releases/tag/v0.5.0) — 2026-10-31 (alpha)
 
-### Changed
+### Added
 
 - Add a public world page with every setting, the full ranking and player pages ([307b3ec](https://github.com/librehold-game/librehold/commit/307b3ecf2436e0cf80815fba207c9e7ca3060b87)) by @SKocur
-- Count a paladin away from its village toward the one-paladin limit ([db55e89](https://github.com/librehold-game/librehold/commit/db55e8947fae7b0ab9c420cee95faed23662eaac)) by @SKocur
 - Record what a player had before each order, for teaching bots ([bc43ec7](https://github.com/librehold-game/librehold/commit/bc43ec7eb338877d6188703bdf0d1361da982ab0)) by @SKocur
+
+### Fixed
+
+- Count a paladin away from its village toward the one-paladin limit ([db55e89](https://github.com/librehold-game/librehold/commit/db55e8947fae7b0ab9c420cee95faed23662eaac)) by @SKocur
 
 ### Contributors
 
