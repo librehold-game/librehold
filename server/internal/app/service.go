@@ -31,6 +31,8 @@ type Config struct {
 	PlayerMaxWorlds int
 	// PlayerSweepEvery is how often host pauses are closed at their cap and abandoned worlds deleted; 10 s unless set.
 	PlayerSweepEvery time.Duration
+	// RecordDecisions logs an "observe" entry before every human order: what the player had, to teach the bots from.
+	RecordDecisions bool
 	// HeadText is the client's head copy (head-text.json), for titles of pages the server fills.
 	HeadText HeadText
 }

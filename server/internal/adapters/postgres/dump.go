@@ -27,7 +27,8 @@ type logIndexEntry struct {
 }
 
 // Export writes the archive, its leaderboards and every action log, packed or still running, to dir for offline
-// work: archive.jsonl, leaderboard.jsonl, logs/index.jsonl and logs/<world>.jsonl.gz.
+// work: archive.jsonl, leaderboard.jsonl, training.jsonl (human decisions, app.TrainingPairs), logs/index.jsonl
+// and logs/<world>.jsonl.gz.
 func Export(ctx context.Context, pool *pgxpool.Pool, dir string) error {
 	if err := os.MkdirAll(filepath.Join(dir, "logs"), 0o755); err != nil {
 		return err
@@ -63,10 +64,16 @@ func Export(ctx context.Context, pool *pgxpool.Pool, dir string) error {
 	if err := rows.Err(); err != nil {
 		return err
 	}
+	var pairs []app.TrainingPair
 	for i, e := range index {
 		if err := os.WriteFile(logPath(dir, e.WorldID), packed[i], 0o644); err != nil {
 			return err
 		}
+		log, err := app.UnpackLog(packed[i])
+		if err != nil {
+			return err
+		}
+		pairs = append(pairs, app.TrainingPairs(e.WorldID, log)...)
 	}
 	live, err := pool.Query(ctx, `select w.id, w.seed, w.secret, w.config from worlds w
 		where exists (select 1 from action_log l where l.world_id = w.id) order by w.id`)
@@ -98,15 +105,23 @@ func Export(ctx context.Context, pool *pgxpool.Pool, dir string) error {
 		}
 		e.Rows = len(log)
 		index = append(index, e)
+		pairs = append(pairs, app.TrainingPairs(e.WorldID, log)...)
 	}
+	if err := writeJSONLines(filepath.Join(dir, "training.jsonl"), pairs); err != nil {
+		return err
+	}
+	return writeJSONLines(filepath.Join(dir, "logs", "index.jsonl"), index)
+}
+
+func writeJSONLines[T any](path string, items []T) error {
 	var buf bytes.Buffer
 	enc := json.NewEncoder(&buf)
-	for _, e := range index {
-		if err := enc.Encode(e); err != nil {
+	for _, it := range items {
+		if err := enc.Encode(it); err != nil {
 			return err
 		}
 	}
-	return os.WriteFile(filepath.Join(dir, "logs", "index.jsonl"), buf.Bytes(), 0o644)
+	return os.WriteFile(path, buf.Bytes(), 0o644)
 }
 
 func logPath(dir string, worldID int64) string {

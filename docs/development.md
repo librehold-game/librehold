@@ -67,6 +67,7 @@ Server environment variables:
 | `LH_INSTANT_SWEEP_SEC` | 60 | how often, in seconds, the server checks on instant games (ready world, archive, cleanup) |
 | `LH_PLAYER_MAX_WORLDS` | 16 | how many player worlds can wait for the start or run at once; once reached, the form says the server is full |
 | `LH_PLAYER_SWEEP_SEC` | 10 | how often, in seconds, the server ends host pauses past the limit and deletes worlds abandoned before the start |
+| `LH_RECORD_DECISIONS` | `false` | `true` logs, with every human order, what the player had just before it (an `observe` entry), for teaching the bots; it grows the action log several times over |
 | `LH_PUBLIC_URL` | — | site origin (`https://example.com`) for canonical links, previews and the sitemap; empty uses the request's address |
 | `LH_TIME_SCALE`, `LH_TIME_EPOCH_MS` | 1 | **tests only**: server clock N times faster from the given moment |
 

@@ -3,6 +3,7 @@ package game
 import (
 	"encoding/json"
 	"slices"
+	"sort"
 )
 
 // LoggedAction is one entry of a world's action log, kept as data to learn from: an accepted order, a join or
@@ -65,31 +66,176 @@ func SnapshotHuman(w World, id PlayerID) {
 		return
 	}
 	s := Snapshot{Villages: []SnapshotVillage{}, Points: p.Points}
+	for _, v := range sortedVillages(w, p) {
+		s.Villages = append(s.Villages, snapshotVillage(w, v))
+	}
+	w.LogAction(ActorOf(p), false, "snapshot", s)
+}
+
+func sortedVillages(w World, p *Player) []*Village {
+	var out []*Village
 	for _, vid := range slices.Sorted(slices.Values(p.VillageIDs)) {
-		v := w.Village(vid)
-		if v == nil {
-			continue
+		if v := w.Village(vid); v != nil {
+			out = append(out, v)
 		}
-		settled := *v
-		Accrue(&settled, w.Now(), w.Config())
-		var away UnitCounts
-		add := func(u UnitCounts) {
-			for i, n := range u {
-				away[i] += n
+	}
+	return out
+}
+
+func snapshotVillage(w World, v *Village) SnapshotVillage {
+	settled := *v
+	Accrue(&settled, w.Now(), w.Config())
+	var away UnitCounts
+	add := func(u UnitCounts) {
+		for i, n := range u {
+			away[i] += n
+		}
+	}
+	for _, c := range w.CommandsHome(v.ID) {
+		if c.Type != "trade" {
+			add(c.Units)
+		}
+	}
+	for _, host := range w.SupportHosts(v.ID) {
+		add(host.SupportFrom[v.ID])
+	}
+	return SnapshotVillage{ID: v.ID, X: v.X, Y: v.Y, Buildings: v.Buildings, UnitsHome: UnitCounts(v.Units),
+		UnitsAway: away, Resources: settled.Resources}
+}
+
+// Observation is what a human had in front of them when giving an order, logged as an "observe" entry right
+// before the order: the situation half of a decision to learn from.
+type Observation struct {
+	WallMs        int64               `json:"wallMs"` // the real time, for the hour of the day; set by the caller
+	Points        int                 `json:"points"`
+	Villages      []ObservedVillage   `json:"villages"`
+	FarmAssistant *FarmAssistantState `json:"farmAssistant,omitempty"` // templates, filters, auto-farm
+	Choice        *ObservedChoice     `json:"choice,omitempty"`        // set by the caller for orders aimed at a tile
+}
+
+// ObservedOptions caps the farms an observed choice lists.
+const ObservedOptions = 20
+
+// ObservedChoice is what the player knew when aiming an order at a tile: the target, and the farms of the origin
+// village's farm list they could have picked instead, nearest first.
+type ObservedChoice struct {
+	Target  ObservedTarget `json:"target"`
+	Options []FarmTarget   `json:"options"`
+}
+
+type ObservedTarget struct {
+	FarmTarget
+	Owner string `json:"owner"` // barbarian | own | human | bot | empty
+}
+
+// ObserveChoice reads the target and the options as the actor's farm list and reports show them.
+func ObserveChoice(w World, actor PlayerID, originID string, x, y int) *ObservedChoice {
+	from := w.Village(originID)
+	if from == nil || from.OwnerID != Ref(actor) {
+		return nil
+	}
+	inbound := ownInbound(w, actor)
+	t := TileInfo(w, x, y)
+	target := ObservedTarget{FarmTarget: farmTargetFor(w, actor, from, t, inbound)}
+	switch {
+	case t.Kind != "village":
+		target.Owner = "empty"
+	case t.OwnerID == "":
+		target.Owner = "barbarian"
+	case t.OwnerID == Ref(actor):
+		target.Owner = "own"
+	case IsHumanID(PlayerID(t.OwnerID)):
+		target.Owner = "human"
+	default:
+		target.Owner = "bot"
+	}
+	options := FarmTargets(w, actor, originID)
+	sort.SliceStable(options, func(i, j int) bool {
+		if options[i].Distance != options[j].Distance {
+			return options[i].Distance < options[j].Distance
+		}
+		return options[i].ID < options[j].ID
+	})
+	if len(options) > ObservedOptions {
+		options = options[:ObservedOptions]
+	}
+	if options == nil {
+		options = []FarmTarget{}
+	}
+	return &ObservedChoice{Target: target, Options: options}
+}
+
+type ObservedVillage struct {
+	SnapshotVillage
+	Research     UnitCounts        `json:"research"`
+	StorageCap   float64           `json:"storageCap"`
+	PopUsed      int               `json:"popUsed"`
+	PopCap       int               `json:"popCap"`
+	Production   Resources         `json:"production"` // per hour
+	BuildQueue   []BuildJob        `json:"buildQueue"`
+	RecruitQueue []ObservedRecruit `json:"recruitQueue"`
+	Outgoing     []ObservedCommand `json:"outgoing"`
+	Incoming     []ObservedCommand `json:"incoming"`
+}
+
+type ObservedRecruit struct {
+	Unit        UnitID `json:"unit"`
+	Left        int    `json:"left"`
+	CompletesAt int64  `json:"completesAt"`
+}
+
+// ObservedCommand is an army or trade on the move; an incoming one carries no units, as the player cannot see them.
+type ObservedCommand struct {
+	ID        string      `json:"id"`
+	Type      string      `json:"type"`
+	OriginID  string      `json:"originId"`
+	TargetID  string      `json:"targetId"`
+	ArrivesAt int64       `json:"arrivesAt"`
+	Units     *UnitCounts `json:"units,omitempty"`
+}
+
+// ObserveHuman reads the human's villages without settling them.
+func ObserveHuman(w World, id PlayerID) Observation {
+	o := Observation{Villages: []ObservedVillage{}}
+	p := w.Player(id)
+	if p == nil {
+		return o
+	}
+	o.Points = p.Points
+	if h := w.Human(id); h != nil {
+		fa := h.FarmAssistant
+		o.FarmAssistant = &fa
+	}
+	for _, v := range sortedVillages(w, p) {
+		ov := ObservedVillage{SnapshotVillage: snapshotVillage(w, v), Research: UnitCounts(v.Research), StorageCap: VillageStorageCapacity(v),
+			PopUsed: PopulationUsed(w, v), PopCap: VillageFarmCapacity(v), BuildQueue: slices.Clone(v.BuildQueue),
+			RecruitQueue: []ObservedRecruit{}, Outgoing: []ObservedCommand{}, Incoming: []ObservedCommand{}}
+		if ov.BuildQueue == nil {
+			ov.BuildQueue = []BuildJob{}
+		}
+		for _, r := range ResourceIDs {
+			ov.Production.Set(r, VillageProductionPerHour(v, r, w.Config()))
+		}
+		for _, b := range RecruitBuildings {
+			for _, j := range *v.RecruitQueues.Q(b) {
+				ov.RecruitQueue = append(ov.RecruitQueue, ObservedRecruit{Unit: j.Unit, Left: j.Total - j.Done, CompletesAt: j.CompletesAt})
 			}
 		}
 		for _, c := range w.CommandsHome(v.ID) {
-			if c.Type != "trade" {
-				add(c.Units)
+			units := c.Units
+			ov.Outgoing = append(ov.Outgoing, ObservedCommand{ID: c.ID, Type: c.Type, OriginID: c.OriginID, TargetID: c.TargetID,
+				ArrivesAt: c.ArrivesAt, Units: &units})
+		}
+		for _, c := range w.CommandsTo(v.ID) {
+			if c.Type == "return" {
+				continue
 			}
+			ov.Incoming = append(ov.Incoming, ObservedCommand{ID: c.ID, Type: c.Type, OriginID: c.OriginID, TargetID: c.TargetID,
+				ArrivesAt: c.ArrivesAt})
 		}
-		for _, host := range w.SupportHosts(v.ID) {
-			add(host.SupportFrom[v.ID])
-		}
-		s.Villages = append(s.Villages, SnapshotVillage{ID: v.ID, X: v.X, Y: v.Y, Buildings: v.Buildings,
-			UnitsHome: UnitCounts(v.Units), UnitsAway: away, Resources: settled.Resources})
+		o.Villages = append(o.Villages, ov)
 	}
-	w.LogAction(ActorOf(p), false, "snapshot", s)
+	return o
 }
 
 func snapshotHumans(w World) {

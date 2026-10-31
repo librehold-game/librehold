@@ -33,12 +33,17 @@ when one human holds 60% of the villages.
   `/games/<id>`.
 - **Action log**: every accepted order, join, leave, admin change, bot move and a periodic snapshot of each human's
   state (every 5 minutes in instant worlds) goes to `action_log` in the same transaction as the change, under a random
-  player key (never the name). Rejected orders are only counted (`action_rejections`). A world being deleted packs its
+  player key (never the name). With `LH_RECORD_DECISIONS=true` (off by default) each human order is preceded by an
+  `observe` entry: what the player had just before it (villages with resources, buildings, research, queues, troops,
+  armies leaving and coming, the farm assistant's settings and the wall time). An order sent from a village at a tile
+  also carries the choice: the target and the nearest 20 farms of the village's farm list, as the player's reports
+  know them. Rejected orders are only counted (`action_rejections`). A world being deleted packs its
   log into one gzip blob (`action_log_packed`): a one-hour game with 18 bots is about 14k entries and 135 KB.
   `app.Replay` rebuilds the world from the log, the seed and the world's secret.
 - **Export** for offline work (admin only, no public API):
   `go run ./cmd/export -db "$LH_DATABASE_URL" -out ./export` writes `archive.jsonl`, `leaderboard.jsonl`,
-  `logs/index.jsonl` and `logs/<world>.jsonl.gz`. The index holds each world's secret, which decides its luck and
+  `training.jsonl` (one human decision per line: what the player had, then the order), `logs/index.jsonl` and
+  `logs/<world>.jsonl.gz`. The index holds each world's secret, which decides its luck and
   bots: keep an export of a running world private.
 
 ## Player worlds

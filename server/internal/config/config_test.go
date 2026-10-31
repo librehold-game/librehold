@@ -31,22 +31,24 @@ func TestConfigRefusesPlaceholderPasswords(t *testing.T) {
 
 func TestConfigDefaultsAndOverrides(t *testing.T) {
 	t.Setenv("LH_DATABASE_URL", "postgres://x")
-	for _, k := range []string{"LH_HTTP_ADDR", "LH_WEB_DIR", "LH_COOKIE_SECURE", "LH_TRUSTED_PROXIES", "LH_VALKEY_URL", "LH_ADMIN_USERNAME", "LH_ADMIN_PASSWORD"} {
+	for _, k := range []string{"LH_HTTP_ADDR", "LH_WEB_DIR", "LH_COOKIE_SECURE", "LH_TRUSTED_PROXIES", "LH_VALKEY_URL", "LH_ADMIN_USERNAME", "LH_ADMIN_PASSWORD", "LH_RECORD_DECISIONS"} {
 		t.Setenv(k, "")
 	}
 	c, err := config.Load()
 	if err != nil {
 		t.Fatal(err)
 	}
-	if c.HTTPAddr != ":8080" || c.WebDir != "/app/web" || !c.CookieSecure || len(c.TrustedProxies) != 0 || c.ValkeyURL != "" || c.DatabaseURL != "postgres://x" {
+	if c.HTTPAddr != ":8080" || c.WebDir != "/app/web" || !c.CookieSecure || len(c.TrustedProxies) != 0 || c.ValkeyURL != "" || c.DatabaseURL != "postgres://x" ||
+		c.RecordDecisions {
 		t.Fatalf("defaults %+v", c)
 	}
 	t.Setenv("LH_COOKIE_SECURE", "false")
 	t.Setenv("LH_VALKEY_URL", "redis://valkey:6379/0")
 	t.Setenv("LH_ADMIN_USERNAME", "admin")
 	t.Setenv("LH_ADMIN_PASSWORD", "secret")
+	t.Setenv("LH_RECORD_DECISIONS", "true")
 	c, _ = config.Load()
-	if c.CookieSecure || c.ValkeyURL != "redis://valkey:6379/0" || c.AdminUsername != "admin" || c.AdminPassword != "secret" {
+	if !c.RecordDecisions || c.CookieSecure || c.ValkeyURL != "redis://valkey:6379/0" || c.AdminUsername != "admin" || c.AdminPassword != "secret" {
 		t.Fatalf("overrides %+v", c)
 	}
 	t.Setenv("LH_COOKIE_SECURE", "maybe")

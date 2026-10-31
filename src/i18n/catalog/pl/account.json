@@ -158,7 +158,7 @@
     "title": "Prywatność",
     "intro": "LibreHold to hobbystyczna gra robiona dla znajomych. Ta strona mówi, co gra o tobie przechowuje i po co.",
     "account": "Konto przechowuje pseudonim, skrót hasła, język i datę ostatniej gry. Gość nie ma hasła; gość nieobecny przez 30 dni jest usuwany.",
-    "actions": "Ruchy w grze (rozkazy, dołączanie do światów i odchodzenie z nich) są zapisywane, by ulepszać grę i jej SI. Zapisy używają losowego identyfikatora gracza, nigdy pseudonimu ani adresu IP.",
+    "actions": "Ruchy w grze (rozkazy, dołączanie do światów i odchodzenie z nich) są zapisywane, by ulepszać grę i jej SI. Serwer, który to włączy, zapisuje też przy każdym rozkazie stan twoich wiosek w tej chwili: surowce, budynki, badania, kolejki i wojska, armie w drodze do nich i z nich, a przy wysłaniu wojska także jego cel i pobliskie farmy w takim stanie, jaki znasz z raportów. Te zapisy służą do uczenia botów, by grały jak ludzie, zostają na tym serwerze i nie są publikowane. Używają losowego identyfikatora gracza, nigdy pseudonimu ani adresu IP.",
     "deletion": "Po usunięciu konta lub gościa jego zapisy zostają, ale nic nie łączy ich już z tobą; dawne rankingi pokazują go jako byłego gracza.",
     "address": "Adres IP służy tylko w pamięci, do ograniczenia liczby kont zakładanych i zgłoszeń wysyłanych z jednego adresu w ciągu godziny, i nigdy nie jest zapisywany.",
     "cookies": "Jedno ciasteczko utrzymuje zalogowanie, drugie pamięta język. Nie ma śledzenia ani reklam."

@@ -85,39 +85,43 @@ func FarmTargets(w World, actor PlayerID, villageID string) []FarmTarget {
 		if t.Kind != "village" || t.OwnerID != "" {
 			continue
 		}
-		mat := w.Village(t.ID)
-		in := w.Intel(actor, t.ID)
-		ft := FarmTarget{ID: t.ID, X: t.X, Y: t.Y, Distance: Distance(v.X, v.Y, t.X, t.Y), Points: t.Points,
-			Inbound: inbound[t.ID], Status: "untouched"}
-		if in != nil {
-			ft.LastAttackAt = in.LastFarmedAt
-			if vi := in.Intel; vi != nil {
-				if vi.LastHaul != nil {
-					ft.LastHaul = ptrTo(SumResources(*vi.LastHaul))
-				}
-				ft.LastHaulCapacity = vi.LastHaulCapacity
-				ft.LastLosses = vi.LastLosses
-				ft.Wall = ptrTo(vi.Wall)
-				ft.Defenders = ptrTo(vi.Units.Total())
-			}
-		}
-		switch {
-		case ft.Inbound:
-			ft.Status = "inbound"
-		case ft.LastLosses != nil && *ft.LastLosses > 0:
-			ft.Status = "losses"
-		case ft.LastHaul != nil && ft.LastHaulCapacity != nil && *ft.LastHaulCapacity > 0:
-			ft.Status = "partial"
-			if *ft.LastHaul >= *ft.LastHaulCapacity {
-				ft.Status = "full"
-			}
-		}
-		if mat != nil {
-			ft.EstimatedLoot = EstimateLoot(w, actor, mat)
-		}
-		out = append(out, ft)
+		out = append(out, farmTargetFor(w, actor, v, t, inbound))
 	}
 	return out
+}
+
+// farmTargetFor is one tile as the actor knows it from their own reports.
+func farmTargetFor(w World, actor PlayerID, from *Village, t Tile, inbound map[string]bool) FarmTarget {
+	in := w.Intel(actor, t.ID)
+	ft := FarmTarget{ID: t.ID, X: t.X, Y: t.Y, Distance: Distance(from.X, from.Y, t.X, t.Y), Points: t.Points,
+		Inbound: inbound[t.ID], Status: "untouched"}
+	if in != nil {
+		ft.LastAttackAt = in.LastFarmedAt
+		if vi := in.Intel; vi != nil {
+			if vi.LastHaul != nil {
+				ft.LastHaul = ptrTo(SumResources(*vi.LastHaul))
+			}
+			ft.LastHaulCapacity = vi.LastHaulCapacity
+			ft.LastLosses = vi.LastLosses
+			ft.Wall = ptrTo(vi.Wall)
+			ft.Defenders = ptrTo(vi.Units.Total())
+		}
+	}
+	switch {
+	case ft.Inbound:
+		ft.Status = "inbound"
+	case ft.LastLosses != nil && *ft.LastLosses > 0:
+		ft.Status = "losses"
+	case ft.LastHaul != nil && ft.LastHaulCapacity != nil && *ft.LastHaulCapacity > 0:
+		ft.Status = "partial"
+		if *ft.LastHaul >= *ft.LastHaulCapacity {
+			ft.Status = "full"
+		}
+	}
+	if mat := w.Village(t.ID); mat != nil {
+		ft.EstimatedLoot = EstimateLoot(w, actor, mat)
+	}
+	return ft
 }
 
 func PassesFilters(w World, actor PlayerID, t FarmTarget) bool {

@@ -162,3 +162,27 @@ func UnpackLog(data []byte) ([]game.LoggedAction, error) {
 	}
 	return out, nil
 }
+
+// TrainingPair is one human decision to learn from: what the player had, and the order they then gave.
+type TrainingPair struct {
+	WorldID int64           `json:"worldId"`
+	Actor   string          `json:"actor"`
+	At      int64           `json:"at"`
+	Seen    json.RawMessage `json:"seen"`
+	Kind    string          `json:"kind"`
+	Order   json.RawMessage `json:"order"`
+}
+
+// TrainingPairs joins every "observe" entry with the order logged right after it by the same player.
+func TrainingPairs(worldID int64, log []game.LoggedAction) []TrainingPair {
+	out := []TrainingPair{}
+	for i := 0; i+1 < len(log); i++ {
+		seen, order := log[i], log[i+1]
+		if seen.Kind != "observe" || order.Actor != seen.Actor || order.Seq != seen.Seq+1 {
+			continue
+		}
+		out = append(out, TrainingPair{WorldID: worldID, Actor: seen.Actor, At: order.At, Seen: seen.Payload,
+			Kind: order.Kind, Order: order.Payload})
+	}
+	return out
+}

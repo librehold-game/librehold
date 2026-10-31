@@ -438,10 +438,18 @@ func (s *Service) Order(ctx context.Context, acct *Account, worldID int64, name 
 		return nil, err
 	}
 	logged := func(w WorldTx, me game.PlayerID) error {
+		var seen json.RawMessage
+		if s.cfg.RecordDecisions {
+			seen = s.observe(w, me, name, body)
+		}
 		if err := run(w, me); err != nil {
 			return err
 		}
-		w.LogAction(game.ActorOf(w.Player(me)), false, name, orderPayload(body))
+		actor := game.ActorOf(w.Player(me))
+		if s.cfg.RecordDecisions {
+			w.LogAction(actor, false, "observe", seen)
+		}
+		w.LogAction(actor, false, name, orderPayload(body))
 		return nil
 	}
 	if err := s.inWorld(ctx, acct, worldID, logged); err != nil {
@@ -449,6 +457,30 @@ func (s *Service) Order(ctx context.Context, acct *Account, worldID int64, name 
 		return nil, err
 	}
 	return s.state(ctx, acct, worldID)
+}
+
+// aimedOrders are the orders sent from a village at a tile, whose observation carries the choice.
+var aimedOrders = map[string]bool{"send": true, "schedule-send": true, "send-farm-template": true, "send-template-c": true}
+
+// observe encodes, before the order runs, what the player had: the order may change the very state observed.
+func (s *Service) observe(w WorldTx, me game.PlayerID, name string, body json.RawMessage) json.RawMessage {
+	seen := game.ObserveHuman(w, me)
+	seen.WallMs = s.clock.NowMs()
+	if aimedOrders[name] {
+		var aim struct {
+			OriginID string `json:"originId"`
+			X        int    `json:"x"`
+			Y        int    `json:"y"`
+		}
+		if json.Unmarshal(body, &aim) == nil {
+			seen.Choice = game.ObserveChoice(w, me, aim.OriginID, aim.X, aim.Y)
+		}
+	}
+	b, err := json.Marshal(seen)
+	if err != nil {
+		panic(&game.StoreError{Err: err})
+	}
+	return b
 }
 
 func orderPayload(body json.RawMessage) json.RawMessage {

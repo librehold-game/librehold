@@ -41,6 +41,8 @@ func TestExportWritesArchiveLeaderboardAndLogs(t *testing.T) {
 	s := postgres.NewWorlds(pool)
 	ended, err := s.Create(ctx, apptest.NewWorldRow(0), func(w app.WorldTx) error {
 		w.LogAction("world", false, "create", map[string]any{})
+		w.LogAction("k1", false, "observe", map[string]any{"points": 26})
+		w.LogAction("k1", false, "build", map[string]any{"building": "wood"})
 		return nil
 	})
 	if err != nil {
@@ -49,6 +51,8 @@ func TestExportWritesArchiveLeaderboardAndLogs(t *testing.T) {
 	running, err := s.Create(ctx, apptest.NewWorldRow(0), func(w app.WorldTx) error {
 		w.LogAction("world", false, "create", map[string]any{})
 		w.LogAction("bot_1", true, "build", map[string]any{"building": "wood"})
+		w.LogAction("k2", false, "observe", map[string]any{"points": 30})
+		w.LogAction("k2", false, "send", map[string]any{"x": 1})
 		return nil
 	})
 	if err != nil {
@@ -81,7 +85,7 @@ func TestExportWritesArchiveLeaderboardAndLogs(t *testing.T) {
 		index[1]["secret"] != secret || index[1]["packed"] != false {
 		t.Fatalf("index %+v", index)
 	}
-	for id, want := range map[int64]int{ended: 1, running: 2} {
+	for id, want := range map[int64]int{ended: 3, running: 4} {
 		data, err := os.ReadFile(filepath.Join(dir, "logs", strconv.FormatInt(id, 10)+".jsonl.gz"))
 		if err != nil {
 			t.Fatal(err)
@@ -90,6 +94,11 @@ func TestExportWritesArchiveLeaderboardAndLogs(t *testing.T) {
 		if err != nil || len(got) != want || got[0].Kind != "create" {
 			t.Fatalf("log of %d: %+v %v", id, got, err)
 		}
+	}
+	pairs := jsonLines(t, filepath.Join(dir, "training.jsonl"))
+	if len(pairs) != 2 || pairs[0]["worldId"] != float64(ended) || pairs[0]["kind"] != "build" || pairs[1]["actor"] != "k2" ||
+		pairs[1]["seen"].(map[string]any)["points"] != 30.0 {
+		t.Fatalf("training %+v", pairs)
 	}
 }
 

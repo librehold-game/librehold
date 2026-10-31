@@ -43,6 +43,9 @@ type Config struct {
 	// only; a fixed epoch keeps a restarted process on the same timeline.
 	TimeScale   float64
 	TimeEpochMs int64
+	// RecordDecisions logs, with every human order, what the player had just before it, to teach the bots from;
+	// off unless LH_RECORD_DECISIONS=true, since it grows the action log several times over.
+	RecordDecisions bool
 	// PublicURL is the site's origin (https://example.com) for canonical links and previews; empty uses the
 	// request's own scheme and host.
 	PublicURL string
@@ -80,6 +83,9 @@ func Load() (Config, error) {
 	}
 	var err error
 	if c.CookieSecure, err = boolEnv("LH_COOKIE_SECURE", true); err != nil {
+		return c, err
+	}
+	if c.RecordDecisions, err = boolEnv("LH_RECORD_DECISIONS", false); err != nil {
 		return c, err
 	}
 	if c.TrustedProxies, err = prefixes("LH_TRUSTED_PROXIES"); err != nil {

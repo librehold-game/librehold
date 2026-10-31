@@ -65,7 +65,8 @@ func run() error {
 	var clock app.Clock = wallClock{}
 	appCfg := app.Config{AdminUsername: cfg.AdminUsername, AdminPassword: cfg.AdminPassword, RegistrationsPerHour: cfg.RegistrationsPerHour,
 		GuestsPerHour: cfg.GuestsPerHour, WorldRequestsPerMinute: cfg.WorldRequestsPerMinute, InstantMaxWorlds: cfg.InstantMaxWorlds, InstantKeep: cfg.InstantKeep,
-		InstantSweepEvery: cfg.InstantSweepEvery, PlayerMaxWorlds: cfg.PlayerMaxWorlds, PlayerSweepEvery: cfg.PlayerSweepEvery}
+		InstantSweepEvery: cfg.InstantSweepEvery, PlayerMaxWorlds: cfg.PlayerMaxWorlds, PlayerSweepEvery: cfg.PlayerSweepEvery,
+		RecordDecisions: cfg.RecordDecisions}
 	if appCfg.HeadText, err = web.LoadHeadText(cfg.WebDir); err != nil {
 		slog.Warn("page titles of games, players and worlds fall back to their keys", "err", err)
 	}

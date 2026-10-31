@@ -158,7 +158,7 @@
     "title": "Privacy",
     "intro": "LibreHold is a hobby game made for friends. This page says what it keeps about you, and why.",
     "account": "Your account keeps a nickname, a password hash, your language and when you last played. A guest has no password; a guest not seen for 30 days is deleted.",
-    "actions": "Game actions (orders, joining and leaving worlds) are recorded to improve the game and its AI. The records use a random player ID, never your nickname or IP address.",
+    "actions": "Game actions (orders, joining and leaving worlds) are recorded to improve the game and its AI. A server that turns this on also saves, with each order, what you had at that moment: your villages' resources, buildings, research, queues and troops, the armies on the move to and from them, and, when you send an army, its target and the nearby farms as your reports know them. These records are used to teach the game's bots to play like people, stay on that server and are not published. They use a random player ID, never your nickname or IP address.",
     "deletion": "When an account or guest is deleted, its records stay, but nothing links them back to you; old leaderboards show it as a former player.",
     "address": "Your IP address is used only in memory, to limit how many accounts one address can open and how many problem reports it can send in an hour, and is never stored.",
     "cookies": "One cookie keeps you signed in and another remembers your language. There is no tracking and there are no ads."

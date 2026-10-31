@@ -1,5 +1,5 @@
-// Command export writes the instant archive, its leaderboards and every action log to files, for offline work
-// (admin only; there is no public API for the logs).
+// Command export writes the instant archive, its leaderboards, every action log and the human decisions to learn
+// from to files, for offline work (admin only; there is no public API for the logs).
 //
 //	go run ./cmd/export -db postgres://librehold:librehold@localhost:5433/librehold -out ./export
 package main

@@ -104,11 +104,41 @@ func TestOrderAndLogShareTransaction(t *testing.T) {
 	}
 	log := actionLog(t, f, id)
 	if len(log) != before+1 {
-		t.Fatalf("accepted order logged %d times", len(log)-before)
+		t.Fatalf("accepted order logged %d times — and nothing more unless decisions are recorded", len(log)-before)
 	}
 	e := log[len(log)-1]
 	if e.Kind != "recruit" || e.IsBot || string(e.Payload) != body || e.Seq != log[len(log)-2].Seq+1 {
 		t.Fatalf("entry %+v %s", e, e.Payload)
+	}
+}
+
+func TestOrderLogsWhatThePlayerSawBefore(t *testing.T) {
+	ctx := context.Background()
+	f := newInstantFixture(t, app.Config{RecordDecisions: true})
+	g := f.guest(t)
+	id := f.play(t, g).WorldID
+	home, _ := homeOf(t, f, id, g)
+	if _, err := f.svc.Order(ctx, g, id, "recruit", json.RawMessage(fmt.Sprintf(`{"villageId":%q,"unit":"spear","count":100000}`, home.ID))); err == nil {
+		t.Fatal("an order beyond the resources went through")
+	}
+	if obs := entriesOf(actionLog(t, f, id), "observe"); len(obs) != 0 {
+		t.Fatalf("a refused order left an observation: %+v", obs)
+	}
+	if _, err := f.svc.Order(ctx, g, id, "recruit", json.RawMessage(fmt.Sprintf(`{"villageId":%q,"unit":"spear","count":1}`, home.ID))); err != nil {
+		t.Fatal(err)
+	}
+	log := actionLog(t, f, id)
+	obs, e := log[len(log)-2], log[len(log)-1]
+	if obs.Kind != "observe" || e.Kind != "recruit" || obs.Actor != e.Actor || obs.At != e.At || obs.IsBot || e.Seq != obs.Seq+1 {
+		t.Fatalf("observation %+v then %+v", obs, e)
+	}
+	var o game.Observation
+	if err := json.Unmarshal(obs.Payload, &o); err != nil {
+		t.Fatal(err)
+	}
+	if o.WallMs != f.clock.NowMs() || len(o.Villages) != 1 || o.Villages[0].ID != home.ID || len(o.Villages[0].RecruitQueue) != 0 ||
+		o.Villages[0].Resources.Wood < home.Resources.Wood {
+		t.Fatalf("observation %s — want the village before the spear was ordered", obs.Payload)
 	}
 }
 
@@ -359,5 +389,83 @@ func TestReplayReproducesFinalState(t *testing.T) {
 	}
 	if !strings.Contains(want, `"conqueredAt"`) {
 		t.Log("note: the scripted game had no conquest")
+	}
+}
+
+func TestTrainingPairs(t *testing.T) {
+	entry := func(seq, at int64, actor, kind, payload string) game.LoggedAction {
+		return game.LoggedAction{Seq: seq, At: at, Actor: actor, IsBot: strings.HasPrefix(actor, "bot_"), Kind: kind,
+			Payload: json.RawMessage(payload)}
+	}
+	log := []game.LoggedAction{
+		entry(1, 0, "world", "create", `{}`),
+		entry(2, 10, "k1", "observe", `{"points":26}`),
+		entry(3, 10, "k1", "build", `{"building":"wood"}`),
+		entry(4, 20, "bot_1", "build", `{"building":"clay"}`),
+		entry(5, 30, "k1", "snapshot", `{}`),
+		entry(6, 40, "k2", "observe", `{"points":30}`),
+		entry(7, 40, "k2", "send", `{"x":1}`),
+		entry(8, 50, "k1", "observe", `{"points":27}`),
+	}
+	pairs := app.TrainingPairs(7, log)
+	got, _ := json.Marshal(pairs)
+	want := `[{"worldId":7,"actor":"k1","at":10,"seen":{"points":26},"kind":"build","order":{"building":"wood"}},` +
+		`{"worldId":7,"actor":"k2","at":40,"seen":{"points":30},"kind":"send","order":{"x":1}}]`
+	if string(got) != want {
+		t.Fatalf("pairs\n%s\nwant\n%s", got, want)
+	}
+}
+
+func TestObservationIsTakenBeforeTheOrderChangesAnything(t *testing.T) {
+	ctx := context.Background()
+	f := newInstantFixture(t, app.Config{RecordDecisions: true})
+	g := f.guest(t)
+	id := f.play(t, g).WorldID
+	if _, err := f.svc.Order(ctx, g, id, "set-farm-template", json.RawMessage(`{"key":"A","units":{"spear":77}}`)); err != nil {
+		t.Fatal(err)
+	}
+	var o game.Observation
+	if err := json.Unmarshal(entriesOf(actionLog(t, f, id), "observe")[0].Payload, &o); err != nil {
+		t.Fatal(err)
+	}
+	if o.FarmAssistant == nil || o.FarmAssistant.Templates["A"].Units[game.USpear] == 77 {
+		t.Fatalf("observed farm assistant %+v — it shows the template the order set", o.FarmAssistant)
+	}
+}
+
+func TestObservationOfAnOrderAimedAtATile(t *testing.T) {
+	ctx := context.Background()
+	f := newInstantFixture(t, app.Config{RecordDecisions: true})
+	g := f.guest(t)
+	id := f.play(t, g).WorldID
+	home, _ := homeOf(t, f, id, g)
+	bx, by := -1, -1
+	f.worlds.Read(ctx, id, func(w app.WorldTx) error {
+		for _, v := range game.GeneratedVillagesNear(w.Seed(), w.Config(), home.X, home.Y, 6) {
+			if w.Village(v.ID) == nil {
+				bx, by = v.X, v.Y
+				break
+			}
+		}
+		return nil
+	})
+	if _, err := f.svc.Order(ctx, g, id, "build", json.RawMessage(fmt.Sprintf(`{"villageId":%q,"building":"wood"}`, home.ID))); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := f.svc.Order(ctx, g, id, "send", json.RawMessage(fmt.Sprintf(`{"originId":%q,"x":%d,"y":%d,"type":"attack","units":{"spear":3}}`,
+		home.ID, bx, by))); err != nil {
+		t.Fatal(err)
+	}
+	obs := entriesOf(actionLog(t, f, id), "observe")
+	var build, send game.Observation
+	if err := json.Unmarshal(obs[0].Payload, &build); err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(obs[1].Payload, &send); err != nil {
+		t.Fatal(err)
+	}
+	if build.Choice != nil || send.Choice == nil || send.Choice.Target.X != bx || send.Choice.Target.Y != by ||
+		send.Choice.Target.Owner != "barbarian" || len(send.Choice.Options) == 0 {
+		t.Fatalf("build choice %+v, send choice %+v", build.Choice, send.Choice)
 	}
 }
