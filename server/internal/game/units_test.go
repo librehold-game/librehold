@@ -146,6 +146,17 @@ func TestRecruit(t *testing.T) {
 		}
 	})
 
+	t.Run("a paladin away from the village still counts toward its limit", func(t *testing.T) {
+		w, v := armedVillage(t)
+		v.Units[game.UPaladin] = 1
+		x, y := nearestUnstoredBarbarian(t, w, v, 1)
+		mustSend(t, w, v, x, y, game.UnitCounts{game.UPaladin: 1}, "attack")
+		check := game.CheckRecruit(w, v, game.UPaladin, 1)
+		if !slices.Contains(blockerKinds(check.Blockers), "limit") || check.MaxAffordable != 0 {
+			t.Fatalf("blockers %v max %d", blockerKinds(check.Blockers), check.MaxAffordable)
+		}
+	})
+
 	t.Run("cancelling refunds 100 % for units not yet produced", func(t *testing.T) {
 		w, v := armedVillage(t)
 		job := mustRecruit(t, w, v, game.USpear, 10)

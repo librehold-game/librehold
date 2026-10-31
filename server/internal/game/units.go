@@ -215,6 +215,11 @@ func NobleCountOf(w World, v *Village) int {
 	return UnitCountIncludingQueued(v, UNoble) + UnitsAway(w, v.ID)[UNoble]
 }
 
+// PaladinCountOf counts the village's paladins: present, queued and away.
+func PaladinCountOf(w World, v *Village) int {
+	return UnitCountIncludingQueued(v, UPaladin) + UnitsAway(w, v.ID)[UPaladin]
+}
+
 func TotalNoblesOwned(w World, id PlayerID) int {
 	n := 0
 	for _, v := range PlayerVillages(w, id) {
@@ -263,7 +268,7 @@ func MaxRecruitable(w World, v *Village, u UnitID) int {
 	}
 	n = max(0, n)
 	if u == UPaladin {
-		n = min(n, max(0, 1-UnitCountIncludingQueued(v, UPaladin)))
+		n = min(n, max(0, 1-PaladinCountOf(w, v)))
 	}
 	if u == UNoble {
 		n = min(n, max(0, NobleLimit(w.Config(), v)-NobleCountOf(w, v)))
@@ -303,7 +308,7 @@ func CheckRecruit(w World, v *Village, u UnitID, count int) RecruitCheck {
 	if count < 1 {
 		blockers = append(blockers, Blocker{"kind": "count"})
 	}
-	if u == UPaladin && UnitCountIncludingQueued(v, UPaladin)+count > 1 {
+	if u == UPaladin && PaladinCountOf(w, v)+count > 1 {
 		blockers = append(blockers, Blocker{"kind": "limit", "max": 1})
 	}
 	if u == UNoble {
