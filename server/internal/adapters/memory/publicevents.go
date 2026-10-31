@@ -15,6 +15,11 @@ func (t *tx) AddPublicEvent(e game.PublicEvent) {
 	t.MemWorld.AddPublicEvent(e)
 }
 
+func (t *tx) NoteBattle() {
+	t.MemWorld.NoteBattle()
+	t.MemWorld.SetLastBattleAt(app.WallTime(t.row, t.Now()))
+}
+
 type storedEvent struct {
 	game.PublicEvent
 	seq int
@@ -26,9 +31,6 @@ func (s *Worlds) PublicEvents(_ context.Context, q app.PublicEventQuery) ([]game
 		w.mu.Lock()
 		if q.WorldID == 0 || w.row.ID == q.WorldID {
 			for i, e := range w.mem.PublicEvents() {
-				if e.Kind == "battle" && e.Troops < q.MinTroops {
-					continue
-				}
 				e.WorldName, e.WorldKind, e.GameNumber = w.row.Name, w.row.Config.Kind, w.row.GameNumber
 				all = append(all, storedEvent{e, i})
 			}
@@ -48,10 +50,14 @@ func (s *Worlds) PublicEvents(_ context.Context, q app.PublicEventQuery) ([]game
 	return out, nil
 }
 
-func (s *Worlds) LastBattleAt(ctx context.Context) (time.Time, bool, error) {
-	last, err := s.PublicEvents(ctx, app.PublicEventQuery{Limit: 1})
-	if err != nil || len(last) == 0 {
-		return time.Time{}, false, err
+func (s *Worlds) LastBattleAt(context.Context) (time.Time, bool, error) {
+	var last time.Time
+	for _, w := range s.all() {
+		w.mu.Lock()
+		if at := w.mem.LastBattleAt(); at.After(last) {
+			last = at
+		}
+		w.mu.Unlock()
 	}
-	return last[0].At, true, nil
+	return last, !last.IsZero(), nil
 }

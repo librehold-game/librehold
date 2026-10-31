@@ -1,6 +1,6 @@
 import type { PublicEvent } from './api';
 import { pathFor } from './routes';
-import { formatDurationHuman, formatNumber } from '../i18n/format';
+import { formatDurationHuman } from '../i18n/format';
 import { t, type Locale } from '../i18n/i18n';
 
 /** "just now" for anything under a minute old (or a little in the future, with a fast server clock), else "5 min ago". */
@@ -14,7 +14,7 @@ const playerName = (name: string, bot: boolean) => (bot ? t('site.live.botName',
 export function eventMessage(e: PublicEvent): { key: string; params: Record<string, string | number> } {
   const barbarian = e.defender === '';
   const key = `site.live.event.${e.kind}${barbarian ? 'Barbarian' : ''}`;
-  const params: Record<string, string | number> = { attacker: playerName(e.attacker, e.attackerBot), troops: formatNumber(e.troops) };
+  const params: Record<string, string | number> = { attacker: playerName(e.attacker, e.attackerBot) };
   if (!barbarian) params.defender = playerName(e.defender, e.defenderBot);
   return { key, params };
 }

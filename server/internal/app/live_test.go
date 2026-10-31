@@ -3,6 +3,8 @@ package app_test
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -75,17 +77,16 @@ func TestLiveLeavesLongWorldsOut(t *testing.T) {
 	}
 }
 
-func TestLiveShowsTheFiveNewestLargeEvents(t *testing.T) {
+func TestLiveShowsTheFiveNewestConquestsAndTheLastBattle(t *testing.T) {
 	f := newInstantFixture(t, app.Config{})
 	id := longWorld(t, f, 0)
 	for i := range 7 {
-		troops := 200 + i
-		if i == 6 {
-			troops = 50
-		}
 		err := f.worlds.Run(context.Background(), id, func(w app.WorldTx) error {
 			w.SetNow(int64(i+1) * 1000)
-			w.AddPublicEvent(game.PublicEvent{Kind: "battle", Attacker: "Ala", Troops: troops})
+			if i < 6 {
+				w.AddPublicEvent(game.PublicEvent{Kind: "conquest", Attacker: fmt.Sprint("Ala", i)})
+			}
+			w.NoteBattle()
 			return nil
 		})
 		if err != nil {
@@ -97,9 +98,12 @@ func TestLiveShowsTheFiveNewestLargeEvents(t *testing.T) {
 		t.Fatalf("events %+v", l.Events)
 	}
 	for i, e := range l.Events {
-		if e.Troops != 205-i || e.WorldID != id || e.Instant {
+		if e.Attacker != fmt.Sprint("Ala", 5-i) || e.WorldID != id || e.Instant {
 			t.Fatalf("event %d %+v", i, e)
 		}
+	}
+	if raw, _ := json.Marshal(l); strings.Contains(string(raw), "troops") {
+		t.Fatalf("the feed tells army sizes: %s", raw)
 	}
 	if newest := f.clock.NowMs() + 7000; l.LastBattleAt == nil || *l.LastBattleAt != newest {
 		t.Fatalf("last battle %v, want %d", l.LastBattleAt, newest)

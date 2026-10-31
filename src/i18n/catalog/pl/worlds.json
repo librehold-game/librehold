@@ -55,7 +55,7 @@
       "map": "Mapa",
       "mapLabel": "Mapa świata {name}",
       "legend": "Każda kropka to wioska w kolorze właściciela, gracza albo bota; szare kropki to wioski barbarzyńców.",
-      "events": "Ostatnie duże bitwy",
+      "events": "Ostatnie przejęcia",
       "group": {
         "pace": "Tempo",
         "map": "Mapa i boty",

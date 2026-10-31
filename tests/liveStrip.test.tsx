@@ -10,8 +10,8 @@ import { setLocale } from '../src/i18n/i18n';
 
 const now = Date.now();
 const event = (over: Partial<PublicEvent> = {}): PublicEvent => ({
-  at: now - 3 * 60_000, kind: 'battle', worldId: 3, worldName: 'Kraina', instant: false, attacker: 'Ala', defender: 'Ola',
-  attackerBot: false, defenderBot: false, troops: 1200, x: 5, y: 7, ...over,
+  at: now - 3 * 60_000, kind: 'conquest', worldId: 3, worldName: 'Kraina', instant: false, attacker: 'Ala', defender: 'Ola',
+  attackerBot: false, defenderBot: false, x: 5, y: 7, ...over,
 });
 const live = (over: Partial<Live> = {}): Live => ({
   games: 2, humans: 3, bots: 40, openSeats: 5, lastBattleAt: now - 2 * 60_000,
@@ -44,7 +44,7 @@ describe('live strip', () => {
     for (const part of ['3 players', '40 bots', '5 free seats', 'Last battle 2 min ago']) expect(text).toContain(part);
     const rows = within(strip()).getAllByRole('listitem');
     expect(rows).toHaveLength(5);
-    expect(rows[0]!.textContent).toContain('Wolf (bot) attacked Ola in Kraina · 1,200 troops');
+    expect(rows[0]!.textContent).toContain('Wolf (bot) took a village from Ola in Kraina');
   });
 
   it('nothing running says so and points at Play', async () => {
@@ -59,7 +59,7 @@ describe('live strip', () => {
     reply = async () => new Response(JSON.stringify(live({ lastBattleAt: null, events: [] })), { status: 200 });
     render(<LiveStrip />);
     await waitFor(() => expect(strip().textContent).toContain('No battle yet'));
-    expect(strip().textContent).not.toContain('No large battle yet');
+    expect(strip().textContent).not.toContain('No conquest yet');
     expect(within(strip()).getAllByRole('listitem')).toHaveLength(5);
   });
 
@@ -98,9 +98,9 @@ describe('event list', () => {
 
   it('a barbarian defender and a bot attacker read as such', () => {
     render(<EventList events={[event({ attacker: 'Wolf', attackerBot: true, defender: '' }),
-      event({ kind: 'conquest', defender: 'Bear', defenderBot: true })]} now={now} />);
+      event({ defender: 'Bear', defenderBot: true })]} now={now} />);
     const rows = screen.getAllByRole('listitem');
-    expect(rows[0]!.textContent).toContain('Wolf (bot) attacked barbarians in Kraina');
+    expect(rows[0]!.textContent).toContain('Wolf (bot) took a barbarian village in Kraina');
     expect(rows[1]!.textContent).toContain('Ala took a village from Bear (bot) in Kraina');
   });
 

@@ -301,7 +301,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 	if conquered {
 		kind = "conquest"
 	}
-	recordPublicEvent(w, kind, attackerOwner, targetOwner, c.Units.Total()+defenderUnits.Total(), target.X, target.Y)
+	recordPublicEvent(w, kind, attackerOwner, targetOwner, target.X, target.Y)
 	battle := TimelineEntry{Kind: "battle", X: float64(target.X), Y: float64(target.Y), Attacker: attackerOwner, Defender: targetOwner,
 		Troops: c.Units.Total() + defenderUnits.Total()}
 	if origin != nil {

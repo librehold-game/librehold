@@ -37,16 +37,14 @@
       "lastBattle": "Last battle {ago}",
       "noBattle": "No battle yet",
       "nothingRunning": "Nobody is playing right now. Press Play now to start a game.",
-      "noEvents": "No large battle yet.",
+      "noEvents": "No conquest yet.",
       "justNow": "just now",
       "ago": "{time} ago",
       "botName": "{name} (bot)",
       "barbarians": "barbarians",
       "event": {
         "conquest": "{attacker} took a village from {defender} in {world}",
-        "conquestBarbarian": "{attacker} took a barbarian village in {world}",
-        "battle": "{attacker} attacked {defender} in {world} · {troops} troops",
-        "battleBarbarian": "{attacker} attacked barbarians in {world} · {troops} troops"
+        "conquestBarbarian": "{attacker} took a barbarian village in {world}"
       }
     },
     "home": {

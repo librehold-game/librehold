@@ -270,8 +270,7 @@ func onFieldEvent(w World, id string) error {
 			s.UnitsKilled += lostA
 		}
 		countBattle(w, c.Units.Total()+before.Total(), "")
-		recordPublicEvent(w, "battle", ownerOf(w, homeID), ownerOf(w, targetHome), c.Units.Total()+before.Total(),
-			int(math.Round(at.X)), int(math.Round(at.Y)))
+		recordPublicEvent(w, "battle", ownerOf(w, homeID), ownerOf(w, targetHome), int(math.Round(at.X)), int(math.Round(at.Y)))
 		battle := TimelineEntry{Kind: "battle", X: at.X, Y: at.Y, Attacker: ownerOf(w, homeID), Defender: ownerOf(w, targetHome),
 			Troops: c.Units.Total() + before.Total()}
 		if home := w.Village(homeID); home != nil {

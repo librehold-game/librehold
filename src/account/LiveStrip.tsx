@@ -7,7 +7,7 @@ import { useT } from '../i18n/i18n';
 const ROWS = 5;
 const REFRESH_MS = 30_000;
 
-/** Proof that people play: the instant games running now and the latest large battles. Its size is fixed from the
+/** Proof that people play: the instant games running now and the latest conquests. Its size is fixed from the
  * first paint, so nothing below it moves when the numbers arrive (or never do). */
 export function LiveStrip() {
   const t = useT();

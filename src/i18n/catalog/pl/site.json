@@ -45,16 +45,14 @@
       "lastBattle": "Ostatnia bitwa {ago}",
       "noBattle": "Jeszcze bez bitwy",
       "nothingRunning": "Teraz nikt nie gra. Kliknij Graj teraz i zacznij nową partię.",
-      "noEvents": "Jeszcze nie było dużej bitwy.",
+      "noEvents": "Jeszcze nikt nie przejął wioski.",
       "justNow": "przed chwilą",
       "ago": "{time} temu",
       "botName": "{name} (bot)",
       "barbarians": "barbarzyńcy",
       "event": {
         "conquest": "{attacker} przejmuje wioskę gracza {defender} ({world})",
-        "conquestBarbarian": "{attacker} przejmuje wioskę barbarzyńców ({world})",
-        "battle": "{attacker} atakuje gracza {defender} ({world}) · wojsk: {troops}",
-        "battleBarbarian": "{attacker} atakuje barbarzyńców ({world}) · wojsk: {troops}"
+        "conquestBarbarian": "{attacker} przejmuje wioskę barbarzyńców ({world})"
       }
     },
     "home": {

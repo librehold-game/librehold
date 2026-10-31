@@ -692,10 +692,11 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 	t.Run("TestPublicEventKeptWithItsChange", func(t *testing.T) {
 		s := newStore(t)
 		id := createWorld(t, s, 0)
-		e := game.PublicEvent{Kind: "battle", Attacker: "Ala", Troops: 120, X: 3, Y: 4}
+		e := game.PublicEvent{Kind: "conquest", Attacker: "Ala", X: 3, Y: 4}
 		err := s.Run(ctx, id, func(w app.WorldTx) error {
 			w.SetNow(5000)
 			w.AddPublicEvent(e)
+			w.NoteBattle()
 			return errors.New("refused")
 		})
 		if err == nil {
@@ -722,7 +723,7 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 		}
 		g := got[0]
 		if g.WorldID != id || g.WorldName != row.Name || g.WorldKind != "" || !g.At.Equal(app.WallTime(row, 5000)) ||
-			g.Kind != "battle" || g.Attacker != "Ala" || g.Defender != "" || g.Troops != 120 || g.X != 3 || g.Y != 4 {
+			g.Kind != "conquest" || g.Attacker != "Ala" || g.Defender != "" || g.X != 3 || g.Y != 4 {
 			t.Fatalf("event %+v", g)
 		}
 	})
@@ -733,7 +734,7 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 		add := func(id, at int64) {
 			run(t, s, id, func(w app.WorldTx) error {
 				w.SetNow(at)
-				w.AddPublicEvent(game.PublicEvent{Kind: "conquest", Attacker: "Ala", Troops: 1})
+				w.AddPublicEvent(game.PublicEvent{Kind: "conquest", Attacker: "Ala"})
 				return nil
 			})
 		}
@@ -751,39 +752,25 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 		}
 	})
 
-	t.Run("TestPublicEventsFilterSmallBattles", func(t *testing.T) {
+	t.Run("TestLastBattleAtIsTheNewestAcrossWorlds", func(t *testing.T) {
 		s := newStore(t)
-		id := createWorld(t, s, 0)
-		for i, e := range []game.PublicEvent{{Kind: "battle", Troops: 99}, {Kind: "battle", Troops: 100}, {Kind: "conquest", Troops: 5}} {
+		a, b := createWorld(t, s, 0), createWorld(t, s, 0)
+		battle := func(id, at int64) {
 			run(t, s, id, func(w app.WorldTx) error {
-				w.SetNow(int64(i+1) * 1000)
-				w.AddPublicEvent(e)
+				w.SetNow(at)
+				w.NoteBattle()
 				return nil
 			})
 		}
-		big, err := s.PublicEvents(ctx, app.PublicEventQuery{MinTroops: game.LargeBattleTroops, Limit: 10})
-		if err != nil || len(big) != 2 || big[0].Kind != "conquest" || big[1].Troops != 100 {
-			t.Fatalf("large %+v %v", big, err)
-		}
-		if all, err := s.PublicEvents(ctx, app.PublicEventQuery{}); err != nil || len(all) != 3 {
-			t.Fatalf("all %+v %v", all, err)
-		}
-		if one, err := s.PublicEvents(ctx, app.PublicEventQuery{Limit: 1}); err != nil || len(one) != 1 || one[0].Kind != "conquest" {
-			t.Fatalf("limit 1 %+v %v", one, err)
-		}
-	})
-
-	t.Run("TestLastBattleAtCountsEverySize", func(t *testing.T) {
-		s := newStore(t)
-		id := createWorld(t, s, 0)
-		run(t, s, id, func(w app.WorldTx) error {
-			w.SetNow(7000)
-			w.AddPublicEvent(game.PublicEvent{Kind: "battle", Troops: 5})
-			return nil
-		})
+		battle(a, 7000)
+		battle(b, 9000)
+		battle(a, 8000)
 		at, ok, err := s.LastBattleAt(ctx)
-		if err != nil || !ok || !at.Equal(time.UnixMilli(t0ms+7000)) {
+		if err != nil || !ok || !at.Equal(time.UnixMilli(t0ms+9000)) {
 			t.Fatalf("last battle %v %v %v", at, ok, err)
+		}
+		if got, err := s.PublicEvents(ctx, app.PublicEventQuery{}); err != nil || len(got) != 0 {
+			t.Fatalf("a battle reached the feed %+v %v", got, err)
 		}
 	})
 
@@ -792,7 +779,8 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 		id := createWorld(t, s, 0)
 		run(t, s, id, func(w app.WorldTx) error {
 			w.SetNow(1000)
-			w.AddPublicEvent(game.PublicEvent{Kind: "battle", Troops: 500})
+			w.AddPublicEvent(game.PublicEvent{Kind: "conquest"})
+			w.NoteBattle()
 			return nil
 		})
 		if err := s.Delete(ctx, id); err != nil {

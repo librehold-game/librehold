@@ -6,6 +6,7 @@ import (
 	"slices"
 	"sort"
 	"strconv"
+	"time"
 
 	"librehold/internal/game"
 )
@@ -58,6 +59,8 @@ type MemWorld struct {
 	news      []*game.NewsItem
 	conquests []game.Conquest
 	public    []game.PublicEvent
+	battles   int
+	battleAt  time.Time // wall time of the newest battle, set by a store wrapping this world
 
 	events     eventHeap
 	eventIndex map[string]int64
@@ -519,6 +522,20 @@ func (w *MemWorld) ConquestsSince(t int64) []game.Conquest {
 }
 
 func (w *MemWorld) AddPublicEvent(e game.PublicEvent) { w.public = append(w.public, e) }
+
+func (w *MemWorld) NoteBattle() { w.battles++ }
+
+// Battles is how many times NoteBattle was called.
+func (w *MemWorld) Battles() int { return w.battles }
+
+func (w *MemWorld) SetLastBattleAt(at time.Time) {
+	if at.After(w.battleAt) {
+		w.battleAt = at
+	}
+}
+
+// LastBattleAt is the wall time a store set with SetLastBattleAt; zero when none.
+func (w *MemWorld) LastBattleAt() time.Time { return w.battleAt }
 
 // PublicEvents returns the public events in the order they were added.
 func (w *MemWorld) PublicEvents() []game.PublicEvent { return slices.Clone(w.public) }

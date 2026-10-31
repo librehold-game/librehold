@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"sort"
 	"strconv"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 
@@ -118,6 +119,7 @@ type uow struct {
 	news       []*game.NewsItem
 	conquests  []game.Conquest
 	public     []game.PublicEvent
+	battleAt   time.Time // the newest NoteBattle of this unit of work; zero when none
 	actions    []game.LoggedAction
 	timeline   []game.TimelineEntry
 

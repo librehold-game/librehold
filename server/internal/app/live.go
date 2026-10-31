@@ -12,7 +12,7 @@ const (
 	liveEvents   = 5
 )
 
-// PublicEventView is a public battle or conquest as the site shows it.
+// PublicEventView is a public conquest as the site shows it.
 type PublicEventView struct {
 	At          int64  `json:"at"` // wall ms
 	Kind        string `json:"kind"`
@@ -24,7 +24,6 @@ type PublicEventView struct {
 	Defender    string `json:"defender"`
 	AttackerBot bool   `json:"attackerBot"`
 	DefenderBot bool   `json:"defenderBot"`
-	Troops      int    `json:"troops"`
 	X           int    `json:"x"`
 	Y           int    `json:"y"`
 }
@@ -34,12 +33,13 @@ func publicEventViews(list []game.PublicEvent) []PublicEventView {
 	for i, e := range list {
 		out[i] = PublicEventView{At: e.At.UnixMilli(), Kind: e.Kind, WorldID: e.WorldID, WorldName: e.WorldName,
 			GameNumber: e.GameNumber, Instant: e.WorldKind == game.KindInstant, Attacker: e.Attacker, Defender: e.Defender,
-			AttackerBot: e.AttackerBot, DefenderBot: e.DefenderBot, Troops: e.Troops, X: e.X, Y: e.Y}
+			AttackerBot: e.AttackerBot, DefenderBot: e.DefenderBot, X: e.X, Y: e.Y}
 	}
 	return out
 }
 
-// LiveStrip is the front page's proof of life: the instant games running now and the latest large battles.
+// LiveStrip is the front page's proof of life: the instant games running now, the latest conquests and when the
+// last battle was.
 type LiveStrip struct {
 	Games        int               `json:"games"`
 	Humans       int               `json:"humans"`
@@ -65,7 +65,7 @@ func (s *Service) Live(ctx context.Context) (LiveStrip, error) {
 			}
 		}
 		out.OpenSeats, _, _ = s.openInstant(worlds)
-		events, err := s.worlds.PublicEvents(ctx, PublicEventQuery{MinTroops: game.LargeBattleTroops, Limit: liveEvents})
+		events, err := s.worlds.PublicEvents(ctx, PublicEventQuery{Limit: liveEvents})
 		if err != nil {
 			return LiveStrip{}, err
 		}

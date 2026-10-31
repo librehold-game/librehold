@@ -53,7 +53,7 @@
       "map": "Map",
       "mapLabel": "Map of {name}",
       "legend": "Each dot is a village in its owner's colour, players and bots alike; grey dots are barbarian villages.",
-      "events": "Latest large battles",
+      "events": "Latest conquests",
       "group": {
         "pace": "Pace",
         "map": "Map and bots",

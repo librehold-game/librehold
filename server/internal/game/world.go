@@ -53,8 +53,10 @@ type World interface {
 	News(limit int) []*NewsItem // newest first
 	AddConquest(c Conquest)
 	ConquestsSince(t int64) []Conquest
-	// AddPublicEvent records a battle or conquest for the public feed; the store stamps At and WorldID.
+	// AddPublicEvent records a conquest for the public feed; the store stamps At and WorldID.
 	AddPublicEvent(e PublicEvent)
+	// NoteBattle marks that a public battle happened now; the store keeps only the newest time, never who or where.
+	NoteBattle()
 
 	// Notify marks a player's state as changed when none of their own entities did (an army came into sight).
 	Notify(p PlayerID)

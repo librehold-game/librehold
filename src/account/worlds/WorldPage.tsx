@@ -18,7 +18,7 @@ import './catalog';
 
 loadHeadCatalog();
 
-/** A world's public page: its settings, the full ranking, the map and the latest large battles. */
+/** A world's public page: its settings, the full ranking, the map and the latest conquests. */
 export function WorldPage({ id }: { id: number }) {
   const t = useT();
   const locale = useLocale();

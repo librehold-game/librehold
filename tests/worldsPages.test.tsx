@@ -20,8 +20,8 @@ const world = {
   settings: { worldSpeed: 8, unitSpeed: 1, mapSize: 200, beginnerProtectionDays: 7, lastVillage: 'protected', fieldBattles: true,
     barbarianDensity: 'normal', battleLosses: 'normal', botCount: 30, botArrival: 'allAtOnce', difficulty: 'normal', botStance: 'normal',
     humanModifiers: { resources: 1, recruitment: 1, building: 1 }, botModifiers: { resources: 1, recruitment: 1, building: 1 }, sightRadius: 1 },
-  events: [{ at: now - 60_000 * 5, kind: 'battle', worldId: 3, worldName: 'Kraina', instant: false, attacker: 'Ala', defender: 'Wolf',
-    attackerBot: false, defenderBot: true, troops: 300, x: 1, y: 2 }],
+  events: [{ at: now - 60_000 * 5, kind: 'conquest', worldId: 3, worldName: 'Kraina', instant: false, attacker: 'Ala', defender: 'Wolf',
+    attackerBot: false, defenderBot: true, x: 1, y: 2 }],
 };
 const map = { size: 200, players: [{ name: 'Ala', color: '#ff0000', isBot: false }], villages: [[1, 2, 0], [5, 5, -1]] };
 
@@ -91,7 +91,7 @@ describe('worlds pages', () => {
     expect(within(ranking).getAllByRole('row')).toHaveLength(3);
     expect(ranking.querySelectorAll('.bot-tag')).toHaveLength(1);
     expect(await screen.findByRole('img', { name: 'Map of Kraina' })).toBeTruthy();
-    expect(container.querySelector('.event-list li')?.textContent).toContain('Ala attacked Wolf (bot)');
+    expect(container.querySelector('.event-list li')?.textContent).toContain('Ala took a village from Wolf (bot)');
     expect(document.title).toContain('Kraina');
   });
 

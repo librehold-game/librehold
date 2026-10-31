@@ -208,7 +208,7 @@ func (s *Service) PublicWorld(ctx context.Context, worldID int64) (*PublicWorld,
 		if err != nil {
 			return nil, err
 		}
-		events, err := s.worlds.PublicEvents(ctx, PublicEventQuery{WorldID: worldID, MinTroops: game.LargeBattleTroops, Limit: worldEventsShown})
+		events, err := s.worlds.PublicEvents(ctx, PublicEventQuery{WorldID: worldID, Limit: worldEventsShown})
 		if err != nil {
 			return nil, err
 		}

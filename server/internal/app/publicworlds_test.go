@@ -97,13 +97,10 @@ func TestPublicWorldCardAndEvents(t *testing.T) {
 	ctx := context.Background()
 	f := newInstantFixture(t, app.Config{})
 	id, other := longWorld(t, f, 15), longWorld(t, f, 0)
-	for _, e := range []struct {
-		world  int64
-		troops int
-	}{{id, 500}, {id, 20}, {other, 800}} {
-		change(t, f, e.world, func(w app.WorldTx) {
+	for _, world := range []int64{id, id, other} {
+		change(t, f, world, func(w app.WorldTx) {
 			w.SetNow(1000)
-			w.AddPublicEvent(game.PublicEvent{Kind: "battle", Attacker: "Bot", Troops: e.troops})
+			w.AddPublicEvent(game.PublicEvent{Kind: "conquest", Attacker: "Bot"})
 		})
 	}
 	pw, err := f.svc.PublicWorld(ctx, id)
@@ -113,7 +110,7 @@ func TestPublicWorldCardAndEvents(t *testing.T) {
 	if pw.Bots != 15 || pw.Ended || pw.Settings.MapSize == 0 || !pw.Settings.FieldBattles {
 		t.Fatalf("world %+v", pw)
 	}
-	if len(pw.Events) != 1 || pw.Events[0].WorldID != id || pw.Events[0].Troops != 500 {
+	if len(pw.Events) != 2 || pw.Events[0].WorldID != id || pw.Events[1].WorldID != id {
 		t.Fatalf("events %+v", pw.Events)
 	}
 	raw, _ := json.Marshal(pw)

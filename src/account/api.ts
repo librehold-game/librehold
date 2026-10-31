@@ -46,8 +46,8 @@ export interface InstantGame {
 }
 export interface InstantList { games: InstantGame[]; canStart: boolean; waitMs?: number }
 export interface PublicEvent {
-  at: number; kind: 'conquest' | 'battle'; worldId: number; worldName: string; gameNumber?: number; instant: boolean;
-  attacker: string; defender: string; attackerBot: boolean; defenderBot: boolean; troops: number; x: number; y: number;
+  at: number; kind: 'conquest'; worldId: number; worldName: string; gameNumber?: number; instant: boolean;
+  attacker: string; defender: string; attackerBot: boolean; defenderBot: boolean; x: number; y: number;
 }
 export interface PublicWorldCard {
   id: number; name: string; gameNumber?: number; instant: boolean; status: 'open' | 'closed'; paused: boolean;

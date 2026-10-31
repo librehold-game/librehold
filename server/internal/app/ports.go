@@ -212,15 +212,14 @@ type WorldStore interface {
 }
 
 type PublicEventQuery struct {
-	WorldID   int64 // 0 = every world
-	MinTroops int   // battles with fewer troops are left out; conquests always stay
-	Limit     int   // 0 = no limit
+	WorldID int64 // 0 = every world
+	Limit   int   // 0 = no limit
 }
 
 type PublicEventStore interface {
 	// PublicEvents is newest first: (At, WorldID, insertion) descending, with WorldName, WorldKind and GameNumber filled.
 	PublicEvents(ctx context.Context, q PublicEventQuery) ([]game.PublicEvent, error)
-	// LastBattleAt is the newest event of any kind and size in any world; ok=false when there is none.
+	// LastBattleAt is the newest NoteBattle in any world; ok=false when there is none.
 	LastBattleAt(ctx context.Context) (at time.Time, ok bool, err error)
 }
 
