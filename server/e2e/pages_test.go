@@ -20,7 +20,7 @@ var titleTag = regexp.MustCompile(`<title>([^<]+)</title>`)
 func TestPublicSitePages(t *testing.T) {
 	s := startServerAt(t, newDB(t), time.Now().UnixMilli(), timeScale, "LH_TRUSTED_PROXIES=127.0.0.1/32")
 
-	// A guest raids the nearest barbarian village; the battle shows on the live strip.
+	// A guest raids the nearest barbarian village; the live strip learns only that a battle happened, never who fought.
 	g := s.guest(t)
 	wid, _ := g.play(t)
 	st := g.state(wid)
@@ -39,14 +39,17 @@ func TestPublicSitePages(t *testing.T) {
 		return r.status == 200
 	})
 	var live app.LiveStrip
-	eventually(t, 20*time.Second, "the raid on the live strip", func() bool {
+	eventually(t, 20*time.Second, "the raid's time on the live strip", func() bool {
 		g.ok("GET", "/api/v1/public/live", nil, &live)
-		return len(live.Events) > 0
+		return live.LastBattleAt != nil
 	})
-	e := live.Events[0]
-	if live.Games != 1 || live.Humans != 1 || live.Bots != game.InstantWorldConfig.BotCount || e.Attacker != g.name || !e.Instant ||
-		e.GameNumber != st.GameNumber || e.GameNumber == 0 {
-		t.Fatalf("live %+v, first event %+v (guest %s, game number %d)", live, e, g.name, st.GameNumber)
+	if live.Games != 1 || live.Humans != 1 || live.Bots != game.InstantWorldConfig.BotCount || st.GameNumber == 0 {
+		t.Fatalf("live %+v (game number %d)", live, st.GameNumber)
+	}
+	for _, e := range live.Events {
+		if e.Kind != "conquest" {
+			t.Fatalf("a battle on the live strip: %+v", e)
+		}
 	}
 
 	var worlds app.PublicWorldList
