@@ -5,6 +5,18 @@ format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and ver
 [Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
 edit it by hand.
 
+## [0.5.0](https://github.com/librehold-game/librehold/releases/tag/v0.5.0) — 2026-10-31 (alpha)
+
+### Changed
+
+- Add a public world page with every setting, the full ranking and player pages ([307b3ec](https://github.com/librehold-game/librehold/commit/307b3ecf2436e0cf80815fba207c9e7ca3060b87)) by @SKocur
+- Count a paladin away from its village toward the one-paladin limit ([db55e89](https://github.com/librehold-game/librehold/commit/db55e8947fae7b0ab9c420cee95faed23662eaac)) by @SKocur
+- Record what a player had before each order, for teaching bots ([bc43ec7](https://github.com/librehold-game/librehold/commit/bc43ec7eb338877d6188703bdf0d1361da982ab0)) by @SKocur
+
+### Contributors
+
+@SKocur
+
 ## [0.4.0](https://github.com/librehold-game/librehold/releases/tag/v0.4.0) — 2026-10-30 (alpha)
 
 ### Changed
