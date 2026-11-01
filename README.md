@@ -115,20 +115,14 @@ Requirements: Node.js 24+, Go 1.27+ and Docker (for Postgres, Valkey and the dat
 
 ```sh
 npm install
-cd server && make db        # Postgres on localhost:5433, Valkey on localhost:6380
-LH_DATABASE_URL='postgres://librehold:librehold@localhost:5433/librehold?sslmode=disable' LH_COOKIE_SECURE=false \
-  LH_ADMIN_USERNAME=admin LH_ADMIN_PASSWORD=adminadmin go run ./cmd/server   # API on :8080
+cd server && make db && cd ..   # Postgres on localhost:5433, Valkey on localhost:6380
+npm run dev:all                 # API on :8080, account site on :5173, game on :5174; Ctrl+C stops all three
 ```
 
-In a second terminal, from the repository root:
-
-```sh
-npm run dev:account         # account site: login, lobby, admin panel
-npm run dev                 # the game; /api is proxied to :8080
-```
-
-Run the tests with `npm test` (client) and `npm run server:test` (server). The full guide, including the
-environment variables and the end-to-end tests, is in [`docs/development.md`](docs/development.md).
+Open the account site at `http://localhost:5173/` (admin: `admin` / `adminadmin`); the game runs at
+`http://localhost:5174/game/game.html?world=<id>`. Run the tests with `npm test` (client) and `npm run server:test`
+(server). The full guide, including running the parts separately, the environment variables and the end-to-end tests,
+is in [`docs/development.md`](docs/development.md).
 
 ## How it works
 
