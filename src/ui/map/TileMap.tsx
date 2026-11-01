@@ -199,7 +199,6 @@ export function TileMap(p: TileMapProps) {
       return;
     }
     drag.current = { sx: e.clientX, sy: e.clientY, cx: center.x, cy: center.y, moved: false };
-    e.currentTarget.setPointerCapture?.(e.pointerId);
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -215,7 +214,11 @@ export function TileMap(p: TileMapProps) {
     const d = drag.current;
     if (!d) return;
     const dx = e.clientX - d.sx, dy = e.clientY - d.sy;
-    if (Math.abs(dx) + Math.abs(dy) > TAP_SLOP) d.moved = true;
+    // Captured only once it is a drag: a capture from the press on would send the click to the map, not the tile.
+    if (!d.moved && Math.abs(dx) + Math.abs(dy) > TAP_SLOP) {
+      d.moved = true;
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+    }
     if (d.moved) onCenter(clampCenter({ x: d.cx - dx / tw, y: d.cy - dy / th }));
   };
 

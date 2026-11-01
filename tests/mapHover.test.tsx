@@ -67,6 +67,30 @@ describe('the card shown on hovering a village', () => {
     expect(screen.queryByRole('button', { name: 'Wesprzyj' })).toBeNull();
   });
 
+  it('a barbarian village offers template A, disabled until template A is defined', () => {
+    hoverOn(w.barb);
+    expect((screen.getByRole('button', { name: 'Szablon A' }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('hides at once when its village is clicked, so it does not cover the village popup', () => {
+    cleanup();
+    const ui = render(<MapHoverCard register={(set) => { setHover = set; }} bounds={{ width: 800, height: 600 }} selected={null} />);
+    hoverOn(w.barb);
+    expect(screen.queryByRole('tooltip')).not.toBeNull();
+    ui.rerender(<MapHoverCard register={(set) => { setHover = set; }} bounds={{ width: 800, height: 600 }} selected={w.barb} />);
+    expect(screen.queryByRole('tooltip')).toBeNull();
+  });
+
+  it('a click before the card opens keeps it closed, so it does not cover the village popup', () => {
+    cleanup();
+    const ui = render(<MapHoverCard register={(set) => { setHover = set; }} bounds={{ width: 800, height: 600 }} selected={null} />);
+    pointAt(w.barb);
+    wait(100);
+    ui.rerender(<MapHoverCard register={(set) => { setHover = set; }} bounds={{ width: 800, height: 600 }} selected={w.barb} />);
+    wait(OPEN_DELAY_MS);
+    expect(screen.queryByRole('tooltip')).toBeNull();
+  });
+
   it('stays open when moving from the tile onto the card and hides 200 ms after leaving both', () => {
     hoverOn(w.bot);
     const card = screen.getByRole('tooltip');
