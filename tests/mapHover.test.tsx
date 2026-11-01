@@ -240,6 +240,10 @@ describe('the village menu on tap', () => {
     render(<VillagePopup sel={{ x: home.x, y: home.y }} anchor={{ left: 0, top: 0, tw: 53, th: 38 }} bounds={{ width: 360, height: 640 }} sheet
       onClose={() => {}} onDetails={() => {}} />);
 
+    const villageButtons = screen.getByRole('button', { name: 'Wioska' });
+    const quickActions = screen.getByText('Szybka budowa').closest('details')?.parentElement;
+    expect(quickActions?.previousElementSibling).toBe(villageButtons.parentElement);
+
     fireEvent.click(screen.getByText('Szybka budowa'));
     fireEvent.change(screen.getByLabelText('Budynek'), { target: { value: 'wood' } });
     fireEvent.click(screen.getByRole('button', { name: 'Rozbuduj do 2' }));
