@@ -22,6 +22,7 @@ function world(): { g: GameState; bot: { x: number; y: number }; barb: { x: numb
 
 let setHover: (h: MapHover | null) => void = () => {};
 let w: ReturnType<typeof world>;
+let restoreActions: (() => void) | null = null;
 
 beforeEach(() => {
   w = world();
@@ -33,6 +34,8 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  restoreActions?.();
+  restoreActions = null;
   vi.restoreAllMocks();
   vi.useRealTimers();
 });
@@ -204,8 +207,11 @@ describe('the village menu on tap', () => {
     home.buildings.barracks = 1;
     home.buildings.farm = 20;
     home.resources = { wood: 100_000, clay: 100_000, iron: 100_000 };
-    const build = vi.spyOn(useGameStore.getState(), 'build').mockResolvedValue(null);
-    const recruit = vi.spyOn(useGameStore.getState(), 'recruit').mockResolvedValue(null);
+    const actions = useGameStore.getState();
+    const build = vi.fn(actions.build).mockResolvedValue(null);
+    const recruit = vi.fn(actions.recruit).mockResolvedValue(null);
+    useGameStore.setState({ build, recruit });
+    restoreActions = () => useGameStore.setState({ build: actions.build, recruit: actions.recruit });
 
     render(<VillagePopup sel={{ x: home.x, y: home.y }} anchor={{ left: 0, top: 0, tw: 53, th: 38 }} bounds={{ width: 360, height: 640 }} sheet
       onClose={() => {}} onDetails={() => {}} />);
