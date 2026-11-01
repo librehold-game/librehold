@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:account": "vite --config vite.account.config.ts",
+    "dev:all": "node scripts/dev.mjs",
     "build": "tsc -p tsconfig.json --noEmit && npm run build:web",
     "build:account": "vite build --config vite.account.config.ts && vite build --config vite.account.config.ts --ssr src/account/entry-server.tsx && node scripts/prerender.mjs",
     "build:game": "vite build",

@@ -7,6 +7,7 @@ How to run, test and find your way around the code. Deployment: [`deploy/README.
 ```bash
 npm install
 cd server && make db          # Postgres (localhost:5433) and Valkey (localhost:6380) for development
+npm run dev:all               # the next three in one terminal, labelled; Ctrl+C stops them all
 LH_DATABASE_URL='postgres://librehold:librehold@localhost:5433/librehold?sslmode=disable' LH_COOKIE_SECURE=false \
   LH_ADMIN_USERNAME=admin LH_ADMIN_PASSWORD=adminadmin go run ./cmd/server    # API on :8080
 npm run dev:account           # account site (login, registration, lobby, admin panel)
@@ -15,6 +16,10 @@ npm test                      # client tests (Vitest)
 npm run server:test           # server tests (Go; the Postgres tests need Docker)
 npm run build                 # typecheck + both builds: dist/account and dist/game
 ```
+
+`npm run dev:all` (`scripts/dev.mjs`) builds the server into `server/bin/` and starts the account site on :5173 and
+the game on :5174 once the API answers. A `LH_*` variable set in your shell overrides its settings, e.g.
+`LH_VALKEY_URL=redis://localhost:6380` to use the Valkey from `make db`.
 
 First steps: log in as admin and create a world in the **Admin panel**. Anyone can create a player account on the
 registration page (at most 3 accounts per hour from one address, `LH_REGISTRATIONS_PER_HOUR` changes that); then join

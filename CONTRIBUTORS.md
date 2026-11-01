@@ -5,3 +5,4 @@ contributions, licensed as described in `LICENSING.md` and `CONTRIBUTING.md`.
 
 - Szymon Kocur <me@szymonkocur.com> — author
 - [right-ward](https://github.com/right-ward) — contributor
+- Ciefa, hello@ciefas.cafe, [ciefas.cafe](https://ciefas.cafe)
