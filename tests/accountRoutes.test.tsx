@@ -120,13 +120,6 @@ describe('account routes', () => {
   });
 
   it('also-in-Polish note', async () => {
-    // Node's own localStorage shadows happy-dom's and throws without a backing file.
-    const stored = new Map<string, string>();
-    vi.stubGlobal('localStorage', {
-      getItem: (k: string) => stored.get(k) ?? null,
-      setItem: (k: string, v: string) => void stored.set(k, v),
-      clear: () => stored.clear(),
-    });
     const lang = vi.spyOn(navigator, 'language', 'get').mockReturnValue('pl-PL');
     at('/privacy');
     render(<App />);
