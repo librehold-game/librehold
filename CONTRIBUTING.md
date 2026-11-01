@@ -3,16 +3,13 @@
 Thank you for helping. Bug reports, ideas and pull requests are all welcome. Please follow the
 [Code of Conduct](CODE_OF_CONDUCT.md), and report security problems privately as described in [`SECURITY.md`](SECURITY.md).
 
-## Contributor License Agreement
+## Licence of contributions
 
-Before your first pull request can be merged, you need to sign the Contributor License Agreement:
+There is nothing to sign. You keep the copyright to your contribution, and by opening a pull request you license it
+under the project's licence: the GNU AGPL 3.0 with the additional terms in `LICENSING.md`. Only send work you wrote
+yourself or may license that way; if a pull request contains someone else's work, name it, its author and its licence.
 
-- `CLA.md` if you contribute as an individual. A bot asks you to sign with a comment on your first pull request.
-- `CLA-ENTITY.md` if you contribute on behalf of a company or another organisation. It is signed by email.
-
-In short: you keep the copyright to your contribution, and it always stays available under the project's licence
-(GNU AGPL 3.0 with the additional terms in `LICENSING.md`). The CLA also lets the maintainer offer the project under
-other terms, for example to an organisation that cannot use the AGPL. The CLA itself is the binding text.
+Artwork is not open (`LICENSE-ART.md`), so please ask in an issue before sending any graphics.
 
 Add yourself to `CONTRIBUTORS.md` in your first pull request.
 
