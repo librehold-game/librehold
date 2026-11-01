@@ -213,6 +213,14 @@
     background: none;
     border: 0;
   }
+  /* A tap on the safe-area strip still hits the button: Firefox on Android can grow the inset mid-tap. */
+  .navbar-bottom .navbtn::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    height: env(safe-area-inset-bottom, 0px);
+  }
   .navbtn-active {
     color: #fff3d4;
     background: rgba(244, 228, 188, 0.16);
