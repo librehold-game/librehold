@@ -32,7 +32,7 @@ function effectLabel(id: BuildingId, v: Village, cfg: WorldConfig): string {
   }
 }
 
-function blockerText(b: BlockerInfo): string {
+export function blockerText(b: BlockerInfo): string {
   switch (b.kind) {
     case 'maxLevel': return t('buildings.maxLevel');
     case 'queueFull': return t('buildings.queueFull', { slots: b.slots });
@@ -47,7 +47,7 @@ function blockerText(b: BlockerInfo): string {
   }
 }
 
-type BlockerInfo = Exclude<BuildBlocker, { kind: 'resources' }> | { kind: 'resources'; missing: ResourceSet; etaMs: number };
+export type BlockerInfo = Exclude<BuildBlocker, { kind: 'resources' }> | { kind: 'resources'; missing: ResourceSet; etaMs: number };
 
 interface RowModel {
   level: number;
