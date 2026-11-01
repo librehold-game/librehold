@@ -63,7 +63,8 @@ docker compose up -d
 
 This fetches the latest release and restarts the server with it; database migrations run on start. Read the
 release notes first: an alpha release may reset worlds or need a change in `.env`. A `git pull` now and then brings
-newer versions of this directory's files.
+newer versions of this directory's files, including the Postgres, Valkey and Caddy images, which `docker-compose.yml`
+pins by digest.
 
 ## Running your own build
 

@@ -47,5 +47,6 @@ the complete source code of that version.
 
 ## Contributions
 
-Contributions are accepted under the Contributor License Agreement: `CLA.md` for individuals, `CLA-ENTITY.md` for
-companies and other organisations. `CONTRIBUTING.md` explains how to sign.
+Contributions are accepted under the same terms as the rest of the project: code under the AGPL-3.0 with the
+additional terms above, and artwork, which is accepted only by prior arrangement, under `LICENSE-ART.md`. Contributors
+keep the copyright to their work. `CONTRIBUTING.md` has the details.

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/netip"
+	"strings"
 	"testing"
 	"time"
 
@@ -117,5 +118,47 @@ func TestGuardGivesUpOnASlowBody(t *testing.T) {
 		}
 	case <-time.After(3 * time.Second):
 		t.Fatal("the handler still waits for the body")
+	}
+}
+
+// The body deadline must not outlive the body: a handler working longer keeps its request context.
+func TestGuardLetsASlowHandlerFinish(t *testing.T) {
+	defer func(d time.Duration) { bodyTimeout = d }(bodyTimeout)
+	bodyTimeout = 100 * time.Millisecond
+	for _, tc := range []struct {
+		name, method, body string
+	}{
+		{"without a body", http.MethodGet, ""},
+		{"after reading the body", http.MethodPost, "{}"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			srv := httptest.NewServer((&api{}).guard(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if _, err := io.ReadAll(r.Body); err != nil {
+					t.Errorf("body: %v", err)
+				}
+				select {
+				case <-r.Context().Done():
+					http.Error(w, context.Cause(r.Context()).Error(), http.StatusInternalServerError)
+				case <-time.After(5 * bodyTimeout):
+					w.WriteHeader(http.StatusNoContent)
+				}
+			})))
+			defer srv.Close()
+			req, err := http.NewRequest(tc.method, srv.URL+"/api/v1/x", strings.NewReader(tc.body))
+			if err != nil {
+				t.Fatal(err)
+			}
+			req.Header.Set("Content-Type", "application/json")
+			req.Header.Set("Origin", srv.URL)
+			res, err := srv.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer res.Body.Close()
+			if res.StatusCode != http.StatusNoContent {
+				b, _ := io.ReadAll(res.Body)
+				t.Fatalf("status %d: %s", res.StatusCode, b)
+			}
+		})
 	}
 }
