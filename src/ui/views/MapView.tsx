@@ -30,6 +30,7 @@ import { ArmyCard } from '../map/ArmyCard';
 import { villageSizeLabel, villageSize } from '../map/MapArt';
 import { bonusLabel } from '../map/villageInfo';
 import { MapHoverCard, type MapHover } from '../map/MapHoverCard';
+import { VillageQuickActions } from '../map/VillageQuickActions';
 import { villageInfo, type VillageInfo } from '../map/villageInfo';
 import { isHumanVillage, humanVillageIds } from '../../engine/players';
 
@@ -190,6 +191,7 @@ export function VillagePopup({ sel, anchor, bounds, sheet, onClose, onDetails }:
             <button className="btn" onClick={() => openReportsFor(info.id)}>{t('map.reports')}{info.reportCount > 0 ? ` (${info.reportCount})` : ''}</button>
             <button className="btn" onClick={onDetails}>{t('map.more')}</button>
           </div>
+          <VillageQuickActions villageId={info.id} />
         </>
       ) : (
         <>

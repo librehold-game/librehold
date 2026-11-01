@@ -22,6 +22,7 @@ function world(): { g: GameState; bot: { x: number; y: number }; barb: { x: numb
 
 let setHover: (h: MapHover | null) => void = () => {};
 let w: ReturnType<typeof world>;
+let restoreActions: (() => void) | null = null;
 
 beforeEach(() => {
   w = world();
@@ -33,6 +34,9 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  restoreActions?.();
+  restoreActions = null;
+  vi.restoreAllMocks();
   vi.useRealTimers();
 });
 
@@ -213,7 +217,42 @@ describe('the village menu on tap', () => {
     cleanup();
     render(<VillagePopup sel={w.bot} anchor={{ left: 0, top: 0, tw: 53, th: 38 }} bounds={{ width: 360, height: 640 }} sheet
       onClose={() => {}} onDetails={() => {}} />);
+    expect(screen.queryByText('Szybka budowa')).toBeNull();
+    expect(screen.queryByText('Szybka rekrutacja')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Wesprzyj' }));
     expect(useUiStore.getState().rallyPrefill).toEqual({ x: w.bot.x, y: w.bot.y, mode: 'support' });
+  });
+
+  it('queues a building upgrade and recruits units from the own-village popup', () => {
+    cleanup();
+    const home = activeVillage(w.g);
+    home.buildings.main = 1;
+    home.buildings.wood = 1;
+    home.buildings.barracks = 1;
+    home.buildings.farm = 20;
+    home.resources = { wood: 100_000, clay: 100_000, iron: 100_000 };
+    const actions = useGameStore.getState();
+    const build = vi.fn(actions.build).mockResolvedValue(null);
+    const recruit = vi.fn(actions.recruit).mockResolvedValue(null);
+    useGameStore.setState({ build, recruit });
+    restoreActions = () => useGameStore.setState({ build: actions.build, recruit: actions.recruit });
+
+    render(<VillagePopup sel={{ x: home.x, y: home.y }} anchor={{ left: 0, top: 0, tw: 53, th: 38 }} bounds={{ width: 360, height: 640 }} sheet
+      onClose={() => {}} onDetails={() => {}} />);
+
+    const villageButtons = screen.getByRole('button', { name: 'Wioska' });
+    const quickActions = screen.getByText('Szybka budowa').closest('details')?.parentElement;
+    expect(quickActions?.previousElementSibling).toBe(villageButtons.parentElement);
+
+    fireEvent.click(screen.getByText('Szybka budowa'));
+    fireEvent.change(screen.getByLabelText('Budynek'), { target: { value: 'wood' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Rozbuduj do 2' }));
+    expect(build).toHaveBeenCalledWith(home.id, 'wood');
+
+    fireEvent.click(screen.getByText('Szybka rekrutacja'));
+    fireEvent.change(screen.getByLabelText('Jednostka'), { target: { value: 'spear' } });
+    fireEvent.change(screen.getByLabelText('Liczba'), { target: { value: '2' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Rekrutuj' }));
+    expect(recruit).toHaveBeenCalledWith(home.id, 'spear', 2);
   });
 });
