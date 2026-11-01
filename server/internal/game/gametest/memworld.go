@@ -48,11 +48,14 @@ type MemWorld struct {
 	clockOrigin int64
 	nextID      int64
 
-	villages  map[string]*game.Village
-	players   map[game.PlayerID]*game.Player
-	brains    map[game.PlayerID]*game.BotBrain
-	humans    map[game.PlayerID]*game.HumanState
-	commands  map[string]*game.Command
+	villages map[string]*game.Village
+	players  map[game.PlayerID]*game.Player
+	brains   map[game.PlayerID]*game.BotBrain
+	humans   map[game.PlayerID]*game.HumanState
+	commands map[string]*game.Command
+	// byHome indexes commands by game.CommandHome, which never changes once a command is stored (turning back swaps
+	// origin and target), so CommandsHome need not scan the whole world.
+	byHome    map[string]map[string]*game.Command
 	reports   map[game.PlayerID][]*game.Report
 	intel     map[intelKey]*game.Intel
 	scheduled map[string]*game.ScheduledSend
@@ -83,6 +86,7 @@ func NewMemWorld(seed uint32, cfg game.WorldConfig, clockOrigin int64) *MemWorld
 		brains:      map[game.PlayerID]*game.BotBrain{},
 		humans:      map[game.PlayerID]*game.HumanState{},
 		commands:    map[string]*game.Command{},
+		byHome:      map[string]map[string]*game.Command{},
 		reports:     map[game.PlayerID][]*game.Report{},
 		intel:       map[intelKey]*game.Intel{},
 		scheduled:   map[string]*game.ScheduledSend{},
@@ -256,8 +260,12 @@ func (w *MemWorld) Command(id string) *game.Command {
 }
 
 func (w *MemWorld) commandsWhere(match func(c *game.Command) bool) []*game.Command {
+	return w.sortedTouched(w.commands, match)
+}
+
+func (w *MemWorld) sortedTouched(commands map[string]*game.Command, match func(c *game.Command) bool) []*game.Command {
 	var out []*game.Command
-	for _, c := range w.commands {
+	for _, c := range commands {
 		if match(c) {
 			out = append(out, c)
 		}
@@ -275,7 +283,7 @@ func (w *MemWorld) commandsWhere(match func(c *game.Command) bool) []*game.Comma
 }
 
 func (w *MemWorld) CommandsHome(villageID string) []*game.Command {
-	return w.commandsWhere(func(c *game.Command) bool { return game.CommandHome(c) == villageID })
+	return w.sortedTouched(w.byHome[villageID], func(c *game.Command) bool { return game.CommandHome(c) == villageID })
 }
 
 func (w *MemWorld) CommandsTo(villageID string) []*game.Command {
@@ -328,15 +336,36 @@ func (w *MemWorld) TakeNotified() []game.PlayerID {
 }
 
 func (w *MemWorld) PutCommand(c *game.Command) {
+	if old := w.commands[c.ID]; old != nil {
+		w.unindexCommand(old)
+	}
 	w.commands[c.ID] = c
+	w.indexCommand(c)
 	w.touchCommand(c)
 }
 
 func (w *MemWorld) DeleteCommand(id string) {
 	if c := w.commands[id]; c != nil {
 		w.touchCommand(c)
+		w.unindexCommand(c)
 	}
 	delete(w.commands, id)
+}
+
+func (w *MemWorld) indexCommand(c *game.Command) {
+	home := game.CommandHome(c)
+	if w.byHome[home] == nil {
+		w.byHome[home] = map[string]*game.Command{}
+	}
+	w.byHome[home][c.ID] = c
+}
+
+func (w *MemWorld) unindexCommand(c *game.Command) {
+	home := game.CommandHome(c)
+	delete(w.byHome[home], c.ID)
+	if len(w.byHome[home]) == 0 {
+		delete(w.byHome, home)
+	}
 }
 
 // ---- events ----
