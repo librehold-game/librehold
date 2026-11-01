@@ -107,6 +107,27 @@ describe('game store backed by the server', () => {
     expect(useGameStore.getState().rankingRev).toBe(rev + 1);
   });
 
+  it('a burst of state updates fetches the state once more after the fetch in flight, not once per update', async () => {
+    await useGameStore.getState().boot();
+    FakeSocket.all[0]!.emit({ type: 'hello', serverTime: 0, worldNow: 0 });
+    const replies: (() => void)[] = [];
+    let stateFetches = 0;
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      if (url === '/api/v1/worlds/3/state') {
+        stateFetches++;
+        await new Promise<void>((resolve) => replies.push(resolve));
+      }
+      return new Response(JSON.stringify(fixture), { status: 200 });
+    }));
+    for (let i = 0; i < 5; i++) FakeSocket.all[0]!.emit({ type: 'update', topics: ['state'], serverTime: 0, worldNow: 0 });
+    await vi.waitFor(() => expect(replies).toHaveLength(1));
+    replies.shift()!();
+    await vi.waitFor(() => expect(replies).toHaveLength(1));
+    replies.shift()!();
+    await new Promise((r) => setTimeout(r, 20));
+    expect(stateFetches).toBe(2);
+  });
+
   it('a 401 sends the player to the login page', async () => {
     const go = vi.spyOn(navigation, 'assign').mockImplementation(() => {});
     routes['GET /api/v1/worlds/3/state'] = () => ({ status: 401, body: { error: { code: 'unauthenticated', message: 'Log in' } } });

@@ -48,7 +48,10 @@ func ownInbound(w World, actor PlayerID) map[string]bool {
 // what their last raid left, plus production since then; the bonus is on the map for anyone. An unscouted village
 // is taken as a fresh barbarian one: mines at 0, warehouse at 1. Without a scouting or a won raid it is 0, unknown.
 func EstimateLoot(w World, actor PlayerID, villageID string, bonus *VillageBonus) float64 {
-	in := w.Intel(actor, villageID)
+	return estimateLoot(w, w.Intel(actor, villageID), bonus)
+}
+
+func estimateLoot(w World, in *Intel, bonus *VillageBonus) float64 {
 	if in == nil {
 		return 0
 	}
@@ -88,19 +91,24 @@ func FarmTargets(w World, actor PlayerID, villageID string) []FarmTarget {
 	}
 	f := h.FarmAssistant.Filters
 	inbound := ownInbound(w, actor)
-	var out []FarmTarget
+	var tiles []Tile
+	var ids []string
 	for _, t := range VillagesInRadius(w, v.X, v.Y, f.Radius) {
-		if t.Kind != "village" || t.OwnerID != "" {
-			continue
+		if t.Kind == "village" && t.OwnerID == "" {
+			tiles = append(tiles, t)
+			ids = append(ids, t.ID)
 		}
-		out = append(out, farmTargetFor(w, actor, v, t, inbound))
+	}
+	known := w.IntelFor(actor, ids)
+	var out []FarmTarget
+	for _, t := range tiles {
+		out = append(out, farmTargetFor(w, v, t, known[t.ID], inbound))
 	}
 	return out
 }
 
-// farmTargetFor is one tile as the actor knows it from their own reports.
-func farmTargetFor(w World, actor PlayerID, from *Village, t Tile, inbound map[string]bool) FarmTarget {
-	in := w.Intel(actor, t.ID)
+// farmTargetFor is one tile as the actor knows it from their own reports: in is their intel on it, nil when none.
+func farmTargetFor(w World, from *Village, t Tile, in *Intel, inbound map[string]bool) FarmTarget {
 	ft := FarmTarget{ID: t.ID, X: t.X, Y: t.Y, Distance: Distance(from.X, from.Y, t.X, t.Y), Points: t.Points,
 		Inbound: inbound[t.ID], Status: "untouched"}
 	if in != nil {
@@ -126,7 +134,7 @@ func farmTargetFor(w World, actor PlayerID, from *Village, t Tile, inbound map[s
 			ft.Status = "full"
 		}
 	}
-	ft.EstimatedLoot = EstimateLoot(w, actor, t.ID, t.Bonus)
+	ft.EstimatedLoot = estimateLoot(w, in, t.Bonus)
 	return ft
 }
 
@@ -296,6 +304,15 @@ func SetAutoFarm(w World, actor PlayerID, enabled bool, villageIDs []string) err
 	return nil
 }
 
+// autoFarmSend is the action log's record of a raid the auto-farm sent: the replay sends it again from the world's
+// own events, so it is not an order.
+type autoFarmSend struct {
+	OriginID string     `json:"originId"`
+	X        int        `json:"x"`
+	Y        int        `json:"y"`
+	Units    UnitCounts `json:"units"`
+}
+
 // AutoFarmTick sends template A from a village to filtered targets, nearest first, while the troops last.
 func AutoFarmTick(w World, actor PlayerID, villageID string) int {
 	v, h := w.Village(villageID), w.Human(actor)
@@ -328,6 +345,7 @@ func AutoFarmTick(w World, actor PlayerID, villageID string) int {
 		}
 		if _, err := SendCommand(w, actor, villageID, t.X, t.Y, tpl, "attack", SendOpts{}); err == nil {
 			sent++
+			w.LogAction(ActorOf(w.Player(actor)), false, "auto-farm-send", autoFarmSend{OriginID: villageID, X: t.X, Y: t.Y, Units: tpl})
 		}
 	}
 	return sent
@@ -339,9 +357,12 @@ func autoFarmActive(w World, actor PlayerID, villageID string) bool {
 		slices.Contains(h.FarmAssistant.AutoFarmVillages, villageID)
 }
 
-func scheduleAutoFarm(w World, villageID string) {
+func scheduleAutoFarm(w World, villageID string) { scheduleAutoFarmTick(w, "autofarm:", villageID) }
+
+// scheduleAutoFarmTick puts the village's next tick on the auto-farm grid (offset per village).
+func scheduleAutoFarmTick(w World, prefix, villageID string) {
 	interval := FarmBalance.AutoFarmIntervalMs
-	w.Schedule("autofarm:"+villageID, NextGridTime(w.Now(), int64(HashSeed(villageID, "autofarm"))%interval, interval))
+	w.Schedule(prefix+villageID, NextGridTime(w.Now(), int64(HashSeed(villageID, "autofarm"))%interval, interval))
 }
 
 // SyncAutoFarm reconciles a human's auto-farm events with their settings: active villages without a tick get one,

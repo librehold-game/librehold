@@ -315,6 +315,12 @@ func onCommandEvent(w World, commandID string) error {
 		}
 		if c.Haul != nil {
 			AddResourcesCapped(target, *c.Haul)
+			if b := w.Brain(PlayerID(target.OwnerID)); b != nil {
+				for _, r := range ResourceIDs {
+					b.Looted.Set(r, b.Looted.Get(r)+c.Haul.Get(r))
+				}
+				b.RecentLoot.Add(w.Now(), SumResources(*c.Haul))
+			}
 		}
 	case "trade":
 		return tradeArrival(w, c, target)

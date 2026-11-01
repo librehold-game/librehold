@@ -107,3 +107,19 @@ func smallestRoot(a, b, c float64) (float64, bool) {
 	}
 	return 0, false
 }
+
+// Box is an area of the map, edges included.
+type Box struct{ X0, Y0, X1, Y1 float64 }
+
+func (b Box) Overlaps(o Box) bool {
+	return b.X0 <= o.X1 && o.X0 <= b.X1 && b.Y0 <= o.Y1 && o.Y0 <= b.Y1
+}
+
+// LegBox is the box around the leg a command is on: every place its army can be until it arrives.
+func LegBox(c *Command) (Box, bool) {
+	from, to, ok := LegEnds(c)
+	if !ok {
+		return Box{}, false
+	}
+	return Box{X0: math.Min(from.X, to.X), Y0: math.Min(from.Y, to.Y), X1: math.Max(from.X, to.X), Y1: math.Max(from.Y, to.Y)}, true
+}

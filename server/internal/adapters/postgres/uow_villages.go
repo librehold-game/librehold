@@ -61,18 +61,22 @@ func (u *uow) PutVillage(v *game.Village) {
 
 func (u *uow) VillagesIn(x0, y0, x1, y1 int) []game.VillageRef {
 	byID := map[string]game.VillageRef{}
-	rows, err := u.tx.Query(u.ctx, `select id, x, y, name, coalesce(owner_id, ''), points from villages
+	rows, err := u.tx.Query(u.ctx, `select id, x, y, name, coalesce(owner_id, ''), points, data->'bonus' from villages
 		where world_id = $1 and x between $2 and $3 and y between $4 and $5`, u.row.ID, x0, x1, y0, y1)
 	u.must(err)
 	for rows.Next() {
 		var r game.VillageRef
-		u.must(rows.Scan(&r.ID, &r.X, &r.Y, &r.Name, &r.OwnerID, &r.Points))
+		var bonus []byte
+		u.must(rows.Scan(&r.ID, &r.X, &r.Y, &r.Name, &r.OwnerID, &r.Points, &bonus))
+		if len(bonus) > 0 {
+			u.must(json.Unmarshal(bonus, &r.Bonus))
+		}
 		byID[r.ID] = r
 	}
 	u.must(rows.Err())
 	for id, e := range u.villages {
 		if v := e.v; v != nil && v.X >= x0 && v.X <= x1 && v.Y >= y0 && v.Y <= y1 {
-			byID[id] = game.VillageRef{ID: v.ID, X: v.X, Y: v.Y, Name: v.Name, OwnerID: v.OwnerID, Points: v.Points}
+			byID[id] = game.VillageRef{ID: v.ID, X: v.X, Y: v.Y, Name: v.Name, OwnerID: v.OwnerID, Points: v.Points, Bonus: v.Bonus}
 		} else {
 			delete(byID, id)
 		}

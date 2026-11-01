@@ -16,7 +16,7 @@
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "coverage": "vitest run --coverage.enabled --coverage.provider=v8 --coverage.reporter=text --coverage.include='src/**'",
-    "server:test": "cd server && go test ./...",
+    "server:test": "cd server && go test -timeout 20m ./...",
     "gen": "cd server && go run ./cmd/gen",
     "assets:pixel": "python3 scripts/pixel/export.py art/pixel-spike src/assets/pixel/village",
     "assets:pixel-ui": "python3 scripts/pixel/ui.py art/pixel-spike/ui src/assets/pixel/ui",

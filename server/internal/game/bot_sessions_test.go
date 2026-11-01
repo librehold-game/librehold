@@ -708,16 +708,17 @@ func TestBotExpansionAndQuitting(t *testing.T) {
 		}
 	})
 
-	t.Run("a weak bot under constant pressure quits, a strong one stays", func(t *testing.T) {
-		w, home := botWorld(t, 32, monday, func(c *game.WorldConfig) { c.BotCount, c.BeginnerProtectionDays = 2, 0 })
-		weak, strong := w.Brain("bot_0"), w.Brain("bot_1")
+	t.Run("under constant pressure a medium bot quits, a strong one stays and a weak one plays on", func(t *testing.T) {
+		w, home := botWorld(t, 32, monday, func(c *game.WorldConfig) { c.BotCount, c.BeginnerProtectionDays = 3, 0 })
+		weak, strong, medium := w.Brain("bot_0"), w.Brain("bot_1"), w.Brain("bot_2")
 		weak.Skill, weak.Resilience = 0.1, 0.3
 		strong.Skill, strong.Resilience = 0.95, 0.85
-		home.Units[game.UAxe] = 2000
+		medium.Skill, medium.Resilience = 0.45, 0.3
+		home.Units[game.UAxe] = 3000
 		for at := int64(0); at < 10*game.MsPerDay; at += 30 * game.MsPerMinute {
 			advance(t, w, at)
 			game.Touch(w, home)
-			for _, id := range []game.PlayerID{"bot_0", "bot_1"} {
+			for _, id := range []game.PlayerID{"bot_0", "bot_1", "bot_2"} {
 				p := w.Player(id)
 				if len(p.VillageIDs) == 0 {
 					continue
@@ -727,8 +728,9 @@ func TestBotExpansionAndQuitting(t *testing.T) {
 				}
 			}
 		}
-		if w.Player("bot_0").Status != game.StatusQuit || w.Player("bot_1").Status != game.StatusActive {
-			t.Fatalf("weak %s strong %s", w.Player("bot_0").Status, w.Player("bot_1").Status)
+		if w.Player("bot_0").Status != game.StatusActive || w.Player("bot_1").Status != game.StatusActive ||
+			w.Player("bot_2").Status != game.StatusQuit {
+			t.Fatalf("weak %s strong %s medium %s", w.Player("bot_0").Status, w.Player("bot_1").Status, w.Player("bot_2").Status)
 		}
 	})
 
@@ -798,25 +800,24 @@ func TestBotAdaptationSessions(t *testing.T) {
 	})
 
 	// With equal hauls the farm order is best haul per distance, so the day's first targets need not vary; the
-	// send hour is what players can see.
+	// send hour is what players can see. The auto-farm raids barbarians around the clock, as humans' does, so the
+	// session's raids (sent online) are what tells the hour.
 	t.Run("one bot over three weeks: the day's first attack at varying hours", func(t *testing.T) {
 		w, _ := botWorld(t, 211, monday, func(c *game.WorldConfig) { c.BotCount, c.BeginnerProtectionDays = 20, 0 })
 		bot := bySkillDesc(w)[0].ID
-		seen := map[string]bool{}
 		firstHour := map[int64]int{}
+		defer game.SpyRaids(func(id game.PlayerID, c *game.Command, _ bool, _ int64) {
+			if id != bot || !w.Brain(bot).Online {
+				return
+			}
+			d := game.LocalDayIndex(w, c.DepartedAt)
+			h := game.LocalMinuteOfDay(w, c.DepartedAt) / 60
+			if cur, ok := firstHour[d]; !ok || h < cur {
+				firstHour[d] = h
+			}
+		})()
 		for at := 10 * game.MsPerMinute; at <= 21*game.MsPerDay; at += 10 * game.MsPerMinute {
 			advance(t, w, at)
-			for _, c := range w.Commands() {
-				if c.Type != "attack" || seen[c.ID] || !slices.Contains(w.Player(bot).VillageIDs, c.OriginID) {
-					continue
-				}
-				seen[c.ID] = true
-				d := game.LocalDayIndex(w, c.DepartedAt)
-				h := game.LocalMinuteOfDay(w, c.DepartedAt) / 60
-				if cur, ok := firstHour[d]; !ok || h < cur {
-					firstHour[d] = h
-				}
-			}
 		}
 		hours := map[int]bool{}
 		for _, h := range firstHour {

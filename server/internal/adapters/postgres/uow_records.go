@@ -136,6 +136,39 @@ func (u *uow) PutIntel(player game.PlayerID, villageID string, in *game.Intel) {
 	u.intel[makeIntelKey(player, villageID)].v = in
 }
 
+func (u *uow) IntelFor(player game.PlayerID, villageIDs []string) map[string]*game.Intel {
+	var missing []string
+	for _, id := range villageIDs {
+		if _, ok := u.intel[makeIntelKey(player, id)]; !ok {
+			missing = append(missing, id)
+		}
+	}
+	if len(missing) > 0 {
+		rows, err := u.tx.Query(u.ctx, `select village_id, data from intel where world_id = $1 and player_id = $2 and village_id = any($3)`,
+			u.row.ID, player, missing)
+		u.must(err)
+		for rows.Next() {
+			var village string
+			var data []byte
+			u.must(rows.Scan(&village, &data))
+			track(u.intel, makeIntelKey(player, village), data)
+		}
+		u.must(rows.Err())
+		for _, id := range missing {
+			if k := makeIntelKey(player, id); u.intel[k] == nil {
+				u.intel[k] = &entry[game.Intel]{}
+			}
+		}
+	}
+	out := map[string]*game.Intel{}
+	for _, id := range villageIDs {
+		if e := u.intel[makeIntelKey(player, id)]; e.v != nil {
+			out[id] = e.v
+		}
+	}
+	return out
+}
+
 func (u *uow) IntelOf(player game.PlayerID) map[string]*game.Intel {
 	rows, err := u.tx.Query(u.ctx, `select village_id, data from intel where world_id = $1 and player_id = $2`, u.row.ID, player)
 	u.must(err)

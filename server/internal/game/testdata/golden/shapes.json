@@ -35,6 +35,16 @@
         "discoveredAt": -1
       },
       "overwhelm": 0,
+      "looted": {
+        "wood": 0,
+        "clay": 0,
+        "iron": 0
+      },
+      "recentLoot": {
+        "since": 0,
+        "loot": 0,
+        "perHour": 0
+      },
       "lastSessionStats": {
         "villagesLost": 0,
         "incomingAttacks": 0
@@ -50,7 +60,7 @@
   },
   "commands": [
     {
-      "id": "c_r",
+      "id": "c_z",
       "type": "return",
       "originId": "v:127:89",
       "targetId": "v:128:90",
@@ -61,7 +71,7 @@
       "arrivesAt": 8727350
     },
     {
-      "id": "c_t",
+      "id": "c_11",
       "type": "attack",
       "originId": "v:128:90",
       "targetId": "v:114:88",
@@ -72,7 +82,7 @@
       "arrivesAt": 23237181
     },
     {
-      "id": "c_u",
+      "id": "c_12",
       "type": "attack",
       "originId": "v:128:90",
       "targetId": "v:114:94",
@@ -358,7 +368,7 @@
   ],
   "reports": [
     {
-      "id": "rep_s",
+      "id": "rep_10",
       "time": 7963675,
       "type": "scout",
       "originId": "v:128:90",

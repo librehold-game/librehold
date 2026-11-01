@@ -7,7 +7,7 @@ import (
 )
 
 // Advance plays the world forward to `until`: every due event in (at, seq) order, each at its own time,
-// followed by quest settling for the humans it touched.
+// then quest settling for the humans they touched, once (as the app's runner does).
 func Advance(w *MemWorld, until int64) error {
 	for guard := 0; ; guard++ {
 		if guard > 1_000_000 {
@@ -21,9 +21,9 @@ func Advance(w *MemWorld, until int64) error {
 		if err := game.Dispatch(w, key); err != nil {
 			return fmt.Errorf("%s at %d: %w", key, at, err)
 		}
-		for _, h := range w.TouchedHumans() {
-			game.SettleQuests(w, h)
-		}
+	}
+	for _, h := range w.TouchedHumans() {
+		game.SettleQuests(w, h)
 	}
 	if until > w.Now() {
 		w.SetNow(until)

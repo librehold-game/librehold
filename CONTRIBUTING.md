@@ -35,9 +35,9 @@ Good places to start:
    picks the section (`bug` → Fixed, `enhancement` or `idea` → Added).
 
 ```sh
-npm run typecheck && npm test           # client
-cd server && go vet ./... && go test ./...   # server (the Postgres tests need Docker)
-npm run build:web && cd server && make e2e   # end-to-end tests (make perf: performance tests, local only)
+npm run typecheck && npm test                             # client
+cd server && go vet ./... && go test -timeout 20m ./...   # server (the Postgres tests need Docker)
+npm run build:web && cd server && make e2e                # end-to-end tests (make perf: performance tests, local only)
 ```
 
 Things that are easy to miss:

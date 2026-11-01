@@ -163,8 +163,14 @@ func Sighted(w World, viewer PlayerID, now int64) []*Command {
 		return nil
 	}
 	r := SightRadiusOf(cfg)
+	near := Box{X0: math.Inf(1), Y0: math.Inf(1), X1: math.Inf(-1), Y1: math.Inf(-1)}
+	for _, p := range mine.points {
+		near = Box{X0: math.Min(near.X0, p.X), Y0: math.Min(near.Y0, p.Y), X1: math.Max(near.X1, p.X), Y1: math.Max(near.Y1, p.Y)}
+	}
+	reach := r + 1e-6
+	near = Box{X0: near.X0 - reach, Y0: near.Y0 - reach, X1: near.X1 + reach, Y1: near.Y1 + reach}
 	var out []*Command
-	for _, c := range w.ArmiesMarching(now) {
+	for _, c := range w.ArmiesMarching(now, near) {
 		if passingNear(w, viewer, c, now, mine, r) {
 			out = append(out, c)
 		}

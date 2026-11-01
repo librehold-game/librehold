@@ -63,12 +63,16 @@ func ChooseRole(w World, botID PlayerID, v *Village) VillageRole {
 
 // openingFor: the opening, corrected for the "barracks on day one" mistake (weak players rush the military).
 func openingFor(w World, botID PlayerID) []OpeningStep {
+	opening := Opening
+	if economyPlay(w, botID).MinesOpening {
+		opening = MinesOpening
+	}
 	if !makesMistake(w, botID, "barracksDayOne", "") {
-		return Opening
+		return opening
 	}
 	early := []OpeningStep{{BMain, 2}, {BMain, 3}, {BBarracks, 1}, {BBarracks, 2}, {BBarracks, 3}}
 	out := append([]OpeningStep{}, early...)
-	for _, s := range Opening {
+	for _, s := range opening {
 		if !slices.Contains(early, s) {
 			out = append(out, s)
 		}
@@ -100,8 +104,13 @@ func queuedBuilding(v *Village, b BuildingID) bool {
 func NextBuilding(w World, botID PlayerID, v *Village, rng func() float64) (BuildingID, bool) {
 	brain := brainOf(w, botID)
 	levels := EffectiveBuildingLevels(v)
+	play := economyPlay(w, botID)
 	capacity := float64(VillageFarmCapacity(v))
-	if !queuedBuilding(v, BFarm) && levels[BFarm] < BuildingDefs[BFarm].MaxLevel &&
+	if play.FarmAt > 0 {
+		if play.farmShort(w, v, levels) {
+			return BFarm, true
+		}
+	} else if !queuedBuilding(v, BFarm) && levels[BFarm] < BuildingDefs[BFarm].MaxLevel &&
 		capacity-float64(PopulationUsed(w, v)) < BotConfig.BottleneckShare*capacity {
 		return BFarm, true
 	}
@@ -121,6 +130,12 @@ func NextBuilding(w World, botID PlayerID, v *Village, rng func() float64) (Buil
 			}
 		}
 	}
+	if play.StorageHours > 0 && play.storageShort(w, v, levels) {
+		return BStorage, true
+	}
+	if b, ok := play.cavalryStep(levels); ok {
+		return b, true
+	}
 	for _, s := range openingFor(w, botID) {
 		if levels[s.Building] < s.Level && MeetsRequirements(levels, s.Building) {
 			return s.Building, true
@@ -129,13 +144,19 @@ func NextBuilding(w World, botID PlayerID, v *Village, rng func() float64) (Buil
 	role := ChooseRole(w, botID, v)
 	ecoFirst := makesMistake(w, botID, "ecoTo30BeforeMilitary", v.ID) &&
 		(levels[BWood] < 30 || levels[BClay] < 30 || levels[BIron] < 30)
+	if play.MinesFirstTo > 0 {
+		ecoFirst = play.minesFirst(levels)
+	}
 	var candidates []Option[BuildingID]
 	for _, t := range roleTargetsInOrder(role) {
 		b := t.Building
-		if levels[b] >= t.Level || levels[b] >= BuildingDefs[b].MaxLevel || !MeetsRequirements(levels, b) {
+		if levels[b] >= play.target(w, botID, b, t.Level) || levels[b] >= BuildingDefs[b].MaxLevel || !MeetsRequirements(levels, b) {
 			continue
 		}
 		if ecoFirst && !slices.Contains(resourceBuildings, b) {
+			continue
+		}
+		if b == BIron && play.ironWaits(levels) || b == BFarm && play.FarmAt > 0 || b == BStorage && play.StorageHours > 0 {
 			continue
 		}
 		candidates = append(candidates, Option[BuildingID]{b, -SumResources(BuildCost(b, levels[b]+1))})
@@ -160,9 +181,12 @@ func nobleSavings(w World, v *Village) Resources {
 func PlanBuilding(w World, botID PlayerID, v *Village) {
 	rng := Mulberry32(HiddenSeed(w, "build", botID, v.ID, w.Now()))
 	slots := BuildQueueSlotsFor(w, OwnerOf(w, v))
-	savings := nobleSavings(w, v)
+	savings := maxResources(nobleSavings(w, v), economyPlay(w, botID).cavalrySavings(w, v))
 	for guard := 0; len(v.BuildQueue) < slots && guard < slots; guard++ {
 		b, ok := NextBuilding(w, botID, v, rng)
+		if ok && len(CheckBuild(w, v, b).Blockers) > 0 && economyPlay(w, botID).FillQueue {
+			b, ok = fallbackBuild(w, botID, v)
+		}
 		if !ok || len(CheckBuild(w, v, b).Blockers) > 0 {
 			return
 		}
@@ -300,8 +324,13 @@ func PlanRecruitment(w World, botID PlayerID, v *Village) {
 	if next, ok := NextBuilding(w, botID, v, Mulberry32(HiddenSeed(w, "reserve", botID, v.ID, w.Now()))); ok {
 		reserve = BuildCost(next, EffectiveBuildingLevels(v)[next]+1)
 	}
-	savings := nobleSavings(w, v)
-	reserve = Resources{Wood: max(reserve.Wood, savings.Wood), Clay: max(reserve.Clay, savings.Clay), Iron: max(reserve.Iron, savings.Iron)}
+	play := economyPlay(w, botID)
+	savings := maxResources(nobleSavings(w, v), play.cavalrySavings(w, v))
+	reserve = maxResources(reserve, savings)
+	if play.armyShort(w, v) {
+		half := Resources{Wood: v.Resources.Wood / 2, Clay: v.Resources.Clay / 2, Iron: v.Resources.Iron / 2}
+		reserve = maxResources(savings, half)
+	}
 	for _, r := range recruitableUnits(w, v, role, false) {
 		botRecruit(w, botID, v, r.unit, min(r.deficit, affordableUnits(w, v, r.unit, reserve)))
 	}
@@ -344,14 +373,17 @@ type buildOption struct {
 // affordableBuilds are all buildings that can be queued now (opening, role targets, bottlenecks), with times.
 func affordableBuilds(w World, botID PlayerID, v *Village) []buildOption {
 	levels := EffectiveBuildingLevels(v)
-	wanted := map[BuildingID]bool{BFarm: true, BStorage: true}
-	for _, s := range Opening {
+	play := economyPlay(w, botID)
+	wanted := map[BuildingID]bool{BFarm: play.FarmAt == 0 || play.farmShort(w, v, levels),
+		BStorage: play.StorageHours == 0 || play.storageShort(w, v, levels)}
+	for _, s := range openingFor(w, botID) {
 		if levels[s.Building] < s.Level {
 			wanted[s.Building] = true
 		}
 	}
 	for _, t := range roleTargetsInOrder(ChooseRole(w, botID, v)) {
-		if levels[t.Building] < t.Level {
+		if levels[t.Building] < play.target(w, botID, t.Building, t.Level) && (t.Building != BFarm || wanted[BFarm]) &&
+			(t.Building != BStorage || wanted[BStorage]) {
 			wanted[t.Building] = true
 		}
 	}
@@ -447,4 +479,7 @@ func QueueForOffline(w World, botID PlayerID, v *Village, nextSessionAt int64) {
 	}
 	PlanResearch(w, botID, v)
 	PlanBuilding(w, botID, v)
+	if n := economyPlay(w, botID).PlanSteps; n > 0 {
+		setOfflinePlan(w, botID, v, n)
+	}
 }
