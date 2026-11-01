@@ -4,5 +4,5 @@ The "contributors" in "Copyright (C) 2026 Szymon Kocur and contributors". Each k
 contributions, licensed as described in `LICENSING.md` and `CONTRIBUTING.md`.
 
 - Szymon Kocur <me@szymonkocur.com> — author
-- [right-ward](https://github.com/right-ward) — contributor
 - Ciefa, hello@ciefas.cafe, [ciefas.cafe](https://ciefas.cafe)
+- right-ward <ninja.notleft@proton.me> — contributor
