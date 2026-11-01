@@ -1,75 +1,120 @@
 import { useState } from 'react';
-import { BUILDING_ORDER } from '../../data/buildings.data';
+import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
+import { meetsRequirements } from '../../engine/buildings';
+import { msUntilAmount } from '../../engine/resources';
+import { checkBuild, effectiveBuildingLevels } from '../../engine/queues';
+import { checkRecruit, maxRecruitable, unitsForBuilding, type RecruitBlocker } from '../../engine/units';
+import { RESOURCES, type BuildingId, type RecruitBuilding, type UnitId } from '../../engine/types';
 import { buildingName, unitName } from '../../i18n/names';
 import { useT } from '../../i18n/i18n';
-import { checkBuild, type BuildBlocker } from '../../engine/queues';
-import { checkRecruit, maxRecruitable, unitsForBuilding, type RecruitBlocker } from '../../engine/units';
-import type { BuildingId, RecruitBuilding, UnitId } from '../../engine/types';
-import { useGameStore } from '../../state/gameStore';
+import { selectConfig } from '../../state/selectors';
+import { useGameStore, type GameStore } from '../../state/gameStore';
+import { blockerText as buildBlockerText, type BlockerInfo } from '../views/BuildingsTable';
+import { blockerText as recruitBlockerText } from '../views/RecruitScreen';
 
 const RECRUIT_BUILDINGS: readonly RecruitBuilding[] = ['barracks', 'stable', 'workshop', 'statue'];
 
-function buildBlockerText(blocker: BuildBlocker, t: ReturnType<typeof useT>): string {
-  switch (blocker.kind) {
-    case 'maxLevel': return t('buildings.maxLevel');
-    case 'queueFull': return t('buildings.queueFull', { slots: blocker.slots });
-    case 'requirements': return t('buildings.requires', {
-      list: blocker.missing.map((m) => `${buildingName(m.building)} ${m.level}`).join(', '),
-    });
-    case 'resources': return t('recruit.noResources');
-    case 'population': return t('buildings.noPopulation', { needed: blocker.needed, free: blocker.free });
-  }
+interface BuildModel {
+  targetLevel: number;
+  blockers: BlockerInfo[];
 }
 
-function recruitBlockerText(blocker: RecruitBlocker, t: ReturnType<typeof useT>): string {
-  switch (blocker.kind) {
-    case 'requirements': return t('recruit.requires', {
-      list: blocker.missing.map((m) => `${buildingName(m.building)} ${m.level}`).join(', '),
+interface RecruitModel {
+  blockers: RecruitBlocker[];
+  max: number;
+}
+
+/** Subscribe to one selected building's check, not the entire game object. */
+function makeBuildSelector(villageId: string, building: BuildingId | undefined) {
+  return (s: GameStore): string => {
+    const game = s.game;
+    const village = game?.villages[villageId];
+    if (!game || !village || !building) return '';
+
+    const check = checkBuild(game, village, building);
+    const config = selectConfig(s);
+    const blockers: BlockerInfo[] = check.blockers.map((blocker) => {
+      if (blocker.kind !== 'resources') return blocker;
+      let eta = 0;
+      for (const resource of RESOURCES) {
+        if (blocker.missing[resource] > 0) {
+          eta = Math.max(eta, msUntilAmount(village, resource, check.cost[resource], config));
+        }
+      }
+      // JSON cannot carry Infinity; match BuildingsTable's "never" representation.
+      return { ...blocker, etaMs: eta === Infinity ? -1 : Math.ceil(eta / 60_000) * 60_000 };
     });
-    case 'research': return t('recruit.needsResearch');
-    case 'resources': return t('recruit.noResources');
-    case 'population': return t('recruit.noPopulation', { needed: blocker.needed, free: blocker.free });
-    case 'limit': return t('recruit.limit', { max: blocker.max });
-    case 'coins': return t('recruit.coins', { have: blocker.have, needed: blocker.needed });
-    case 'count': return t('recruit.count');
-  }
+
+    return JSON.stringify({ targetLevel: check.targetLevel, blockers } satisfies BuildModel);
+  };
+}
+
+/** Subscribe to one selected unit's check, not the entire game object. */
+function makeRecruitSelector(villageId: string, unit: UnitId | undefined, count: number) {
+  return (s: GameStore): string => {
+    const game = s.game;
+    const village = game?.villages[villageId];
+    if (!game || !village || !unit) return '';
+    const check = checkRecruit(game, village, unit, count);
+    return JSON.stringify({
+      blockers: check.blockers,
+      max: maxRecruitable(village, unit, game),
+    } satisfies RecruitModel);
+  };
 }
 
 /** Compact build and recruitment controls for the own-village map popup. */
 export function VillageQuickActions({ villageId }: { villageId: string }) {
   const t = useT();
-  const game = useGameStore((s) => s.game);
   const build = useGameStore((s) => s.build);
   const recruit = useGameStore((s) => s.recruit);
   const [buildingChoice, setBuildingChoice] = useState<BuildingId>('wood');
   const [unitChoice, setUnitChoice] = useState<UnitId>('spear');
   const [count, setCount] = useState(1);
 
-  const village = game?.villages[villageId];
-  if (!game || !village) return null;
-
-  // Match the village building table: unavailable buildings stay hidden until their requirements are met.
-  const buildings = BUILDING_ORDER.filter((id) => {
-    const blockers = checkBuild(game, village, id).blockers;
-    return !blockers.some((b) => b.kind === 'maxLevel' || (village.buildings[id] === 0 && b.kind === 'requirements'));
+  // Only the village's building levels and queued target levels affect these option lists.
+  const buildingStateJson = useGameStore((s) => {
+    const village = s.game?.villages[villageId];
+    if (!village) return '';
+    return JSON.stringify({
+      levels: village.buildings,
+      effectiveLevels: effectiveBuildingLevels(village),
+    });
   });
-  const building = buildings.includes(buildingChoice) ? buildingChoice : buildings[0];
-  const buildCheck = building ? checkBuild(game, village, building) : null;
+  const buildingState = buildingStateJson
+    ? JSON.parse(buildingStateJson) as {
+      levels: Record<BuildingId, number>;
+      effectiveLevels: Record<BuildingId, number>;
+    }
+    : null;
 
-  // Only show units for recruitment buildings that have actually been built; checkRecruit handles unlocks and limits.
-  const units = RECRUIT_BUILDINGS
-    .filter((id) => village.buildings[id] > 0)
-    .flatMap((id) => unitsForBuilding(id));
+  // Match the village building table: hide maxed buildings and buildings whose requirements are not met.
+  const buildings = buildingState
+    ? BUILDING_ORDER.filter((id) =>
+      buildingState.effectiveLevels[id] < BUILDINGS[id].maxLevel
+      && (buildingState.levels[id] > 0 || meetsRequirements(buildingState.effectiveLevels, id)))
+    : [];
+  const building = buildings.includes(buildingChoice) ? buildingChoice : buildings[0];
+  const buildJson = useGameStore(makeBuildSelector(villageId, building));
+  const buildModel = buildJson ? JSON.parse(buildJson) as BuildModel : null;
+
+  // Only show units for recruitment buildings that have actually been built.
+  const units = buildingState
+    ? RECRUIT_BUILDINGS
+      .filter((id) => buildingState.levels[id] > 0)
+      .flatMap((id) => unitsForBuilding(id))
+    : [];
   const unit = units.includes(unitChoice) ? unitChoice : units[0];
-  const recruitCheck = unit ? checkRecruit(game, village, unit, count) : null;
-  const recruitMax = unit ? maxRecruitable(village, unit, game) : 0;
+  const recruitJson = useGameStore(makeRecruitSelector(villageId, unit, count));
+  const recruitModel = recruitJson ? JSON.parse(recruitJson) as RecruitModel : null;
+  const recruitMax = recruitModel?.max ?? 0;
 
   return (
     <div className="mt-1.5 space-y-1 border-t border-wood-border/60 pt-1">
       <details>
         <summary className="cursor-pointer font-semibold">{t('map.quickBuild')}</summary>
         <div className="mt-1 flex flex-wrap items-center gap-1">
-          {building ? (
+          {building && buildModel ? (
             <>
               <select
                 aria-label={t('map.chooseBuilding')}
@@ -81,14 +126,14 @@ export function VillageQuickActions({ villageId }: { villageId: string }) {
               </select>
               <button
                 className="btn"
-                disabled={!buildCheck || buildCheck.blockers.length > 0}
-                title={buildCheck?.blockers.map((b) => buildBlockerText(b, t)).join('\n')}
+                disabled={buildModel.blockers.length > 0}
+                title={buildModel.blockers.map(buildBlockerText).join('\n')}
                 onClick={() => { void build(villageId, building); }}
               >
-                {t('buildings.upgradeTo', { n: buildCheck?.targetLevel ?? 1 })}
+                {t('buildings.upgradeTo', { n: buildModel.targetLevel })}
               </button>
-              {buildCheck && buildCheck.blockers.length > 0 && (
-                <p className="w-full text-[11px] text-bad">{buildCheck.blockers.map((b) => buildBlockerText(b, t)).join(' · ')}</p>
+              {buildModel.blockers.length > 0 && (
+                <p className="w-full text-[11px] text-bad">{buildModel.blockers.map(buildBlockerText).join(' · ')}</p>
               )}
             </>
           ) : (
@@ -99,7 +144,7 @@ export function VillageQuickActions({ villageId }: { villageId: string }) {
       <details>
         <summary className="cursor-pointer font-semibold">{t('map.quickRecruit')}</summary>
         <div className="mt-1 flex flex-wrap items-center gap-1">
-          {unit && recruitCheck ? (
+          {unit && recruitModel ? (
             <>
               <select
                 aria-label={t('map.chooseUnit')}
@@ -127,14 +172,14 @@ export function VillageQuickActions({ villageId }: { villageId: string }) {
               </button>
               <button
                 className="btn"
-                disabled={recruitCheck.blockers.length > 0}
-                title={recruitCheck.blockers.map((b) => recruitBlockerText(b, t)).join('\n')}
+                disabled={recruitModel.blockers.length > 0}
+                title={recruitModel.blockers.map(recruitBlockerText).join('\n')}
                 onClick={() => { void recruit(villageId, unit, count); }}
               >
                 {t('recruit.recruit')}
               </button>
-              {recruitCheck.blockers.length > 0 && (
-                <p className="w-full text-[11px] text-bad">{recruitCheck.blockers.map((b) => recruitBlockerText(b, t)).join(' · ')}</p>
+              {recruitModel.blockers.length > 0 && (
+                <p className="w-full text-[11px] text-bad">{recruitModel.blockers.map(recruitBlockerText).join(' · ')}</p>
               )}
             </>
           ) : (
