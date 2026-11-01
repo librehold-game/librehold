@@ -70,6 +70,7 @@ export function ArmyCard({ armyId, sheet, isVillage, onClose }: {
       className={`panel shadow-[0_4px_12px_rgba(0,0,0,0.35)] text-[11px] p-2 leading-snug ${
         sheet ? 'fixed inset-x-1 bottom-[calc(64px+env(safe-area-inset-bottom,0px))] z-40 max-h-[60vh] overflow-y-auto' : 'absolute z-20 right-2 top-2 w-[272px]'
       }`}
+      onPointerMove={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
       onWheel={(e) => e.stopPropagation()}

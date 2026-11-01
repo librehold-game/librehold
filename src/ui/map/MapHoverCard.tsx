@@ -36,7 +36,12 @@ export const continent = (x: number, y: number) => `K${Math.floor(y / 100)}${Mat
  * buttons can be clicked: attack, support and scout straight from the map. The card holds its own state (`register`), so
  * mouse movement does not redraw the map tiles.
  */
-export function MapHoverCard({ register, bounds }: { register: (set: (h: MapHover | null) => void) => void; bounds: { width: number; height: number } }) {
+export function MapHoverCard({ register, bounds, selected }: {
+  register: (set: (h: MapHover | null) => void) => void;
+  bounds: { width: number; height: number };
+  /** The clicked tile: its popup takes over, so the card must not cover it. */
+  selected?: { x: number; y: number } | null;
+}) {
   const [hover, setHover] = useState<MapHover | null>(null);
   const shown = useRef<MapHover | null>(null);
   const visible = useRef(false);
@@ -98,6 +103,16 @@ export function MapHoverCard({ register, bounds }: { register: (set: (h: MapHove
     }
   }, [show, scheduleChange, scheduleOpen, cancelOpen]);
   useEffect(() => register(fromMap), [register, fromMap]);
+  const selKey = selected ? `${selected.x}|${selected.y}` : '';
+  useEffect(() => {
+    if (!selKey) return;
+    if (pending.current && `${pending.current.x}|${pending.current.y}` === selKey) cancelOpen();
+    if (!shown.current || `${shown.current.x}|${shown.current.y}` !== selKey) return;
+    overCard.current = false;
+    if (closing.current) clearTimeout(closing.current);
+    closing.current = null;
+    show(null);
+  }, [selKey, show, cancelOpen]);
   useEffect(() => () => {
     if (closing.current) clearTimeout(closing.current);
     if (opening.current) clearTimeout(opening.current);
@@ -110,9 +125,11 @@ export function MapHoverCard({ register, bounds }: { register: (set: (h: MapHove
   const openRally = useUiStore((s) => s.openRally);
   const setView = useUiStore((s) => s.setView);
   const setActive = useGameStore((s) => s.setActiveVillage);
+  const tplA = useGameStore((s) => Object.keys(s.game?.farmAssistant.templates.A.units ?? {}).length > 0);
+  const sendTemplate = useGameStore((s) => s.sendTemplate);
   const clock = useClock();
   const t = useT();
-  if (!hover || !info) return null;
+  if (!hover || !info || (selected && selected.x === hover.x && selected.y === hover.y)) return null;
 
   const close = () => {
     overCard.current = false;
@@ -129,7 +146,7 @@ export function MapHoverCard({ register, bounds }: { register: (set: (h: MapHove
   const below = hover.top < bounds.height / 2;
   const style = below ? { left, top: Math.max(0, hover.top) } : { left, bottom: Math.max(0, bounds.height - hover.top - hover.th) };
   const rows: [string, React.ReactNode][] = [[t('mapCard.points'), formatNumber(info.points)]];
-  const actions: [string, () => void][] = [];
+  const actions: [string, () => void, { disabled?: boolean; title?: string }?][] = [];
 
   if (info.kind === 'own') {
     rows.push([t('mapCard.player'), t('mapCard.you')]);
@@ -156,6 +173,7 @@ export function MapHoverCard({ register, bounds }: { register: (set: (h: MapHove
     actions.push([t('mapCard.attack'), () => rally({ x: info.x, y: info.y, mode: 'attack' })]);
     if (info.ownerId) actions.push([t('mapCard.support'), () => rally({ x: info.x, y: info.y, mode: 'support' })]);
     actions.push([t('mapCard.scout'), () => rally({ x: info.x, y: info.y, mode: 'attack', units: { scout: 1 } })]);
+    actions.push([t('map.templateA'), () => { close(); sendTemplate('A', info.x, info.y); }, { disabled: !tplA, title: tplA ? t('map.sendA') : t('map.defineA') }]);
   }
 
   return (
@@ -179,7 +197,7 @@ export function MapHoverCard({ register, bounds }: { register: (set: (h: MapHove
           <tr>
             <td colSpan={2} data-label={t('mapCard.actions')}>
               <div className="flex flex-wrap gap-1">
-                {actions.map(([label, act]) => <button key={label} className="btn !py-0" onClick={act}>{label}</button>)}
+                {actions.map(([label, act, opt]) => <button key={label} className="btn !py-0" disabled={opt?.disabled} title={opt?.title} onClick={act}>{label}</button>)}
               </div>
             </td>
           </tr>

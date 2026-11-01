@@ -18,7 +18,9 @@ import (
 var titleTag = regexp.MustCompile(`<title>([^<]+)</title>`)
 
 func TestPublicSitePages(t *testing.T) {
-	s := startServerAt(t, newDB(t), time.Now().UnixMilli(), timeScale, "LH_TRUSTED_PROXIES=127.0.0.1/32")
+	// The checks below need the instant game still running: at the usual scale it lasts 36 s, which a slow runner
+	// can spend catching the world up; at 10 it lasts six minutes.
+	s := startServerAt(t, newDB(t), time.Now().UnixMilli(), 10, "LH_TRUSTED_PROXIES=127.0.0.1/32")
 
 	// A guest raids the nearest barbarian village; the live strip learns only that a battle happened, never who fought.
 	g := s.guest(t)

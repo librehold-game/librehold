@@ -147,6 +147,7 @@ export function VillagePopup({ sel, anchor, bounds, sheet, onClose, onDetails }:
         sheet ? 'fixed inset-x-1 bottom-[calc(64px+env(safe-area-inset-bottom,0px))] z-40 max-h-[52vh] overflow-y-auto' : 'absolute z-20'
       }`}
       style={sheet ? undefined : { left, top, width: POPUP_W }}
+      onPointerMove={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
       onWheel={(e) => e.stopPropagation()}
@@ -446,7 +447,7 @@ export function MapView() {
         surface={(view) => (
           <>
             {selArmy && view.wide && <ArmyCard armyId={selArmy} sheet={false} isVillage={isVillage} onClose={closeArmy} />}
-            <MapHoverCard register={registerHover} bounds={{ width: view.width, height: view.height }} />
+            <MapHoverCard register={registerHover} bounds={{ width: view.width, height: view.height }} selected={sel} />
             {view.wide && popup(view, false)}
           </>
         )}
