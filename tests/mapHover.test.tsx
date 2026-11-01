@@ -190,6 +190,8 @@ describe('the village menu on tap', () => {
     cleanup();
     render(<VillagePopup sel={w.bot} anchor={{ left: 0, top: 0, tw: 53, th: 38 }} bounds={{ width: 360, height: 640 }} sheet
       onClose={() => {}} onDetails={() => {}} />);
+    expect(screen.queryByText('Szybka budowa')).toBeNull();
+    expect(screen.queryByText('Szybka rekrutacja')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Wesprzyj' }));
     expect(useUiStore.getState().rallyPrefill).toEqual({ x: w.bot.x, y: w.bot.y, mode: 'support' });
   });
