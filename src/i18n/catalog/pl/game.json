@@ -589,7 +589,7 @@
     "chooseUnit": "Jednostka",
     "count": "Liczba",
     "noBuildAvailable": "Nie ma teraz budynku do rozbudowy.",
-    "noRecruitBuildings": "Wybuduj koszary, stajnię, warsztat lub pomnik, aby rekrutować."
+    "noRecruitBuildings": "Wybuduj koszary, stajnię, warsztat lub pomnik, aby rekrutować.",
     "travel": "Dystans {d} · LK {lc} · topór {axe}",
     "garrison": "Załoga ({ago} temu):",
     "wallLoyalty": " · mur {wall} · lojalność ~{loyalty}",
