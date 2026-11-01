@@ -163,10 +163,8 @@ deploy/          Docker Compose, Caddy, backups
 ## Contributing
 
 Bug reports, ideas and pull requests are welcome. Please read [`CONTRIBUTING.md`](CONTRIBUTING.md) and the
-[Code of Conduct](CODE_OF_CONDUCT.md) first: every
-contributor signs the Contributor License Agreement ([`CLA.md`](CLA.md) for individuals,
-[`CLA-ENTITY.md`](CLA-ENTITY.md) for organisations), and a bot will guide you through it on your first pull request.
-Artwork is not open, so please ask before sending any graphics.
+[Code of Conduct](CODE_OF_CONDUCT.md) first. There is nothing to sign: contributions are
+accepted under the project's licence. Artwork is not open, so please ask before sending any graphics.
 
 ## Security
 

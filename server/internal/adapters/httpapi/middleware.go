@@ -67,7 +67,10 @@ func (a *api) guard(next http.Handler) http.Handler {
 			writeAPIError(w, http.StatusForbidden, apiError{Code: "csrf"})
 			return
 		}
-		_ = http.NewResponseController(w).SetReadDeadline(time.Now().Add(bodyTimeout))
+		// Only with a body: the deadline also ends the connection watch that keeps a bodiless request's context alive.
+		if r.Body != http.NoBody {
+			_ = http.NewResponseController(w).SetReadDeadline(time.Now().Add(bodyTimeout))
+		}
 		r.Body = http.MaxBytesReader(w, r.Body, maxBodySize)
 		next.ServeHTTP(w, r)
 	})

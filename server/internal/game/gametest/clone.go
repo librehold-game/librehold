@@ -47,6 +47,10 @@ func (w *MemWorld) Clone() *MemWorld {
 	c.brains = cloneMap(w.brains)
 	c.humans = cloneMap(w.humans)
 	c.commands = cloneMap(w.commands)
+	c.byHome = map[string]map[string]*game.Command{}
+	for _, cmd := range c.commands {
+		c.indexCommand(cmd)
+	}
 	c.reports = make(map[game.PlayerID][]*game.Report, len(w.reports))
 	for id, list := range w.reports {
 		cl := make([]*game.Report, len(list))
