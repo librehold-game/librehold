@@ -190,8 +190,8 @@ export function VillagePopup({ sel, anchor, bounds, sheet, onClose, onDetails }:
             {info.id !== activeId && <button className="btn" onClick={() => openRally({ x: info.x, y: info.y, mode: 'support' })}>{t('map.support')}</button>}
             <button className="btn" onClick={() => openReportsFor(info.id)}>{t('map.reports')}{info.reportCount > 0 ? ` (${info.reportCount})` : ''}</button>
             <button className="btn" onClick={onDetails}>{t('map.more')}</button>
-          <VillageQuickActions villageId={info.id} />
           </div>
+          <VillageQuickActions villageId={info.id} />
         </>
       ) : (
         <>
