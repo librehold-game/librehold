@@ -5,6 +5,28 @@ format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and ver
 [Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
 edit it by hand.
 
+## [0.7.0](https://github.com/librehold-game/librehold/releases/tag/v0.7.0) — 2026-11-01 (alpha)
+
+### Added
+
+- Scan every pull request and push to main with CodeQL ([#15](https://github.com/librehold-game/librehold/pull/15)) by @ciefa
+- Start the whole development environment with one command, npm run dev:all ([#16](https://github.com/librehold-game/librehold/pull/16)) by @ciefa
+
+### Changed
+
+- Pin the Docker images by digest ([#17](https://github.com/librehold-game/librehold/pull/17)) by @ciefa
+
+### Fixed
+
+- Stop cancelling requests without a body after 30 seconds ([bf25de7](https://github.com/librehold-game/librehold/commit/bf25de7a33cdfd30c44a7f9809f6376292eabce8)) by @SKocur
+- The bottom bar switches views on the first tap in Firefox on Android ([#20](https://github.com/librehold-game/librehold/pull/20)) by @ciefa
+- The village card stays out of the way of the village popup, and a tap on the map opens the tile ([#22](https://github.com/librehold-game/librehold/pull/22)) by @SKocur
+
+### Contributors
+
+@SKocur, @ciefa
+
+- @ciefa made their first contribution in [#20](https://github.com/librehold-game/librehold/pull/20)
 ## [0.6.1](https://github.com/librehold-game/librehold/releases/tag/v0.6.1) — 2026-10-31 (alpha)
 
 ### Fixed
