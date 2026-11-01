@@ -18,6 +18,8 @@ export default defineConfig({
     include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
     environment: 'node',
     setupFiles: ['tests/setupI18n.ts'],
+    // Node 25+'s own localStorage warns without a file; Node 24 lacks --no-webstorage.
+    execArgv: ['--no-experimental-webstorage'],
     testTimeout: 30_000,
   },
 });
