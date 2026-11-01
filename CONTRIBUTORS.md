@@ -4,3 +4,4 @@ The "contributors" in "Copyright (C) 2026 Szymon Kocur and contributors". Each k
 contributions, licensed as described in `LICENSING.md` and `CONTRIBUTING.md`.
 
 - Szymon Kocur <me@szymonkocur.com> — author
+- Ciefa, hello@ciefas.cafe, [ciefas.cafe](https://ciefas.cafe)
