@@ -18,7 +18,7 @@ import { RequirementChips } from '../info/RequirementChips';
 import { requirementChain } from '../../shared/encyclopedia/facts';
 import { formatDuration, formatNumber } from '../format';
 
-function blockerText(b: RecruitBlocker): string {
+export function blockerText(b: RecruitBlocker): string {
   switch (b.kind) {
     case 'requirements': return t('recruit.requires', { list: b.missing.map((m) => `${buildingName(m.building)} ${m.level}`).join(', ') });
     case 'research': return t('recruit.needsResearch');
