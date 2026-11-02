@@ -5,6 +5,18 @@ format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and ver
 [Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
 edit it by hand.
 
+## [0.8.0](https://github.com/librehold-game/librehold/releases/tag/v0.8.0) — 2026-11-02 (alpha)
+
+### Added
+
+- Add quick build and recruitment to the map village menu ([#21](https://github.com/librehold-game/librehold/pull/21)) by @right-ward
+- Strong and medium bots build faster and use the auto-farm ([#23](https://github.com/librehold-game/librehold/pull/23)) by @SKocur
+
+### Contributors
+
+@SKocur, @right-ward
+
+- @right-ward made their first contribution in [#21](https://github.com/librehold-game/librehold/pull/21)
 ## [0.7.0](https://github.com/librehold-game/librehold/releases/tag/v0.7.0) — 2026-11-01 (alpha)
 
 ### Added
