@@ -6,7 +6,7 @@ import { UNITS } from '../../data/units.data';
 import { reportIcon, reportVillageOf } from '../../engine/reports';
 import { reportVillageLabel } from '../../i18n/names';
 import { t, useT } from '../../i18n/i18n';
-import { BotTag } from '../components/BotTag';
+import { AutoFarmTag, BotTag } from '../components/BotTag';
 import { RESOURCES, UNIT_IDS, type Report, type ReportType, type UnitId } from '../../engine/types';
 import { useGameStore } from '../../state/gameStore';
 import { useUiStore } from '../../state/uiStore';
@@ -54,11 +54,6 @@ function LuckBar({ luck }: { luck: number }) {
       <strong className={luck < 0 ? 'text-bad' : 'text-ok'}>{luck >= 0 ? '+' : ''}{(luck * 100).toFixed(1)} %</strong>
     </div>
   );
-}
-
-function AutoFarmTag() {
-  const t = useT();
-  return <span className="ml-1 px-1 rounded-sm border border-wood-border text-[10px] font-body font-normal text-muted align-middle">{t('reports.autoFarmTag')}</span>;
 }
 
 const fieldPlace = (r: Report) => `${r.field!.x.toFixed(1)}|${r.field!.y.toFixed(1)}`;
