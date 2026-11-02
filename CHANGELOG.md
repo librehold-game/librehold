@@ -5,6 +5,25 @@ here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/
 [Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
 edit it by hand.
 
+## [0.9.0](https://github.com/librehold-game/librehold/releases/tag/v0.9.0) — 2026-11-02 (alpha)
+
+### Added
+
+- A farmer mows the wheat, and the village people are smaller and sharper ([2c4814a](https://github.com/librehold-game/librehold/commit/2c4814aff43f311b65505995d2369bb8ec82bf58)) by @SKocur
+- Instant worlds show your place in the ranking next to the time left ([#29](https://github.com/librehold-game/librehold/pull/29)) by @SKocur
+
+### Changed
+
+- The site's changelog link opens CHANGELOG.md on GitHub instead of a page of its own ([32a784b](https://github.com/librehold-game/librehold/commit/32a784bc69da66cce85b054e84bfac7255d093d6)) by @SKocur
+
+### Fixed
+
+- Villagers stay visible while they walk through an open village gate ([61866cf](https://github.com/librehold-game/librehold/commit/61866cf4e8796bf6b9c9c6156a657dc1811ea063)) by @SKocur
+
+### Contributors
+
+@SKocur
+
 ## [0.8.0](https://github.com/librehold-game/librehold/releases/tag/v0.8.0) — 2026-11-02 (alpha)
 
 ### Added
