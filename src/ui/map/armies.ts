@@ -74,10 +74,16 @@ export function mapArmy(c: Pick<Command, 'id' | 'type' | 'originId' | 'targetId'
   };
 }
 
+/** Whether the player keeps this army off the map: one of their farm raids, while they hide farming. */
+export function hiddenFarm(g: GameState, c: Command): boolean {
+  return !!c.farm && !!g.farmAssistant.hideOnMap;
+}
+
 export function armiesOnMap(g: GameState): MapArmy[] {
   const mine = new Set(humanVillageIds(g));
   const out: MapArmy[] = [];
   for (const c of g.commands) {
+    if (hiddenFarm(g, c)) continue;
     const kind = kindOf(g, c, mine);
     const a = kind && mapArmy(c, kind, g.config.mapSize);
     if (a) out.push(a);
