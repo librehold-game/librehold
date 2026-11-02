@@ -15,6 +15,7 @@ import { UnitIcon } from '../components/UnitIcon';
 import { formatCoords, formatNumber } from '../format';
 import { useClock } from '../useClock';
 import { humanPlayer, humanVillageIds } from '../../engine/players';
+import { NumberInput } from '../../shared/NumberInput';
 
 type Tab = 'build' | 'units' | 'recruit' | 'resources' | 'commands' | 'groups';
 
@@ -89,7 +90,7 @@ function RecruitTab({ ids }: { ids: string[] }) {
     <div className="space-y-2">
       <div className="flex items-center gap-2 flex-wrap">
         <select className="px-1 border border-wood-border rounded bg-white/50" value={unit} onChange={(e) => setUnit(e.target.value as UnitId)}>{UNIT_IDS.filter((u) => u !== 'noble').map((u) => <option key={u} value={u}>{unitName(u)}</option>)}</select>
-        <label>{t('overview.recruitUpTo')} <input type="number" className="w-20 px-1 border border-wood-border rounded bg-white/50" value={upTo} onChange={(e) => setUpTo(Math.max(0, Number(e.target.value) || 0))} /> {t('overview.eachVillage')}</label>
+        <label>{t('overview.recruitUpTo')} <NumberInput className="w-20 px-1 border border-wood-border rounded bg-white/50" min={0} value={upTo} onValue={setUpTo} /> {t('overview.eachVillage')}</label>
         <button className="btn" onClick={async () => setMsg(t('overview.ordered', { n: await massRecruit(ids, unit, upTo) }))}>{t('overview.massRecruit', { n: ids.length })}</button>
         {msg && <span className="text-muted">{msg}</span>}
       </div>

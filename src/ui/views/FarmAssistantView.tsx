@@ -10,6 +10,7 @@ import { formatCoords, formatDurationHuman, formatNumber } from '../format';
 import { humanVillageIds } from '../../engine/players';
 import { useT } from '../../i18n/i18n';
 import { RichText } from '../components/RichText';
+import { NumberInput } from '../../shared/NumberInput';
 
 
 /** A target's state at a glance: a square pixel in the state's colour, or the hourglass while an attack is on its way. */
@@ -110,9 +111,9 @@ export function FarmAssistantView() {
         <span className="text-muted">{t('farm.templates')} A <UnitCountList units={m.templates.A.units} size={12} /> · B <UnitCountList units={m.templates.B.units} size={12} /> · C <UnitCountList units={m.templates.C.units} size={12} /> <button className="underline" onClick={() => setView('rally')}>{t('farm.edit')}</button></span>
       </div>
       <div className="flex flex-wrap items-center gap-3 mb-2 panel p-2">
-        <label>{t('farm.radius')} <input type="number" className="w-14 px-1 border border-wood-border rounded bg-white/50" value={m.filters.radius} onChange={(e) => setFilters({ radius: Math.max(1, Math.min(40, Number(e.target.value) || 1)) })} /></label>
-        <label>{t('farm.hideAttacked')} <input type="number" className="w-14 px-1 border border-wood-border rounded bg-white/50" value={m.filters.minMinutesSinceAttack} onChange={(e) => setFilters({ minMinutesSinceAttack: Math.max(0, Number(e.target.value) || 0) })} /> {t('farm.min')}</label>
-        <label>{t('farm.wall')} <input type="number" className="w-12 px-1 border border-wood-border rounded bg-white/50" value={m.filters.maxWall} onChange={(e) => setFilters({ maxWall: Math.max(0, Number(e.target.value) || 0) })} /></label>
+        <label>{t('farm.radius')} <NumberInput className="w-14 px-1 border border-wood-border rounded bg-white/50" min={1} max={40} value={m.filters.radius} onValue={(radius) => setFilters({ radius })} /></label>
+        <label>{t('farm.hideAttacked')} <NumberInput className="w-14 px-1 border border-wood-border rounded bg-white/50" min={0} value={m.filters.minMinutesSinceAttack} onValue={(minMinutesSinceAttack) => setFilters({ minMinutesSinceAttack })} /> {t('farm.min')}</label>
+        <label>{t('farm.wall')} <NumberInput className="w-12 px-1 border border-wood-border rounded bg-white/50" min={0} value={m.filters.maxWall} onValue={(maxWall) => setFilters({ maxWall })} /></label>
         <label className="inline-flex items-center gap-1"><input type="checkbox" checked={m.filters.hideLosses} onChange={(e) => setFilters({ hideLosses: e.target.checked })} /> {t('farm.hideLosses')}</label>
         <label className="inline-flex items-center gap-1"><input type="checkbox" checked={m.filters.hideInbound} onChange={(e) => setFilters({ hideInbound: e.target.checked })} /> {t('farm.hideInbound')}</label>
         <label>{t('farm.sort')} <select className="px-1 border border-wood-border rounded bg-white/50" value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>{(['distance', 'lastAttackAt', 'estimatedLoot', 'points'] as const).map((k) => <option key={k} value={k}>{t(`farm.sortBy.${k}`)}</option>)}</select></label>

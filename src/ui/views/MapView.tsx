@@ -33,6 +33,7 @@ import { MapHoverCard, type MapHover } from '../map/MapHoverCard';
 import { VillageQuickActions } from '../map/VillageQuickActions';
 import { villageInfo, type VillageInfo } from '../map/villageInfo';
 import { isHumanVillage, humanVillageIds } from '../../engine/players';
+import { NumberInput } from '../../shared/NumberInput';
 
 
 /** Selector: a compact summary of materialised villages — it changes rarely, so the map doesn't re-render every tick. */
@@ -428,7 +429,7 @@ export function MapView() {
         </label>
         <label className="inline-flex items-center gap-1">
           {tr('map.hideOver')}
-          <input type="number" className="w-20 px-1 border border-wood-border rounded bg-white/50" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value) || 0)} />
+          <NumberInput className="w-20 px-1 border border-wood-border rounded bg-white/50" min={0} value={maxPoints} onValue={setMaxPoints} />
           {tr('map.ptsShort')}
         </label>
       </div>
