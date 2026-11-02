@@ -121,9 +121,8 @@ func reportRecipients(w World, attacker, defender PlayerID, target *Village) []P
 func sendReports(w World, to []PlayerID, r Report) {
 	for _, id := range to {
 		copy := r
-		// Only the sender learns the auto-farm sent the troops, and their copy arrives read.
+		// Only the sender learns the auto-farm sent the troops.
 		copy.AutoFarm = r.AutoFarm && id == r.Origin.OwnerID
-		copy.Read = copy.Read || copy.AutoFarm
 		w.AddReport(id, &copy)
 	}
 }

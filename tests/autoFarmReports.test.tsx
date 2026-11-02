@@ -1,18 +1,19 @@
 // @vitest-environment happy-dom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { setLocale } from '../src/i18n/i18n';
-import { reportVillageOf } from '../src/engine/reports';
+import { reportVillageOf, unreadReports } from '../src/engine/reports';
 import type { GameState, Report, Village } from '../src/engine/types';
 import { useGameStore } from '../src/state/gameStore';
 import { useUiStore } from '../src/state/uiStore';
 import { ReportsView } from '../src/ui/views/ReportsView';
-import { activeVillage, makeBotVillage, newTestGame } from './helpers';
-import { stubServer } from './serverStub';
+import { activeVillage, makeBotVillage, newTestGame, stateFixture } from './helpers';
+import { stubServer, type StubRoute } from './serverStub';
 
 let g: GameState;
 let home: Village;
 let bot: Village;
+let bodies: Record<string, unknown[]>;
 
 function attackReport(over: Partial<Report>): Report {
   return {
@@ -24,6 +25,11 @@ function attackReport(over: Partial<Report>): Report {
   };
 }
 
+const record = (name: string): StubRoute => (body) => {
+  (bodies[name] ??= []).push(body);
+  return { status: 200, body: stateFixture(g) };
+};
+
 const rows = () => screen.getAllByRole('row').slice(1);
 const hideBox = () => screen.getByLabelText('Hide auto-farm reports') as HTMLInputElement;
 
@@ -33,8 +39,12 @@ beforeEach(async () => {
   home = activeVillage(g);
   bot = makeBotVillage(g);
   g.reports.push(attackReport({}));
-  g.reports.push(attackReport({ autoFarm: true, read: true }));
-  stubServer(g);
+  g.reports.push(attackReport({ autoFarm: true }));
+  bodies = {};
+  stubServer(g, { routes: {
+    'POST /api/v1/worlds/1/orders/mark-all-reports-read': record('markAll'),
+    'POST /api/v1/worlds/1/orders/delete-read-reports': record('deleteRead'),
+  } });
   useUiStore.setState({ view: 'reports', reportsHideAutoFarm: false, reportsVillageFilter: null });
   await useGameStore.getState().boot();
 });
@@ -72,5 +82,32 @@ describe('auto-farm reports', () => {
     render(<ReportsView />);
     expect(hideBox().checked).toBe(true);
     expect(rows()).toHaveLength(1);
+  });
+
+  it('they arrive unread but stay out of the unread count', () => {
+    const game = useGameStore.getState().game!;
+    expect(game.reports.every((r) => !r.read)).toBe(true);
+    expect(unreadReports(game)).toBe(1);
+  });
+
+  it('when the filters hide every report, the list says so', () => {
+    act(() => {
+      const game = useGameStore.getState().game!;
+      useGameStore.setState({ game: { ...game, reports: game.reports.filter((r) => r.autoFarm) } });
+    });
+    render(<ReportsView />);
+    fireEvent.click(hideBox());
+    screen.getByText('No reports match the filters.');
+  });
+
+  it('marking all read and deleting read leave the hidden auto-farm reports alone', async () => {
+    render(<ReportsView />);
+    fireEvent.click(screen.getByText('Mark all as read'));
+    await waitFor(() => expect(bodies.markAll).toEqual([{ skipAutoFarm: false }]));
+    fireEvent.click(hideBox());
+    fireEvent.click(screen.getByText('Mark all as read'));
+    fireEvent.click(screen.getByText('Delete read'));
+    await waitFor(() => expect(bodies.markAll).toEqual([{ skipAutoFarm: false }, { skipAutoFarm: true }]));
+    await waitFor(() => expect(bodies.deleteRead).toEqual([{ skipAutoFarm: true }]));
   });
 });

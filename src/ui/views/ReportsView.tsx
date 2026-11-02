@@ -214,11 +214,11 @@ export function ReportsView() {
             <button className="ml-1 font-bold" title={t('reports.allVillages')} onClick={() => setVillageFilter(null)}>✕</button>
           </span>
         )}
-        <button className="btn ml-auto" onClick={markAll}>{t('reports.markAll')}</button>
-        <button className="btn" onClick={deleteRead}>{t('reports.deleteRead')}</button>
+        <button className="btn ml-auto" onClick={() => markAll(hideAutoFarm)}>{t('reports.markAll')}</button>
+        <button className="btn" onClick={() => deleteRead(hideAutoFarm)}>{t('reports.deleteRead')}</button>
       </div>
       {rows.length === 0 ? (
-        <p className="text-muted italic text-[12px]">{t('reports.empty')}</p>
+        <p className="text-muted italic text-[12px]">{t(total > 0 ? 'reports.noneMatch' : 'reports.empty')}</p>
       ) : (
         <table className="table-game table-stack">
           <thead><tr><th></th><th>{t('reports.colReport')}</th><th>{t('reports.colLoot')}</th><th>{t('reports.colTime')}</th></tr></thead>

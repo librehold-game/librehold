@@ -197,7 +197,7 @@ func TestFarmAssistant(t *testing.T) {
 		}
 	})
 
-	t.Run("auto-farm: the sender's reports are marked and arrive read, scout reports too", func(t *testing.T) {
+	t.Run("auto-farm: the sender's reports are marked and arrive unread, scout reports too", func(t *testing.T) {
 		for _, tc := range []struct {
 			tpl game.UnitCounts
 			typ string
@@ -222,14 +222,14 @@ func TestFarmAssistant(t *testing.T) {
 				t.Fatal("no reports")
 			}
 			for _, r := range rs {
-				if r.Type != tc.typ || !r.AutoFarm || !r.Read {
+				if r.Type != tc.typ || !r.AutoFarm || r.Read {
 					t.Fatalf("%s report: type %s autoFarm %v read %v", tc.typ, r.Type, r.AutoFarm, r.Read)
 				}
 			}
 		}
 	})
 
-	t.Run("a raid sent by hand is not marked and arrives unread", func(t *testing.T) {
+	t.Run("a raid sent by hand is not marked", func(t *testing.T) {
 		w, v := farmSetup(t)
 		x, y := gametest.NearestBarbarianXY(w, v)
 		mustSend(t, w, v, x, y, game.UnitCounts{game.ULightCav: 5}, "attack")
@@ -242,8 +242,8 @@ func TestFarmAssistant(t *testing.T) {
 			t.Fatalf("%d reports", len(rs))
 		}
 		for _, r := range rs {
-			if r.AutoFarm || r.Read {
-				t.Fatalf("autoFarm %v read %v", r.AutoFarm, r.Read)
+			if r.AutoFarm {
+				t.Fatal("marked")
 			}
 		}
 	})
@@ -267,11 +267,8 @@ func TestFarmAssistant(t *testing.T) {
 			t.Fatalf("no report for %s", p)
 			return nil
 		}
-		if mine := reportOn("h1"); !mine.AutoFarm || !mine.Read {
-			t.Fatalf("sender: autoFarm %v read %v", mine.AutoFarm, mine.Read)
-		}
-		if theirs := reportOn("h2"); theirs.AutoFarm || theirs.Read {
-			t.Fatalf("defender: autoFarm %v read %v", theirs.AutoFarm, theirs.Read)
+		if !reportOn("h1").AutoFarm || reportOn("h2").AutoFarm {
+			t.Fatal("only the sender's report is marked")
 		}
 	})
 
@@ -380,10 +377,10 @@ func TestReportManagement(t *testing.T) {
 	if err := game.MarkReportsRead(w, "h1", []string{reps[0].ID}, true); err != nil || !reps[0].Read || reps[1].Read {
 		t.Fatal("mark one")
 	}
-	if err := game.DeleteReadReports(w, "h1"); err != nil || len(w.Reports("h1", 1<<62, 0)) != 2 {
+	if err := game.DeleteReadReports(w, "h1", false); err != nil || len(w.Reports("h1", 1<<62, 0)) != 2 {
 		t.Fatal("delete read")
 	}
-	if err := game.MarkAllReportsRead(w, "h1"); err != nil {
+	if err := game.MarkAllReportsRead(w, "h1", false); err != nil {
 		t.Fatal(err)
 	}
 	for _, r := range w.Reports("h1", 1<<62, 0) {
@@ -397,6 +394,32 @@ func TestReportManagement(t *testing.T) {
 	}
 	if got := w.Reports("h1", 1<<62, 1); len(got) != 1 {
 		t.Fatal("limit")
+	}
+}
+
+func TestBulkReportActionsCanLeaveAutoFarmReports(t *testing.T) {
+	w, _ := gametest.NewTestWorld(101)
+	w.AddReport("h1", &game.Report{Type: "attack", Time: w.Now()})
+	w.AddReport("h1", &game.Report{Type: "attack", Time: w.Now(), AutoFarm: true})
+	if err := game.MarkAllReportsRead(w, "h1", true); err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range w.ReportsOf("h1") {
+		if r.Read == r.AutoFarm {
+			t.Fatalf("autoFarm %v read %v", r.AutoFarm, r.Read)
+		}
+	}
+	if err := game.MarkAllReportsRead(w, "h1", false); err != nil {
+		t.Fatal(err)
+	}
+	if err := game.DeleteReadReports(w, "h1", true); err != nil {
+		t.Fatal(err)
+	}
+	if rs := w.ReportsOf("h1"); len(rs) != 1 || !rs[0].AutoFarm {
+		t.Fatalf("left %+v", rs)
+	}
+	if err := game.DeleteReadReports(w, "h1", false); err != nil || len(w.ReportsOf("h1")) != 0 {
+		t.Fatal("the auto-farm's read report kept")
 	}
 }
 

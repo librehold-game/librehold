@@ -950,6 +950,7 @@
     "markAll": "Mark all as read",
     "deleteRead": "Delete read",
     "empty": "No reports. Send an attack from the map or the Rally Point.",
+    "noneMatch": "No reports match the filters.",
     "colReport": "Report",
     "colLoot": "Loot",
     "colTime": "Time",

@@ -72,7 +72,7 @@ func TestFieldBattleLeavesAutoFarmRaidReportsUnmarked(t *testing.T) {
 	f.a.Units[game.UAxe] = 10
 	meet(t, f, game.UnitCounts{game.UAxe: 10}, false)
 	for _, p := range []game.PlayerID{"h1", "h2"} {
-		if rs := fieldReports(f.w, p); len(rs) != 1 || rs[0].AutoFarm || rs[0].Read {
+		if rs := fieldReports(f.w, p); len(rs) != 1 || rs[0].AutoFarm {
 			t.Fatalf("%s field reports = %+v", p, rs)
 		}
 	}
@@ -88,11 +88,8 @@ func TestFieldBattleLeavesAutoFarmRaidReportsUnmarked(t *testing.T) {
 		t.Fatalf("no attack report for %s", p)
 		return nil
 	}
-	if r := arrival("h2"); !r.AutoFarm || !r.Read {
-		t.Fatalf("sender: autoFarm %v read %v", r.AutoFarm, r.Read)
-	}
-	if r := arrival("h1"); r.AutoFarm || r.Read {
-		t.Fatalf("defender: autoFarm %v read %v", r.AutoFarm, r.Read)
+	if !arrival("h2").AutoFarm || arrival("h1").AutoFarm {
+		t.Fatal("only the sender's arrival report is marked")
 	}
 }
 

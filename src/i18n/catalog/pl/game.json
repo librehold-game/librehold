@@ -984,6 +984,7 @@
     "markAll": "Oznacz wszystkie jako przeczytane",
     "deleteRead": "Usuń przeczytane",
     "empty": "Brak raportów. Wyślij atak z mapy albo Punktu zbiórki.",
+    "noneMatch": "Żaden raport nie pasuje do filtrów.",
     "colReport": "Raport",
     "colLoot": "Łup",
     "colTime": "Czas",

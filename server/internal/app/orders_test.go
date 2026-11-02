@@ -55,7 +55,7 @@ func orderBodies(d *duel) map[string]string {
 		"mass-recruit":          fmt.Sprintf(`{"villageIds":[%q],"unit":"spear","upTo":3}`, v),
 		"rename-village":        fmt.Sprintf(`{"villageId":%q,"name":"Café Hill"}`, v),
 		"mark-reports-read":     `{"ids":["nie_ma"],"read":true}`,
-		"mark-all-reports-read": `{}`,
+		"mark-all-reports-read": `{"skipAutoFarm":true}`,
 		"delete-report":         `{"id":"nie_ma"}`,
 		"delete-read-reports":   ``,
 		"claim-quest":           fmt.Sprintf(`{"questId":"nie_ma","villageId":%q}`, v),

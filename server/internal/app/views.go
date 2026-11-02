@@ -247,7 +247,7 @@ func (s *Service) playerState(w WorldTx, me game.PlayerID) *PlayerState {
 		return a.ID < b.ID
 	})
 	for _, r := range w.Reports(me, math.MaxInt64, 0) {
-		if !r.Read {
+		if !r.Read && !r.AutoFarm {
 			st.UnreadReports++
 		}
 	}
