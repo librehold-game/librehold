@@ -42,7 +42,10 @@ export interface PixelLayout {
     farm: StripInfo & { stage: 2 };
     wood: StripInfo & { stage: 2; x: number; y: number };
   };
-  villagers: Record<'walk' | 'carry_log' | 'carry_sack' | 'spear' | 'chop' | 'hammer', VillagerSprite>;
+  /** `spear` is the soldier the map's armies march with; the village's own people, its guards included, are the rest. */
+  villagers: Record<'walk' | 'carry_log' | 'carry_sack' | 'guard' | 'spear' | 'chop' | 'hammer' | 'mow' | 'scythe_walk', VillagerSprite>;
+  /** The farmer's pass across the wheat field: he mows from the first point to the second, then walks back. */
+  mow: [Pt, Pt];
 }
 
 /** One drawable of the scene; layers are drawn in ascending `z`. */

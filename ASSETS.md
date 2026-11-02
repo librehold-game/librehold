@@ -33,7 +33,7 @@ game from the same layout (a day GIF and a night frame). Tests: `tests/pixelAsse
 | `scenery/` | trees, bushes, rocks, fields, forest, cliffs, well, cart, fence, woodpile |
 | `walls/` | palisade and stone wall: back and front half of the ring, gate frame strip |
 | `anim/` | frame strips: mill wheel, ironworks fire, grain |
-| `villagers/` | `<state>-<direction>.png` frame strips: walk, log, sack, spearman, woodcutter, builder |
+| `villagers/` | `<state>-<direction>.png` frame strips: walk, log, sack, guard, woodcutter, builder, farmer mowing and walking back; spearman for the map's armies |
 
 ### UI chrome and icons
 

@@ -21,7 +21,7 @@ const BLUE = '#2f5fa8';
 const RED = '#a33a2a';
 const GATE_FRAMES = LAYOUT.walls.stone.gate.frames;
 const GATE_STEP_MS = 90;
-const CHOPPER: [number, number] = [687, 571];
+const CHOPPER: [number, number] = [692, 508];
 
 type SlotId = Exclude<BuildingId, 'wall'>;
 
@@ -83,6 +83,7 @@ export function PixelVillageScene({ villageId, mode }: { villageId: string; mode
     const budget = animationBudget(m, mode);
     const workers: Worker[] = [];
     if (m.levels.wood > 0) workers.push({ key: 'chop', sprite: 'chop', x: CHOPPER[0], y: CHOPPER[1] });
+    if (m.levels.farm > 0) workers.push({ key: 'mow', sprite: 'mow', x: LAYOUT.mow[0][0], y: LAYOUT.mow[0][1], to: LAYOUT.mow[1] });
     const site = m.construction.find((c) => c.started)?.building;
     if (site && site !== 'wall') {
       const [x, y] = LAYOUT.slots[site];

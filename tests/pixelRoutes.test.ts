@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { BUILDING_IDS, type BuildingId } from '../src/engine/types';
 import { LAYOUT } from '../src/ui/scene/pixel/layout';
-import { buildRoutes, gateOpen } from '../src/ui/scene/pixel/routes';
+import type { Pt } from '../src/ui/scene/pixel/path';
+import { buildRoutes, gateOpen, MOW_SPEED, mowerAt } from '../src/ui/scene/pixel/routes';
 
 const zero = Object.fromEntries(BUILDING_IDS.map((id) => [id, 0])) as Record<BuildingId, number>;
 const nine = { ...zero, main: 5, barracks: 5, market: 5, stable: 5, academy: 1, smithy: 5, storage: 5, workshop: 5, hide: 5 };
@@ -52,9 +53,9 @@ describe('walker routes', () => {
     expect(ends.some((p) => near(p, LAYOUT.slots.farm))).toBe(true);
   });
 
-  it('guards walk inside the ring', () => {
+  it('guards walk inside the ring, as the village guard rather than the soldier the map armies use', () => {
     const routes = buildRoutes({ levels: { ...zero, wall: 10 }, construction: [] }, { citizens: 0, guards: 3 });
-    const guards = routes.filter((r) => r.state === 'spear');
+    const guards = routes.filter((r) => r.state === 'guard');
     expect(guards).toHaveLength(2);
     const { cx, cy, rx, ry } = LAYOUT.ring;
     for (const g of guards) for (const [x, y] of g.points) expect(((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2).toBeLessThan(1);
@@ -63,5 +64,18 @@ describe('walker routes', () => {
   it('gateOpen: 40 px from the gate opens it, 50 px does not', () => {
     expect(gateOpen([[400, 0], [440, 474]], [440, 514])).toBe(true);
     expect(gateOpen([[440, 464]], [440, 514])).toBe(false);
+  });
+
+  it('mowerAt: mows slowly along the pass, then walks back to its start four times as fast, and repeats', () => {
+    const pass: [Pt, Pt] = [[100, 50], [140, 50]];
+    const at = (t: number) => {
+      const { at: [x, y], mowing } = mowerAt(pass, t);
+      return { at: [Math.round(x * 1e6) / 1e6, Math.round(y * 1e6) / 1e6], mowing };
+    };
+    expect(at(0)).toEqual({ at: [100, 50], mowing: true });
+    expect(at(20 / MOW_SPEED)).toEqual({ at: [120, 50], mowing: true });
+    const back = 40 / MOW_SPEED;
+    expect(at(back + 20 / (4 * MOW_SPEED))).toEqual({ at: [120, 50], mowing: false });
+    expect(at(back + 40 / (4 * MOW_SPEED) + 10 / MOW_SPEED)).toEqual({ at: [110, 50], mowing: true });
   });
 });

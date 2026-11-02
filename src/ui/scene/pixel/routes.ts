@@ -3,7 +3,7 @@ import type { SceneModel } from '../sceneModel';
 import { GATE_Z, LAYOUT } from './layout';
 import { loop, type Pt } from './path';
 
-export type WalkerState = 'walk' | 'carry_log' | 'carry_sack' | 'spear';
+export type WalkerState = 'walk' | 'carry_log' | 'carry_sack' | 'guard';
 
 export interface Route {
   state: WalkerState;
@@ -76,11 +76,24 @@ export function buildRoutes(m: Pick<SceneModel, 'levels' | 'construction'>, budg
 
   const arcs = [arc(Math.PI + 0.3, 0.012, 130), arc(-0.2, -0.012, 110)];
   arcs.slice(0, Math.min(budget.guards, 2)).forEach((pts, i) => {
-    routes.push({ state: 'spear', points: loop(pts), offset: i * 50, speed: GUARD_SPEED, z: Math.min(...pts.map((p) => p[1])) });
+    routes.push({ state: 'guard', points: loop(pts), offset: i * 50, speed: GUARD_SPEED, z: Math.min(...pts.map((p) => p[1])) });
   });
   return routes;
 }
 
 export function gateOpen(positions: Pt[], gate: Pt): boolean {
   return positions.some(([x, y]) => Math.hypot(x - gate[0], y - gate[1]) < 44);
+}
+
+/** px per second the mower advances while mowing; he walks back four times as fast. */
+export const MOW_SPEED = 3;
+
+/** Where the mower is `t` seconds in: mowing along `pass`, then walking back to its start, over and over. */
+export function mowerAt([from, to]: [Pt, Pt], t: number): { at: Pt; mowing: boolean } {
+  const len = Math.hypot(to[0] - from[0], to[1] - from[1]);
+  const mowing = len / MOW_SPEED;
+  const u = t % (mowing + len / (4 * MOW_SPEED));
+  const lerp = (a: Pt, b: Pt, k: number): Pt => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k];
+  if (u < mowing) return { at: lerp(from, to, u / mowing), mowing: true };
+  return { at: lerp(to, from, (u - mowing) / (len / (4 * MOW_SPEED))), mowing: false };
 }

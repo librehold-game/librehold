@@ -78,6 +78,9 @@ def clear_of_wall(x, y, w, ring):
     return x, y
 
 
+FIELDS = (('wheat', 636, 62), ('stubble', 714, 52), ('plowed', 752, 210), ('sprouts', 752, 255))
+
+
 def scenery(A, ring):
     """Non-building scenery as (source, x, y, z, flip); source is relative to `A`, the anchor is the bottom-centre."""
     P, W, H = G.P, G.W, G.H
@@ -116,10 +119,11 @@ def scenery(A, ring):
                             ('boulder-big', 196, 70, False), ('scree', 172, 92, False), ('scree', 14, 140, False), ('boulders-a', 26, 186, False),
                             ('boulders-b', 222, 44, False), ('boulders-b', 8, 222, False)):
         put(f'biome/{src}.png', *P(x, y), flip=flip)
-    fields = [(s,) + P(x, y) for s, x, y in (('field-wheat', 610, 64), ('field-plowed', 700, 36), ('field-wheat', 772, 214), ('field-plowed', 768, 262))]
+    fields = [(s,) + P(x, y) for s, x, y in FIELDS]
     for s, x, y in fields:
-        put(f'biome/{s}.png', x, y, z=0)
-    keep += [(x, y - 16, 44) for _, x, y in fields]
+        put(f'biome/plot-{s}.png', x, y, z=0)
+    # Trees standing just below a field would cover it with their crowns.
+    keep += [k for _, x, y in fields for k in ((x, y - 24, 52), (x, y + 30, 48))]
     for x, y in (P(786, 412), P(742, 506), P(800, 486)):
         put('biome/forest-b.png', x, y)
         keep.append((x, y - 20, 40))
@@ -199,8 +203,21 @@ UNPLATED = {'buildings/clay': _grass, 'buildings/wood': _grass, 'biome/stumps': 
             'scenery/rocks': _grass, 'biome/forest-b': _plate_grass}
 
 
+def sideless(im, side=5):
+    """A field plot drawn as a raised block, without the side walls that hang `side` px under its top in every column,
+    so it lies at ground level."""
+    im = im.copy()
+    p = im.load()
+    for x in range(im.width):
+        for y in [y for y in range(im.height) if p[x, y][3] > 0][-side:]:
+            p[x, y] = (0, 0, 0, 0)
+    return im.crop(im.getbbox())
+
+
 def unplated(rel, im):
     """`im` without its base plate when the source (path without extension or stage suffix) has one."""
     key = rel.rsplit('.', 1)[0]
+    if key.startswith('biome/plot-'):
+        return sideless(im)
     key = key[:-2] if key[-2:] in ('-1', '-3') else key
     return unplate(im, UNPLATED[key]) if key in UNPLATED else im

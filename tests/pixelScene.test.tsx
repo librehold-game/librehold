@@ -5,9 +5,9 @@ import { BUILDING_IDS, type BuildingId, type GameState } from '../src/engine/typ
 import { useGameStore } from '../src/state/gameStore';
 import { useUiStore } from '../src/state/uiStore';
 import { PixelVillageScene } from '../src/ui/scene/pixel/PixelVillageScene';
-import { useWalkerLoop } from '../src/ui/scene/pixel/Walkers';
+import { useWalkerLoop, WALK_CYCLE_MS, WORK_STEP_MS } from '../src/ui/scene/pixel/Walkers';
 import { wallLayers } from '../src/ui/scene/pixel/WallRing';
-import { buildRoutes, gateOpen } from '../src/ui/scene/pixel/routes';
+import { buildRoutes, gateOpen, MOW_SPEED } from '../src/ui/scene/pixel/routes';
 import { LAYOUT } from '../src/ui/scene/pixel/layout';
 import { newDefaultGame, activeVillage } from './helpers';
 
@@ -215,6 +215,83 @@ describe('pixel village scene', () => {
     expect(scene('full').querySelectorAll('[data-walker]').length).toBeGreaterThan(0);
     cleanup();
     expect(scene('limited').querySelectorAll('[data-walker]').length).toBe(0);
+  });
+
+  it('a farmer mows the wheat field once the farm is built', () => {
+    setup({ main: 1, farm: 1 });
+    const mower = scene('full').querySelector('[data-walker="mow"]');
+    expect(mower?.innerHTML).toContain('mow-east');
+    cleanup();
+    setup({ main: 1 });
+    expect(scene('full').querySelector('[data-walker="mow"]')).toBeNull();
+  });
+
+  it('the farmer advances while he mows, then turns and walks back to the start of his pass', () => {
+    setup({ main: 1, farm: 1 });
+    const ticks: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => ticks.push(cb));
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const mower = scene('full').querySelector('[data-walker="mow"]')!;
+    const at = (seconds: number) => {
+      ticks.at(-1)!(seconds * 1000);
+      const [, x, y] = /translate\((-?[\d.]+), (-?[\d.]+)\)/.exec(mower.getAttribute('transform')!)!.map(Number);
+      return { x: x!, y: y!, href: mower.querySelector('image')!.getAttribute('href')! };
+    };
+    const [[x0], [x1]] = LAYOUT.mow;
+    const mowing = (x1 - x0) / MOW_SPEED;
+    const start = at(0);
+    const half = at(mowing / 2);
+    expect(half.x - start.x).toBeCloseTo((x1 - x0) / 2, -0.5);
+    expect(half.href).toContain('mow-east');
+    const back = at(mowing + mowing / 8);
+    expect(back.href).toContain('scythe_walk-west');
+    expect(back.x).toBeLessThan(start.x + (x1 - x0));
+    expect(back.x).toBeGreaterThan(start.x);
+    expect(at(mowing * 1.25 + 0.5).href).toContain('mow-east');
+    raf.mockRestore();
+    now.mockRestore();
+  });
+
+  it('the wheat covers the mower around his feet and follows him along his pass', () => {
+    setup({ main: 1, farm: 1 });
+    const ticks: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => ticks.push(cb));
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const c = scene('full');
+    const mower = c.querySelector('[data-walker="mow"]')!;
+    const cover = c.querySelector('[data-cover="mow"]')!;
+    expect(cover.innerHTML).toContain('plot-wheat');
+    expect(mower.compareDocumentPosition(cover) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    const band = c.querySelector(`${cover.getAttribute('clip-path')!.slice(4, -1)} rect`)!;
+    const left = () => Number(band.getAttribute('x'));
+    const mowerLeft = () => Number(/translate\((-?[\d.]+),/.exec(mower.getAttribute('transform')!)![1]);
+    const [, footY] = LAYOUT.mow[0];
+    expect(Number(band.getAttribute('y'))).toBeLessThan(footY);
+    expect(Number(band.getAttribute('y')) + Number(band.getAttribute('height'))).toBeGreaterThan(footY);
+    const [[x0], [x1]] = LAYOUT.mow;
+    ticks.at(-1)!(((x1 - x0) / 2 / MOW_SPEED) * 1000);
+    expect(left()).toBe(mowerLeft());
+    expect(left()).toBeGreaterThan(Math.round(x0 - LAYOUT.villagers.mow.anchor[0]));
+    raf.mockRestore();
+    now.mockRestore();
+  });
+
+  it('walkers take one walk cycle per WALK_CYCLE_MS whatever their frame count; workers play their whole loop', () => {
+    setup({ main: 5, barracks: 5, storage: 5, wood: 5 });
+    const ticks: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => ticks.push(cb));
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const c = scene('full');
+    const walk = LAYOUT.villagers.walk;
+    const chop = LAYOUT.villagers.chop;
+    ticks.at(-1)!(WALK_CYCLE_MS / 2);
+    const walker = c.querySelector('[data-walker="walk"] svg')!;
+    expect(walker.getAttribute('viewBox')).toBe(`${(walk.frames / 2) * walk.w} 0 ${walk.w} ${walk.h}`);
+    const last = chop.frames - 1;
+    ticks.at(-1)!(last * WORK_STEP_MS);
+    expect(c.querySelector('[data-walker="chop"] svg')!.getAttribute('viewBox')).toBe(`${last * chop.w} 0 ${chop.w} ${chop.h}`);
+    raf.mockRestore();
+    now.mockRestore();
   });
 
   it('unmounting the scene cancels the frame loop', () => {

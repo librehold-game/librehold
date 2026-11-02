@@ -50,6 +50,34 @@ describe('pixel layout', () => {
     }
   });
 
+  it('the mower stands inside the wheat field along his whole pass, and his blade stays over it', () => {
+    const wheat = LAYOUT.scenery.find((s) => s.file === 'scenery/plot-wheat.png')!;
+    const [w] = LAYOUT.files[wheat.file]!;
+    // The plot's ground is a 2:1 diamond whose bottom corner is the sprite's anchor.
+    const inside = ([x, y]: Pt) => Math.abs(x - wheat.x) / (w / 2) + Math.abs(y - (wheat.y - w / 4)) / (w / 4) <= 1;
+    const s = LAYOUT.villagers.mow;
+    const [, y] = LAYOUT.mow[0];
+    expect(LAYOUT.mow[1][1]).toBe(y);
+    expect(LAYOUT.mow[0][0]).toBeLessThan(LAYOUT.mow[1][0]);
+    for (const p of LAYOUT.mow) expect(inside(p), JSON.stringify(p)).toBe(true);
+    // The sprite is cut to the reach of the blade, which swings ahead of him to the east.
+    expect(LAYOUT.mow[1][0] + s.w - s.anchor[0], 'blade at the end of the pass').toBeLessThanOrEqual(wheat.x + w / 2);
+    expect(s.file.east).toBeDefined();
+  });
+
+  it('the mower swaps between mowing and walking back in place: both sprites share their size and anchor', () => {
+    const { mow, scythe_walk: walk } = LAYOUT.villagers;
+    expect([walk.w, walk.h, walk.frames, walk.anchor]).toEqual([mow.w, mow.h, mow.frames, mow.anchor]);
+    expect(walk.file.west).toBeDefined();
+  });
+
+  it('village people walk in four directions; the guard has its own sprite, smaller than the soldier of the map armies', () => {
+    for (const k of ['walk', 'carry_log', 'carry_sack', 'guard'] as const) {
+      expect(Object.keys(LAYOUT.villagers[k].file).sort(), k).toEqual(['east', 'north', 'south', 'west']);
+    }
+    expect(LAYOUT.villagers.guard.file.south).not.toBe(LAYOUT.villagers.spear.file.south);
+  });
+
   it('ringY gives cy ± ry on the vertical axis and cy outside the ellipse', () => {
     const { cx, cy, ry, rx } = LAYOUT.ring;
     expect(ringY(cx, 'north')).toBeCloseTo(cy - ry);

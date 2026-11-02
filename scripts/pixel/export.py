@@ -152,15 +152,20 @@ wx, wy = origin((G.SLOTS['wood'][0], G.SLOTS['wood'][1] + 12), sprites['wood', 2
 anim['wood'] = {'file': save(strip(wheel), 'anim/wood.png'), 'w': wheel[0].width, 'h': wheel[0].height, 'frames': len(wheel), 'stage': 2,
                 'x': wx + 90 - bx0, 'y': wy + 44 - by0}
 
-ST = f'{A}/villager-states'
+PRO = f'{A}/villager-80-pro'
+DIRS = ('south', 'east', 'north', 'west')
+# `spear` is the soldier the map's armies march with; the village's own people, its guards included, are the rest.
 VILLAGERS = {
-    'walk': (f'{ST}/Idle/animations/walk', ('south', 'east', 'north', 'west'), slice(0, 6)),
-    'carry_log': (f'{ST}/Carry_log/animations/walk', ('south', 'east', 'north', 'west'), slice(1, 9)),
-    'carry_sack': (f'{ST}/Carry_sack/animations/walk', ('south', 'east', 'north', 'west'), slice(1, 9)),
-    'spear': (f'{A}/units/spear/Idle/animations/walk', ('south', 'east', 'north', 'west'), slice(0, 6)),
-    'chop': (f'{ST}/Idle/animations/chop-axe', ('east',), slice(0, 3)),
-    'hammer': (f'{ST}/Builder/animations/hammer', ('east',), slice(0, 3)),
+    'walk': (f'{PRO}/Idle/animations/walk-12', DIRS, slice(None)),
+    'carry_log': (f'{PRO}/Carry_log/animations/walk-12', DIRS, slice(None)),
+    'carry_sack': (f'{PRO}/Carry_sack/animations/walk-12', DIRS, slice(None)),
+    'guard': (f'{A}/guard-pro/Idle/animations/walk-12', DIRS, slice(None)),
+    'spear': (f'{A}/units/spear/Idle/animations/walk', DIRS, slice(0, 6)),
+    'chop': (f'{PRO}/Axe/animations/chop', ('east',), slice(None)),
+    'hammer': (f'{PRO}/Mallet/animations/hammer-overhead', ('east',), slice(None)),
 }
+# Where the workers' boots stand in their frames: their tools, the chopping block and the scythe reach past them.
+FEET = {'chop': (24, 42), 'hammer': (25, 41)}
 villagers = {}
 for state, (d, dirs, sl) in VILLAGERS.items():
     by_dir = {k: [Image.open(f).convert('RGBA') for f in sorted(glob.glob(f'{d}/{k}/*.png'))][sl] for k in dirs}
@@ -169,8 +174,30 @@ for state, (d, dirs, sl) in VILLAGERS.items():
     villagers[state] = {
         'file': {k: save(strip(fs), f'villagers/{state}-{k}.png') for k, fs in by_dir.items()},
         'w': w, 'h': h, 'frames': len(next(iter(by_dir.values()))),
-        'anchor': [round((min(b[0] for b in boxes) + max(b[2] for b in boxes)) / 2), max(b[3] for b in boxes)],
+        'anchor': list(FEET[state]) if state in FEET else
+        [round((min(b[0] for b in boxes) + max(b[2] for b in boxes)) / 2), max(b[3] for b in boxes)],
     }
+
+# The farmer mows facing east and walks back facing west, and the game swaps one sprite for the other where he stands, so
+# both are cut to one box around his boots.
+MOWER = {'mow': (f'{A}/farmer-pro/Scythe/animations/mow-scythe', 'east', (24, 41)),
+         'scythe_walk': (f'{A}/farmer-pro/Scythe/animations/walk-scythe', 'west', (23, 41))}
+mower = {state: [Image.open(f).convert('RGBA') for f in sorted(glob.glob(f'{d}/{k}/*.png'))] for state, (d, k, _) in MOWER.items()}
+around = [(b[0] - fx, b[1] - fy, b[2] - fx, b[3] - fy)
+          for state, (_, _, (fx, fy)) in MOWER.items() for b in (f.getbbox() for f in mower[state])]
+bb = (min(b[0] for b in around), min(b[1] for b in around), max(b[2] for b in around), max(b[3] for b in around))
+for state, (_, k, (fx, fy)) in MOWER.items():
+    fs = [f.crop((fx + bb[0], fy + bb[1], fx + bb[2], fy + bb[3])) for f in mower[state]]
+    villagers[state] = {'file': {k: save(strip(fs), f'villagers/{state}-{k}.png')}, 'w': fs[0].width, 'h': fs[0].height,
+                        'frames': len(fs), 'anchor': [-bb[0], -bb[1]]}
+
+# His pass runs east along the wheat field's diamond, a little in front of its middle, and ends where the blade still
+# swings over the wheat.
+wheat = next(s for s in scenery if s['file'] == 'scenery/plot-wheat.png')
+ww = files[wheat['file']][0]
+reach = villagers['mow']['w'] - villagers['mow']['anchor'][0]
+mow_y = r1(wheat['y'] - ww / 4 + 4)
+mow = [[r1(wheat['x'] - ww / 2 + 12), mow_y], [r1(wheat['x'] + ww / 2 - reach - 2), mow_y]]
 
 slot_anchor = {b: (x, y + 12) for b, (x, y) in G.SLOTS.items()}
 lights = [l for l in (light('iron', sprites['iron', 2], slot_anchor['iron']), light('smithy', sprites['smithy', 3], slot_anchor['smithy']),
@@ -187,7 +214,7 @@ layout = {
     'construction': construction, 'place': place,
     'hits': {f: hit_path(img) for f, img in [(construction, construction_img), (place, place_img)]
              + [(buildings[b][v], sprites[b, v]) for b, v in sprites]},
-    'walls': walls, 'anim': anim, 'villagers': villagers,
+    'walls': walls, 'anim': anim, 'villagers': villagers, 'mow': mow,
 }
 with open(f'{OUT}/layout.json', 'w') as f:
     json.dump(layout, f, separators=(',', ':'))
