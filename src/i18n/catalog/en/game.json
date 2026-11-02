@@ -1117,6 +1117,8 @@
   },
   "instant": {
     "timeLeft": "Time left",
+    "place": "Place",
+    "placeHint": "Your place in the points ranking, refreshed every full minute",
     "renameHint": "Change your nickname",
     "nickname": "Nickname",
     "createAccount": "Create account",
