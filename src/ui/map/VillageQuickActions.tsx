@@ -11,6 +11,7 @@ import { selectConfig } from '../../state/selectors';
 import { useGameStore, type GameStore } from '../../state/gameStore';
 import { blockerText as buildBlockerText, type BlockerInfo } from '../views/BuildingsTable';
 import { blockerText as recruitBlockerText } from '../views/RecruitScreen';
+import { NumberInput } from '../../shared/NumberInput';
 
 const RECRUIT_BUILDINGS: readonly RecruitBuilding[] = ['barracks', 'stable', 'workshop', 'statue'];
 
@@ -154,14 +155,13 @@ export function VillageQuickActions({ villageId }: { villageId: string }) {
               >
                 {units.map((id) => <option key={id} value={id}>{unitName(id)}</option>)}
               </select>
-              <input
+              <NumberInput
                 aria-label={t('map.count')}
-                type="number"
                 min={1}
                 max={Math.max(1, recruitMax)}
                 value={count}
                 className="w-14 px-1 border border-wood-border rounded bg-white/50 tabular-nums"
-                onChange={(e) => setCount(Math.max(1, Math.floor(Number(e.target.value) || 1)))}
+                onValue={setCount}
               />
               <button
                 className="btn !px-1.5"

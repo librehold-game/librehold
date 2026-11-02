@@ -17,6 +17,7 @@ import { InfoLink } from '../info/InfoLink';
 import { RequirementChips } from '../info/RequirementChips';
 import { requirementChain } from '../../shared/encyclopedia/facts';
 import { formatDuration, formatNumber } from '../format';
+import { NumberInput } from '../../shared/NumberInput';
 
 export function blockerText(b: RecruitBlocker): string {
   switch (b.kind) {
@@ -81,10 +82,10 @@ function UnitRow({ unit }: { unit: UnitId }) {
           </span>
         ) : (
           <span className="inline-flex items-center gap-1">
-            <input
-              type="number" min={1} max={Math.max(1, m.max)} value={count}
+            <NumberInput
+              min={1} max={Math.max(1, m.max)} value={count}
               className="w-16 px-1 border border-wood-border rounded bg-white/50 tabular-nums"
-              onChange={(e) => setCount(Math.max(1, Math.floor(Number(e.target.value) || 1)))}
+              onValue={setCount}
             />
             <button className="btn !px-1.5" title={t('recruit.max', { n: m.max })} onClick={() => setCount(Math.max(1, m.max))}>
               ({m.max})
