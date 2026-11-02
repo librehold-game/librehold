@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { HUMAN_ID } from '../../engine/types';
 import { PixelIcon } from '../pixelIcons';
 import { useT } from '../../i18n/i18n';
 import { useGameStore } from '../../state/gameStore';
+import { useUiStore } from '../../state/uiStore';
+import type { PlayerRow } from '../../net/types';
 import { formatDuration } from '../format';
 
 function Nickname({ name }: { name: string }) {
@@ -26,7 +29,37 @@ function Nickname({ name }: { name: string }) {
   );
 }
 
-/** An instant world's strip under the header: time left, the guest's nickname and account, and the way out. */
+/** The player's place in the points ranking (bots count too, as in the ranking table), refetched when the ranking changes. */
+function usePlace(): { place: number; of: number } | null {
+  const rev = useGameStore((s) => s.rankingRev);
+  const load = useGameStore((s) => s.loadRanking);
+  const [place, setPlace] = useState<{ place: number; of: number } | null>(null);
+  useEffect(() => {
+    let live = true;
+    void load('points').then((rows) => {
+      if (!live || !rows) return;
+      const sorted = [...(rows as PlayerRow[])].sort((a, b) => b.points - a.points);
+      const i = sorted.findIndex((r) => r.id === HUMAN_ID);
+      setPlace(i < 0 ? null : { place: i + 1, of: sorted.length });
+    });
+    return () => { live = false; };
+  }, [rev, load]);
+  return place;
+}
+
+function Place() {
+  const t = useT();
+  const place = usePlace();
+  const open = useUiStore((s) => s.setView);
+  if (!place) return null;
+  return (
+    <button className="hover:underline" title={t('instant.placeHint')} onClick={() => open('ranking')}>
+      <PixelIcon name="nav-ranking" size={16} /> {t('instant.place')}: <strong>{place.place} / {place.of}</strong>
+    </button>
+  );
+}
+
+/** An instant world's strip under the header: time left, the place in the ranking, the guest's nickname and account, and the way out. */
 export function InstantBar() {
   const t = useT();
   const endsAt = useGameStore((s) => s.instant?.endsAt ?? null);
@@ -42,6 +75,7 @@ export function InstantBar() {
   return (
     <div className="px-2 sm:px-3 py-1 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-wood-border font-body text-[12px]">
       <span><PixelIcon name="hourglass" size={16} /> {t('instant.timeLeft')}: <strong role="timer" aria-label={t('instant.timeLeft')}>{formatDuration(Math.max(0, endsAt - now))}</strong></span>
+      <Place />
       {resultsClosed && <button className="btn !py-0" onClick={() => showResults(false)}>{t('instant.results')}</button>}
       {account?.isGuest && <Nickname name={account.username} />}
       {account?.isGuest && <button className="btn !py-0" onClick={openClaim}>{t('instant.createAccount')}</button>}

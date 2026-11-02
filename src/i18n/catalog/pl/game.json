@@ -1151,6 +1151,8 @@
   },
   "instant": {
     "timeLeft": "Do końca",
+    "place": "Miejsce",
+    "placeHint": "Twoje miejsce w rankingu punktowym, odświeżane co pełną minutę",
     "renameHint": "Zmień pseudonim",
     "nickname": "Pseudonim",
     "createAccount": "Załóż konto",

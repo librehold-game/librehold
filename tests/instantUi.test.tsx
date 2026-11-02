@@ -1,10 +1,11 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import type { GameState } from '../src/engine/types';
+import { HUMAN_ID, type GameState } from '../src/engine/types';
 import { setLocale } from '../src/i18n/i18n';
 import type { InstantView, MeView } from '../src/net/types';
 import { useGameStore } from '../src/state/gameStore';
+import { useUiStore } from '../src/state/uiStore';
 import { App } from '../src/ui/App';
 import { stateFixture, newTestGame } from './helpers';
 import { stubServer, type StubOptions, type StubRoute } from './serverStub';
@@ -70,6 +71,24 @@ describe('instant game in the client', () => {
     await boot({ account: guest });
     await waitFor(() => expect(calls).toContain('GET /api/v1/me'));
     expect(screen.queryByRole('timer', { name: 'Time left' })).toBeNull();
+  });
+
+  it('shows the place in the points ranking next to the time and opens the ranking', async () => {
+    const row = (id: string, points: number) => ({ id, name: id, color: '#000', points, villages: 1, att: 0, def: 0, sup: 0, quit: false, isBot: id !== HUMAN_ID });
+    let rows = [row('a', 900), row(HUMAN_ID, 500), row('b', 100)];
+    await boot({ instant: running(30 * MIN), account: guest, routes: { 'GET /api/v1/worlds/1/ranking?tab=points': () => ({ status: 200, body: rows }) } });
+    await screen.findByRole('button', { name: 'Place: 2 / 3' });
+    rows = [row(HUMAN_ID, 1000), ...rows.filter((r) => r.id !== HUMAN_ID)];
+    act(() => useGameStore.setState((s) => ({ rankingRev: s.rankingRev + 1 })));
+    await screen.findByRole('button', { name: 'Place: 1 / 3' });
+    fireEvent.click(screen.getByRole('button', { name: 'Place: 1 / 3' }));
+    expect(useUiStore.getState().view).toBe('ranking');
+  });
+
+  it('shows no place outside instant worlds', async () => {
+    await boot({ account: guest });
+    await waitFor(() => expect(calls).toContain('GET /api/v1/me'));
+    expect(screen.queryByRole('button', { name: /^Place:/ })).toBeNull();
   });
 
   it('claiming keeps the game and hides the button without a reload', async () => {
