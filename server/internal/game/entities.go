@@ -317,6 +317,8 @@ type BotBrain struct {
 	Roles            map[string]VillageRole `json:"roles"`
 	Memory           BotMemory              `json:"memory"`
 	Overwhelm        float64                `json:"overwhelm"`
+	Looted           Resources              `json:"looted"` // hauls brought home since joining
+	RecentLoot       LootWindow             `json:"recentLoot"`
 	LastSessionStats SessionStats           `json:"lastSessionStats"`
 	ConquestTarget   string                 `json:"conquestTarget,omitempty"`
 	Grudges          map[PlayerID]*Grudge   `json:"grudges"`
@@ -480,10 +482,11 @@ type Conquest struct {
 
 // VillageRef is the light projection of a stored village that area queries return.
 type VillageRef struct {
-	ID      string    `json:"id"`
-	X       int       `json:"x"`
-	Y       int       `json:"y"`
-	Name    string    `json:"name"`
-	OwnerID PlayerRef `json:"ownerId"`
-	Points  int       `json:"points"`
+	ID      string        `json:"id"`
+	X       int           `json:"x"`
+	Y       int           `json:"y"`
+	Name    string        `json:"name"`
+	OwnerID PlayerRef     `json:"ownerId"`
+	Points  int           `json:"points"`
+	Bonus   *VillageBonus `json:"bonus,omitempty"`
 }

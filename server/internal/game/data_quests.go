@@ -119,7 +119,7 @@ var Quests = []QuestDef{
 	statQuest("first_battle", []string{"first_attack"}, r(res(500, 500, 500)),
 		func(w World, h PlayerID) bool { return statsOf(w, h).BattlesWon >= 1 }),
 	countQuest("loot5000", []string{"first_battle"},
-		QuestReward{Resources: res(300, 300, 300), AutoFarm: true}, looted, 5000),
+		QuestReward{Resources: res(300, 300, 300), AutoFarm: true}, looted, AutoFarmUnlockLoot),
 	statQuest("template_a", []string{"first_battle"}, r(res(200, 200, 200)),
 		func(w World, h PlayerID) bool {
 			hs := w.Human(h)

@@ -1,6 +1,7 @@
 package game_test
 
 import (
+	"encoding/json"
 	"errors"
 	"slices"
 	"testing"
@@ -162,6 +163,38 @@ func TestFarmAssistant(t *testing.T) {
 		if len(a.ReportsOf("h1")) != len(b.ReportsOf("h1")) || a.Human("h1").Stats.AttacksSent != b.Human("h1").Stats.AttacksSent ||
 			a.Human("h1").Stats.AttacksSent <= sent || va.Units != vb.Units {
 			t.Fatalf("jump %d/%d steps %d/%d", len(a.ReportsOf("h1")), a.Human("h1").Stats.AttacksSent, len(b.ReportsOf("h1")), b.Human("h1").Stats.AttacksSent)
+		}
+	})
+
+	t.Run("auto-farm logs every raid it sends, for the record of how the player farms", func(t *testing.T) {
+		w, v := farmSetup(t)
+		w.Human("h1").FarmAssistant.AutoFarmUnlocked = true
+		if err := game.SetFarmFilters(w, "h1", game.FarmFiltersPatch{Radius: ptr(6.0)}); err != nil {
+			t.Fatal(err)
+		}
+		if err := game.SetAutoFarm(w, "h1", true, []string{v.ID}); err != nil {
+			t.Fatal(err)
+		}
+		w.TakeActions()
+		sent := game.AutoFarmTick(w, "h1", v.ID)
+		var logged []game.LoggedAction
+		for _, e := range w.TakeActions() {
+			if e.Kind == "auto-farm-send" {
+				logged = append(logged, e)
+			}
+		}
+		if sent == 0 || len(logged) != sent {
+			t.Fatalf("sent %d, logged %d", sent, len(logged))
+		}
+		var payload struct {
+			OriginID string          `json:"originId"`
+			X        int             `json:"x"`
+			Y        int             `json:"y"`
+			Units    game.UnitCounts `json:"units"`
+		}
+		if err := json.Unmarshal(logged[0].Payload, &payload); err != nil || payload.OriginID != v.ID ||
+			payload.Units[game.ULightCav] != 5 || logged[0].IsBot || logged[0].Actor != game.ActorOf(w.Player("h1")) {
+			t.Fatalf("entry %+v payload %s", logged[0], logged[0].Payload)
 		}
 	})
 

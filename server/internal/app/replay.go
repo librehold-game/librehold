@@ -53,7 +53,7 @@ func Replay(ctx context.Context, svc *Service, log []game.LoggedAction, seed uin
 
 func replayEntry(w WorldTx, e game.LoggedAction, players map[string]game.PlayerID) error {
 	switch e.Kind {
-	case "snapshot", "observe", "pause", "invite", "joinRule":
+	case "snapshot", "observe", "pause", "invite", "joinRule", "auto-farm-send":
 		return nil
 	case "join":
 		var j joinEntry

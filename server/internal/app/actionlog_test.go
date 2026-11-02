@@ -469,3 +469,11 @@ func TestObservationOfAnOrderAimedAtATile(t *testing.T) {
 		t.Fatalf("build choice %+v, send choice %+v", build.Choice, send.Choice)
 	}
 }
+
+// Auto-farm raids are logged as a record only: the replay sends them again from the world's own events.
+func TestReplaySkipsAutoFarmRecords(t *testing.T) {
+	e := game.LoggedAction{Kind: "auto-farm-send", Actor: "key", Payload: json.RawMessage(`{"originId":"v:1:1","x":2,"y":2}`)}
+	if err := app.ReplayEntry(nil, e, nil); err != nil {
+		t.Fatal(err)
+	}
+}

@@ -20961,6 +20961,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21012,6 +21022,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21059,6 +21079,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21102,6 +21132,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21149,6 +21189,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21196,6 +21246,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21239,6 +21299,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21282,6 +21352,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21333,6 +21413,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21380,6 +21470,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21431,6 +21531,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21482,6 +21592,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21529,6 +21649,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21572,6 +21702,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21619,6 +21759,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21666,6 +21816,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21709,6 +21869,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21752,6 +21922,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21803,6 +21983,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21854,6 +22044,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21905,6 +22105,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21948,6 +22158,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -21995,6 +22215,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22038,6 +22268,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22085,6 +22325,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22132,6 +22382,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22175,6 +22435,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22218,6 +22488,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22269,6 +22549,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22320,6 +22610,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22363,6 +22663,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22406,6 +22716,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22453,6 +22773,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22496,6 +22826,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22543,6 +22883,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22590,6 +22940,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22633,6 +22993,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22676,6 +23046,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22727,6 +23107,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0
@@ -22778,6 +23168,16 @@
           "discoveredAt": -1
         },
         "overwhelm": 0,
+        "looted": {
+          "wood": 0,
+          "clay": 0,
+          "iron": 0
+        },
+        "recentLoot": {
+          "since": 0,
+          "loot": 0,
+          "perHour": 0
+        },
         "lastSessionStats": {
           "villagesLost": 0,
           "incomingAttacks": 0

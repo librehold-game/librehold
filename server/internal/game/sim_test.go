@@ -27,9 +27,10 @@ func medianOf(xs []float64) float64 {
 }
 
 // The bot world keeps playing as recorded: 30 bots for 30 days on seeds 1–3, medians across seeds within ±25 % of
-// testdata/golden/simbands.json (villages ±1 and the quit share ±0.05 absolute, since those are small counts), and
-// no handler errors. A deliberate bot change is expected to move the bands: re-record them with
-// `go test ./internal/game/ -run Bands -update`.
+// testdata/golden/simbands.json (villages ±1 and the quit share ±0.1 absolute, since those are small counts), and
+// no handler errors. The quit share's margin is three of the 30 bots: arm64 fuses multiply-adds that amd64 rounds
+// in two steps, and over 30 days that alone moves it by two. A deliberate bot change is expected to move the bands:
+// re-record them with `go test ./internal/game/ -run Bands -update`.
 func TestBotWorldStaysInBands(t *testing.T) {
 	if testing.Short() {
 		t.Skip("long simulation")
@@ -88,5 +89,5 @@ func TestBotWorldStaysInBands(t *testing.T) {
 	}
 	metric("villages", tVill, gVill, func(g, want float64) bool { return math.Abs(g-want) <= math.Max(1, 0.25*want) })
 	metric("raids per day", tRaids, gRaids, rel)
-	metric("quit share", tQuit, gQuit, func(g, want float64) bool { return math.Abs(g-want) <= 0.05 })
+	metric("quit share", tQuit, gQuit, func(g, want float64) bool { return math.Abs(g-want) <= 0.1 })
 }

@@ -75,10 +75,23 @@ func (u *uow) CommandsTo(villageID string) []*game.Command {
 	return u.commandsWhere(func(c *game.Command) bool { return c.TargetID == villageID })
 }
 
-// ArmiesMarching loads the armies on the road at now; ones already tracked keep their unit-of-work state.
-func (u *uow) ArmiesMarching(now int64) []*game.Command {
-	u.loadCommands("type in ('attack', 'support', 'return') and arrives_at > $2", now)
-	return u.commandsSorted(func(c *game.Command) bool { return game.IsArmy(c) && c.ArrivesAt > now })
+// ArmiesMarching loads the armies on the road at now whose leg passes through near, from the path index; ones
+// already tracked keep their unit-of-work state.
+func (u *uow) ArmiesMarching(now int64, near game.Box) []*game.Command {
+	rows, err := u.tx.Query(u.ctx, `select id, data from commands where world_id = $1 and type in ('attack', 'support', 'return')
+		and arrives_at > $2 and path && box(point($3, $4), point($5, $6))`, u.row.ID, now, near.X0, near.Y0, near.X1, near.Y1)
+	u.must(err)
+	for rows.Next() {
+		var id string
+		var data []byte
+		u.must(rows.Scan(&id, &data))
+		track(u.commands, id, data)
+	}
+	u.must(rows.Err())
+	return u.commandsSorted(func(c *game.Command) bool {
+		b, ok := game.LegBox(c)
+		return game.IsArmy(c) && c.ArrivesAt > now && ok && b.Overlaps(near)
+	})
 }
 
 // MovingCommands loads every army and intercept on the road at now; ones already tracked keep their state.
@@ -129,11 +142,16 @@ func (u *uow) flushCommands(b *pgx.Batch) {
 	changesOrig(u.commands, func(id string, c *game.Command, data, orig []byte) {
 		owners(c)
 		old(orig)
-		b.Queue(`insert into commands (world_id, id, type, origin_id, target_id, home_id, arrives_at, data)
-			values ($1, $2, $3, $4, $5, $6, $7, $8)
+		var x0, y0, x1, y1 *float64
+		if box, ok := game.LegBox(c); ok {
+			x0, y0, x1, y1 = &box.X0, &box.Y0, &box.X1, &box.Y1
+		}
+		b.Queue(`insert into commands (world_id, id, type, origin_id, target_id, home_id, arrives_at, data, path)
+			values ($1, $2, $3, $4, $5, $6, $7, $8, box(point($9::float8, $10::float8), point($11::float8, $12::float8)))
 			on conflict (world_id, id) do update set type = excluded.type, origin_id = excluded.origin_id,
-			target_id = excluded.target_id, home_id = excluded.home_id, arrives_at = excluded.arrives_at, data = excluded.data`,
-			wid, id, c.Type, c.OriginID, c.TargetID, game.CommandHome(c), c.ArrivesAt, data)
+			target_id = excluded.target_id, home_id = excluded.home_id, arrives_at = excluded.arrives_at, data = excluded.data,
+			path = excluded.path`,
+			wid, id, c.Type, c.OriginID, c.TargetID, game.CommandHome(c), c.ArrivesAt, data, x0, y0, x1, y1)
 	}, func(id string, orig []byte) {
 		old(orig)
 		b.Queue(`delete from commands where world_id = $1 and id = $2`, wid, id)

@@ -216,16 +216,20 @@ func TestSpawnBotsOnMap(t *testing.T) {
 		cfg := game.DefaultWorldConfig
 		cfg.BotCount, cfg.BotArrival, cfg.RampUpDays = 100, "rampUp", 14
 		w, _ := gametest.NewWorldWithHuman(12, cfg)
-		advance(t, w, 16*game.MsPerDay)
+		for day := int64(1); day <= 16; day++ {
+			advance(t, w, day*game.MsPerDay)
+		}
 		c := float64(cfg.MapSize) / 2
 		var dists []float64
-		for _, v := range w.Villages() {
-			if v.OwnerID != "" {
-				dists = append(dists, math.Hypot(float64(v.X)-c, float64(v.Y)-c))
+		for _, p := range w.Players() {
+			if len(p.VillageIDs) == 0 {
+				continue
 			}
+			home := w.Village(p.VillageIDs[0]) // the first one, where the player spawned
+			dists = append(dists, math.Hypot(float64(home.X)-c, float64(home.Y)-c))
 		}
 		if len(dists) != 101 || slices.Max(dists) >= 45 {
-			t.Fatalf("%d villages, max dist %v", len(dists), slices.Max(dists))
+			t.Fatalf("%d players with a village, max dist %v", len(dists), slices.Max(dists))
 		}
 	})
 }
@@ -419,4 +423,61 @@ func jsonEqual(t *testing.T, a, b []byte) bool {
 		t.Fatal(err)
 	}
 	return game.JSONNear(x, y)
+}
+
+// VillagesInRadius reads the stored villages in one area query; it must list what reading each tile lists, in the
+// same order, owners' names aside.
+func TestVillagesInRadiusMatchesReadingEachTile(t *testing.T) {
+	cfg := game.DefaultWorldConfig
+	cfg.BotCount = 20
+	w := gametest.NewMemWorld(5, cfg, 0)
+	if err := game.NewWorld(w); err != nil {
+		t.Fatal(err)
+	}
+	centre := w.Villages()[0]
+	for x := centre.X - 12; x <= centre.X+12; x += 2 {
+		for y := centre.Y - 12; y <= centre.Y+12; y += 3 {
+			game.EnsureVillage(w, x, y)
+		}
+	}
+	bonus := 0
+	for x := centre.X - 15; x <= centre.X+15; x++ {
+		for y := centre.Y - 15; y <= centre.Y+15; y++ {
+			if game.TileHasVillage(w.Seed(), &cfg, x, y) && game.BarbarianTemplate(w.Seed(), x, y).Bonus != nil {
+				game.EnsureVillage(w, x, y)
+				bonus++
+			}
+		}
+	}
+	if bonus == 0 {
+		t.Fatal("setup: no bonus village near the centre")
+	}
+	for _, radius := range []float64{0, 1, 4.5, 15} {
+		var want []game.Tile
+		r := int(math.Ceil(radius))
+		for x := max(0, centre.X-r); x <= min(cfg.MapSize-1, centre.X+r); x++ {
+			for y := max(0, centre.Y-r); y <= min(cfg.MapSize-1, centre.Y+r); y++ {
+				if tile := game.TileInfo(w, x, y); tile.Kind == "village" && game.Distance(centre.X, centre.Y, x, y) <= radius {
+					tile.OwnerName, tile.OwnerStatus, tile.OwnerColor = "", "", ""
+					want = append(want, tile)
+				}
+			}
+		}
+		slices.SortStableFunc(want, func(a, b game.Tile) int {
+			return cmpFloat(game.Distance(centre.X, centre.Y, a.X, a.Y), game.Distance(centre.X, centre.Y, b.X, b.Y))
+		})
+		if got := game.VillagesInRadius(w, centre.X, centre.Y, radius); !reflect.DeepEqual(got, want) {
+			t.Fatalf("radius %v: got %d villages, want %d\n got %+v\nwant %+v", radius, len(got), len(want), got, want)
+		}
+	}
+}
+
+func cmpFloat(a, b float64) int {
+	switch {
+	case a < b:
+		return -1
+	case a > b:
+		return 1
+	}
+	return 0
 }

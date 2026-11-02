@@ -117,8 +117,8 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
 
 - **Wall clock.** Every bot has its own daily rhythm (6–9 h of sleep, sessions, a "glance at the phone" before a hit)
   computed from local time (`World.ClockOrigin`), so changing the world speed does not shift its habits. It only
-  thinks in sessions; offline it reacts only through the phone. On its first day after joining (`BotConfig.StartRush`)
-  it also checks in every 1–2 h like players at a server launch — almost always if engaged, rarely if casual.
+  thinks in sessions; offline it reacts only through the phone. On its first day after joining (`BotConfig.StartRush`,
+  longer for strong and medium bots) it also checks in every 1–2 h like players at a server launch — almost always if engaged, rarely if casual.
 - **Skill and style.** `skill` (0–1) decides how often a bot sticks to playbook moves (`Plays`) and how rarely it
   makes typical mistakes (`Mistakes`); choices go through a softmax whose temperature rises for weak bots, so moves
   are not predictable. Weak bots also log in less often (`BotConfig.WeakSkipCheckIn`). Style (farmer, turtle,
@@ -126,6 +126,17 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
   strong bots.
 - **Economy and farming.** Building by village role, recruitment with a Farmstead reserve, raids on barbarians sized to
   the loot remembered (scouting, wall; dried-up farms drop off the list and come back after a few days).
+- **Tiers on normal worlds** (`EconomyPlays`). Strong bots (skill ≥ 0.7)
+  open with the mines, keep iron 3 levels behind wood and clay and build only the economy until the mines reach 18;
+  they grow the Farmstead when less than a quarter of it is free and the storage while it holds less than 12 hours
+  of income (production plus recent loot), never leave the build queue empty for want of one building, leave a
+  24-step build plan for the break, keep the hiding place at 3 and the wall at 5 unless farmed hard, and check in
+  often for 4 days after joining. Farming styles (farmer, aggressor, opportunist) build barracks 5, smithy 5 and
+  stable 3 from mines 8, research light cavalry first and recruit before building until their troops fill 55 % of
+  the Farmstead; the other styles do so from mines 14 with 10 %. Medium bots (0.4–0.7) do the same with the
+  military from mines 12–15, 30 % of troops, a 12-step plan and 2 days of check-ins. Strong and medium bots use the
+  auto-farm as humans do, once unlocked the same way (5000 looted or 3 villages): up to 20 sized raids per village
+  every 15 minutes, online or not, at barbarian and abandoned villages only. Weak bots and every bot in a short world play the classic way.
 - **Expansion.** An Academy in the best village (from three villages also in the second), coins where the world has
   them, hetmans against barbarians and the grey villages of players who left.
 - **War.** Moods (build-up → campaign → consolidation), targets from public data and report memory; operations:
@@ -136,9 +147,9 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
   of a train) stays there as support.
 - **Defence.** Stacking support when it arrives in time and will hold; otherwise a dodge; strong bots snipe noble
   trains. A weak bot "doesn't notice" some attacks.
-- **Quitting.** Being overwhelmed (village losses, attacks, falling behind peers) fades over time; past a threshold
-  the bot quits. Its villages stay grey for `BotConfig.AbandonAfterDays` (21) days — they can be taken despite
-  last-village protection — and then turn barbarian.
+- **Quitting.** Being overwhelmed (village losses, attacks) fades over time; past a threshold a medium or strong
+  bot quits (weak bots always play). Its villages stay grey for `BotConfig.AbandonAfterDays` (21) days — they can be
+  taken despite last-village protection — and then turn barbarian.
 - **Short worlds** (instant and player-hosted): bots are always online and think every 20 s, their plans scaled to the
   hour. A bot keeps the next hetman's price instead of spending it on buildings; with a full train (two hetmans) it
   goes for scouted villages of active players its army can clear (or scouts the nearest unknown one) before

@@ -136,7 +136,7 @@ func ObserveChoice(w World, actor PlayerID, originID string, x, y int) *Observed
 	}
 	inbound := ownInbound(w, actor)
 	t := TileInfo(w, x, y)
-	target := ObservedTarget{FarmTarget: farmTargetFor(w, actor, from, t, inbound)}
+	target := ObservedTarget{FarmTarget: farmTargetFor(w, from, t, w.Intel(actor, t.ID), inbound)}
 	switch {
 	case t.Kind != "village":
 		target.Owner = "empty"

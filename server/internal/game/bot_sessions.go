@@ -94,7 +94,8 @@ func DaySessions(w World, id PlayerID, day int64) []Session {
 		return nil
 	}
 	var rushRng func() float64
-	if WorldTimeOf(w, day, 0) < p.JoinAt+int64(BotConfig.StartRush.Days*float64(MsPerDay)) {
+	rushDays := max(BotConfig.StartRush.Days, economyPlay(w, id).RushDays)
+	if WorldTimeOf(w, day, 0) < p.JoinAt+int64(rushDays*float64(MsPerDay)) {
 		rushRng = Mulberry32(HiddenSeed(w, "rush", id, day))
 	}
 	return SessionsForDay(b, IsWeekendDay(day), Mulberry32(HiddenSeed(w, "day", id, day)), rushRng)
@@ -168,6 +169,14 @@ func onSessionEvent(w World, id PlayerID) error {
 	}
 	b.Online = true
 	b.SessionEndsAt = end
+	if economyPlay(w, id).PlanSteps > 0 {
+		for _, vid := range p.VillageIDs {
+			if v := w.Village(vid); v != nil {
+				v.BuildPlan = nil
+				w.Unschedule("plan:" + vid)
+			}
+		}
+	}
 	w.Unschedule("phone:" + id)
 	w.Schedule("think:"+id, w.Now())
 	w.Schedule("sessionEnd:"+id, end)

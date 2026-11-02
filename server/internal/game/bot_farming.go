@@ -33,6 +33,11 @@ func isAvailable(w World, k *KnownVillage) bool {
 // FarmCandidates are barbarians from the map, abandoned players, and active players half as strong if they may
 // be attacked. radius 0 = the bot's usual farm radius.
 func FarmCandidates(w World, botID PlayerID, from *Village, radius int) []*KnownVillage {
+	return farmCandidates(w, botID, from, radius, true)
+}
+
+// farmCandidates: without players, only barbarians and abandoned villages (the auto-farm's farms).
+func farmCandidates(w World, botID PlayerID, from *Village, radius int, players bool) []*KnownVillage {
 	brain := w.Brain(botID)
 	if brain == nil {
 		return nil
@@ -71,7 +76,7 @@ func FarmCandidates(w World, botID PlayerID, from *Village, radius int) []*Known
 		owner := w.Player(PlayerID(k.OwnerID))
 		// Abandoned players are farms; active ones only when much weaker and when allowed (world setting).
 		inactive := owner != nil && owner.Status == StatusQuit
-		if !inactive && (float64(k.Points) >= 0.5*own || !MayTarget(w, botID, k.OwnerID)) {
+		if !inactive && (!players || float64(k.Points) >= 0.5*own || !MayTarget(w, botID, k.OwnerID)) {
 			continue
 		}
 		if Distance(from.X, from.Y, k.X, k.Y) > float64(r) || !isAvailable(w, k) {
@@ -219,37 +224,46 @@ func sendRaid(w World, botID PlayerID, from *Village, k *KnownVillage, units Uni
 // PlanFarming, in a session: from each village, groups sized by simulation at targets by expected haul ÷
 // distance, until the troops run out.
 func PlanFarming(w World, botID PlayerID) {
-	brain := w.Brain(botID)
-	if brain == nil {
+	if w.Brain(botID) == nil {
 		return
 	}
 	for _, v := range PlayerVillages(w, botID) {
-		type scored struct {
-			k     *KnownVillage
-			score float64
+		farmFrom(w, botID, v, BotConfig.MaxRaidsPerThink, true)
+	}
+}
+
+// farmFrom sends up to maxRaids sized raids from v, best expected haul ÷ distance first, and returns how many went;
+// without players only at barbarians and abandoned villages.
+func farmFrom(w World, botID PlayerID, v *Village, maxRaids int, players bool) int {
+	if UnitCounts(v.Units).Total() == 0 {
+		return 0 // everyone is out: no need to list the farms
+	}
+	type scored struct {
+		k     *KnownVillage
+		score float64
+	}
+	var targets []scored
+	for _, k := range farmCandidates(w, botID, v, 0, players) {
+		targets = append(targets, scored{k, expectedHaulRatio(k) / math.Max(1, Distance(v.X, v.Y, k.X, k.Y))})
+	}
+	sort.SliceStable(targets, func(i, j int) bool { return targets[i].score > targets[j].score })
+	misses, sent := 0, 0
+	for _, t := range targets {
+		if UnitCounts(v.Units).Total() == 0 || misses > 20 || sent >= maxRaids {
+			break
 		}
-		var targets []scored
-		for _, k := range FarmCandidates(w, botID, v, 0) {
-			targets = append(targets, scored{k, expectedHaulRatio(k) / math.Max(1, Distance(v.X, v.Y, k.X, k.Y))})
+		units, ok := SizeRaid(w, v, t.k, brainOf(w, botID).Skill)
+		if !ok {
+			misses++
+			continue
 		}
-		sort.SliceStable(targets, func(i, j int) bool { return targets[i].score > targets[j].score })
-		misses, sent := 0, 0
-		for _, t := range targets {
-			if UnitCounts(v.Units).Total() == 0 || misses > 20 || sent >= BotConfig.MaxRaidsPerThink {
-				break
-			}
-			units, ok := SizeRaid(w, v, t.k, brain.Skill)
-			if !ok {
-				misses++
-				continue
-			}
-			if sendRaid(w, botID, v, t.k, units, false, 0) {
-				sent++
-			} else {
-				misses++
-			}
+		if sendRaid(w, botID, v, t.k, units, false, 0) {
+			sent++
+		} else {
+			misses++
 		}
 	}
+	return sent
 }
 
 const nightReach = 60

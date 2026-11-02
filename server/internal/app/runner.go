@@ -26,6 +26,8 @@ func WallTime(row *WorldRow, worldMs int64) time.Time {
 
 // processDue dispatches the events due by until in (due, seq) order, each at its own time, settling quests
 // of the humans it touched; at most max of them when max > 0.
+// processDue runs the due events, then settles the quests of the humans they touched, once for the whole batch:
+// bots' events touch every human who shares a farm with them, so settling after each one cost more than the events.
 func processDue(w WorldTx, until int64, max int) (int, error) {
 	n := 0
 	for max <= 0 || n < max {
@@ -40,10 +42,10 @@ func processDue(w WorldTx, until int64, max int) (int, error) {
 		if err := game.Dispatch(w, key); err != nil {
 			return n, fmt.Errorf("%s at %d: %w", key, at, err)
 		}
-		for _, h := range w.TouchedHumans() {
-			game.SettleQuests(w, h)
-		}
 		n++
+	}
+	for _, h := range w.TouchedHumans() {
+		game.SettleQuests(w, h)
 	}
 	return n, nil
 }

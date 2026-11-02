@@ -102,3 +102,44 @@ func TestPgtestGivesMigratedIsolatedDatabases(t *testing.T) {
 		t.Fatalf("databases not isolated: %d %v", n, err)
 	}
 }
+
+// Armies already on the road get the box of their leg, as the store writes it for new ones.
+func TestMigration0016BoxesTheLegsOfArmiesOnTheRoad(t *testing.T) {
+	ctx := context.Background()
+	pool := pgtest.Empty(t)
+	if err := postgres.MigrateTo(ctx, pool, 15); err != nil {
+		t.Fatal(err)
+	}
+	var wid int64
+	if err := pool.QueryRow(ctx, `insert into worlds (name, status, seed, secret, config, started_at_ms) values ('w', 'open', 1, sha256('x'), '{}', 0) returning id`).Scan(&wid); err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct{ id, typ, origin, target, data string }{
+		{"c_attack", "attack", "v:10:4", "v:3:2", `{}`},
+		{"c_field", "return", "", "v:3:4", `{"point": {"x": 5.5, "y": 6}}`},
+		{"c_intercept", "intercept", "v:3:4", "", `{"point": {"x": 7, "y": 8}}`},
+		{"c_odd", "attack", "vil_fresh", "v:3:4", `{}`},
+	} {
+		if _, err := pool.Exec(ctx, `insert into commands (world_id, id, type, origin_id, target_id, home_id, arrives_at, data)
+			values ($1, $2, $3, $4, $5, $4, 0, $6)`, wid, c.id, c.typ, c.origin, c.target, c.data); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := postgres.Migrate(ctx, pool); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{"c_attack": "(10,4),(3,2)", "c_field": "(5.5,6),(3,4)", "c_intercept": "(7,8),(3,4)", "c_odd": "<nil>"}
+	for id, box := range want {
+		var path *string
+		if err := pool.QueryRow(ctx, `select path::text from commands where id = $1`, id).Scan(&path); err != nil {
+			t.Fatal(err)
+		}
+		got := "<nil>"
+		if path != nil {
+			got = *path
+		}
+		if got != box {
+			t.Errorf("%s: path %s, want %s", id, got, box)
+		}
+	}
+}

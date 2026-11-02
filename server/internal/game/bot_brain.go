@@ -39,11 +39,19 @@ func Think(w World, id PlayerID, defenceOnly bool) {
 	PlanExpansion(w, id)
 	PlanFarming(w, id)
 	PlanCampaign(w, id)
+	armyFirst := economyPlay(w, id).ArmyShare > 0
 	for _, v := range PlayerVillages(w, id) {
-		PlanBuilding(w, id, v)
-		PlanRecruitment(w, id, v)
-		PlanResearch(w, id, v)
+		if armyFirst {
+			PlanResearch(w, id, v)
+			PlanRecruitment(w, id, v)
+			PlanBuilding(w, id, v)
+		} else {
+			PlanBuilding(w, id, v)
+			PlanRecruitment(w, id, v)
+			PlanResearch(w, id, v)
+		}
 	}
+	ScheduleBotAutoFarm(w, id)
 }
 
 // PrepareForOffline queues the villages for the break and sends the night raids.

@@ -31,7 +31,7 @@ type World interface {
 	CommandsTo(villageID string) []*Command   // c.TargetID == villageID, sorted by (ArrivesAt, ID)
 	PutCommand(c *Command)
 	DeleteCommand(id string)
-	ArmiesMarching(now int64) []*Command // attack, support and return commands not yet arrived, sorted by ID (bystander sight)
+	ArmiesMarching(now int64, near Box) []*Command // attack, support and return commands not yet arrived whose LegBox overlaps near, by ID (bystander sight)
 
 	Schedule(key string, at int64) // at < Now() is clamped to Now(); same key+time is a no-op
 	Unschedule(key string)
@@ -43,7 +43,8 @@ type World interface {
 	SetReportRead(recipient PlayerID, ids []string, read bool)
 	DeleteReports(recipient PlayerID, ids []string)
 	Intel(player PlayerID, villageID string) *Intel
-	PutIntel(player PlayerID, villageID string, in *Intel) // nil deletes
+	IntelFor(player PlayerID, villageIDs []string) map[string]*Intel // the player's intel on those villages, in one read
+	PutIntel(player PlayerID, villageID string, in *Intel)           // nil deletes
 	ScheduledSend(id string) *ScheduledSend
 	ScheduledSendsOf(owner PlayerID) []*ScheduledSend // sorted by (SendAt, ID)
 	PutScheduledSend(s *ScheduledSend)

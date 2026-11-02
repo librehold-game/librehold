@@ -174,6 +174,25 @@ export function errorText(e: unknown): string {
   return e instanceof Error ? e.message : String(e);
 }
 
+/**
+ * One fetch at a time: calls while it runs share a single run after it, so a burst of updates (an auto-farm's
+ * raids coming home) costs the server two reads, not one per update.
+ */
+function coalesced(load: () => Promise<void>): () => Promise<void> {
+  let running: Promise<void> | null = null;
+  let queued: Promise<void> | null = null;
+  const start = () => {
+    const p = load().finally(() => { if (running === p) running = null; });
+    running = p;
+    return p;
+  };
+  return () => {
+    if (!running) return start();
+    queued ??= running.catch(() => undefined).then(() => { queued = null; return start(); });
+    return queued;
+  };
+}
+
 function worldPath(path: string): string {
   return `/api/v1/worlds/${server.state?.worldId ?? useGameStore.getState().worldId}${path}`;
 }
@@ -221,18 +240,18 @@ export const useGameStore = create<GameStore>()(
       rebuild();
     };
 
-    const fetchState = async () => applyState(await api.get<PlayerState>(worldPath('/state')));
-    const fetchReports = async () => {
+    const fetchState = coalesced(async () => applyState(await api.get<PlayerState>(worldPath('/state'))));
+    const fetchReports = coalesced(async () => {
       server.reports = await api.get<Report[]>(worldPath('/reports?limit=100'));
       rebuild();
-    };
-    const fetchNews = async () => {
+    });
+    const fetchNews = coalesced(async () => {
       const before = new Set(server.news.map((n) => n.id));
       server.news = await api.get<NewsEntry[]>(worldPath('/news?limit=50'));
       const alert = server.news.find((n) => n.alert && !before.has(n.id));
       if (alert && before.size > 0) set((s) => { s.notice = `[icon:nav-news] ${newsText(alert)}`; });
       rebuild();
-    };
+    });
     const quietly = (p: Promise<unknown>) => { p.catch(() => undefined); };
 
     const onLive = (m: LiveMessage) => {

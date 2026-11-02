@@ -15,6 +15,7 @@ type StrongWeak struct {
 // BotConfig holds the bot tuning: skill, temperament, styles and pacing.
 var BotConfig = struct {
 	StrongSkill     float64 `json:"strongSkill"`
+	MediumSkill     float64 `json:"mediumSkill"`
 	Temperature     Range   `json:"temperature"`
 	WeakSkipCheckIn float64 `json:"weakSkipCheckIn"`
 	StartRush       struct {
@@ -40,7 +41,6 @@ var BotConfig = struct {
 	MaxNightRuns          int                  `json:"maxNightRuns"`
 	QuitScale             float64              `json:"quitScale"`
 	AbandonAfterDays      float64              `json:"abandonAfterDays"`
-	PeerJoinDays          float64              `json:"peerJoinDays"`
 	GrudgeFadeDays        float64              `json:"grudgeFadeDays"`
 	NukeAttack            float64              `json:"nukeAttack"`
 	WeakExpandDailyChance float64              `json:"weakExpandDailyChance"`
@@ -48,6 +48,7 @@ var BotConfig = struct {
 	StyleWeights          map[BotStyle]float64 `json:"styleWeights"`
 }{
 	StrongSkill:     0.7,
+	MediumSkill:     0.4,
 	Temperature:     Range{0.1, 1},
 	WeakSkipCheckIn: 0.3,
 	StartRush: struct {
@@ -73,7 +74,6 @@ var BotConfig = struct {
 	MaxNightRuns:          15,
 	QuitScale:             3,
 	AbandonAfterDays:      21,
-	PeerJoinDays:          7,
 	GrudgeFadeDays:        5,
 	NukeAttack:            150_000,
 	WeakExpandDailyChance: 0.3,

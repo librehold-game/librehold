@@ -75,10 +75,8 @@ type Tile struct {
 
 // TileInfo reads a tile: stored villages win over the generator.
 func TileInfo(w World, x, y int) Tile {
-	id := VillageIDFor(x, y)
-	if v := w.Village(id); v != nil {
-		t := Tile{Kind: "village", X: x, Y: y, ID: id, OwnerID: v.OwnerID, Name: v.Name, Points: v.Points,
-			Bonus: v.Bonus, Materialized: true}
+	if v := w.Village(VillageIDFor(x, y)); v != nil {
+		t := storedTile(VillageRef{ID: v.ID, X: x, Y: y, Name: v.Name, OwnerID: v.OwnerID, Points: v.Points, Bonus: v.Bonus})
 		if owner := OwnerOf(w, v); owner != nil {
 			t.OwnerName, t.OwnerStatus, t.OwnerColor = owner.Name, owner.Status, owner.Color
 		}
@@ -87,8 +85,17 @@ func TileInfo(w World, x, y int) Tile {
 	if !TileHasVillage(w.Seed(), w.Config(), x, y) {
 		return Tile{Kind: "empty", X: x, Y: y, Terrain: Terrain(w.Seed(), x, y)}
 	}
+	return generatedTile(w, x, y)
+}
+
+func storedTile(ref VillageRef) Tile {
+	return Tile{Kind: "village", X: ref.X, Y: ref.Y, ID: ref.ID, OwnerID: ref.OwnerID, Name: ref.Name, Points: ref.Points,
+		Bonus: ref.Bonus, Materialized: true}
+}
+
+func generatedTile(w World, x, y int) Tile {
 	tp := BarbarianTemplate(w.Seed(), x, y)
-	return Tile{Kind: "village", X: x, Y: y, ID: id, Points: tp.Points, Bonus: tp.Bonus}
+	return Tile{Kind: "village", X: x, Y: y, ID: VillageIDFor(x, y), Points: tp.Points, Bonus: tp.Bonus}
 }
 
 func VillageExistsAt(w World, x, y int) bool {
@@ -123,18 +130,27 @@ func EnsureVillage(w World, x, y int) *Village {
 	return v
 }
 
-// VillagesInRadius lists villages within a radius (without materialising), sorted by distance.
+// VillagesInRadius are the villages within radius of (cx, cy), nearest first, as TileInfo reads them but without
+// owner names: the stored ones from one area query, whatever the radius, the others from the generator.
 func VillagesInRadius(w World, cx, cy int, radius float64) []Tile {
 	var out []Tile
 	r := int(math.Ceil(radius))
-	size := w.Config().MapSize
-	for x := max(0, cx-r); x <= min(size-1, cx+r); x++ {
-		for y := max(0, cy-r); y <= min(size-1, cy+r); y++ {
+	last := w.Config().MapSize - 1
+	x0, y0, x1, y1 := max(0, cx-r), max(0, cy-r), min(last, cx+r), min(last, cy+r)
+	stored := map[string]VillageRef{}
+	for _, ref := range w.VillagesIn(x0, y0, x1, y1) {
+		stored[ref.ID] = ref
+	}
+	for x := x0; x <= x1; x++ {
+		for y := y0; y <= y1; y++ {
 			if Distance(cx, cy, x, y) > radius {
 				continue
 			}
-			if t := TileInfo(w, x, y); t.Kind == "village" {
-				out = append(out, t)
+			id := VillageIDFor(x, y)
+			if ref, ok := stored[id]; ok {
+				out = append(out, storedTile(ref))
+			} else if TileHasVillage(w.Seed(), w.Config(), x, y) {
+				out = append(out, generatedTile(w, x, y))
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package gametest
 
 import (
 	"container/heap"
+	"maps"
 	"slices"
 	"sort"
 	"strconv"
@@ -49,21 +50,26 @@ type MemWorld struct {
 	nextID      int64
 
 	villages map[string]*game.Village
+	grid     map[[2]int][]string // village ids by gridCell of their tile, for VillagesIn
 	players  map[game.PlayerID]*game.Player
 	brains   map[game.PlayerID]*game.BotBrain
 	humans   map[game.PlayerID]*game.HumanState
 	commands map[string]*game.Command
 	// byHome indexes commands by game.CommandHome, which never changes once a command is stored (turning back swaps
 	// origin and target), so CommandsHome need not scan the whole world.
-	byHome    map[string]map[string]*game.Command
-	reports   map[game.PlayerID][]*game.Report
-	intel     map[intelKey]*game.Intel
-	scheduled map[string]*game.ScheduledSend
-	news      []*game.NewsItem
-	conquests []game.Conquest
-	public    []game.PublicEvent
-	battles   int
-	battleAt  time.Time // wall time of the newest battle, set by a store wrapping this world
+	byHome map[string]map[string]*game.Command
+	// byTarget indexes commands by their target when stored; the only later change of a target is turning back,
+	// which makes it the command's home, so byTarget with byHome covers CommandsTo.
+	byTarget    map[string]map[string]*game.Command
+	targetOfCmd map[string]string // the byTarget bucket each command sits in
+	reports     map[game.PlayerID][]*game.Report
+	intel       map[intelKey]*game.Intel
+	scheduled   map[string]*game.ScheduledSend
+	news        []*game.NewsItem
+	conquests   []game.Conquest
+	public      []game.PublicEvent
+	battles     int
+	battleAt    time.Time // wall time of the newest battle, set by a store wrapping this world
 
 	events     eventHeap
 	eventIndex map[string]int64
@@ -82,11 +88,14 @@ func NewMemWorld(seed uint32, cfg game.WorldConfig, clockOrigin int64) *MemWorld
 		clockOrigin: clockOrigin,
 		nextID:      1,
 		villages:    map[string]*game.Village{},
+		grid:        map[[2]int][]string{},
 		players:     map[game.PlayerID]*game.Player{},
 		brains:      map[game.PlayerID]*game.BotBrain{},
 		humans:      map[game.PlayerID]*game.HumanState{},
 		commands:    map[string]*game.Command{},
 		byHome:      map[string]map[string]*game.Command{},
+		byTarget:    map[string]map[string]*game.Command{},
+		targetOfCmd: map[string]string{},
 		reports:     map[game.PlayerID][]*game.Report{},
 		intel:       map[intelKey]*game.Intel{},
 		scheduled:   map[string]*game.ScheduledSend{},
@@ -170,15 +179,30 @@ func (w *MemWorld) Village(id string) *game.Village {
 }
 
 func (w *MemWorld) PutVillage(v *game.Village) {
+	if _, known := w.villages[v.ID]; !known {
+		c := gridCell(v.X, v.Y)
+		w.grid[c] = append(w.grid[c], v.ID)
+	}
 	w.villages[v.ID] = v
 	w.touchOwner(v)
 }
 
+// gridSize is the side of a VillagesIn grid cell: a village never moves, so its cell is fixed.
+const gridSize = 8
+
+func gridCell(x, y int) [2]int { return [2]int{x / gridSize, y / gridSize} }
+
 func (w *MemWorld) VillagesIn(x0, y0, x1, y1 int) []game.VillageRef {
 	var out []game.VillageRef
-	for _, v := range w.villages {
-		if v.X >= x0 && v.X <= x1 && v.Y >= y0 && v.Y <= y1 {
-			out = append(out, game.VillageRef{ID: v.ID, X: v.X, Y: v.Y, Name: v.Name, OwnerID: v.OwnerID, Points: v.Points})
+	lo, hi := gridCell(max(0, x0), max(0, y0)), gridCell(max(0, x1), max(0, y1))
+	for cx := lo[0]; cx <= hi[0]; cx++ {
+		for cy := lo[1]; cy <= hi[1]; cy++ {
+			for _, id := range w.grid[[2]int{cx, cy}] {
+				v := w.villages[id]
+				if v.X >= x0 && v.X <= x1 && v.Y >= y0 && v.Y <= y1 {
+					out = append(out, game.VillageRef{ID: v.ID, X: v.X, Y: v.Y, Name: v.Name, OwnerID: v.OwnerID, Points: v.Points, Bonus: v.Bonus})
+				}
+			}
 		}
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
@@ -287,7 +311,12 @@ func (w *MemWorld) CommandsHome(villageID string) []*game.Command {
 }
 
 func (w *MemWorld) CommandsTo(villageID string) []*game.Command {
-	return w.commandsWhere(func(c *game.Command) bool { return c.TargetID == villageID })
+	candidates := maps.Clone(w.byTarget[villageID])
+	if candidates == nil {
+		candidates = map[string]*game.Command{}
+	}
+	maps.Copy(candidates, w.byHome[villageID])
+	return w.sortedTouched(candidates, func(c *game.Command) bool { return c.TargetID == villageID })
 }
 
 // Commands returns every command, sorted by (ArrivesAt, ID) (tests).
@@ -295,15 +324,20 @@ func (w *MemWorld) Commands() []*game.Command {
 	return w.commandsWhere(func(*game.Command) bool { return true })
 }
 
-func (w *MemWorld) ArmiesMarching(now int64) []*game.Command {
+func (w *MemWorld) ArmiesMarching(now int64, near game.Box) []*game.Command {
 	var out []*game.Command
 	for _, c := range w.commands {
-		if game.IsArmy(c) && c.ArrivesAt > now {
+		if game.IsArmy(c) && c.ArrivesAt > now && legNear(c, near) {
 			out = append(out, c)
 		}
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
 	return out
+}
+
+func legNear(c *game.Command, near game.Box) bool {
+	b, ok := game.LegBox(c)
+	return ok && b.Overlaps(near)
 }
 
 func (w *MemWorld) MovingCommands(now int64) []*game.Command {
@@ -358,6 +392,11 @@ func (w *MemWorld) indexCommand(c *game.Command) {
 		w.byHome[home] = map[string]*game.Command{}
 	}
 	w.byHome[home][c.ID] = c
+	if w.byTarget[c.TargetID] == nil {
+		w.byTarget[c.TargetID] = map[string]*game.Command{}
+	}
+	w.byTarget[c.TargetID][c.ID] = c
+	w.targetOfCmd[c.ID] = c.TargetID
 }
 
 func (w *MemWorld) unindexCommand(c *game.Command) {
@@ -366,6 +405,12 @@ func (w *MemWorld) unindexCommand(c *game.Command) {
 	if len(w.byHome[home]) == 0 {
 		delete(w.byHome, home)
 	}
+	target := w.targetOfCmd[c.ID]
+	delete(w.byTarget[target], c.ID)
+	if len(w.byTarget[target]) == 0 {
+		delete(w.byTarget, target)
+	}
+	delete(w.targetOfCmd, c.ID)
 }
 
 // ---- events ----
@@ -488,6 +533,16 @@ func (w *MemWorld) PutIntel(player game.PlayerID, villageID string, in *game.Int
 		return
 	}
 	w.intel[intelKey{player, villageID}] = in
+}
+
+func (w *MemWorld) IntelFor(player game.PlayerID, villageIDs []string) map[string]*game.Intel {
+	out := map[string]*game.Intel{}
+	for _, id := range villageIDs {
+		if in := w.intel[intelKey{player, id}]; in != nil {
+			out[id] = in
+		}
+	}
+	return out
 }
 
 // IntelOf returns every intel record of a player, keyed by village (views).

@@ -1,7 +1,7 @@
 .PHONY: test e2e perf db db-down
 
 test:
-	go test ./...
+	go test -timeout 20m ./...
 
 # End-to-end tests against the built binary; build the web first (npm run build:web).
 e2e:

@@ -882,9 +882,9 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 				t.Error("VillagesIn misses a changed name")
 			}
 			fresh := &game.Village{ID: "vil_fresh", X: 1, Y: 1, Name: "Fresh Café", OwnerID: game.Ref(p.ID), Points: 5,
-				SupportFrom: map[string]game.UnitCounts{}}
+				SupportFrom: map[string]game.UnitCounts{}, Bonus: &game.VillageBonus{Kind: "clay"}}
 			w.PutVillage(fresh)
-			if refs := w.VillagesIn(1, 1, 1, 1); len(refs) != 1 || refs[0].ID != "vil_fresh" {
+			if refs := w.VillagesIn(1, 1, 1, 1); len(refs) != 1 || refs[0].ID != "vil_fresh" || refs[0].Bonus == nil || refs[0].Bonus.Kind != "clay" {
 				t.Errorf("VillagesIn misses a new village: %+v", refs)
 			}
 			want := 0
@@ -917,7 +917,7 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 			if len(w.SupportHosts(home)) != 0 {
 				t.Error("a withdrawn support is still stored")
 			}
-			if refs := w.VillagesIn(1, 1, 1, 1); len(refs) != 1 || refs[0].Name != "Fresh Café" {
+			if refs := w.VillagesIn(1, 1, 1, 1); len(refs) != 1 || refs[0].Name != "Fresh Café" || refs[0].Bonus == nil || refs[0].Bonus.Kind != "clay" {
 				t.Errorf("stored refs %+v", refs)
 			}
 		})
@@ -1136,14 +1136,61 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 			w.PutCommand(&game.Command{ID: "c_i", Type: "intercept", OriginID: v1, DepartedAt: 0, ArrivesAt: 5000})
 			return nil
 		})
+		everywhere := game.Box{X0: 0, Y0: 0, X1: 1e6, Y1: 1e6}
 		read(t, s, id, func(w app.WorldTx) {
 			w.Command("c_s").ArrivesAt = 950 // changed in this unit of work, not yet stored
 			var got []string
-			for _, c := range w.ArmiesMarching(1000) {
+			for _, c := range w.ArmiesMarching(1000, everywhere) {
 				got = append(got, c.ID)
 			}
 			if want := []string{"c_a", "c_r"}; !slices.Equal(got, want) {
 				t.Fatalf("armies marching at 1000: %v, want %v", got, want)
+			}
+		})
+	})
+
+	// Only the armies whose leg passes through the area are read, so a player's state never reads every army.
+	t.Run("TestArmiesMarchingNearAnArea", func(t *testing.T) {
+		s := newBackend(t).Store
+		id := createWorld(t, s, 0)
+		joinTwo(t, s, id)
+		attack := func(id, from, to string) *game.Command {
+			return &game.Command{ID: id, Type: "attack", OriginID: from, TargetID: to, Units: game.UnitCounts{game.USpear: 1},
+				DepartedAt: 0, ArrivesAt: 5000}
+		}
+		run(t, s, id, func(w app.WorldTx) error {
+			game.AddCommand(w, attack("c_west", "v:10:10", "v:20:10"))
+			game.AddCommand(w, attack("c_east", "v:80:10", "v:90:12"))
+			game.AddCommand(w, attack("c_moved", "v:80:40", "v:90:40"))
+			game.AddCommand(w, &game.Command{ID: "c_field", Type: "return", TargetID: "v:60:50", Point: &game.FieldPoint{X: 40.5, Y: 30},
+				Units: game.UnitCounts{game.USpear: 1}, DepartedAt: 0, ArrivesAt: 5000})
+			return nil
+		})
+		near := func(w app.WorldTx, b game.Box) []string {
+			var out []string
+			for _, c := range w.ArmiesMarching(1000, b) {
+				out = append(out, c.ID)
+			}
+			return out
+		}
+		read(t, s, id, func(w app.WorldTx) {
+			for _, c := range []struct {
+				box  game.Box
+				want []string
+			}{
+				{game.Box{X0: 14, Y0: 8, X1: 16, Y1: 9}, nil},
+				{game.Box{X0: 14, Y0: 8, X1: 16, Y1: 10}, []string{"c_west"}},
+				{game.Box{X0: 85, Y0: 11, X1: 85, Y1: 11}, []string{"c_east"}},
+				{game.Box{X0: 30, Y0: 25, X1: 40.5, Y1: 30}, []string{"c_field"}},
+				{game.Box{X0: 0, Y0: 0, X1: 100, Y1: 15}, []string{"c_east", "c_west"}},
+			} {
+				if got := near(w, c.box); !slices.Equal(got, c.want) {
+					t.Errorf("armies in %+v: %v, want %v", c.box, got, c.want)
+				}
+			}
+			w.Command("c_moved").TargetID = "v:15:10" // turned towards the west in this unit of work, not yet stored
+			if got, want := near(w, game.Box{X0: 14, Y0: 8, X1: 16, Y1: 10}), []string{"c_moved", "c_west"}; !slices.Equal(got, want) {
+				t.Errorf("after the change: %v, want %v", got, want)
 			}
 		})
 	})
@@ -1351,16 +1398,16 @@ func Advance(t *testing.T, s app.WorldStore, id int64, from, until int64, batch 
 				key, at, ok := w.PopDue(until)
 				if !ok {
 					more = false
-					return nil
+					break
 				}
 				w.SetNow(at)
 				cur = at
 				if err := game.Dispatch(w, key); err != nil {
 					return fmt.Errorf("%s at %d: %w", key, at, err)
 				}
-				for _, h := range w.TouchedHumans() {
-					game.SettleQuests(w, h)
-				}
+			}
+			for _, h := range w.TouchedHumans() {
+				game.SettleQuests(w, h)
 			}
 			return nil
 		})
