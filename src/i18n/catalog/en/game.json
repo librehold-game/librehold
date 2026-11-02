@@ -945,6 +945,8 @@
     },
     "villageFilter": "village:",
     "allVillages": "Show all villages",
+    "hideAutoFarm": "Hide auto-farm reports",
+    "autoFarmTag": "auto-farm",
     "markAll": "Mark all as read",
     "deleteRead": "Delete read",
     "empty": "No reports. Send an attack from the map or the Rally Point.",

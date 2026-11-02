@@ -169,6 +169,31 @@ func TestSupportVisibleToHost(t *testing.T) {
 	}
 }
 
+func TestOnlyTheSenderLearnsOfTheAutoFarm(t *testing.T) {
+	d := newDuel(t)
+	var raid *game.Command
+	err := d.svc.InWorld(context.Background(), ala, d.world, func(w app.WorldTx, me game.PlayerID) error {
+		w.Village(d.v1).Units[game.USpear] = 5
+		to := w.Village(d.v2)
+		var err error
+		raid, err = game.SendCommand(w, me, d.v1, to.X, to.Y, game.UnitCounts{game.USpear: 5}, "attack", game.SendOpts{AutoFarm: true})
+		return err
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if theirs := commandJSON(t, d.state(t, bartek), raid.ID); theirs == nil || theirs["autoFarm"] != nil {
+		t.Fatalf("the defender learns the raid is automatic: %v", theirs)
+	}
+	if mine := commandJSON(t, d.state(t, ala), raid.ID); mine["autoFarm"] != true {
+		t.Fatalf("the sender sees their raid is automatic: %v", mine)
+	}
+	d.clock.Set(accountsStart + raid.ArrivesAt + 1)
+	if mine, theirs := d.state(t, ala).UnreadReports, d.state(t, bartek).UnreadReports; mine != 0 || theirs != 1 {
+		t.Fatalf("unread reports: sender %d, defender %d", mine, theirs)
+	}
+}
+
 func TestMapRegionClampsAndLimits(t *testing.T) {
 	d := newDuel(t)
 	ctx := context.Background()

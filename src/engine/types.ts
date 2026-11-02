@@ -94,6 +94,8 @@ export interface Command {
   threats?: string[];
   /** The army survived a field battle; its owner may turn it back. */
   fieldHit?: boolean;
+  /** The auto-farm sent the army; only its owner sees this. */
+  autoFarm?: boolean;
 }
 
 export interface FieldPoint { x: number; y: number }
@@ -155,6 +157,7 @@ export interface Report {
   conquered?: boolean;
   outcome: 'attackerWon' | 'defenderWon';
   read: boolean;
+  autoFarm?: boolean;
   field?: FieldReport;
 }
 
