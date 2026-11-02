@@ -24,6 +24,5 @@ lazyRoute('building', () => import('./encyclopedia/BuildingPage'));
 lazyRoute('howToPlay', () => import('./content/HowToPlayPage'));
 lazyRoute('guide', () => import('./content/GuidePage'));
 lazyRoute('faq', () => import('./content/FaqPage'));
-lazyRoute('changelog', () => import('./content/ChangelogPage'));
 lazyRoute('terms', () => import('./content/TermsPage'));
 lazyRoute('report', () => import('./ReportPage'));

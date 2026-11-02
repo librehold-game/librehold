@@ -35,7 +35,6 @@ describe('routes', () => {
     expect(pathFor('player', 'en', { name: 'kind-otter' })).toBe('/players/kind-otter');
     expect(pathFor('report', 'pl')).toBe('/pl/zglos');
     expect(pathFor('join', 'pl', { code: 'x1' })).toBe('/pl/dolacz/x1');
-    expect(pathFor('changelog', 'pl')).toBe('/pl/zmiany');
   });
 
   it('a player in a world has an address in both languages and stays out of search', () => {

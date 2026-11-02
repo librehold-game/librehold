@@ -60,9 +60,18 @@ describe('site header', () => {
 describe('site footer', () => {
   it('the footer links every content page and the report form', () => {
     render(<SiteFooter />);
-    for (const [name, id] of [['How to play', 'howToPlay'], ['Worlds', 'worlds'], ['FAQ', 'faq'], ['Changelog', 'changelog'],
+    for (const [name, id] of [['How to play', 'howToPlay'], ['Worlds', 'worlds'], ['FAQ', 'faq'],
       ['Privacy', 'privacy'], ['Terms', 'terms'], ['Report a problem', 'report']] as const) {
       expect(href(name), name).toBe(pathFor(id, 'en'));
+    }
+  });
+
+  it('the changelog link opens the changelog on GitHub in both languages', () => {
+    for (const [locale, name] of [['en', 'Changelog'], ['pl', 'Zmiany']] as const) {
+      setLocale(locale);
+      render(<SiteFooter />);
+      expect(href(name), locale).toBe('https://github.com/librehold-game/librehold/blob/main/CHANGELOG.md');
+      cleanup();
     }
   });
 

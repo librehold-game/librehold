@@ -3,7 +3,7 @@ import { SLUGS, type SlugKind } from './slugs';
 
 export type RouteId =
   | 'home' | 'howToPlay' | 'guide' | 'units' | 'unit' | 'buildings' | 'building' | 'faq'
-  | 'changelog' | 'privacy' | 'terms' | 'report' | 'worlds' | 'world' | 'worldPlayer' | 'game' | 'player' | 'login' | 'register'
+  | 'privacy' | 'terms' | 'report' | 'worlds' | 'world' | 'worldPlayer' | 'game' | 'player' | 'login' | 'register'
   | 'lobby' | 'admin' | 'join' | 'notFound';
 
 export interface RouteDef {
@@ -23,7 +23,6 @@ export const ROUTES: RouteDef[] = [
   { id: 'buildings', en: '/buildings', pl: '/pl/budynki', index: 'yes', build: 'prerender' },
   { id: 'building', en: '/buildings/:building', pl: '/pl/budynki/:building', index: 'yes', build: 'prerender' },
   { id: 'faq', en: '/faq', pl: '/pl/faq', index: 'yes', build: 'prerender' },
-  { id: 'changelog', en: '/changelog', pl: '/pl/zmiany', index: 'yes', build: 'prerender' },
   { id: 'privacy', en: '/privacy', pl: '/pl/prywatnosc', index: 'yes', build: 'prerender' },
   { id: 'terms', en: '/terms', pl: '/pl/regulamin', index: 'yes', build: 'prerender' },
   { id: 'report', en: '/report', pl: '/pl/zglos', index: 'no', build: 'prerender' },

@@ -25,12 +25,9 @@ describe('content pages', () => {
     }
   });
 
-  it('the changelog is newest first with six entries', () => {
-    for (const l of LOCALES) {
-      const html = render(pathFor('changelog', l)).html;
-      const dates = [...html.matchAll(/data-date="([\d-]+)"/g)].map((m) => m[1]);
-      expect(dates, l).toEqual(['2026-10-26', '2026-10-20', '2026-10-19', '2026-10-18', '2026-08-23', '2026-08-22']);
-      expect(html).toMatch(/<li>/);
+  it('the site has no changelog page of its own: the footer links the one on GitHub', () => {
+    for (const path of ['/changelog', '/pl/zmiany']) {
+      expect(render(path).head.notFound, path).toBe(true);
     }
   });
 
@@ -47,9 +44,9 @@ describe('content pages', () => {
     }
   });
 
-  it('faq, changelog and terms have unique titles and descriptions', () => {
+  it('faq and terms have unique titles and descriptions', () => {
     const seen = new Set<string>();
-    for (const id of ['faq', 'changelog', 'terms'] as const) {
+    for (const id of ['faq', 'terms'] as const) {
       for (const l of LOCALES) {
         const { head } = render(pathFor(id, l));
         expect(head.notFound, `${id} ${l}`).toBeFalsy();

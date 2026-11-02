@@ -89,9 +89,9 @@ func TestPublicSitePages(t *testing.T) {
 	longID := strconv.FormatInt(long, 10)
 	pages := []string{
 		"/how-to-play", "/how-to-play/first-hour", "/units", "/units/spearman", "/buildings", "/buildings/town-hall",
-		"/faq", "/changelog", "/terms", "/worlds", "/worlds/" + longID, "/report",
+		"/faq", "/terms", "/worlds", "/worlds/" + longID, "/report",
 		"/pl/jak-grac", "/pl/jak-grac/pierwsza-godzina", "/pl/jednostki", "/pl/jednostki/pikinier", "/pl/budynki",
-		"/pl/budynki/ratusz", "/pl/faq", "/pl/zmiany", "/pl/regulamin", "/pl/swiaty", "/pl/swiaty/" + longID, "/pl/zglos",
+		"/pl/budynki/ratusz", "/pl/faq", "/pl/regulamin", "/pl/swiaty", "/pl/swiaty/" + longID, "/pl/zglos",
 	}
 	titles := map[string]string{}
 	for _, path := range pages {
@@ -109,7 +109,7 @@ func TestPublicSitePages(t *testing.T) {
 			t.Errorf("%s: noindex %v", path, noindex)
 		}
 	}
-	for _, path := range []string{"/units/nope", "/pl/jak-grac/nic", "/worlds/999999"} {
+	for _, path := range []string{"/units/nope", "/pl/jak-grac/nic", "/worlds/999999", "/changelog", "/pl/zmiany"} {
 		if p := s.fetch(t, "GET", path, ""); p.status != 404 {
 			t.Errorf("%s: %d, want 404", path, p.status)
 		}
@@ -131,8 +131,8 @@ func TestPublicSitePages(t *testing.T) {
 	for _, u := range sm.URLs {
 		listed[strings.TrimPrefix(u.Loc, s.url)] = true
 	}
-	for _, path := range []string{"/how-to-play/first-hour", "/pl/jednostki/pikinier", "/buildings/town-hall", "/faq", "/changelog",
-		"/terms", "/worlds/" + longID} {
+	for _, path := range []string{"/how-to-play/first-hour", "/pl/jednostki/pikinier", "/buildings/town-hall", "/faq", "/terms",
+		"/worlds/" + longID} {
 		if !listed[path] {
 			t.Errorf("the sitemap misses %s", path)
 		}

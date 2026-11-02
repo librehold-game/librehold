@@ -10,8 +10,8 @@ const props: PageProps = { params: {}, me: null, onLogin: () => undefined, onCla
 describe('route pages', () => {
   it('a lazy route shows its fallback, then the page', async () => {
     let resolve!: (m: { default: () => ReactElement }) => void;
-    lazyRoute('changelog', () => new Promise((r) => { resolve = r; }));
-    const { container } = render(<RoutePage id="changelog" {...props} />);
+    lazyRoute('units', () => new Promise((r) => { resolve = r; }));
+    const { container } = render(<RoutePage id="units" {...props} />);
     expect(container.querySelector('.page-loading[aria-busy="true"]')).not.toBeNull();
     await act(async () => resolve({ default: () => <p>What changed</p> }));
     expect(await screen.findByText('What changed')).toBeTruthy();

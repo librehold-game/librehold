@@ -1,6 +1,5 @@
 // The prerender's pages: every page at once, so renderToString never waits for one.
 import AdminRoute from './admin/AdminPage';
-import ChangelogRoute from './content/ChangelogPage';
 import FaqRoute from './content/FaqPage';
 import GuideRoute from './content/GuidePage';
 import HowToPlayRoute from './content/HowToPlayPage';
@@ -44,6 +43,5 @@ provideRoute('building', BuildingRoute);
 provideRoute('howToPlay', HowToPlayRoute);
 provideRoute('guide', GuideRoute);
 provideRoute('faq', FaqRoute);
-provideRoute('changelog', ChangelogRoute);
 provideRoute('terms', TermsRoute);
 provideRoute('report', ReportRoute);
