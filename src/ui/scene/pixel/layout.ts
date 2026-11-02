@@ -31,8 +31,11 @@ export interface PixelLayout {
   walls: Record<WallKind, {
     x: number; y: number; w: number; h: number; back: string; front: string;
     strips: { x0: number; zBack: number; zFront: number }[];
-    /** `y` is where the closed gate stands; `foot` is that row inside a frame, above the open doors' swing. */
-    gate: StripInfo & { x: number; y: number; foot: number };
+    /**
+     * `y` is where the closed gate stands; `foot` is that row inside a frame, above the open doors' swing. `doorway` is
+     * where walkers pass, as [x0, y0, x1, y1) boxes inside a frame.
+     */
+    gate: StripInfo & { x: number; y: number; foot: number; doorway: [number, number, number, number][] };
   }>;
   anim: {
     iron: StripInfo & { stage: 2 };
@@ -46,6 +49,13 @@ export interface PixelLayout {
 export interface Layer { z: number; key: string; node: ReactNode }
 
 export const LAYOUT = raw as unknown as PixelLayout;
+
+const WALL_BASE = LAYOUT.ring.cy + LAYOUT.ring.ry;
+/**
+ * Draw order at the south gate. The front wall strips reach `WALL_BASE + 1`. Over them goes the whole gate, then the
+ * walkers going through it, then the gate again without its doorway, so its towers and lintel cover them and the doorway does not.
+ */
+export const GATE_Z = { gate: WALL_BASE + 1.5, walker: WALL_BASE + 2, front: WALL_BASE + 3 };
 
 const URLS = import.meta.glob<string>('../../../assets/pixel/village/**/*.png', { eager: true, query: '?url', import: 'default' });
 const PREFIX = '../../../assets/pixel/village/';

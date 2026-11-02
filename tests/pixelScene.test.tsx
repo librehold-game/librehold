@@ -6,6 +6,8 @@ import { useGameStore } from '../src/state/gameStore';
 import { useUiStore } from '../src/state/uiStore';
 import { PixelVillageScene } from '../src/ui/scene/pixel/PixelVillageScene';
 import { useWalkerLoop } from '../src/ui/scene/pixel/Walkers';
+import { wallLayers } from '../src/ui/scene/pixel/WallRing';
+import { buildRoutes, gateOpen } from '../src/ui/scene/pixel/routes';
 import { LAYOUT } from '../src/ui/scene/pixel/layout';
 import { newDefaultGame, activeVillage } from './helpers';
 
@@ -140,6 +142,38 @@ describe('pixel village scene', () => {
       const gate = scene().querySelector(`[data-anim="${kind}-gate"]`)!;
       const foot = Number(gate.getAttribute('y')) + closedFoot[kind];
       expect(Math.abs(foot - wallBase), `${kind} gate foot ${foot}, wall base ${wallBase}`).toBeLessThanOrEqual(4);
+      cleanup();
+    }
+  });
+
+  it('walkers through the gate draw over the whole gate and under its front, after every front wall strip', () => {
+    const levels = { ...Object.fromEntries(BUILDING_IDS.map((id) => [id, 0])), main: 5, wood: 5 } as Record<BuildingId, number>;
+    const routes = buildRoutes({ levels, construction: [{ building: 'main', ratio: 0.2, started: true }] }, { citizens: 10, guards: 0 });
+    const through = routes.filter((r) => r.points.some((p) => gateOpen([p], LAYOUT.gates.s)));
+    expect(through.map((r) => r.state).sort()).toEqual(['carry_log', 'walk']);
+    for (const kind of ['palisade', 'stone'] as const) {
+      const layers = wallLayers(kind, 6);
+      const z = (key: string) => layers.find((l) => l.key === key)?.z ?? NaN;
+      const strips = layers.filter((l) => l.key.startsWith('wall-f')).map((l) => l.z);
+      expect(Math.max(...strips), kind).toBeLessThan(z('wall-gate'));
+      for (const r of through) {
+        expect(r.z, `${kind} ${r.state}`).toBeGreaterThan(z('wall-gate'));
+        expect(r.z, `${kind} ${r.state}`).toBeLessThan(z('wall-gate-front'));
+      }
+    }
+  });
+
+  it('the gate front shows the same frame as the gate, clipped by a shape defined in the scene', () => {
+    for (const [kind, wall] of [['palisade', 1], ['stone', 20]] as const) {
+      setup({ main: 5, wall });
+      const c = scene();
+      const gate = c.querySelector(`[data-anim="${kind}-gate"]`)!;
+      const front = c.querySelector(`[data-anim="${kind}-gate-front"]`);
+      expect(front, kind).not.toBeNull();
+      expect(front!.innerHTML).toBe(gate.innerHTML);
+      expect(['x', 'y'].map((a) => front!.getAttribute(a))).toEqual(['x', 'y'].map((a) => gate.getAttribute(a)));
+      const id = /^url\(#(.+)\)$/.exec(front!.parentElement!.getAttribute('clip-path') ?? '')?.[1];
+      expect(c.querySelector(`clipPath[id="${id}"] path`), kind).not.toBeNull();
       cleanup();
     }
   });

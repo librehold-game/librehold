@@ -1,13 +1,15 @@
 import { t } from '../../../i18n/i18n';
-import type { ReactNode } from 'react';
 import type { BuildingId } from '../../../engine/types';
 import type { DayPhase } from '../sceneModel';
 import { LevelBadge } from './LevelBadge';
-import { LAYOUT, pixelUrl, type Layer, type WallKind } from './layout';
+import { GATE_Z, LAYOUT, pixelUrl, type Layer, type WallKind } from './layout';
 import { Strip } from './Strip';
 
-/** Wall ring as 8 px columns: back halves sort behind the buildings inside, front halves in front of them. */
-export function wallLayers(kind: WallKind, gateFrame: number, gate: (node: ReactNode) => ReactNode = (n) => n): Layer[] {
+/**
+ * Wall ring as 8 px columns: back halves sort behind the buildings inside, front halves in front of them. The gate is drawn
+ * twice around the walkers going through it: whole, then clipped to everything but its doorway.
+ */
+export function wallLayers(kind: WallKind, gateFrame: number): Layer[] {
   const wall = LAYOUT.walls[kind];
   const back = pixelUrl(wall.back);
   const front = pixelUrl(wall.front);
@@ -27,11 +29,28 @@ export function wallLayers(kind: WallKind, gateFrame: number, gate: (node: React
     }
   }
   const g = wall.gate;
-  layers.push({
-    z: LAYOUT.ring.cy + LAYOUT.ring.ry + 3,
-    key: 'wall-gate',
-    node: gate(<Strip name={`${kind}-gate`} file={g.file} w={g.w} h={g.h} frames={g.frames} frame={gateFrame} x={Math.floor(g.x - g.w / 2)} y={Math.floor(g.y - g.foot)} />),
-  });
+  const x = Math.floor(g.x - g.w / 2);
+  const y = Math.floor(g.y - g.foot);
+  const strip = { file: g.file, w: g.w, h: g.h, frames: g.frames, frame: gateFrame, x, y };
+  const box = (x0: number, y0: number, x1: number, y1: number) => `M${x + x0} ${y + y0}h${x1 - x0}v${y1 - y0}h${x0 - x1}z`;
+  const clip = `px-gate-front-${kind}`;
+  layers.push(
+    { z: GATE_Z.gate, key: 'wall-gate', node: <Strip name={`${kind}-gate`} {...strip} /> },
+    {
+      z: GATE_Z.front,
+      key: 'wall-gate-front',
+      node: (
+        <>
+          <clipPath id={clip}>
+            <path d={box(0, 0, g.w, g.h) + g.doorway.map((d) => box(...d)).join('')} clipRule="evenodd" />
+          </clipPath>
+          <g clipPath={`url(#${clip})`}>
+            <Strip name={`${kind}-gate-front`} {...strip} />
+          </g>
+        </>
+      ),
+    },
+  );
   return layers;
 }
 

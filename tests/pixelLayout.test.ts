@@ -36,6 +36,20 @@ describe('pixel layout', () => {
     expect([0, 1, 2, 3].map((v) => wallKind(v as 0 | 1 | 2 | 3))).toEqual([null, 'palisade', 'palisade', 'stone']);
   });
 
+  it('the doorway of both gates holds a walker standing in the gate on the wall base, so the gate front leaves it uncovered', () => {
+    // Opaque columns of a walker sprite around its anchor, and the part of its height that must show between the open doors.
+    const half = 7;
+    const body = 20;
+    const [x, foot] = [LAYOUT.gates.s[0], LAYOUT.ring.cy + LAYOUT.ring.ry];
+    for (const kind of ['palisade', 'stone'] as const) {
+      const g = LAYOUT.walls[kind].gate;
+      const left = Math.floor(g.x - g.w / 2);
+      const top = Math.floor(g.y - g.foot);
+      const holds = g.doorway.some(([x0, y0, x1, y1]) => left + x0 <= x - half && x + half <= left + x1 && top + y0 <= foot - body && foot <= top + y1);
+      expect(holds, `${kind} doorway ${JSON.stringify(g.doorway)}`).toBe(true);
+    }
+  });
+
   it('ringY gives cy ± ry on the vertical axis and cy outside the ellipse', () => {
     const { cx, cy, ry, rx } = LAYOUT.ring;
     expect(ringY(cx, 'north')).toBeCloseTo(cy - ry);

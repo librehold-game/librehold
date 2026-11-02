@@ -87,18 +87,26 @@ shutil.rmtree(OUT, ignore_errors=True)
 os.makedirs(OUT)
 tmp = tempfile.mkdtemp()
 
+# Where walkers pass through each gate, as [x0, y0, x1, y1) boxes in its frames: between the towers below the lintel (palisade),
+# the arch and the paving in front of it (stone). The game draws the gate again over walkers with these left out.
+DOORWAY = {'palisade': [[21, 33, 54, 73]], 'stone': [[32, 57, 66, 107]]}
+
 walls, ring, gates = {}, None, None
-for kind, name, gate_dir in (('stone', 'wall-ring-big', 'stone-gate'), ('palisade', 'wall-ring-palisade', 'palisade-gate')):
+for kind, name, gate_dir in (('stone', 'wall-ring-big', 'stone-gate'), ('palisade', 'wall-ring-palisade', 'palisade-gate-empty-1')):
     r = parts.ring_split(A, name, G.RING)
     ring, gates = r['ring'], r['gates']
     gfs = union_crop([Image.open(f).convert('RGBA') for f in numbered(f'{A}/anim/{gate_dir}/frame_*.png')])
     gw, gh = gfs[0].size
+    gate = {'file': save(strip(gfs), f'walls/{kind}-gate.png'), 'w': gw, 'h': gh, 'frames': len(gfs),
+            'x': r1(gates['s'][0]), 'y': r1(gates['s'][1] + 4), 'foot': gfs[0].getbbox()[3], 'doorway': DOORWAY[kind]}
+    # The ring runs on behind the gate; open its front half behind the doorway, so the road shows between the open doors.
+    gx, gy = math.floor(gate['x'] - gw / 2) - r['x'], math.floor(gate['y'] - gate['foot']) - r['y']
+    for x0, _, x1, y1 in DOORWAY[kind]:
+        r['front'].paste((0, 0, 0, 0), (gx + x0, gy, gx + x1, gy + y1))
     walls[kind] = {
         'x': r['x'], 'y': r['y'], 'w': r['back'].width, 'h': r['back'].height,
         'back': save(r['back'], f'walls/{kind}-back.png'), 'front': save(r['front'], f'walls/{kind}-front.png'),
-        'strips': r['strips'],
-        'gate': {'file': save(strip(gfs), f'walls/{kind}-gate.png'), 'w': gw, 'h': gh, 'frames': len(gfs),
-                 'x': r1(gates['s'][0]), 'y': r1(gates['s'][1] + 4), 'foot': gfs[0].getbbox()[3]},
+        'strips': r['strips'], 'gate': gate,
     }
 
 env = dict(os.environ, GATES=json.dumps({k: list(v) for k, v in gates.items()}), BASE=f'{tmp}/base.png', EXPORT_DIR=f'{tmp}/ex')
