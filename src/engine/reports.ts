@@ -2,7 +2,7 @@ import type { GameState, Report, ReportVillage } from './types';
 
 export function unreadReports(state: GameState): number {
   let n = 0;
-  for (const r of state.reports) if (!r.read) n++;
+  for (const r of state.reports) if (!r.read && !r.autoFarm) n++;
   return n;
 }
 

@@ -595,7 +595,7 @@ func TestBotFarmingSessions(t *testing.T) {
 	t.Run("a strong bot farms barbarians with a known wall of 0 without losses", func(t *testing.T) {
 		w := farmingWorld(t, 0.95)
 		var log []game.BotBattle
-		restore := game.SpyBotBattles(func(b game.BotBattle) { log = append(log, b) })
+		restore := game.SpyBotBattles(func(_ game.World, b game.BotBattle) { log = append(log, b) })
 		advance(t, w, 3*game.MsPerDay)
 		restore()
 		if len(log) <= 50 {
@@ -649,7 +649,7 @@ func TestBotFarmingSessions(t *testing.T) {
 	t.Run("bot fights with barbarians create no player reports", func(t *testing.T) {
 		w := farmingWorld(t, 0.9)
 		n := 0
-		restore := game.SpyBotBattles(func(game.BotBattle) { n++ })
+		restore := game.SpyBotBattles(func(game.World, game.BotBattle) { n++ })
 		advance(t, w, game.MsPerDay)
 		restore()
 		if n == 0 || len(w.ReportsOf("h1")) != 0 {

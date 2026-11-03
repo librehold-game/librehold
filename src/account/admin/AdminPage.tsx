@@ -7,6 +7,7 @@ import { hostApi } from '../host/hostApi';
 import { DEFAULT_CONFIG, type WorldConfig } from '../worldConfig';
 import { ReportsTab } from './ReportsTab';
 import { liveChanges, WorldForm } from './WorldForm';
+import { NumberInput } from '../../shared/NumberInput';
 
 const when = (iso: string | null) => (iso ? new Date(iso).toLocaleString(getLocale()) : '');
 
@@ -171,8 +172,8 @@ function HostingTab() {
   const field = (key: keyof HostSettings, min: number) => (
     <div className="field">
       <label htmlFor={`host-limit-${key}`}>{t(key === 'maxSeats' ? 'host.settings.seats' : 'host.settings.bots')}</label>
-      <input id={`host-limit-${key}`} type="number" min={min} max={30} value={value?.[key] ?? ''} disabled={!value}
-        onChange={(e) => value && setValue({ ...value, [key]: Number(e.target.value) })} />
+      <NumberInput id={`host-limit-${key}`} min={min} max={30} value={value?.[key] ?? min} disabled={!value}
+        onValue={(n) => value && setValue({ ...value, [key]: n })} />
     </div>
   );
   return (

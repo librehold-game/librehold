@@ -1,15 +1,31 @@
 // @vitest-environment happy-dom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { cleanup, fireEvent, render } from '@testing-library/react';
-import { BUILDING_IDS, type BuildingId, type GameState } from '../src/engine/types';
+import { BUILDING_IDS, type BuildingId, type GameState, type UnitId } from '../src/engine/types';
 import { useGameStore } from '../src/state/gameStore';
 import { useUiStore } from '../src/state/uiStore';
 import { PixelVillageScene } from '../src/ui/scene/pixel/PixelVillageScene';
-import { useWalkerLoop, WALK_CYCLE_MS, WORK_STEP_MS } from '../src/ui/scene/pixel/Walkers';
+import { WORK_HIT, SHOOT_RELEASE_FRAME, SHOOT_SEQ, useWalkerLoop, WALK_CYCLE_MS, WORK_STEP_MS } from '../src/ui/scene/pixel/Walkers';
 import { wallLayers } from '../src/ui/scene/pixel/WallRing';
-import { buildRoutes, gateOpen, MOW_SPEED } from '../src/ui/scene/pixel/routes';
+import { buildRoutes, gateOpen, MOW_SPEED, RIDE_SPEED } from '../src/ui/scene/pixel/routes';
 import { LAYOUT } from '../src/ui/scene/pixel/layout';
+import { villageStorageCapacity } from '../src/engine/resources';
+import { variantFor } from '../src/ui/scene/sceneModel';
+import { BUILDINGS } from '../src/data/buildings.data';
 import { newDefaultGame, activeVillage } from './helpers';
+
+const sceneVariant = (level: number) => variantFor(level, 15) as 1 | 2 | 3;
+/** The lowest level at which a building is drawn with the art of `stage`. */
+const levelFor = (b: BuildingId, stage: 1 | 2 | 3) => {
+  let level = 1;
+  while (variantFor(level, BUILDINGS[b].maxLevel) !== stage) level++;
+  return level;
+};
+const drillAt = (unit: UnitId, stage: 1 | 2 | 3) => LAYOUT.drills[unit]!.find((d) => d.stage === stage)!;
+const placed = (el: Element, sprite: keyof typeof LAYOUT.villagers, [x, y]: readonly number[]) => {
+  const s = LAYOUT.villagers[sprite];
+  expect(el.getAttribute('transform')).toBe(`translate(${Math.round(x! - s.anchor[0])}, ${Math.round(y! - s.anchor[1])})`);
+};
 
 function setup(levels: Partial<Record<BuildingId, number>>, edit?: (g: GameState) => void): GameState {
   const g = newDefaultGame();
@@ -24,6 +40,10 @@ function setup(levels: Partial<Record<BuildingId, number>>, edit?: (g: GameState
 
 function job(g: GameState, building: BuildingId, startOffset: number) {
   return { id: `j-${building}`, building, targetLevel: 1, kind: 'build' as const, startedAt: g.now + startOffset, completesAt: g.now + startOffset + 60_000 };
+}
+
+function recruit(g: GameState, unit: UnitId) {
+  return { id: `r-${unit}`, unit, total: 5, done: 0, perUnitMs: 60_000, startedAt: g.now - 1000, completesAt: g.now + 299_000 };
 }
 
 function scene(mode: 'full' | 'limited' | 'off' = 'off') {
@@ -290,6 +310,231 @@ describe('pixel village scene', () => {
     const last = chop.frames - 1;
     ticks.at(-1)!(last * WORK_STEP_MS);
     expect(c.querySelector('[data-walker="chop"] svg')!.getAttribute('viewBox')).toBe(`${last * chop.w} 0 ${chop.w} ${chop.h}`);
+    raf.mockRestore();
+    now.mockRestore();
+  });
+
+  it('a guard, whose draw order changes along the patrol, has a copy per order, and only one of them shows at a time', () => {
+    setup({ main: 5, wall: 20 });
+    const ticks: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => ticks.push(cb));
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const c = scene('full');
+    const copies = () => [...c.querySelectorAll('[data-walker="guard"]')];
+    expect(copies().length).toBeGreaterThan(2);
+    for (const seconds of [0, 7, 19, 31]) {
+      ticks.at(-1)!(seconds * 1000);
+      expect(copies().filter((el) => el.getAttribute('visibility') !== 'hidden')).toHaveLength(2);
+    }
+    raf.mockRestore();
+    now.mockRestore();
+  });
+
+  it('an archer shoots at two targets in the yard while a stage-3 barracks trains archers', () => {
+    setup({ main: 1, barracks: 17 }, (g) => { activeVillage(g).recruitQueues.barracks = [recruit(g, 'archer')]; });
+    const c = scene('full');
+    const archer = c.querySelector('[data-walker="shoot"]')!;
+    expect(archer.innerHTML).toContain('shoot-east');
+    const targets = c.querySelectorAll('[data-prop="target"]');
+    expect(targets.length).toBe(2);
+    const barracks = titled(c, 'Koszary')!.parentElement!;
+    for (const el of [archer, ...targets]) expect(barracks.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it.each([['spear', 'thrust'], ['sword', 'slash'], ['axe', 'axe_chop']] as const)('%s training: one soldier strikes a dummy in the yard with %s', (unit, sprite) => {
+    setup({ main: 1, barracks: 17 }, (g) => { activeVillage(g).recruitQueues.barracks = [recruit(g, unit)]; });
+    const c = scene('full');
+    expect(c.querySelectorAll('[data-walker]:is([data-walker="shoot"], [data-walker="thrust"], [data-walker="slash"], [data-walker="axe_chop"])').length).toBe(1);
+    expect(c.querySelector(`[data-walker="${sprite}"]`)?.innerHTML).toContain(`${sprite}-east`);
+    expect(c.querySelectorAll('[data-prop="dummy"]').length).toBe(1);
+    expect(c.querySelector('[data-prop="target"]')).toBeNull();
+  });
+
+  it('the dummy jolts when the blow lands, then settles', () => {
+    setup({ main: 1, barracks: 17 }, (g) => { activeVillage(g).recruitQueues.barracks = [recruit(g, 'axe')]; });
+    const ticks: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => ticks.push(cb));
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const dummy = scene('full').querySelector('[data-prop="dummy"]')!;
+    const dx = (step: number) => {
+      ticks.at(-1)!(step * WORK_STEP_MS + 1);
+      return Number(/translate\((-?\d+)/.exec(dummy.getAttribute('transform') ?? 'translate(0')![1]);
+    };
+    const hit = WORK_HIT.axe_chop;
+    expect(dx(hit - 1)).toBe(0);
+    expect(dx(hit)).not.toBe(0);
+    expect(dx(hit + 4)).toBe(0);
+    raf.mockRestore();
+    now.mockRestore();
+  });
+
+  it('a digger works the clay pit and sits down to rest while the warehouse is full of clay', () => {
+    setup({ main: 1, clay: 1, storage: 10 });
+    expect(scene('full').querySelector('[data-walker="dig"]')?.innerHTML).toContain('dig-east');
+    cleanup();
+    setup({ main: 1, clay: 1, storage: 10 }, (g) => { activeVillage(g).resources.clay = villageStorageCapacity(activeVillage(g)); });
+    const c = scene('full');
+    expect(c.querySelector('[data-walker="dig_rest"]')?.innerHTML).toContain('dig_rest-east');
+    expect(c.querySelector('[data-walker="dig"]')).toBeNull();
+    cleanup();
+    setup({ main: 1 });
+    expect(scene('full').querySelector('[data-walker="dig"], [data-walker="dig_rest"]')).toBeNull();
+  });
+
+  it('a mine and a sawmill stand still and the woodcutter sits down while the warehouse is full of what they make', () => {
+    const moving = (c: HTMLElement, name: string) => c.querySelector(`[data-anim="${name}"] image`)!.getAttribute('style')!.includes('animation');
+    setup({ main: 1, wood: 12, iron: 12, storage: 10 });
+    let c = scene('full');
+    expect(moving(c, 'iron')).toBe(true);
+    expect(moving(c, 'wood')).toBe(true);
+    cleanup();
+    setup({ main: 1, wood: 12, iron: 12, storage: 10 }, (g) => {
+      const v = activeVillage(g);
+      v.resources.iron = villageStorageCapacity(v);
+      v.resources.wood = villageStorageCapacity(v);
+    });
+    c = scene('full');
+    expect(moving(c, 'iron')).toBe(false);
+    expect(moving(c, 'wood')).toBe(false);
+    expect(c.querySelector('[data-walker="chop_rest"]')).toBeTruthy();
+    expect(c.querySelector('[data-walker="chop"]')).toBeNull();
+  });
+
+  it('the blacksmith hammers at the anvil while research runs, and sparks fly on the blow', () => {
+    const research = (g: GameState) => {
+      activeVillage(g).researchQueue = [{ id: 'rs', unit: 'sword', targetLevel: 1, startedAt: g.now - 1000, completesAt: g.now + 60_000 }];
+    };
+    setup({ main: 1, smithy: 14 });
+    expect(scene('full').querySelector('[data-walker="forge"]')).toBeNull();
+    cleanup();
+    setup({ main: 1, smithy: 14 }, research);
+    const ticks: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => ticks.push(cb));
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const c = scene('full');
+    expect(c.querySelector('[data-walker="forge"]')?.innerHTML).toContain('forge-east');
+    const sparks = c.querySelector('[data-sparks]')!;
+    const at = (step: number) => { ticks.at(-1)!(step * WORK_STEP_MS + 1); return sparks.getAttribute('visibility'); };
+    expect(at(WORK_HIT.forge - 1)).toBe('hidden');
+    expect(at(WORK_HIT.forge)).toBe('visible');
+    expect(at(WORK_HIT.forge + 2)).toBe('hidden');
+    raf.mockRestore();
+    now.mockRestore();
+  });
+
+  it.each([1, 2, 3] as const)('the blacksmith of a stage-%i smithy stands at its anvil; only stage 2 brings its own', (stage) => {
+    setup({ main: 1, smithy: levelFor('smithy', stage) }, (g) => {
+      activeVillage(g).researchQueue = [{ id: 'rs', unit: 'sword', targetLevel: 1, startedAt: g.now - 1000, completesAt: g.now + 60_000 }];
+    });
+    const c = scene('full');
+    placed(c.querySelector('[data-walker="forge"]')!, 'forge', LAYOUT.workers.smith[stage].at);
+    expect(c.querySelector('[data-prop="anvil"]') !== null).toBe(stage === 2);
+  });
+
+  it.each([1, 2, 3])('a hetman in training commands on the square of a level-%i academy', (level) => {
+    setup({ main: 1, academy: level });
+    expect(scene('full').querySelector('[data-walker="command"]')).toBeNull();
+    cleanup();
+    setup({ main: 1, academy: level }, (g) => { activeVillage(g).recruitQueues.academy = [recruit(g, 'noble')]; });
+    const hetman = scene('full').querySelector('[data-walker="command"]')!;
+    expect(hetman.innerHTML).toContain('command-south');
+    const [x, y] = LAYOUT.workers.hetman[level as 1 | 2 | 3];
+    const s = LAYOUT.villagers.command;
+    expect(hetman.getAttribute('transform')).toBe(`translate(${Math.round(x - s.anchor[0])}, ${Math.round(y - s.anchor[1])})`);
+  });
+
+  it.each([1, 8, 15])('a carpenter hammers in a level-%i workshop while it builds siege engines', (level) => {
+    setup({ main: 1, workshop: level });
+    expect(scene('full').querySelector('[data-walker="hammer"]')).toBeNull();
+    cleanup();
+    setup({ main: 1, workshop: level }, (g) => { activeVillage(g).recruitQueues.workshop = [recruit(g, 'ram')]; });
+    const c = scene('full');
+    const carpenter = c.querySelector('[data-walker="hammer"]')!;
+    placed(carpenter, 'hammer', LAYOUT.workers.carpenter[sceneVariant(level)].at);
+    expect(c.querySelector('[data-prop="engine"]')?.innerHTML).toContain('ram-build');
+  });
+
+  it('the half-built engine in the workshop yard is the one being built', () => {
+    setup({ main: 1, workshop: 15 }, (g) => { activeVillage(g).recruitQueues.workshop = [recruit(g, 'catapult')]; });
+    expect(scene('full').querySelector('[data-prop="engine"]')?.innerHTML).toContain('catapult-build');
+    cleanup();
+    setup({ main: 1, workshop: 15 });
+    expect(scene('full').querySelector('[data-prop="engine"]')).toBeNull();
+  });
+
+  it.each([1, 2, 3] as const)('a stage-%i barracks drills its spearmen on its own ground', (stage) => {
+    setup({ main: 1, barracks: levelFor('barracks', stage) }, (g) => { activeVillage(g).recruitQueues.barracks = [recruit(g, 'spear')]; });
+    const c = scene('full');
+    const drill = drillAt('spear', stage);
+    placed(c.querySelector('[data-walker="thrust"]')!, 'thrust', drill.at);
+    expect(c.querySelectorAll('[data-prop="dummy"]').length).toBe(1);
+  });
+
+  it('no drill with limited animations', () => {
+    setup({ main: 1, barracks: 17 }, (g) => { activeVillage(g).recruitQueues.barracks = [recruit(g, 'archer')]; });
+    expect(scene('limited').querySelector('[data-walker="shoot"], [data-prop="target"]')).toBeNull();
+  });
+
+  it.each(['scout', 'lightCav', 'mountedArcher', 'heavyCav'] as const)('a %s in training walks his horse by the stable, from stage 2 on', (unit) => {
+    const train = (g: GameState) => { activeVillage(g).recruitQueues.stable = [recruit(g, unit)]; };
+    setup({ main: 1, stable: levelFor('stable', 1) }, train);
+    expect(scene('full').querySelector(`[data-walker="ride_${unit}"]`)).toBeNull();
+    for (const stage of [2, 3] as const) {
+      cleanup();
+      setup({ main: 1, stable: levelFor('stable', stage) }, train);
+      const rider = scene('full').querySelector(`[data-walker="ride_${unit}"]`)!;
+      expect(rider.innerHTML).toContain(`ride_${unit}-east`);
+      placed(rider, `ride_${unit}`, drillAt(unit, stage).at);
+    }
+  });
+
+  it('the rider walks to the end of the paddock, turns and walks back', () => {
+    setup({ main: 1, stable: levelFor('stable', 3) }, (g) => { activeVillage(g).recruitQueues.stable = [recruit(g, 'lightCav')]; });
+    const ticks: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => ticks.push(cb));
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const rider = scene('full').querySelector('[data-walker="ride_lightCav"]')!;
+    const at = (seconds: number) => {
+      ticks.at(-1)!(seconds * 1000);
+      const [, x] = /translate\((-?[\d.]+),/.exec(rider.getAttribute('transform')!)!.map(Number);
+      return { x: x!, href: rider.querySelector('image')!.getAttribute('href')! };
+    };
+    const { at: from, to } = drillAt('lightCav', 3);
+    const leg = Math.hypot(to![0] - from[0], to![1] - from[1]) / RIDE_SPEED;
+    const start = at(0);
+    const out = at(leg / 2);
+    expect(out.x).toBeGreaterThan(start.x);
+    expect(out.href).toContain('ride_lightCav-east');
+    const back = at(leg * 1.5);
+    expect(back.href).toContain('ride_lightCav-west');
+    expect(at(leg * 2 + 0.01).href).toContain('ride_lightCav-east');
+    raf.mockRestore();
+    now.mockRestore();
+  });
+
+  it('the arrow waits while the archer draws, flies to a target after the release and stays there until the next draw', () => {
+    setup({ main: 1, barracks: 17 }, (g) => { activeVillage(g).recruitQueues.barracks = [recruit(g, 'archer')]; });
+    const ticks: FrameRequestCallback[] = [];
+    const raf = vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => ticks.push(cb));
+    const now = vi.spyOn(performance, 'now').mockReturnValue(0);
+    const c = scene('full');
+    const arrow = c.querySelector('[data-arrow]')!;
+    const at = (step: number) => {
+      ticks.at(-1)!(step * WORK_STEP_MS + 1);
+      const [, x, y] = /translate\((-?[\d.]+), (-?[\d.]+)\)/.exec(arrow.getAttribute('transform') ?? 'translate(0, 0)')!.map(Number);
+      return { shown: arrow.getAttribute('visibility') !== 'hidden', x: x!, y: y! };
+    };
+    const release = SHOOT_SEQ.indexOf(SHOOT_RELEASE_FRAME);
+    const { from, to } = drillAt('archer', 3).arrow!;
+    expect(at(0).shown).toBe(false);
+    expect(at(release - 1).shown).toBe(false);
+    const flying = at(release + 1);
+    expect(flying.shown).toBe(true);
+    expect(flying.x).toBeGreaterThan(from[0]);
+    expect(flying.x).toBeLessThan(to[0]);
+    const stuck = at(SHOOT_SEQ.length - 1);
+    expect(stuck).toEqual({ shown: true, x: to[0], y: to[1] });
+    expect(at(SHOOT_SEQ.length).shown).toBe(false);
     raf.mockRestore();
     now.mockRestore();
   });

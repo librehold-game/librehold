@@ -3,6 +3,7 @@ import { useT } from '../../i18n/i18n';
 import { errorText, type Account, type HostedCard, type HostForm as Form, type HostLimits } from '../api';
 import { hostApi } from './hostApi';
 import { DIFFICULTIES, DOMINATION, DURATIONS, LATE_JOIN, STANCES, defaultHostForm } from './hostDefaults';
+import { NumberInput } from '../../shared/NumberInput';
 
 function Field({ id, label, children }: { id: string; label: string; children: ReactNode }) {
   return (
@@ -20,7 +21,7 @@ export function HostForm({ limits, me, onCreated }: { limits: HostLimits; me: Ac
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   const set = <K extends keyof Form>(key: K, value: Form[K]) => setForm((f) => ({ ...f, [key]: value }));
-  const num = (key: keyof Form) => (e: { target: { value: string } }) => set(key, Number(e.target.value) as never);
+  const num = (key: keyof Form) => (n: number) => set(key, n as never);
   const submit = async (e: SubmitEvent) => {
     e.preventDefault();
     setBusy(true);
@@ -58,16 +59,16 @@ export function HostForm({ limits, me, onCreated }: { limits: HostLimits; me: Ac
           {select('durationMin', DURATIONS, (n) => t('host.minutes', { n }))}
         </Field>
         <Field id="host-seats" label={t('host.field.seats')}>
-          <input id="host-seats" type="number" min={2} max={limits.maxSeats} value={form.seats} onChange={num('seats')} />
+          <NumberInput id="host-seats" min={2} max={limits.maxSeats} value={form.seats} onValue={num('seats')} />
         </Field>
         <Field id="host-bots" label={t('host.field.bots')}>
-          <input id="host-bots" type="number" min={0} max={limits.maxBots} value={form.bots} onChange={num('bots')} />
+          <NumberInput id="host-bots" min={0} max={limits.maxBots} value={form.bots} onValue={num('bots')} />
         </Field>
         <Field id="host-worldSpeed" label={t('host.field.worldSpeed')}>
-          <input id="host-worldSpeed" type="number" min={50} max={200} step={10} value={form.worldSpeed} onChange={num('worldSpeed')} />
+          <NumberInput id="host-worldSpeed" min={50} max={200} step={10} value={form.worldSpeed} onValue={num('worldSpeed')} />
         </Field>
         <Field id="host-unitSpeed" label={t('host.field.unitSpeed')}>
-          <input id="host-unitSpeed" type="number" min={50} max={200} step={10} value={form.unitSpeed} onChange={num('unitSpeed')} />
+          <NumberInput id="host-unitSpeed" min={50} max={200} step={10} value={form.unitSpeed} onValue={num('unitSpeed')} />
         </Field>
         <Field id="host-startVillage" label={t('host.field.startVillage')}>
           {select('startVillage', ['grown', 'fresh'], (v) => t(`host.startVillage.${v}`))}
@@ -82,10 +83,10 @@ export function HostForm({ limits, me, onCreated }: { limits: HostLimits; me: Ac
           {select('botStance', STANCES, (v) => t(`admin.choice.botStance.${v}`))}
         </Field>
         <Field id="host-sightRadius" label={t('host.field.sightRadius')}>
-          <input id="host-sightRadius" type="number" min={0} max={10} value={form.sightRadius} onChange={num('sightRadius')} />
+          <NumberInput id="host-sightRadius" min={0} max={10} value={form.sightRadius} onValue={num('sightRadius')} />
         </Field>
         <Field id="host-protectionMin" label={t('host.field.protectionMin')}>
-          <input id="host-protectionMin" type="number" min={0} max={15} value={form.protectionMin} onChange={num('protectionMin')} />
+          <NumberInput id="host-protectionMin" min={0} max={15} value={form.protectionMin} onValue={num('protectionMin')} />
         </Field>
         <Field id="host-dominationPct" label={t('host.field.domination')}>
           {select('dominationPct', DOMINATION, (n) => (n === 0 ? t('host.dominationOff') : t('host.dominationPct', { n })))}

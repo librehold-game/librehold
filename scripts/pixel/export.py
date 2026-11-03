@@ -163,9 +163,22 @@ VILLAGERS = {
     'spear': (f'{A}/units/spear/Idle/animations/walk', DIRS, slice(0, 6)),
     'chop': (f'{PRO}/Axe/animations/chop', ('east',), slice(None)),
     'hammer': (f'{PRO}/Mallet/animations/hammer-overhead', ('east',), slice(None)),
+    'shoot': (f'{A}/archer-pro/Idle/animations/shoot-bow', ('east',), slice(None)),
+    'thrust': (f'{A}/spear-pro/Idle/animations/thrust-two-hands', ('east',), slice(None)),
+    'slash': (f'{A}/sword-pro/Idle/animations/slash', ('east',), slice(None)),
+    'axe_chop': (f'{A}/axe-pro/Idle/animations/axe-chop', ('east',), slice(None)),
+    'dig': (f'{PRO}/Shovel/animations/dig', ('east',), slice(None)),
+    'forge': (f'{A}/smith-pro/Idle/animations/forge', ('east',), slice(None)),
+    'command': (f'{A}/hetman-pro/Idle/animations/command', ('south',), slice(None)),
+    # Only the last frame: seated, the tool laid aside; they sit still while the warehouse is full.
+    'dig_rest': (f'{PRO}/Shovel/animations/rest-sit', ('east',), slice(7, 8)),
+    'chop_rest': (f'{PRO}/Axe/animations/rest-sit', ('east',), slice(7, 8)),
 }
+# Stable riders walk their horse both ways; the frames are the horse's walk with the unit's rider in the saddle.
+for unit in ('scout', 'lightCav', 'mountedArcher', 'heavyCav'):
+    VILLAGERS[f'ride_{unit}'] = (f'{A}/stable/{unit}', ('east', 'west'), slice(None))
 # Where the workers' boots stand in their frames: their tools, the chopping block and the scythe reach past them.
-FEET = {'chop': (24, 42), 'hammer': (25, 41)}
+FEET = {'chop': (24, 42), 'hammer': (25, 41), 'shoot': (22, 36), 'thrust': (22, 37), 'slash': (22, 36), 'axe_chop': (22, 37), 'dig': (24, 42), 'dig_rest': (24, 42), 'chop_rest': (24, 42), 'forge': (22, 37)}
 villagers = {}
 for state, (d, dirs, sl) in VILLAGERS.items():
     by_dir = {k: [Image.open(f).convert('RGBA') for f in sorted(glob.glob(f'{d}/{k}/*.png'))][sl] for k in dirs}
@@ -200,6 +213,71 @@ mow_y = r1(wheat['y'] - ww / 4 + 4)
 mow = [[r1(wheat['x'] - ww / 2 + 12), mow_y], [r1(wheat['x'] + ww / 2 - reach - 2), mow_y]]
 
 slot_anchor = {b: (x, y + 12) for b, (x, y) in G.SLOTS.items()}
+
+# Drills in the barracks yard, placed in each stage's own pixels: the unit stands facing east, its props stand at
+# the same distance in front of it on every stage. On stage 3 the yard is fenced and each unit has its own spot by the
+# hall; stages 1 and 2 only have the open ground in front of the hut. The archer's arrow sticks in the nearer target.
+target = save(Image.open(f'{A}/props/target-0.png').convert('RGBA'), 'props/target.png')
+dummy_img = Image.open(f'{A}/props/dummy-pro-1.png').convert('RGBA')
+dummy = save(dummy_img.crop(dummy_img.getbbox()), 'props/dummy.png')
+
+
+def local(building, stage, x, y):
+    ox, oy = origin(slot_anchor[building], sprites[building, stage].size)
+    return [ox + x, oy + y]
+
+
+# (sprite, where the unit stands on stage 3, its props as (file, offset from the unit))
+INFANTRY = {
+    'archer': ('shoot', (62, 74), [('target', target, (42, -10)), ('target', target, (35, -2))]),
+    'spear': ('thrust', (64, 78), [('dummy', dummy, (30, -3))]),
+    'sword': ('slash', (66, 78), [('dummy', dummy, (22, -3))]),
+    'axe': ('axe_chop', (64, 78), [('dummy', dummy, (24, -3))]),
+}
+BARRACKS_GROUND = {1: (22, 80), 2: (64, 94)}
+drills = {}
+for unit, (sprite, yard, props) in INFANTRY.items():
+    drills[unit] = []
+    for stage, (ux, uy) in [(1, BARRACKS_GROUND[1]), (2, BARRACKS_GROUND[2]), (3, yard)]:
+        u = local('barracks', stage, ux, uy)
+        d = {'building': 'barracks', 'stage': stage, 'at': u, 'sprite': sprite,
+             'props': [{'name': n, 'file': f, 'at': [u[0] + dx, u[1] + dy]} for n, f, (dx, dy) in props], 'struck': len(props) - 1}
+        if unit == 'archer':
+            t = d['props'][-1]['at']
+            d['arrow'] = {'from': [u[0] + 8, u[1] - 15], 'to': [t[0] - 3, t[1] - 9]}
+        drills[unit].append(d)
+# Riders in training walk their horse along the stable's front, turn and walk back: on stage 3 inside the paddock (the
+# smithy hides its far end), on stage 2 past the open door. Stage 1's open shed has no room for a horse.
+RIDE = {2: ((70, 96), (82, 90)), 3: ((51, 80), (69, 71))}
+RIDERS = ('scout', 'lightCav', 'mountedArcher', 'heavyCav')
+for unit in RIDERS:
+    drills[unit] = [{'building': 'stable', 'stage': stage, 'at': local('stable', stage, *a), 'to': local('stable', stage, *b),
+                     'sprite': f'ride_{unit}', 'props': [], 'struck': -1} for stage, (a, b) in RIDE.items()]
+# The clay digger works on the open clay right of the pit's steps, beside the basin rather than in it, so its rim does
+# not cut his legs.
+cx_, cy_ = origin(slot_anchor['clay'], sprites['clay', 3].size)
+# The blacksmith strikes the anvil on his right: on stage 1 the one on the stump by the hearth, on stage 3 the one in
+# the forge mouth; stage 2's art has none, so the stump and anvil cut from stage 1 stand by its door. The sparks fly
+# where the hammer lands.
+anvil = save(Image.open(f'{A}/props/anvil-stump.png').convert('RGBA'), 'props/anvil.png')
+SMITH = {1: (76, 82), 2: (70, 88), 3: (76, 78)}
+smith = {}
+for v, (px, py) in SMITH.items():
+    at_ = local('smithy', v, px, py)
+    smith[v] = {'at': at_, 'sparks': [at_[0] + 15, at_[1] - 6]}
+smith[2]['anvil'] = {'file': anvil, 'at': local('smithy', 2, 86, 84)}
+# The hetman in training stands on the paving right of the academy's door, facing the viewer; each stage's art has
+# its own door.
+HETMAN = {1: (94, 96), 2: (94, 106), 3: (94, 110)}
+hetman = {v: local('academy', v, hx, hy) for v, (hx, hy) in HETMAN.items()}
+# While the workshop builds a siege engine, the half-built engine stands in its yard (under the shed on stage 1) and a
+# carpenter hammers at it from the west.
+CARPENTER = {1: ((38, 100), (60, 96)), 2: ((38, 104), (60, 100)), 3: ((74, 88), (96, 84))}
+carpenter = {v: {'at': local('workshop', v, *a), 'engine': local('workshop', v, *e)} for v, (a, e) in CARPENTER.items()}
+siege = {u: save(Image.open(f'{A}/props/{u}-build-2.png').convert('RGBA').crop(
+    Image.open(f'{A}/props/{u}-build-2.png').convert('RGBA').getbbox()), f'props/{u}-build.png') for u in ('ram', 'catapult')}
+workers = {'clay': [cx_ + 104, cy_ + 106], 'hetman': hetman, 'carpenter': carpenter, 'siege': siege, 'smith': smith}
+
 lights = [l for l in (light('iron', sprites['iron', 2], slot_anchor['iron']), light('smithy', sprites['smithy', 3], slot_anchor['smithy']),
                       light('rally', place_img, (G.RALLY[0] + 4, G.RALLY[1] + 22))) if l]
 
@@ -214,7 +292,7 @@ layout = {
     'construction': construction, 'place': place,
     'hits': {f: hit_path(img) for f, img in [(construction, construction_img), (place, place_img)]
              + [(buildings[b][v], sprites[b, v]) for b, v in sprites]},
-    'walls': walls, 'anim': anim, 'villagers': villagers, 'mow': mow,
+    'walls': walls, 'anim': anim, 'villagers': villagers, 'mow': mow, 'drills': drills, 'workers': workers,
 }
 with open(f'{OUT}/layout.json', 'w') as f:
     json.dump(layout, f, separators=(',', ':'))

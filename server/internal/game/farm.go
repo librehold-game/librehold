@@ -226,7 +226,7 @@ func SendFarmTemplate(w World, actor PlayerID, originID, key string, x, y int) (
 	if !ok || tpl.Units.Total() == 0 {
 		return nil, Rule("emptyTemplate", map[string]any{"key": key})
 	}
-	return SendCommand(w, actor, originID, x, y, tpl.Units, "attack", SendOpts{})
+	return SendCommand(w, actor, originID, x, y, tpl.Units, "attack", SendOpts{Farm: true})
 }
 
 func SendTemplateC(w World, actor PlayerID, originID string, x, y int) (*Command, error) {
@@ -245,7 +245,17 @@ func SendTemplateC(w World, actor PlayerID, originID string, x, y int) (*Command
 	if !ok {
 		return nil, Rule("emptyTemplate", map[string]any{"key": "c"})
 	}
-	return SendCommand(w, actor, originID, x, y, units, "attack", SendOpts{})
+	return SendCommand(w, actor, originID, x, y, units, "attack", SendOpts{Farm: true})
+}
+
+// HideFarmOnMap keeps the player's farm raids, and their ways home, off their map or brings them back.
+func HideFarmOnMap(w World, actor PlayerID, hide bool) error {
+	h := w.Human(actor)
+	if h == nil {
+		return NotOwner("hide-farm-on-map")
+	}
+	h.FarmAssistant.HideOnMap = hide
+	return nil
 }
 
 type FarmFiltersPatch struct {
@@ -343,7 +353,7 @@ func AutoFarmTick(w World, actor PlayerID, villageID string) int {
 			}
 			continue
 		}
-		if _, err := SendCommand(w, actor, villageID, t.X, t.Y, tpl, "attack", SendOpts{}); err == nil {
+		if _, err := SendCommand(w, actor, villageID, t.X, t.Y, tpl, "attack", SendOpts{AutoFarm: true, Farm: true}); err == nil {
 			sent++
 			w.LogAction(ActorOf(w.Player(actor)), false, "auto-farm-send", autoFarmSend{OriginID: villageID, X: t.X, Y: t.Y, Units: tpl})
 		}

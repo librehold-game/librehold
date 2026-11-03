@@ -10,6 +10,7 @@ import { UnitIcon } from '../components/UnitIcon';
 import { useClock } from '../useClock';
 import { villageLabelOf } from '../villageName';
 import type { MapArmy } from './armies';
+import { NumberInput } from '../../shared/NumberInput';
 
 type Counts = Partial<Record<UnitId, number>>;
 
@@ -79,10 +80,10 @@ export function InterceptForm({ army, scout, onDone }: { army: MapArmy; scout: b
         {origin && UNIT_IDS.filter((u) => allowed(u) && (origin.units[u] ?? 0) > 0).map((u) => (
           <label key={u} className="inline-flex items-center gap-1" title={unitName(u)}>
             <UnitIcon unit={u} size={14} />
-            <input
-              type="number" min={0} max={origin.units[u]} value={units[u] ?? ''} aria-label={unitName(u)}
+            <NumberInput
+              min={0} max={origin.units[u] ?? 0} value={units[u] ?? 0} aria-label={unitName(u)}
               className="w-14 px-1 border border-wood-border rounded bg-white/50"
-              onChange={(e) => setUnits({ ...units, [u]: Math.max(0, Math.min(origin.units[u] ?? 0, Number(e.target.value) || 0)) })}
+              onValue={(n) => setUnits({ ...units, [u]: n })}
             />
             <span className="text-muted text-[10px]">/{origin.units[u]}</span>
           </label>

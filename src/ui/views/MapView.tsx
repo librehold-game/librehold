@@ -23,7 +23,7 @@ import { PopIcon, ResourceIcon } from '../components/ResourceIcon';
 import { Countdown } from '../components/Countdown';
 import type { VillageIntel, WorldConfig } from '../../engine/types';
 import { playerCommands } from '../../engine/commands';
-import { armiesOnMap, type MapArmy } from '../map/armies';
+import { armiesOnMap, hiddenFarm, type MapArmy } from '../map/armies';
 import { gameArmyClock } from '../map/gameArmyClock';
 import { TileMap, ZOOM_MAX, type Dot, type TileMapView } from '../map/TileMap';
 import { ArmyCard } from '../map/ArmyCard';
@@ -33,6 +33,7 @@ import { MapHoverCard, type MapHover } from '../map/MapHoverCard';
 import { VillageQuickActions } from '../map/VillageQuickActions';
 import { villageInfo, type VillageInfo } from '../map/villageInfo';
 import { isHumanVillage, humanVillageIds } from '../../engine/players';
+import { NumberInput } from '../../shared/NumberInput';
 
 
 /** Selector: a compact summary of materialised villages — it changes rarely, so the map doesn't re-render every tick. */
@@ -87,6 +88,7 @@ const selectCommandDots = (s: GameStore): string => {
   if (!g) return '{}';
   const out: Record<string, Dot> = {};
   for (const c of playerCommands(g)) {
+    if (hiddenFarm(g, c)) continue;
     const kind: Dot = c.type === 'attack' ? (humanVillageIds(g).includes(c.originId) ? 'a' : 'i') : c.type === 'support' ? 's' : c.type === 'return' ? 'r' : 't';
     const prev = out[c.targetId];
     if (!prev || DOT_PRIORITY[kind] > DOT_PRIORITY[prev]) out[c.targetId] = kind;
@@ -363,6 +365,8 @@ export function MapView() {
   const [colors, setColors] = useState(true);
   const [details, setDetails] = useState(false);
   const [maxPoints, setMaxPoints] = useState(99999);
+  const showFarm = useGameStore((s) => !s.game!.farmAssistant.hideOnMap);
+  const hideFarm = useGameStore((s) => s.hideFarmOnMap);
   const [goto, setGoto] = useState('');
 
   useEffect(() => {
@@ -428,8 +432,11 @@ export function MapView() {
         </label>
         <label className="inline-flex items-center gap-1">
           {tr('map.hideOver')}
-          <input type="number" className="w-20 px-1 border border-wood-border rounded bg-white/50" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value) || 0)} />
+          <NumberInput className="w-20 px-1 border border-wood-border rounded bg-white/50" min={0} value={maxPoints} onValue={setMaxPoints} />
           {tr('map.ptsShort')}
+        </label>
+        <label className="inline-flex items-center gap-1" title={tr('map.showFarmHint')}>
+          <input type="checkbox" checked={showFarm} onChange={(e) => void hideFarm(!e.target.checked)} /> {tr('map.showFarm')}
         </label>
       </div>
       <TileMap

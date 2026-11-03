@@ -5,6 +5,7 @@ import (
 	"math"
 	"os"
 	"slices"
+	"sync"
 	"testing"
 	"time"
 
@@ -44,15 +45,25 @@ func TestBotWorldStaysInBands(t *testing.T) {
 		t.Fatal(err)
 	}
 	failOnBotErrors(t)
-	var goBands []gametest.SimResult
-	for _, b := range ts {
-		start := time.Now()
-		r, err := gametest.RunSimBots(gametest.SimOptions{Seed: b.Seed, Days: 30, Bots: 30, Difficulty: game.Normal})
-		if err != nil {
-			t.Fatal(err)
+	// Each seed is a world of its own, so the seeds run side by side.
+	goBands := make([]gametest.SimResult, len(ts))
+	errs := make([]error, len(ts))
+	took := make([]time.Duration, len(ts))
+	var wg sync.WaitGroup
+	for i, b := range ts {
+		wg.Go(func() {
+			start := time.Now()
+			goBands[i], errs[i] = gametest.RunSimBots(gametest.SimOptions{Seed: b.Seed, Days: 30, Bots: 30, Difficulty: game.Normal})
+			took[i] = time.Since(start)
+		})
+	}
+	wg.Wait()
+	for i, b := range ts {
+		if errs[i] != nil {
+			t.Fatal(errs[i])
 		}
-		t.Logf("seed %d: points %v villages %v raids/day %.0f quit %.3f (%v)", b.Seed, r.MedianPoints, r.MedianVillages, r.FarmRunsPerDay, r.QuitShare, time.Since(start))
-		goBands = append(goBands, r)
+		r := goBands[i]
+		t.Logf("seed %d: points %v villages %v raids/day %.0f quit %.3f (%v)", b.Seed, r.MedianPoints, r.MedianVillages, r.FarmRunsPerDay, r.QuitShare, took[i])
 	}
 	if game.Updating() {
 		rec := make([]simBand, len(goBands))

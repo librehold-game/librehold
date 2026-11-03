@@ -94,6 +94,10 @@ export interface Command {
   threats?: string[];
   /** The army survived a field battle; its owner may turn it back. */
   fieldHit?: boolean;
+  /** The auto-farm sent the army; only its owner sees this. */
+  autoFarm?: boolean;
+  /** A raid the farm assistant sent (a template or the auto-farm), or its way home; only the owner sees it. */
+  farm?: boolean;
 }
 
 export interface FieldPoint { x: number; y: number }
@@ -155,6 +159,7 @@ export interface Report {
   conquered?: boolean;
   outcome: 'attackerWon' | 'defenderWon';
   read: boolean;
+  autoFarm?: boolean;
   field?: FieldReport;
 }
 
@@ -404,6 +409,8 @@ export interface FarmAssistantState {
   /** Villages with auto-farm enabled. */
   autoFarmVillages: string[];
   filters: FarmFilters;
+  /** The player keeps their farm raids off the map. */
+  hideOnMap?: boolean;
 }
 
 export interface TraderOffer {

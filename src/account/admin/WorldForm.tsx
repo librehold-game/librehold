@@ -1,5 +1,6 @@
 import { useT } from '../../i18n/i18n';
 import { FIELDS, MODIFIERS, type FieldSpec, type SideModifiers, type WorldConfig } from '../worldConfig';
+import { NumberInput } from '../../shared/NumberInput';
 
 function Modifiers({ id, spec, value, onChange }: { id: string; spec: FieldSpec; value: SideModifiers; onChange: (v: SideModifiers) => void }) {
   const t = useT();
@@ -10,8 +11,8 @@ function Modifiers({ id, spec, value, onChange }: { id: string; spec: FieldSpec;
         {MODIFIERS.map((k) => (
           <span key={k} className="row">
             <label htmlFor={`${id}-${k}`}>{t(`admin.modifier.${k}`)}</label>
-            <input id={`${id}-${k}`} type="number" min={spec.min} max={spec.max} step={spec.step} value={value[k]}
-              onChange={(e) => onChange({ ...value, [k]: Number(e.target.value) })} />
+            <NumberInput id={`${id}-${k}`} min={spec.min} max={spec.max} step={spec.step} value={value[k]}
+              onValue={(n) => onChange({ ...value, [k]: n })} />
           </span>
         ))}
       </div>
@@ -60,8 +61,8 @@ export function WorldForm({ idPrefix, value, onChange, mode }: {
                 {spec.choices.map((v) => <option key={v} value={v}>{choiceLabel(spec, v)}</option>)}
               </select>
             ) : (
-              <input id={id} type="number" min={spec.min} max={spec.max} step={spec.step} value={current} disabled={locked}
-                onChange={(e) => set(Number(e.target.value))} />
+              <NumberInput id={id} min={spec.min} max={spec.max} step={spec.step} value={Number(current)} disabled={locked}
+                onValue={set} />
             )}
           </div>
         );

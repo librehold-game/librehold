@@ -19,6 +19,7 @@ import { isHumanVillage } from '../../engine/players';
 import { t, useT } from '../../i18n/i18n';
 import { RichText } from '../components/RichText';
 import { COMMAND_ICON, commandEnds, villageLabelOf } from '../villageName';
+import { NumberInput } from '../../shared/NumberInput';
 
 type Tab = 'send' | 'commands' | 'templates';
 
@@ -149,8 +150,8 @@ function SendTab() {
                 <tr key={u}>
                   <td className="flex items-center gap-1"><UnitIcon unit={u} />{unitName(u)}</td>
                   <td>
-                    <input type="number" min={0} max={have[u]} className="w-20 px-1 border border-wood-border rounded bg-white/50 tabular-nums"
-                      value={counts[u] ?? 0} onChange={(e) => setCount(u, Number(e.target.value))} />
+                    <NumberInput min={0} max={have[u]} className="w-20 px-1 border border-wood-border rounded bg-white/50 tabular-nums"
+                      value={counts[u] ?? 0} onValue={(n) => setCount(u, n)} />
                   </td>
                   <td><button className="btn !px-1.5" onClick={() => setCount(u, have[u])}>({formatNumber(have[u])})</button></td>
                 </tr>
@@ -322,9 +323,9 @@ function TemplatesTab() {
               <td className="flex items-center gap-1"><UnitIcon unit={u} />{unitName(u)}</td>
               {(['A', 'B', 'C', 'D'] as const).map((k) => (
                 <td key={k}>
-                  <input type="number" min={0} className="w-20 px-1 border border-wood-border rounded bg-white/50 tabular-nums"
+                  <NumberInput min={0} className="w-20 px-1 border border-wood-border rounded bg-white/50 tabular-nums"
                     value={drafts[k][u] ?? 0}
-                    onChange={(e) => setDrafts((d) => ({ ...d, [k]: { ...d[k], [u]: Math.max(0, Math.floor(Number(e.target.value) || 0)) } }))} />
+                    onValue={(n) => setDrafts((d) => ({ ...d, [k]: { ...d[k], [u]: n } }))} />
                 </td>
               ))}
             </tr>

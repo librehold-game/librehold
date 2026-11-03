@@ -8,6 +8,7 @@ import { formatCoords, formatDuration, formatNumber } from '../format';
 import { humanVillageIds } from '../../engine/players';
 import { t, useT } from '../../i18n/i18n';
 import { villageLabelOf } from '../villageName';
+import { NumberInput } from '../../shared/NumberInput';
 
 function blockerText(b: TradeBlocker): string {
   switch (b.kind) {
@@ -59,7 +60,7 @@ export function MarketScreen() {
             <div className="flex flex-wrap gap-3 items-center">
               {RESOURCES.map((r) => (
                 <label key={r} className="inline-flex items-center gap-1"><ResourceIcon r={r} size={14} />
-                  <input type="number" min={0} className="w-24 px-1 border border-wood-border rounded bg-white/50 tabular-nums" value={amount[r]} onChange={(e) => setRes(r, Number(e.target.value))} />
+                  <NumberInput min={0} className="w-24 px-1 border border-wood-border rounded bg-white/50 tabular-nums" value={amount[r]} onValue={(n) => setRes(r, n)} />
                   <span className="text-muted">/ {formatNumber(m.have[r])}</span>
                 </label>
               ))}
