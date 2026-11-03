@@ -74,7 +74,8 @@ func ClampWorldConfig(cfg game.WorldConfig) game.WorldConfig {
 	cfg.RampUpDays = clamp(cfg.RampUpDays, l.RampUpDays)
 	cfg.BeginnerProtectionDays = clamp(cfg.BeginnerProtectionDays, l.BeginnerProtectionDays)
 	cfg.SightRadius = clamp(cfg.SightRadius, l.SightRadius)
-	switch cfg.LastVillage { // an unknown value keeps the safest behavior: the last village is protected
+	// Fall back to "protected" if a request sends an unknown value; it is the safest default.
+	switch cfg.LastVillage {
 	case "protected", "playersOnly", "canBeLost":
 	default:
 		cfg.LastVillage = "protected"
