@@ -116,6 +116,7 @@ export interface GameStore {
   saveBuildTemplate: (tpl: BuildTemplate) => Promise<string | null>;
   deleteBuildTemplate: (id: string) => Promise<string | null>;
   setFarmFilters: (patch: Partial<FarmFilters>) => Promise<string | null>;
+  hideFarmOnMap: (hide: boolean) => Promise<string | null>;
   setAutoFarm: (enabled: boolean, villageIds?: string[]) => Promise<string | null>;
   sendTemplateC: (x: number, y: number) => Promise<string | null>;
   saveGroup: (group: VillageGroup) => Promise<string | null>;
@@ -529,6 +530,7 @@ export const useGameStore = create<GameStore>()(
       saveBuildTemplate: (tpl) => run('save-build-template', tpl),
       deleteBuildTemplate: (id) => run('delete-build-template', { id }),
       setFarmFilters: (patch) => run('set-farm-filters', patch),
+      hideFarmOnMap: (hide) => run('hide-farm-on-map', { hide }),
       setAutoFarm: (enabled, villageIds) =>
         run('set-auto-farm', { enabled, villageIds: villageIds ?? get().game?.farmAssistant.autoFarmVillages ?? [] }),
       sendTemplateC: (x, y) => run('send-template-c', { originId: active(), x, y }),

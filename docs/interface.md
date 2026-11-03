@@ -44,6 +44,9 @@ checks the fonts.
 - Hovering a village shows a card describing it (`src/ui/map/MapHoverCard.tsx`): name, coordinates and continent (K + hundreds of y + hundreds of x), points, the player with their ranking points, bonus, the last attack with loot, troops from scouting, wall, distance; for an own village resources, Farmstead, troops and incoming attacks. It disappears while dragging the map; on touch there is none (a tap opens the menu).
 - The village icon depends on points — thresholds in `server/internal/game/data_world.go` (`MapConfig.VillageSizePoints`): < 300 hut, 300 fenced settlement, 1,000 palisade, 3,000 stone wall, 9,000 stronghold with towers, 11,000 castle. Art: `src/ui/map/PixelVillage.tsx`.
 - Menu data: `src/ui/map/villageInfo.ts` (a pure function, tested in `tests/map.test.ts`).
+- "Show farming" (on by default) takes the player's farm raids off the map, the armies and the command dots alike:
+  raids sent from a farm template or by the auto-farm, and their way home. The server keeps the choice per player and
+  world (`hide-farm-on-map`), and only the sender's state marks a command as a farm raid (`farm`).
 
 ## Phone (mobile layout)
 

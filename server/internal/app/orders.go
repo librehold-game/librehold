@@ -84,6 +84,10 @@ func checkUnits(u game.UnitCounts) error {
 	return nil
 }
 
+type hideFarmIn struct {
+	Hide bool `json:"hide"`
+}
+
 type villageIn struct {
 	VillageID string `json:"villageId"`
 }
@@ -383,6 +387,9 @@ var orders = map[string]orderSpec{
 	}),
 	"set-farm-filters": order(func(w WorldTx, me game.PlayerID, in game.FarmFiltersPatch) error {
 		return game.SetFarmFilters(w, me, in)
+	}),
+	"hide-farm-on-map": order(func(w WorldTx, me game.PlayerID, in hideFarmIn) error {
+		return game.HideFarmOnMap(w, me, in.Hide)
 	}),
 	"set-auto-farm": order(func(w WorldTx, me game.PlayerID, in autoFarmIn) error {
 		return game.SetAutoFarm(w, me, in.Enabled, in.VillageIDs)

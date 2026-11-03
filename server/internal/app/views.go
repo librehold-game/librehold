@@ -103,11 +103,12 @@ type CommandView struct {
 	Threats        []string             `json:"threats,omitempty"`
 	FieldHit       bool                 `json:"fieldHit,omitempty"`
 	AutoFarm       bool                 `json:"autoFarm,omitempty"`
+	Farm           bool                 `json:"farm,omitempty"`
 }
 
 func ownCommand(c *game.Command) CommandView {
 	return CommandView{Command: c, Units: &c.Units, CatapultTarget: c.CatapultTarget, Haul: c.Haul, Intercept: c.Intercept,
-		Threats: c.Threats, FieldHit: c.FieldHit, AutoFarm: c.AutoFarm}
+		Threats: c.Threats, FieldHit: c.FieldHit, AutoFarm: c.AutoFarm, Farm: c.Farm}
 }
 
 func foreignCommand(c *game.Command) CommandView {
