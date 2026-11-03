@@ -23,12 +23,13 @@ func init() {
 // FeedBuildPlan sends plan steps to the queue while there are free slots and resources. Impossible steps (max
 // level, requirements) are dropped.
 func FeedBuildPlan(w World, villageID string) int {
-	if w.Config().NoBuildPlans {
-		return 0 // the world's host switched build plans off; the plan waits as it is
-	}
 	v := w.Village(villageID)
 	if v == nil || len(v.BuildPlan) == 0 || v.OwnerID == "" {
 		return 0
+	}
+	// The host's switch covers humans only; bots keep their plans.
+	if w.Config().NoBuildPlans && w.Player(PlayerID(v.OwnerID)).IsHuman {
+		return 0 // the plan waits as it is until the switch comes back on
 	}
 	owner := PlayerID(v.OwnerID)
 	Touch(w, v)

@@ -269,6 +269,25 @@ func TestAutoFarmWorldToggle(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
+
+	t.Run("the switch covers humans only: an unlocked bot keeps raiding on its ticks", func(t *testing.T) {
+		w, v := oneBotWorld(t, 31, strongSkill)
+		farmingVillage(v)
+		b := w.Brain("bot_0")
+		b.Looted = game.Resources{Wood: 2500, Clay: 2500, Iron: 2500}
+		game.ScheduleBotAutoFarm(w, "bot_0")
+		if n := game.BotAutoFarmTick(w, "bot_0", v.ID); n == 0 {
+			t.Fatal("setup: the bot sends no raids at all")
+		}
+		w.Config().NoAutoFarm = true
+		game.SyncFeatureToggles(w)
+		if _, ok := w.ScheduledAt("botfarm:" + v.ID); !ok {
+			t.Fatal("the bot's auto-farm tick was cancelled by the world switch")
+		}
+		if n := game.BotAutoFarmTick(w, "bot_0", v.ID); n == 0 {
+			t.Fatal("the bot stopped raiding while the human switch is off")
+		}
+	})
 }
 
 func TestBuildPlanWorldToggle(t *testing.T) {
@@ -288,6 +307,13 @@ func TestBuildPlanWorldToggle(t *testing.T) {
 	game.FeedBuildPlan(w, v.ID)
 	if len(v.BuildQueue) != free {
 		t.Fatalf("queue %d, want %d while the switch is off", len(v.BuildQueue), free)
+	}
+	// ...but bots keep building: their plans feed while the switch is off.
+	bv := gametest.MakeBotVillage(w, v)
+	bv.Resources = game.Resources{Wood: 300, Clay: 300, Iron: 300}
+	bv.BuildPlan = []game.BuildingID{game.BWood}
+	if n := game.FeedBuildPlan(w, bv.ID); n != 1 {
+		t.Fatalf("the bot's plan fed %d steps, want 1 while the switch is off", n)
 	}
 	w.Config().NoBuildPlans = false
 	game.FeedBuildPlan(w, v.ID)
