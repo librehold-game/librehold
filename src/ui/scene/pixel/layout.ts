@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import type { BuildingId } from '../../../engine/types';
+import type { BuildingId, UnitId } from '../../../engine/types';
 import raw from '../../../assets/pixel/village/layout.json';
 import type { Pt } from './path';
+import type { RideSprite, WorkSprite } from './Walkers';
 
 export type Stage = 1 | 2 | 3;
 export type WallKind = 'palisade' | 'stone';
@@ -43,9 +44,38 @@ export interface PixelLayout {
     wood: StripInfo & { stage: 2; x: number; y: number };
   };
   /** `spear` is the soldier the map's armies march with; the village's own people, its guards included, are the rest. */
-  villagers: Record<'walk' | 'carry_log' | 'carry_sack' | 'guard' | 'spear' | 'chop' | 'hammer' | 'mow' | 'scythe_walk', VillagerSprite>;
+  villagers: Record<'walk' | 'carry_log' | 'carry_sack' | 'guard' | 'spear' | 'chop' | 'hammer' | 'mow' | 'scythe_walk' | 'dig' | 'dig_rest' | 'chop_rest' | 'command' | WorkSprite | RideSprite, VillagerSprite>;
   /** The farmer's pass across the wheat field: he mows from the first point to the second, then walks back. */
   mow: [Pt, Pt];
+  /**
+   * Units training by their building, one drill per stage whose art has room for it: where the unit stands, what it
+   * plays, the props it trains on (`name` marks them in the scene) and, for the archer, the arrow's flight.
+   */
+  drills: Partial<Record<UnitId, Drill[]>>;
+  /**
+   * Where the producers who work on the spot stand. The smith's `anvil` is a prop for a stage whose art has none; the
+   * carpenter hammers at the half-built engine (`siege`, per unit) standing at `engine`.
+   */
+  workers: {
+    clay: Pt;
+    smith: Record<Stage, { at: Pt; sparks: Pt; anvil?: { file: string; at: Pt } }>;
+    hetman: Record<Stage, Pt>;
+    carpenter: Record<Stage, { at: Pt; engine: Pt }>;
+    siege: Partial<Record<UnitId, string>>;
+  };
+}
+
+export interface Drill {
+  building: Exclude<BuildingId, 'wall'>;
+  stage: Stage;
+  at: Pt;
+  sprite: WorkSprite | RideSprite;
+  props: { name: string; file: string; at: Pt }[];
+  /** The prop the blow or the arrow lands on: it jolts on the hit. -1 when nothing is struck. */
+  struck: number;
+  arrow?: { from: Pt; to: Pt };
+  /** A rider walks from `at` to here and back. */
+  to?: Pt;
 }
 
 /** One drawable of the scene; layers are drawn in ascending `z`. */

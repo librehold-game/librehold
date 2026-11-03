@@ -9,10 +9,10 @@
    },
    "w": 48,
    "h": 48,
-   "frames": 6,
+   "frames": 8,
    "anchor": [
     24,
-    42
+    39
    ]
   },
   "sword": {
@@ -24,10 +24,10 @@
    },
    "w": 48,
    "h": 48,
-   "frames": 6,
+   "frames": 8,
    "anchor": [
-    26,
-    42
+    25,
+    37
    ]
   },
   "axe": {
@@ -39,10 +39,10 @@
    },
    "w": 48,
    "h": 48,
-   "frames": 6,
+   "frames": 8,
    "anchor": [
     24,
-    42
+    37
    ]
   },
   "archer": {
@@ -54,10 +54,10 @@
    },
    "w": 48,
    "h": 48,
-   "frames": 6,
+   "frames": 8,
    "anchor": [
     24,
-    43
+    37
    ]
   },
   "scout": {
@@ -68,11 +68,11 @@
     "west": "scout-west.png"
    },
    "w": 48,
-   "h": 48,
-   "frames": 6,
+   "h": 64,
+   "frames": 8,
    "anchor": [
     24,
-    43
+    64
    ]
   },
   "lightCav": {
@@ -82,12 +82,12 @@
     "north": "lightCav-north.png",
     "west": "lightCav-west.png"
    },
-   "w": 56,
-   "h": 56,
-   "frames": 6,
+   "w": 48,
+   "h": 64,
+   "frames": 8,
    "anchor": [
-    28,
-    49
+    24,
+    64
    ]
   },
   "mountedArcher": {
@@ -97,12 +97,12 @@
     "north": "mountedArcher-north.png",
     "west": "mountedArcher-west.png"
    },
-   "w": 56,
-   "h": 56,
-   "frames": 6,
+   "w": 48,
+   "h": 64,
+   "frames": 8,
    "anchor": [
-    28,
-    50
+    24,
+    64
    ]
   },
   "heavyCav": {
@@ -112,12 +112,12 @@
     "north": "heavyCav-north.png",
     "west": "heavyCav-west.png"
    },
-   "w": 56,
-   "h": 56,
-   "frames": 6,
+   "w": 48,
+   "h": 64,
+   "frames": 8,
    "anchor": [
-    28,
-    50
+    24,
+    64
    ]
   },
   "ram": {
@@ -127,12 +127,12 @@
     "north": "ram-north.png",
     "west": "ram-west.png"
    },
-   "w": 48,
-   "h": 48,
-   "frames": 1,
+   "w": 64,
+   "h": 56,
+   "frames": 8,
    "anchor": [
-    24,
-    46
+    32,
+    56
    ]
   },
   "catapult": {
@@ -142,12 +142,12 @@
     "north": "catapult-north.png",
     "west": "catapult-west.png"
    },
-   "w": 48,
-   "h": 48,
-   "frames": 1,
+   "w": 64,
+   "h": 56,
+   "frames": 8,
    "anchor": [
-    25,
-    46
+    32,
+    56
    ]
   },
   "paladin": {
@@ -158,11 +158,11 @@
     "west": "paladin-west.png"
    },
    "w": 48,
-   "h": 48,
-   "frames": 6,
+   "h": 64,
+   "frames": 8,
    "anchor": [
-    22,
-    43
+    24,
+    64
    ]
   },
   "noble": {
@@ -174,10 +174,10 @@
    },
    "w": 48,
    "h": 48,
-   "frames": 6,
+   "frames": 8,
    "anchor": [
-    24,
-    42
+    23,
+    37
    ]
   }
  },
@@ -201,7 +201,7 @@
    34,
    60
   ],
-  "scale": 0.736
+  "scale": 0.547
  },
  "shield": {
   "file": {
@@ -217,7 +217,7 @@
    34,
    60
   ],
-  "scale": 0.696
+  "scale": 0.518
  },
  "boat": {
   "file": {
