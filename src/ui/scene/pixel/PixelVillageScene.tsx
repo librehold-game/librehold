@@ -11,7 +11,7 @@ import { animationBudget, sceneModel, type SceneModel } from '../sceneModel';
 import { useDocumentHidden } from '../useBeats';
 import { LevelBadge } from './LevelBadge';
 import { Strip } from './Strip';
-import { LAYOUT, pixelUrl, roadKeys, stageFile, wallKind, type Layer } from './layout';
+import { LAYOUT, pixelUrl, roadKeys, stageFile, wallKind, type Drill, type Layer } from './layout';
 import { NightOverlay, WallHotspot, wallLayers } from './WallRing';
 import { buildRoutes } from './routes';
 import { troopLayers, useWalkerLoop, walkerLayers, workerLayers, type Worker } from './Walkers';
@@ -66,6 +66,28 @@ function buildingTitle(m: SceneModel, id: BuildingId): string {
   return `${buildingName(id)} ${level > 0 ? t('scene.level', { n: level }) : t('scene.notBuilt')}${job ? t('scene.building', { pct: Math.round(job.ratio * 100) }) : queued ? t('scene.queued') : ''}`;
 }
 
+/** Units in training drill by their building, where the art of its current stage has room for them. */
+function activeDrills(m: SceneModel): Drill[] {
+  const out: Drill[] = [];
+  for (const q of [m.barracks, m.stable]) {
+    const drill = q.active && q.unit ? LAYOUT.drills[q.unit]?.find((d) => m.variants[d.building] === d.stage) : undefined;
+    if (drill && m.levels[drill.building] > 0) out.push(drill);
+  }
+  return out;
+}
+
+/** The siege engine the workshop is building, half-built in its yard, and the stage it stands on. */
+function workshopEngine(m: SceneModel): { file: string; at: [number, number] } | null {
+  const file = m.workshop.unit ? LAYOUT.workers.siege[m.workshop.unit] : undefined;
+  if (!m.workshop.active || !file || m.levels.workshop === 0 || m.variants.workshop === 0) return null;
+  return { file, at: LAYOUT.workers.carpenter[m.variants.workshop].engine };
+}
+
+/** Drills happen inside a building's yard, so they sort just over the building, under anyone passing in front of it. */
+function drillZ(id: SlotId): number {
+  return LAYOUT.slots[id][1] + 12;
+}
+
 function sortLayers(layers: Layer[]): Layer[] {
   return layers.map((l, i) => [l, i] as const).sort((a, b) => a[0].z - b[0].z || a[1] - b[1]).map(([l]) => l);
 }
@@ -82,8 +104,27 @@ export function PixelVillageScene({ villageId, mode }: { villageId: string; mode
     if (!m || !full) return { routes: [], workers: [] as Worker[], troops: 0 };
     const budget = animationBudget(m, mode);
     const workers: Worker[] = [];
-    if (m.levels.wood > 0) workers.push({ key: 'chop', sprite: 'chop', x: CHOPPER[0], y: CHOPPER[1] });
+    if (m.levels.wood > 0) workers.push({ key: 'chop', sprite: m.full.wood ? 'chop_rest' : 'chop', x: CHOPPER[0], y: CHOPPER[1] });
+    if (m.smithy.active && m.levels.smithy > 0 && m.variants.smithy !== 0) {
+      const smith = LAYOUT.workers.smith[m.variants.smithy];
+      workers.push({ key: 'smith', sprite: 'forge', x: smith.at[0], y: smith.at[1], z: drillZ('smithy') + 0.01, sparks: smith.sparks });
+    }
+    if (m.academy.nobleProgress !== null && m.levels.academy > 0 && m.variants.academy !== 0) {
+      const [x, y] = LAYOUT.workers.hetman[m.variants.academy];
+      workers.push({ key: 'hetman', sprite: 'command', dir: 'south', x, y, z: drillZ('academy') + 0.01 });
+    }
+    if (m.workshop.active && m.levels.workshop > 0 && m.variants.workshop !== 0) {
+      const [x, y] = LAYOUT.workers.carpenter[m.variants.workshop].at;
+      workers.push({ key: 'carpenter', sprite: 'hammer', x, y, z: drillZ('workshop') + 0.01 });
+    }
+    if (m.levels.clay > 0) {
+      const [x, y] = LAYOUT.workers.clay;
+      workers.push({ key: 'clay', sprite: m.full.clay ? 'dig_rest' : 'dig', x, y, z: LAYOUT.slots.clay[1] + 12.01 });
+    }
     if (m.levels.farm > 0) workers.push({ key: 'mow', sprite: 'mow', x: LAYOUT.mow[0][0], y: LAYOUT.mow[0][1], to: LAYOUT.mow[1] });
+    for (const d of activeDrills(m)) {
+      workers.push({ key: `drill-${d.building}`, sprite: d.sprite, x: d.at[0], y: d.at[1], z: drillZ(d.building) + 0.01, arrow: d.arrow, ride: d.to });
+    }
     const site = m.construction.find((c) => c.started)?.building;
     if (site && site !== 'wall') {
       const [x, y] = LAYOUT.slots[site];
@@ -120,6 +161,19 @@ export function PixelVillageScene({ villageId, mode }: { villageId: string; mode
   const wall = wallKind(m.variants.wall);
   if (m.levels.wall > 0 && wall) layers.push(...wallLayers(wall, full ? gateFrame : 0));
   layers.push(...walkerLayers(life.routes, bind), ...workerLayers(life.workers, bind), ...troopLayers(life.troops));
+  if (full) {
+    for (const d of activeDrills(m)) {
+      d.props.forEach((p, i) => layers.push({
+        z: drillZ(d.building) + 0.001 * (i + 1),
+        key: `prop-${d.building}-${i}`,
+        node: <g ref={i === d.struck ? bind(`drill-${d.building}-struck`) : undefined} data-prop={p.name}><Img file={p.file} x={p.at[0]} y={p.at[1]} /></g>,
+      }));
+    }
+    const anvil = m.smithy.active && m.levels.smithy > 0 && m.variants.smithy !== 0 ? LAYOUT.workers.smith[m.variants.smithy].anvil : undefined;
+    if (anvil) layers.push({ z: drillZ('smithy') + 0.001, key: 'prop-anvil', node: <g data-prop="anvil"><Img file={anvil.file} x={anvil.at[0]} y={anvil.at[1]} /></g> });
+    const engine = workshopEngine(m);
+    if (engine) layers.push({ z: drillZ('workshop') + 0.001, key: 'prop-engine', node: <g data-prop="engine"><Img file={engine.file} x={engine.at[0]} y={engine.at[1]} /></g> });
+  }
   layers.push({ z: -1e5, key: 'wall-hotspot', node: <WallHotspot level={m.levels.wall} onClick={() => openBuilding('wall', villageId)} /> });
 
   for (const id of BUILDING_IDS) {
@@ -136,6 +190,8 @@ export function PixelVillageScene({ villageId, mode }: { villageId: string; mode
     const animated = !limited && level > 0 && variant === 2;
     const loop = animated && (id === 'iron' || id === 'farm') ? LAYOUT.anim[id] : null;
     const wheel = animated && id === 'wood' ? LAYOUT.anim.wood : null;
+    // A mine or a mill whose warehouse is full stops on its first frame.
+    const idle = (id === 'iron' && m.full.iron) || (id === 'wood' && m.full.wood);
     layers.push({
       z: ay,
       key: `b-${id}`,
@@ -145,9 +201,9 @@ export function PixelVillageScene({ villageId, mode }: { villageId: string; mode
           <ellipse className="hl" cx={sx} cy={sy + 4} rx="46" ry="17" fill="#fff" />
           {file && top && <path className="hit" d={LAYOUT.hits[file]} transform={`translate(${top.left}, ${top.top})`} />}
           {loop
-            ? <Strip name={id} {...loop} x={Math.floor(sx - loop.w / 2)} y={Math.floor(ay - loop.h)} className="deco" />
+            ? <Strip name={id} {...loop} x={Math.floor(sx - loop.w / 2)} y={Math.floor(ay - loop.h)} frame={idle ? 0 : undefined} className="deco" />
             : file && <Img file={file} x={sx} y={ay} />}
-          {wheel && <Strip name="wood" {...wheel} className="deco" />}
+          {wheel && <Strip name="wood" {...wheel} frame={idle ? 0 : undefined} className="deco" />}
         </g>
       ),
     });
@@ -184,7 +240,7 @@ export function PixelVillageScene({ villageId, mode }: { villageId: string; mode
             <path d="M0 -40 L18 -34 L0 -28 Z" fill={BLUE} style={{ transformOrigin: '0 -34px', animation: 'sc-flag 1.6s infinite' }} />
           </g>
         )}
-        {m.storageFull && <Img file="scenery/woodpile.png" x={rx + 70} y={ry + 34} />}
+        {m.storageFull && <Img file="scenery/woodpile.png" x={rx - 6} y={ry + 52} />}
       </g>
     ),
   });
