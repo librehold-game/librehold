@@ -1118,6 +1118,60 @@ func RunWorldStoreContract(t *testing.T, newBackend func(t *testing.T) WorldBack
 		expectTopics(t, updates, map[game.PlayerID]string{"h1": app.TopicState, "h2": app.TopicState})
 	})
 
+	// An army cut loose from its village by a conquest is stored under its owner, and changes to it reach them,
+	// not the village's new owner.
+	t.Run("TestLooseArmyFiledUnderItsOwner", func(t *testing.T) {
+		b := newBackend(t)
+		s := b.Store
+		id := createWorld(t, s, 0)
+		v1, v2 := joinTwo(t, s, id)
+		var v3, attackID string
+		run(t, s, id, func(w app.WorldTx) error {
+			w.SetNow(1000)
+			v, err := game.JoinHuman(w, "h3", "Cezary", 3, game.QuadrantRandom)
+			if err != nil {
+				return err
+			}
+			v3 = v.ID
+			for _, h := range []game.PlayerID{"h1", "h2"} {
+				w.Player(h).ProtectedUntil = 0
+			}
+			w.Village(v1).Units[game.USpear] = 5
+			target := w.Village(v2)
+			c, err := game.SendCommand(w, "h1", v1, target.X, target.Y, game.UnitCounts{game.USpear: 5}, "attack", game.SendOpts{})
+			if err != nil {
+				return err
+			}
+			attackID = c.ID
+			return nil
+		})
+		run(t, s, id, func(w app.WorldTx) error {
+			game.TransferVillage(w, w.Village(v1), "h3", v3)
+			return nil
+		})
+		updates := subscribeUpdates(t, b.Updates)
+		drain(t, s, id, updates)
+		read(t, s, id, func(w app.WorldTx) {
+			for _, c := range w.CommandsHome(v1) {
+				if c.ID == attackID {
+					t.Fatal("the army is still filed under the village")
+				}
+			}
+			loose := game.LooseArmies(w, "h1")
+			if len(loose) != 1 || loose[0].ID != attackID || loose[0].OwnerID != "h1" || loose[0].Research == nil {
+				t.Fatalf("filed under the owner: %+v", loose)
+			}
+		})
+		run(t, s, id, func(w app.WorldTx) error {
+			w.Village(v2).Units[game.ULightCav] = 10
+			_, err := game.SendIntercept(w, "h2", v2, attackID, game.UnitCounts{game.ULightCav: 10}, false)
+			return err
+		})
+		if got := drain(t, s, id, updates); !got["h1"] || !got["h2"] || got["h3"] {
+			t.Fatalf("state updates for %v, want h1 and h2", got)
+		}
+	})
+
 	t.Run("TestArmiesMarching", func(t *testing.T) {
 		b := newBackend(t)
 		s := b.Store
@@ -1336,8 +1390,9 @@ func waitWakeup(t *testing.T, ch <-chan int64, id int64) {
 }
 
 // drain commits a marker village no other commit touches and discards updates up to and including its map
-// update, the last update of that commit, so earlier commits' updates are behind the test.
-func drain(t *testing.T, s app.WorldStore, id int64, ch <-chan app.Update) {
+// update, the last update of that commit, so earlier commits' updates are behind the test. It returns the
+// players who got a state update on the way.
+func drain(t *testing.T, s app.WorldStore, id int64, ch <-chan app.Update) map[game.PlayerID]bool {
 	t.Helper()
 	marker := "marker_" + strconv.Itoa(int(markers.Add(1)))
 	run(t, s, id, func(w app.WorldTx) error {
@@ -1350,7 +1405,16 @@ func drain(t *testing.T, s app.WorldStore, id int64, ch <-chan app.Update) {
 		}
 		return errors.New("no free tile for a marker")
 	})
-	expectWorld(t, ch, app.TopicMap, marker)
+	state := map[game.PlayerID]bool{}
+	for {
+		u := next(t, ch)
+		if u.PlayerID == "" && hasTopic(u, app.TopicMap) && slices.Contains(u.VillageIDs, marker) {
+			return state
+		}
+		if u.PlayerID != "" && hasTopic(u, app.TopicState) {
+			state[u.PlayerID] = true
+		}
+	}
 }
 
 var markers atomic.Int64

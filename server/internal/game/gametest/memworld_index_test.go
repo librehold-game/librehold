@@ -82,6 +82,34 @@ func TestCommandsToMatchesAFullScan(t *testing.T) {
 	t.Fatal("setup: no attack to turn back")
 }
 
+// An army cut loose from its village is filed under its owner from then on: storing it again moves it there.
+func TestCommandsHomeFollowsALooseArmy(t *testing.T) {
+	w, v := gametest.NewTestWorld(4)
+	target := game.VillageIDFor(v.X+3, v.Y)
+	c := &game.Command{ID: "c_loose", Type: "attack", OriginID: v.ID, TargetID: target, Units: game.UnitCounts{game.UAxe: 1},
+		DepartedAt: 0, ArrivesAt: 5000}
+	w.PutCommand(c)
+	c.OwnerID = "h1"
+	w.PutCommand(c)
+	ids := func(cs []*game.Command) []string {
+		var out []string
+		for _, c := range cs {
+			out = append(out, c.ID)
+		}
+		return out
+	}
+	for when, w := range map[string]*gametest.MemWorld{"stored": w, "cloned": w.Clone()} {
+		if home, owner, to := ids(w.CommandsHome(v.ID)), ids(w.CommandsHome("h1")), ids(w.CommandsTo(target)); len(home) != 0 ||
+			!slices.Equal(owner, []string{c.ID}) || !slices.Equal(to, []string{c.ID}) {
+			t.Fatalf("%s: under the village %v, under the owner %v, to the target %v", when, home, owner, to)
+		}
+	}
+	w.DeleteCommand(c.ID)
+	if len(w.CommandsHome(v.ID)) != 0 || len(w.CommandsHome("h1")) != 0 || w.HomeBuckets() != 0 {
+		t.Fatalf("deleted, yet %d buckets are left", w.HomeBuckets())
+	}
+}
+
 // A clone is a unit of work the memory store may throw away: what it adds or moves must stay out of the original.
 func TestCloneKeepsItsIndexesToItself(t *testing.T) {
 	cfg := game.DefaultWorldConfig

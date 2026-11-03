@@ -87,12 +87,20 @@ func applyDefenderLosses(v *Village, losses UnitCounts) {
 	}
 }
 
-// humanOwner returns the owner as a human id, or "" for bots and barbarians.
-func humanOwner(w World, v *Village) PlayerID {
-	if v == nil || v.OwnerID == "" || w.Human(PlayerID(v.OwnerID)) == nil {
+// humanID returns the player as a human id, or "" for bots and barbarians.
+func humanID(w World, id PlayerID) PlayerID {
+	if id == "" || w.Human(id) == nil {
 		return ""
 	}
-	return PlayerID(v.OwnerID)
+	return id
+}
+
+// humanOwner returns the owner as a human id, or "" for bots and barbarians.
+func humanOwner(w World, v *Village) PlayerID {
+	if v == nil {
+		return ""
+	}
+	return humanID(w, PlayerID(v.OwnerID))
 }
 
 // reportRecipients: the attacking human, the defending human and every human with support in the target.
@@ -130,14 +138,18 @@ func sendReports(w World, to []PlayerID, r Report) {
 // ResolveAttackArrival: the full battle, reports, loot, return, loyalty and conquest.
 func ResolveAttackArrival(w World, c *Command, target *Village) error {
 	origin := w.Village(c.OriginID)
+	attackerOwner, loose := Ref(commandOwner(w, c)), c.OwnerID != ""
 	// The attack reached a village that became the attacker's own meanwhile (e.g. after the first noble of a
-	// train): the troops stay there as support instead of fighting their own defenders.
-	if origin != nil && origin.OwnerID != "" && origin.OwnerID == target.OwnerID {
-		slot := target.SupportFrom[origin.ID]
-		for _, u := range UnitIDs {
-			slot[u] += c.Units[u]
+	// train): the troops stay there as support instead of fighting their own defenders. An army cut loose from its
+	// village has no home to stay for, and is lost.
+	if attackerOwner != "" && attackerOwner == target.OwnerID {
+		if !loose {
+			slot := target.SupportFrom[c.OriginID]
+			for _, u := range UnitIDs {
+				slot[u] += c.Units[u]
+			}
+			target.SupportFrom[c.OriginID] = slot
 		}
-		target.SupportFrom[origin.ID] = slot
 		return nil
 	}
 	Touch(w, target)
@@ -147,12 +159,8 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 	defenderUnits := DefenderUnitsOf(target)
 	shares := DefenderShares(w, target)
 	loyaltyBefore := target.Loyalty
-	var attackerResearch UnitCounts
-	if origin != nil {
-		attackerResearch = UnitCounts(origin.Research)
-	}
 	result := ResolveBattle(BattleInput{
-		Attacker: BattleSide{Units: c.Units, Research: attackerResearch},
+		Attacker: BattleSide{Units: c.Units, Research: commandResearch(w, c)},
 		Defender: BattleDefender{
 			BattleSide: BattleSide{Units: defenderUnits, Research: UnitCounts(target.Research)},
 			Wall:       target.Buildings[BWall], Buildings: target.Buildings, Resources: target.Resources,
@@ -163,12 +171,8 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 	})
 
 	attackerLost, defenderLost := result.AttackerLosses.Total(), result.DefenderLosses.Total()
-	var attackerOwner PlayerRef
-	if origin != nil {
-		attackerOwner = origin.OwnerID
-	}
 	targetOwner := target.OwnerID
-	A, D := humanOwner(w, origin), humanOwner(w, target)
+	A, D := humanID(w, PlayerID(attackerOwner)), humanOwner(w, target)
 	if A != "" {
 		s := &w.Human(A).Stats
 		s.UnitsLost += attackerLost
@@ -208,7 +212,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			}
 			ObserveBattle(w, botAttacker, target, seen)
 		}
-		if result.AttackerSurvivors.Total() > 0 && origin != nil {
+		if result.AttackerSurvivors.Total() > 0 && origin != nil && !loose {
 			CreateReturn(w, target.ID, c.OriginID, result.AttackerSurvivors, nil)
 		}
 		RecordBattle(w, BattleRecord{AttackerID: attackerOwner, DefenderID: targetOwner, Shares: shares,
@@ -236,7 +240,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 		}
 		r := Report{
 			Time: w.Now(), Type: "scout", OriginID: c.OriginID, TargetID: target.ID,
-			Origin: ReportVillageOf(w, c.OriginID), Target: ReportVillageOf(w, target.ID),
+			Origin: armyVillage(w, c, c.OriginID), Target: ReportVillageOf(w, target.ID),
 			Attacker: ReportSide{Units: c.Units, Losses: result.AttackerLosses},
 			Morale:   result.Morale, WallBefore: target.Buildings[BWall], WallAfter: target.Buildings[BWall],
 			Outcome: result.Outcome, AutoFarm: c.AutoFarm,
@@ -276,7 +280,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 				haul = Resources{}
 			}
 		}
-		if !conquered {
+		if !conquered && !loose {
 			for _, r := range ResourceIDs {
 				target.Resources.Set(r, math.Max(0, target.Resources.Get(r)-haul.Get(r)))
 			}
@@ -295,7 +299,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 	}
 
 	looted := 0.0
-	if result.Outcome == "attackerWon" && !conquered {
+	if result.Outcome == "attackerWon" && !conquered && !loose {
 		looted = SumResources(haul)
 	}
 	RecordBattle(w, BattleRecord{AttackerID: attackerOwner, DefenderID: targetOwner, Shares: shares,
@@ -316,7 +320,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 		u := defenderUnits
 		won := result.Outcome == "attackerWon"
 		seen := BattleSeen{Units: &u, Wall: ptrTo(result.WallAfter), Losses: attackerLost > 0, AttackerLost: &attackerLost, Won: &won}
-		if won && !conquered && result.HaulCapacity > 0 {
+		if won && !conquered && !loose && result.HaulCapacity > 0 {
 			seen.HaulRatio = ptrTo(SumResources(haul) / result.HaulCapacity)
 		}
 		ObserveBattle(w, botAttacker, target, seen)
@@ -324,20 +328,26 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 
 	if A != "" {
 		in := intelCopy(w.Intel(A, target.ID))
-		h := haul
 		var scouted *Scouted
+		var lastHaul *Resources
+		var lastHaulCapacity *float64
 		if in.Intel != nil {
-			scouted = in.Intel.Scouted
+			scouted, lastHaul, lastHaulCapacity = in.Intel.Scouted, in.Intel.LastHaul, in.Intel.LastHaulCapacity
+		}
+		// An army cut loose from its village took nothing, so the last haul stays the one before it.
+		if !loose {
+			h := haul
+			lastHaul, lastHaulCapacity = &h, ptrTo(result.HaulCapacity)
 		}
 		in.Intel = &VillageIntel{At: w.Now(), Units: defenderUnits, Wall: result.WallAfter, Loyalty: loyaltyAfter,
-			LastHaul: &h, LastHaulCapacity: ptrTo(result.HaulCapacity), LastLosses: ptrTo(attackerLost), LastOutcome: result.Outcome,
+			LastHaul: lastHaul, LastHaulCapacity: lastHaulCapacity, LastLosses: ptrTo(attackerLost), LastOutcome: result.Outcome,
 			Scouted: scouted}
 		var scoutedAt *int64
 		if in.FarmTargetFlags != nil {
 			scoutedAt = in.FarmTargetFlags.ScoutedAt
 		}
 		in.FarmTargetFlags = &FarmTargetFlags{HasWall: result.WallAfter > 0, ScoutedAt: scoutedAt}
-		if result.Outcome == "attackerWon" && !conquered {
+		if result.Outcome == "attackerWon" && !conquered && !loose {
 			in.LastFarmedAt = ptrTo(w.Now())
 		}
 		w.PutIntel(A, target.ID, in)
@@ -345,7 +355,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 	if len(recipients) > 0 {
 		r := Report{
 			Time: w.Now(), Type: "attack", OriginID: c.OriginID, TargetID: target.ID,
-			Origin: ReportVillageOf(w, c.OriginID), Target: ReportVillageOf(w, target.ID),
+			Origin: armyVillage(w, c, c.OriginID), Target: ReportVillageOf(w, target.ID),
 			Attacker: ReportSide{Units: c.Units, Losses: result.AttackerLosses},
 			Defender: ReportSide{Units: defenderUnits, Losses: result.DefenderLosses},
 			Luck:     result.Luck, Morale: result.Morale, WallBefore: result.WallBefore, WallAfter: result.WallAfter,
@@ -355,8 +365,12 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			r.Type = "conquest"
 		}
 		if result.Outcome == "attackerWon" && !conquered {
-			h := haul
-			r.Haul, r.HaulCapacity = &h, ptrTo(result.HaulCapacity)
+			if loose {
+				r.NoHome = true
+			} else {
+				h := haul
+				r.Haul, r.HaulCapacity = &h, ptrTo(result.HaulCapacity)
+			}
 		}
 		if c.Units[UNoble] > 0 {
 			r.LoyaltyBefore, r.LoyaltyAfter = ptrTo(loyaltyBefore), ptrTo(loyaltyAfter)
@@ -367,10 +381,10 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 	if D != "" && D != A && result.Outcome == "defenderWon" {
 		w.Human(D).Stats.AttacksRepelled++
 	}
-	if conquered && origin != nil {
-		TransferVillage(w, target, origin.OwnerID, origin.ID)
+	if conquered {
+		TransferVillage(w, target, attackerOwner, c.OriginID)
 	}
-	if survivors.Total() > 0 && origin != nil {
+	if survivors.Total() > 0 && origin != nil && !loose {
 		var h *Resources
 		if SumResources(haul) > 0 {
 			h = &haul

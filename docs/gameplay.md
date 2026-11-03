@@ -142,9 +142,11 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
 - **War.** Moods (build-up → campaign → consolidation), targets from public data and report memory; operations:
   takeover with a full train from several villages (clear + up to 4 hetmans, every 100 ms for strong bots and with
   fakes), demolition, farming a weaker player, harassment. Strong bots land in the target's offline window and learn
-  its habits (e.g. its dodge rhythm). After a village is taken, the previous owner's troops outside it (marching,
-  returning, as support) are lost, and an attack that reaches a village that is already its own (e.g. the next hetman
-  of a train) stays there as support.
+  its habits (e.g. its dodge rhythm). After a village is taken, the previous owner's support from it and troops walking
+  home to it are lost; attacks and interceptions already on their way are cut loose: they still fight for their sender
+  with the research they left with, take no loot, and are lost after the battle. An attack that reaches a village that
+  is already its own (e.g. the next hetman of a train) stays there as support, unless it was cut loose: then it is
+  lost.
 - **Defence.** Stacking support when it arrives in time and will hold; otherwise a dodge; strong bots snipe noble
   trains. A weak bot "doesn't notice" some attacks.
 - **Quitting.** Being overwhelmed (village losses, attacks) fades over time; past a threshold a medium or strong

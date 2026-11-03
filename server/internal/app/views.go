@@ -93,7 +93,8 @@ type OwnPlayer struct {
 }
 
 // CommandView is a command as a player sees it. The fields below shadow the command's own: for someone else's
-// command only its origin, target, type and times show, plus the load of a trade.
+// command only its origin, target, type and times show, plus the load of a trade and whether the army was cut
+// loose from its village.
 type CommandView struct {
 	*game.Command
 	Units          *game.UnitCounts     `json:"units,omitempty"`
@@ -103,15 +104,18 @@ type CommandView struct {
 	Threats        []string             `json:"threats,omitempty"`
 	FieldHit       bool                 `json:"fieldHit,omitempty"`
 	AutoFarm       bool                 `json:"autoFarm,omitempty"`
+	CutLoose       bool                 `json:"cutLoose,omitempty"`
+	OwnerID        game.PlayerRef       `json:"ownerId,omitempty"`
+	Research       *game.Units          `json:"research,omitempty"` // never set: hides the snapshot from every view
 }
 
 func ownCommand(c *game.Command) CommandView {
 	return CommandView{Command: c, Units: &c.Units, CatapultTarget: c.CatapultTarget, Haul: c.Haul, Intercept: c.Intercept,
-		Threats: c.Threats, FieldHit: c.FieldHit, AutoFarm: c.AutoFarm}
+		Threats: c.Threats, FieldHit: c.FieldHit, AutoFarm: c.AutoFarm, CutLoose: c.OwnerID != "", OwnerID: c.OwnerID}
 }
 
 func foreignCommand(c *game.Command) CommandView {
-	v := CommandView{Command: c}
+	v := CommandView{Command: c, CutLoose: c.OwnerID != ""}
 	if c.Type == "trade" {
 		v.Haul = c.Haul
 	}
@@ -212,6 +216,13 @@ func (s *Service) playerState(w WorldTx, me game.PlayerID) *PlayerState {
 					st.Commands = append(st.Commands, ownCommand(c))
 					mine = append(mine, c)
 				}
+			}
+		}
+		for _, c := range game.LooseArmies(w, me) {
+			if !seen[c.ID] {
+				seen[c.ID] = true
+				st.Commands = append(st.Commands, ownCommand(c))
+				mine = append(mine, c)
 			}
 		}
 		for id := range st.Villages {

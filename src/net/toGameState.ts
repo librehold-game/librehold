@@ -1,4 +1,4 @@
-import { HUMAN_ID, type GameState, type NewsItem, type Player, type Report, type WorldConfig } from '../engine/types';
+import { HUMAN_ID, type GameState, type NewsItem, type Player, type Report, type ReportVillage, type WorldConfig } from '../engine/types';
 import { toClientId, toClientRef } from './ids';
 import { ONLINE_TERRAIN_SEED } from '../shared/terrain/seed';
 import type { NewsEntry, PlayerState } from './types';
@@ -10,6 +10,13 @@ function publicAsPlayer(p: PlayerState['players'][string], id: string): Player {
     id, name: p.name, isHuman: !p.isBot, color: p.color, villageIds: [...p.villageIds], coins: 0, noblesTrained: 0,
     buildQueueSlots: 2, protectedUntil: 0, joinAt: 0, status: p.status, points: p.points, history: { hourly: [], daily: [] },
   };
+}
+
+/** A report as the engine kept it: the player's own id in its villages' owners is HUMAN_ID. */
+function clientReport(r: Report, me: string): Report {
+  if (r.origin.ownerId !== me && r.target.ownerId !== me) return r;
+  const v = (x: ReportVillage) => (x.ownerId === me ? { ...x, ownerId: HUMAN_ID } : x);
+  return { ...r, origin: v(r.origin), target: v(r.target) };
 }
 
 /**
@@ -38,9 +45,9 @@ export function toGameState(s: PlayerState, reports: Report[], news: (NewsItem |
     villages,
     players,
     activeVillageId: own[0] ?? '',
-    commands: s.commands.map((c) => ({ ...c, units: c.units ?? {} })),
+    commands: s.commands.map((c) => ({ ...c, units: c.units ?? {}, ...(c.ownerId ? { ownerId: toClientId(c.ownerId, me) } : {}) })),
     commandsRev: ++commandsRev,
-    reports: [...reports].reverse(),
+    reports: [...reports].reverse().map((r) => clientReport(r, me)),
     quests: s.human.quests,
     farmAssistant: s.human.farmAssistant,
     trader: s.human.trader,

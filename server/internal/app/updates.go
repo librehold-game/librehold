@@ -28,7 +28,7 @@ type VillageChange struct {
 // Changes is what one committed unit of work changed, as an adapter sees it.
 type Changes struct {
 	Villages         []VillageChange
-	CommandOwners    []game.PlayerRef // owners of the home and target villages of new, changed or deleted commands
+	CommandOwners    []game.PlayerRef // owners of the home and target villages of new, changed or deleted commands, and the owner of an army cut loose from its village
 	Humans           []game.PlayerID  // changed human states
 	ReportRecipients []game.PlayerID
 	Ranking          bool // a stats event ran

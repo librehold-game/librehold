@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
 import { UNITS } from '../../data/units.data';
-import { canCancelCommand, commandHome, playerCommands, type SendBlocker, type SendCheck, type UnitCounts } from '../../engine/commands';
+import { canCancelCommand, commandHome, isOwnCommand, playerCommands, type SendBlocker, type SendCheck, type UnitCounts } from '../../engine/commands';
 import { checkSendClient } from './rallyCheck';
 import { HUMAN_ID, UNIT_IDS, type BuildingId, type Command, type UnitId } from '../../engine/types';
 import { selectActiveVillage, useGameStore } from '../../state/gameStore';
@@ -231,7 +231,7 @@ function CommandRow({ cmd }: { cmd: Command }) {
       o: ends.from,
       t: ends.to,
       canCancel: canCancelCommand(g, cmd) && o !== undefined && isHumanVillage(o),
-      incoming: o !== undefined && !isHumanVillage(o) && to !== undefined && isHumanVillage(to),
+      incoming: !isOwnCommand(g, cmd) && to !== undefined && isHumanVillage(to),
     });
   });
   const { o, t: to, canCancel, incoming } = JSON.parse(names) as { o: string; t: string; canCancel: boolean; incoming: boolean };
@@ -246,7 +246,7 @@ function CommandRow({ cmd }: { cmd: Command }) {
       <td data-label={t('rally.col.units')}><UnitCountList units={cmd.units} /></td>
       <td className="tabular-nums" data-label={t('rally.col.arrives')}><Countdown until={cmd.arrivesAt} /><div className="text-[10px] text-muted">{clock.at(cmd.arrivesAt)}</div></td>
       <td className="stack-inline">
-        {cmd.type !== 'return' && cmd.type !== 'intercept' && !incoming && (
+        {cmd.type !== 'return' && cmd.type !== 'intercept' && !cmd.cutLoose && !incoming && (
           <button className="btn" disabled={!canCancel} title={canCancel ? t('rally.turnBack') : t('rally.cancelWindow')} onClick={() => cancel(cmd.id)}>{t('rally.recall')}</button>
         )}
       </td>
@@ -259,7 +259,7 @@ function CommandsTab() {
   const activeId = useGameStore((s) => selectActiveVillage(s).id);
   const json = useGameStore((s) => {
     const g = s.game!;
-    const list = playerCommands(g).filter((c) => !onlyActive || c.originId === activeId || c.targetId === activeId || commandHome(c) === activeId);
+    const list = playerCommands(g).filter((c) => !onlyActive || (c.cutLoose && c.ownerId === HUMAN_ID) || (c.originId === activeId && isOwnCommand(g, c)) || c.targetId === activeId || commandHome(c) === activeId);
     return JSON.stringify([...list].sort((a, b) => a.arrivesAt - b.arrivesAt));
   });
   const cmds = JSON.parse(json) as Command[];

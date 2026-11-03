@@ -143,15 +143,11 @@ func PlanDefence(w World, botID PlayerID) {
 		return
 	}
 	mine := PlayerVillages(w, botID)
-	own := map[string]bool{}
-	for _, v := range mine {
-		own[v.ID] = true
-	}
 	strong := b.Skill >= BotConfig.StrongSkill
 	for _, v := range mine {
 		var incoming []*Command
 		for _, c := range w.CommandsTo(v.ID) {
-			if c.Type == "attack" && !own[c.OriginID] {
+			if c.Type == "attack" && commandOwner(w, c) != botID {
 				incoming = append(incoming, c)
 			}
 		}

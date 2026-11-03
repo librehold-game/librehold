@@ -6,8 +6,8 @@ import { BUILDINGS } from '../../data/buildings.data';
 import { villageProductionPerHour, villageStorageCapacity, villagePopulationUsed } from '../../engine/resources';
 import { hashSeed, mulberry32 } from '../../engine/rng';
 import { RESOURCE_BALANCE } from '../../data/buildings.data';
-import { MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE, UNIT_IDS, type BuildingId, type GameState, type UnitId, type VillageBonusKind } from '../../engine/types';
-import { isHumanVillage, humanVillageIds, humanCoins } from '../../engine/players';
+import { HUMAN_ID, MS_PER_DAY, MS_PER_HOUR, MS_PER_MINUTE, UNIT_IDS, type BuildingId, type GameState, type UnitId, type VillageBonusKind } from '../../engine/types';
+import { isHumanVillage, humanCoins } from '../../engine/players';
 
 export const SCENE_BALANCE = {
   cycleMinMs: 1200,
@@ -160,7 +160,7 @@ export function sceneModel(state: GameState, villageId: string): SceneModel | nu
   for (let i = state.reports.length - 1; i >= 0; i--) {
     const r = state.reports[i]!;
     if (now - r.time > SCENE_BALANCE.defeatWindowMs) break;
-    if (r.type === 'attack' && r.targetId === villageId && r.outcome === 'attackerWon' && !humanVillageIds(state).includes(r.originId)) { defeated = true; break; }
+    if (r.type === 'attack' && r.targetId === villageId && r.outcome === 'attackerWon' && r.origin.ownerId !== HUMAN_ID) { defeated = true; break; }
   }
 
   const queueState = (b: 'barracks' | 'stable'): QueueState => {

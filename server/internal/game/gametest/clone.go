@@ -52,6 +52,7 @@ func (w *MemWorld) Clone() *MemWorld {
 	c.humans = cloneMap(w.humans)
 	c.commands = cloneMap(w.commands)
 	c.byHome = map[string]map[string]*game.Command{}
+	c.homeOfCmd = make(map[string]string, len(w.homeOfCmd))
 	c.byTarget = map[string]map[string]*game.Command{}
 	c.targetOfCmd = make(map[string]string, len(w.targetOfCmd))
 	for _, cmd := range c.commands {

@@ -41,11 +41,3 @@ func recordPublicEvent(w World, kind string, attacker, defender PlayerRef, x, y 
 	}
 	w.AddPublicEvent(e)
 }
-
-// ownerOf is the owner of a village; "" for barbarians or a village that is gone.
-func ownerOf(w World, villageID string) PlayerRef {
-	if v := w.Village(villageID); v != nil {
-		return v.OwnerID
-	}
-	return ""
-}

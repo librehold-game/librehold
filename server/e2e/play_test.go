@@ -195,21 +195,23 @@ func TestPlayLoop(t *testing.T) {
 		if len(bodies) < 20 {
 			t.Fatalf("only %d bodies recorded", len(bodies))
 		}
+		me := bob.state(wid).Me
 		for _, b := range bodies {
 			var v any
 			if json.Unmarshal([]byte(b), &v) != nil {
 				continue
 			}
-			if problem := hidden(v, alaVillages); problem != "" {
+			if problem := hidden(v, me, alaVillages); problem != "" {
 				t.Fatalf("bob received %s in %.300s", problem, b)
 			}
 		}
 	})
 }
 
-// hidden names what a body shows that bob must not see: Ala's village economy, the troops of Ala's commands
-// (her own, or hers returning home), the world's seed or a bot's brain.
-func hidden(v any, alaVillages map[string]bool) string {
+// hidden names what a body shows that bob (me) must not see: Ala's village economy, the troops of Ala's commands
+// (her own, or hers returning home) or of anyone else's army cut loose from its village, the world's seed or a
+// bot's brain.
+func hidden(v any, me string, alaVillages map[string]bool) string {
 	switch x := v.(type) {
 	case map[string]any:
 		for _, k := range []string{"worldSeed", "seed", "brain"} {
@@ -221,24 +223,29 @@ func hidden(v any, alaVillages map[string]bool) string {
 		if _, ok := x["resources"]; ok && alaVillages[id] {
 			return "the resources of " + id
 		}
-		// A command belongs to its home village: the origin, or the target of troops returning home.
+		// A command belongs to its home village: the origin, or the target of troops returning home. An army cut
+		// loose from its village belongs to its owner, and only the owner is told whose it is.
 		origin, _ := x["originId"].(string)
 		home := origin
 		if typ, _ := x["type"].(string); typ == "return" || (typ == "trade" && x["returning"] == true) {
 			home, _ = x["targetId"].(string)
 		}
-		if _, ok := x["units"]; ok && origin != "" && alaVillages[home] {
+		foreign := alaVillages[home]
+		if x["cutLoose"] == true {
+			foreign = x["ownerId"] != me
+		}
+		if _, ok := x["units"]; ok && origin != "" && foreign {
 			obj, _ := json.Marshal(x)
 			return fmt.Sprintf("the troops of a command from %s: %s", origin, obj)
 		}
 		for _, sub := range x {
-			if p := hidden(sub, alaVillages); p != "" {
+			if p := hidden(sub, me, alaVillages); p != "" {
 				return p
 			}
 		}
 	case []any:
 		for _, sub := range x {
-			if p := hidden(sub, alaVillages); p != "" {
+			if p := hidden(sub, me, alaVillages); p != "" {
 				return p
 			}
 		}

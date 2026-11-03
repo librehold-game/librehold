@@ -171,7 +171,8 @@ func countHumanAttack(w World, actor PlayerID, sent UnitCounts) {
 }
 
 func CanCancelCommand(w World, c *Command) bool {
-	if c.Type == "return" || c.Type == "intercept" {
+	// Returns, interceptions and armies cut loose from their village never turn back.
+	if c.Type == "return" || c.Type == "intercept" || c.OwnerID != "" {
 		return false
 	}
 	// An army hit in the field may turn back at any time before it arrives.
@@ -191,7 +192,7 @@ func CancelCommand(w World, actor PlayerID, commandID string) error {
 	if c == nil {
 		return Rule("noCommand", map[string]any{"id": commandID})
 	}
-	if home := w.Village(CommandHome(c)); home == nil || home.OwnerID != Ref(actor) {
+	if commandOwner(w, c) != actor {
 		return NotOwner("cancel-command")
 	}
 	if !CanCancelCommand(w, c) {

@@ -100,6 +100,30 @@ func dropTroopsAway(w World, villageID string) {
 	}
 }
 
+// cutLoose: the previous owner's attacks and interceptions on the way from a conquered village still arrive and
+// fight for them, with the research they left with, but belong to no village any more.
+func cutLoose(w World, v *Village) {
+	if v.OwnerID == "" {
+		return
+	}
+	for _, c := range w.CommandsHome(v.ID) {
+		if c.Type == "attack" || c.Type == "intercept" {
+			r := v.Research
+			c.OwnerID, c.Research = v.OwnerID, &r
+			w.PutCommand(c)
+		}
+	}
+}
+
+// dropLooseArmies: the armies a player had cut loose from their villages are lost.
+func dropLooseArmies(w World, owner PlayerID) {
+	for _, c := range LooseArmies(w, owner) {
+		w.DeleteCommand(c.ID)
+		w.Unschedule("cmd:" + c.ID)
+		w.Unschedule("field:" + c.ID)
+	}
+}
+
 var transferSpy func(from, to PlayerRef, conquest bool)
 
 // SpyTransfers observes every change of village owner (measurements and tests); returns a restore func.
@@ -110,15 +134,17 @@ func SpyTransfers(fn func(from, to PlayerRef, conquest bool)) (restore func()) {
 }
 
 // TransferVillage changes a village's owner — a conquest (byVillageID = where the nobles came from) or an
-// abandonment (byVillageID ""). On conquest: 1–3 building levels lost, loyalty 25, research from zero. Always:
-// queues cleared, foreign support sent home, the previous owner's troops away lost. A player left without
-// villages: a human still playing starts again, a bot is eliminated.
+// abandonment (byVillageID ""). On conquest: 1–3 building levels lost, loyalty 25, research from zero, and the
+// previous owner's attacks and interceptions on the way are cut loose. Always: queues cleared, foreign support
+// sent home, the previous owner's other troops away lost. A player left without villages: a human still playing
+// starts again, a bot is eliminated and its armies are lost.
 func TransferVillage(w World, v *Village, newOwner PlayerRef, byVillageID string) {
 	prevOwner := v.OwnerID
 	if transferSpy != nil {
 		transferSpy(prevOwner, newOwner, byVillageID != "")
 	}
 	if byVillageID != "" {
+		cutLoose(w, v)
 		rng := Mulberry32(HiddenSeed(w, v.ID, "conquest", w.Now()))
 		v.Loyalty = ConquestBalance.LoyaltyAfterConquest
 		v.LoyaltyUpdatedAt = w.Now()
@@ -207,6 +233,7 @@ func TransferVillage(w World, v *Village, newOwner PlayerRef, byVillageID string
 			}
 		} else if prev.Status == StatusActive {
 			prev.Status = StatusEliminated
+			dropLooseArmies(w, prev.ID)
 		}
 	}
 }
