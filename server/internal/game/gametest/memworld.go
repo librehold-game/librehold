@@ -7,6 +7,7 @@ import (
 	"slices"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"librehold/internal/game"
@@ -50,7 +51,10 @@ type MemWorld struct {
 	nextID      int64
 
 	villages map[string]*game.Village
-	grid     map[[2]int][]string // village ids by gridCell of their tile, for VillagesIn
+	// byID holds the same villages sorted by ID, and grid by the gridCell of their tile, so SupportHosts and
+	// VillagesIn need not walk the map. Villages never go away; PutVillage swaps a replaced one in both.
+	byID     []*game.Village
+	grid     map[[2]int][]*game.Village
 	players  map[game.PlayerID]*game.Player
 	brains   map[game.PlayerID]*game.BotBrain
 	humans   map[game.PlayerID]*game.HumanState
@@ -88,7 +92,7 @@ func NewMemWorld(seed uint32, cfg game.WorldConfig, clockOrigin int64) *MemWorld
 		clockOrigin: clockOrigin,
 		nextID:      1,
 		villages:    map[string]*game.Village{},
-		grid:        map[[2]int][]string{},
+		grid:        map[[2]int][]*game.Village{},
 		players:     map[game.PlayerID]*game.Player{},
 		brains:      map[game.PlayerID]*game.BotBrain{},
 		humans:      map[game.PlayerID]*game.HumanState{},
@@ -179,12 +183,27 @@ func (w *MemWorld) Village(id string) *game.Village {
 }
 
 func (w *MemWorld) PutVillage(v *game.Village) {
-	if _, known := w.villages[v.ID]; !known {
-		c := gridCell(v.X, v.Y)
-		w.grid[c] = append(w.grid[c], v.ID)
+	if old := w.villages[v.ID]; old != v {
+		w.indexVillage(old, v)
 	}
 	w.villages[v.ID] = v
 	w.touchOwner(v)
+}
+
+// indexVillage puts v into byID and grid in place of old (nil for a new village).
+func (w *MemWorld) indexVillage(old, v *game.Village) {
+	i, found := slices.BinarySearchFunc(w.byID, v.ID, func(e *game.Village, id string) int { return strings.Compare(e.ID, id) })
+	if found {
+		w.byID[i] = v
+	} else {
+		w.byID = slices.Insert(w.byID, i, v)
+	}
+	if old != nil {
+		c := gridCell(old.X, old.Y)
+		w.grid[c] = slices.DeleteFunc(w.grid[c], func(e *game.Village) bool { return e == old })
+	}
+	c := gridCell(v.X, v.Y)
+	w.grid[c] = append(w.grid[c], v)
 }
 
 // gridSize is the side of a VillagesIn grid cell: a village never moves, so its cell is fixed.
@@ -193,30 +212,43 @@ const gridSize = 8
 func gridCell(x, y int) [2]int { return [2]int{x / gridSize, y / gridSize} }
 
 func (w *MemWorld) VillagesIn(x0, y0, x1, y1 int) []game.VillageRef {
-	var out []game.VillageRef
 	lo, hi := gridCell(max(0, x0), max(0, y0)), gridCell(max(0, x1), max(0, y1))
+	n := 0
 	for cx := lo[0]; cx <= hi[0]; cx++ {
 		for cy := lo[1]; cy <= hi[1]; cy++ {
-			for _, id := range w.grid[[2]int{cx, cy}] {
-				v := w.villages[id]
+			n += len(w.grid[[2]int{cx, cy}])
+		}
+	}
+	if n == 0 {
+		return nil
+	}
+	out := make([]game.VillageRef, 0, n)
+	for cx := lo[0]; cx <= hi[0]; cx++ {
+		for cy := lo[1]; cy <= hi[1]; cy++ {
+			for _, v := range w.grid[[2]int{cx, cy}] {
 				if v.X >= x0 && v.X <= x1 && v.Y >= y0 && v.Y <= y1 {
 					out = append(out, game.VillageRef{ID: v.ID, X: v.X, Y: v.Y, Name: v.Name, OwnerID: v.OwnerID, Points: v.Points, Bonus: v.Bonus})
 				}
 			}
 		}
 	}
-	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
+	if len(out) == 0 {
+		return nil
+	}
+	slices.SortFunc(out, func(a, b game.VillageRef) int { return strings.Compare(a.ID, b.ID) })
 	return out
 }
 
 func (w *MemWorld) SupportHosts(homeID string) []*game.Village {
 	var out []*game.Village
-	for _, v := range w.villages {
+	for _, v := range w.byID {
+		if len(v.SupportFrom) == 0 {
+			continue
+		}
 		if _, ok := v.SupportFrom[homeID]; ok {
 			out = append(out, v)
 		}
 	}
-	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
 	for _, v := range out {
 		w.touchOwner(v)
 	}
@@ -225,7 +257,7 @@ func (w *MemWorld) SupportHosts(homeID string) []*game.Village {
 
 func (w *MemWorld) PointsByOwner() map[game.PlayerID]int {
 	out := map[game.PlayerID]int{}
-	for _, v := range w.villages {
+	for _, v := range w.byID {
 		if v.OwnerID != "" {
 			out[game.PlayerID(v.OwnerID)] += v.Points
 		}
@@ -234,14 +266,7 @@ func (w *MemWorld) PointsByOwner() map[game.PlayerID]int {
 }
 
 // Villages returns every stored village, sorted by ID (tests).
-func (w *MemWorld) Villages() []*game.Village {
-	out := make([]*game.Village, 0, len(w.villages))
-	for _, v := range w.villages {
-		out = append(out, v)
-	}
-	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
-	return out
-}
+func (w *MemWorld) Villages() []*game.Village { return slices.Clone(w.byID) }
 
 // ---- players ----
 
