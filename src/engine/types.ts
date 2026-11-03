@@ -354,6 +354,10 @@ export interface WorldConfig {
   paused: boolean;
   /** Field battles are on unless switched off. */
   noFieldBattles?: boolean;
+  /** Build plans are off for the humans of this world (bots keep them). */
+  noBuildPlans?: boolean;
+  /** The auto-farm is off for the humans of this world (bots keep it). */
+  noAutoFarm?: boolean;
   /** Tiles from a village within which a passing army is seen; missing means 1. */
   sightRadius?: number;
   /** Nobody sees other players' armies pass. */

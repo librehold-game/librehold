@@ -21,4 +21,17 @@ describe('quest bars show the server\'s progress', () => {
     expect(panel('first_attack').textContent).not.toMatch(/%/);
     expect(document.body.textContent).not.toContain('NaN');
   });
+
+  it("hides the auto-farming reward when the world's host has it switched off", () => {
+    setLocale('en');
+    const g = newTestGame();
+    g.quests = { completed: ['first_battle'], active: [], claimed: [], progress: {} };
+    useGameStore.setState({ game: g, phase: 'ready' });
+    render(<QuestsView />);
+    expect(screen.getByText('auto-farming unlocked', { exact: false })).toBeTruthy();
+    cleanup();
+    g.config.noAutoFarm = true;
+    render(<QuestsView />);
+    expect(screen.queryByText('auto-farming unlocked', { exact: false })).toBeNull();
+  });
 });

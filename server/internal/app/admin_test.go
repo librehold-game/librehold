@@ -151,6 +151,99 @@ func TestFixedSettingsRejected(t *testing.T) {
 	}
 }
 
+func TestFeatureTogglesApplyToRunningWorld(t *testing.T) {
+	f := newAdminFixture(t)
+	ctx := context.Background()
+	id := f.world(t)
+	var home string
+	err := f.worlds.Run(ctx, id, func(w app.WorldTx) error {
+		v, err := game.JoinHuman(w, "h1", "Ala", 1, game.QuadrantRandom)
+		if err != nil {
+			return err
+		}
+		home = v.ID
+		w.Player("h1").ProtectedUntil = 0
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	ala := &app.Account{ID: 1}
+	err = f.svc.InWorld(ctx, ala, id, func(w app.WorldTx, me game.PlayerID) error {
+		w.Human(me).FarmAssistant.AutoFarmUnlocked = true
+		return game.SetAutoFarm(w, me, true, []string{home})
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	key := "autofarm:" + home
+	readScheduled := func() (bool, error) {
+		var ok bool
+		err := f.worlds.Read(ctx, id, func(w app.WorldTx) error {
+			_, ok = w.ScheduledAt(key)
+			return nil
+		})
+		return ok, err
+	}
+	ok, err := readScheduled()
+	if err != nil || !ok {
+		t.Fatalf("setup: the tick should be scheduled (ok %v, %v)", ok, err)
+	}
+	// The admin switches auto-farming off while the world is running.
+	if err := f.svc.UpdateWorldSettings(ctx, admin, id, app.WorldSettingsPatch{"noAutoFarm": json.RawMessage("true")}); err != nil {
+		t.Fatal(err)
+	}
+	ok, _ = readScheduled()
+	if ok {
+		t.Fatal("the tick survived the switch off")
+	}
+	err = f.svc.InWorld(ctx, ala, id, func(w app.WorldTx, me game.PlayerID) error {
+		var re *game.RuleError
+		err := game.SetAutoFarm(w, me, true, []string{home})
+		if !errors.As(err, &re) || re.Code != "autoFarmOff" {
+			t.Fatalf("enabling while the world switch is off: %v", err)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Flipping it back on does NOT turn players' auto-farming back on...
+	if err := f.svc.UpdateWorldSettings(ctx, admin, id, app.WorldSettingsPatch{"noAutoFarm": json.RawMessage("false")}); err != nil {
+		t.Fatal(err)
+	}
+	ok, _ = readScheduled()
+	if ok {
+		t.Fatal("auto-farming resumed without the player's choice")
+	}
+	// ...until the player switches it on themselves.
+	err = f.svc.InWorld(ctx, ala, id, func(w app.WorldTx, me game.PlayerID) error {
+		return game.SetAutoFarm(w, me, true, []string{home})
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	ok, _ = readScheduled()
+	if !ok {
+		t.Fatal("the tick is not back after the player re-enabled auto-farming")
+	}
+	// Build plans: a human cannot set one while the world's switch is off.
+	if err := f.svc.UpdateWorldSettings(ctx, admin, id, app.WorldSettingsPatch{"noBuildPlans": json.RawMessage("true")}); err != nil {
+		t.Fatal(err)
+	}
+	err = f.svc.InWorld(ctx, ala, id, func(w app.WorldTx, me game.PlayerID) error {
+		var re *game.RuleError
+		err := game.SetBuildPlan(w, me, home, []game.BuildingID{game.BWood})
+		if !errors.As(err, &re) || re.Code != "buildPlansOff" {
+			t.Fatalf("setting a plan while the world switch is off: %v", err)
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestSpeedChangeSettlesAndKeepsTimers(t *testing.T) {
 	f := newAdminFixture(t)
 	ctx := context.Background()
