@@ -66,6 +66,33 @@ func TestFieldBattleTargetSurvivesHit(t *testing.T) {
 	}
 }
 
+func TestFieldBattleLeavesAutoFarmRaidReportsUnmarked(t *testing.T) {
+	f := newFieldWorld(t)
+	f.w.Command(f.attack.ID).AutoFarm = true
+	f.a.Units[game.UAxe] = 10
+	meet(t, f, game.UnitCounts{game.UAxe: 10}, false)
+	for _, p := range []game.PlayerID{"h1", "h2"} {
+		if rs := fieldReports(f.w, p); len(rs) != 1 || rs[0].AutoFarm {
+			t.Fatalf("%s field reports = %+v", p, rs)
+		}
+	}
+	if err := gametest.Advance(f.w, f.attack.ArrivesAt); err != nil {
+		t.Fatal(err)
+	}
+	arrival := func(p game.PlayerID) *game.Report {
+		for _, r := range f.w.ReportsOf(p) {
+			if r.Type == "attack" {
+				return r
+			}
+		}
+		t.Fatalf("no attack report for %s", p)
+		return nil
+	}
+	if !arrival("h2").AutoFarm || arrival("h1").AutoFarm {
+		t.Fatal("only the sender's arrival report is marked")
+	}
+}
+
 func TestFieldBattleDestroysTarget(t *testing.T) {
 	f := newFieldWorld(t)
 	c := meet(t, f, game.UnitCounts{game.ULightCav: 50}, false)

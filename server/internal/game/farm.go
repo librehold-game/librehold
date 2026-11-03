@@ -343,7 +343,7 @@ func AutoFarmTick(w World, actor PlayerID, villageID string) int {
 			}
 			continue
 		}
-		if _, err := SendCommand(w, actor, villageID, t.X, t.Y, tpl, "attack", SendOpts{}); err == nil {
+		if _, err := SendCommand(w, actor, villageID, t.X, t.Y, tpl, "attack", SendOpts{AutoFarm: true}); err == nil {
 			sent++
 			w.LogAction(ActorOf(w.Player(actor)), false, "auto-farm-send", autoFarmSend{OriginID: villageID, X: t.X, Y: t.Y, Units: tpl})
 		}
