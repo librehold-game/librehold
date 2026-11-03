@@ -5,6 +5,28 @@ here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/
 [Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
 edit it by hand.
 
+## [0.10.0](https://github.com/librehold-game/librehold/releases/tag/v0.10.0) — 2026-11-03 (alpha)
+
+### Added
+
+- A map checkbox hides your farm raids, remembered per world ([#31](https://github.com/librehold-game/librehold/pull/31)) by @SKocur
+- Villagers train and work in their buildings, and the armies march in the same style ([#38](https://github.com/librehold-game/librehold/pull/38)) by @SKocur
+
+### Changed
+
+- Auto-farm reports carry a tag, arrive read, and can be hidden from the reports list ([#28](https://github.com/librehold-game/librehold/pull/28)) by @ciefa
+- Stamp release versions in server logs and bug reports ([#33](https://github.com/librehold-game/librehold/pull/33)) by @Sinkleberg
+
+### Fixed
+
+- Number fields can be emptied and typed into without snapping back ([#32](https://github.com/librehold-game/librehold/pull/32)) by @SKocur
+- Steady the logout socket test and speed up the game simulations ([#37](https://github.com/librehold-game/librehold/pull/37)) by @SKocur
+
+### Contributors
+
+@SKocur, @Sinkleberg, @ciefa
+
+- @Sinkleberg made their first contribution in [#33](https://github.com/librehold-game/librehold/pull/33)
 ## [0.9.0](https://github.com/librehold-game/librehold/releases/tag/v0.9.0) — 2026-11-02 (alpha)
 
 ### Added
