@@ -144,10 +144,11 @@ type BotBattle struct {
 	AttackerLost int
 }
 
-var battleSpy func(BotBattle)
+var battleSpy func(World, BotBattle)
 
-// SpyBotBattles observes every battle seen by a bot (tests only); returns a restore func.
-func SpyBotBattles(fn func(BotBattle)) (restore func()) {
+// SpyBotBattles observes every battle seen by a bot (tests only), with the world it happened in so simulations
+// running side by side can tell theirs apart; returns a restore func.
+func SpyBotBattles(fn func(World, BotBattle)) (restore func()) {
 	prev := battleSpy
 	battleSpy = fn
 	return func() { battleSpy = prev }
@@ -172,7 +173,7 @@ func ObserveBattle(w World, observerID PlayerID, target *Village, seen BattleSee
 		if k.Wall != nil {
 			wall = ptrTo(*k.Wall)
 		}
-		battleSpy(BotBattle{ObserverID: observerID, TargetOwner: target.OwnerID, WallKnown: wall, AttackerLost: lost})
+		battleSpy(w, BotBattle{ObserverID: observerID, TargetOwner: target.OwnerID, WallKnown: wall, AttackerLost: lost})
 	}
 	hadUnits := k.Units != nil && k.Units.Total() > 0
 	if seen.Units != nil && hadUnits && target.OwnerID != "" && seen.Units.Total() == 0 {
