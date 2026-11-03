@@ -15,7 +15,7 @@ export interface WorldConfig {
   botArrival: 'allAtOnce' | 'rampUp';
   rampUpDays: number;
   beginnerProtectionDays: number;
-  lastVillage: 'protected' | 'canBeLost';
+  lastVillage: 'protected' | 'playersOnly' | 'canBeLost';
   difficulty: 'easy' | 'normal' | 'hard' | 'brutal';
   botStance: 'peacefulRetaliate' | 'peacefulReputation' | 'normal' | 'allAgainstHumans';
   noFieldBattles?: boolean;
@@ -49,7 +49,7 @@ export const FIELDS: FieldSpec[] = [
   { key: 'botArrival', creationOnly: true, choices: ['allAtOnce', 'rampUp'] },
   { key: 'rampUpDays', creationOnly: true, min: L.rampUpDays.min, max: L.rampUpDays.max, step: 1 },
   { key: 'beginnerProtectionDays', creationOnly: false, min: L.beginnerProtectionDays.min, max: L.beginnerProtectionDays.max, step: 1 },
-  { key: 'lastVillage', creationOnly: false, choices: ['protected', 'canBeLost'] },
+  { key: 'lastVillage', creationOnly: false, choices: ['protected', 'playersOnly', 'canBeLost'] },
   { key: 'difficulty', creationOnly: false, choices: ['easy', 'normal', 'hard', 'brutal'] },
   { key: 'botStance', creationOnly: false, choices: ['peacefulRetaliate', 'peacefulReputation', 'normal', 'allAgainstHumans'] },
   { key: 'battleLosses', creationOnly: false, choices: ['normal', 'reduced'] },

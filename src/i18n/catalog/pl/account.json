@@ -128,7 +128,8 @@
         "rampUp": "stopniowo"
       },
       "lastVillage": {
-        "protected": "chroniona",
+        "protected": "chroniona dla graczy i botów",
+        "playersOnly": "chroniona dla graczy (nie dla botów)",
         "canBeLost": "można stracić"
       },
       "difficulty": {

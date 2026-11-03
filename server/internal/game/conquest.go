@@ -69,6 +69,9 @@ func ApplyNobles(w World, target *Village, c *Command, nobles int) (loyaltyAfter
 	return loyalty, false
 }
 
+// LastVillageProtectsBots: "protected" counts for bots too, "playersOnly" only protects human players.
+func LastVillageProtectsBots(cfg *WorldConfig) bool { return cfg.LastVillage != "playersOnly" }
+
 // CanBeConquered: a player's last village is untouchable when the world says so — nobles then stop at 1.
 func CanBeConquered(w World, v *Village) bool {
 	if v.OwnerID == "" || w.Config().LastVillage == "canBeLost" {
@@ -77,6 +80,10 @@ func CanBeConquered(w World, v *Village) bool {
 	owner := w.Player(PlayerID(v.OwnerID))
 	// Abandoned accounts are not protected — inactive players are the nobles' first target.
 	if owner != nil && owner.Status == StatusQuit {
+		return true
+	}
+	// Bots' last village is conquerable when the protection counts for players only.
+	if owner != nil && !owner.IsHuman && !LastVillageProtectsBots(w.Config()) {
 		return true
 	}
 	return owner != nil && len(owner.VillageIDs) > 1

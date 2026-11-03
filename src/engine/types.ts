@@ -350,8 +350,11 @@ export interface WorldConfig {
   rampUpDays: number;
   /** Beginner protection in days since joining the world; 0 = off. */
   beginnerProtectionDays: number;
-  /** Whether a player's last village can be conquered (then the human starts over, the bot drops out). */
-  lastVillage: 'protected' | 'canBeLost';
+  /**
+   * Whether a player's last village can be conquered (then the human starts over, the bot drops out).
+   * "protected" counts for players and bots; "playersOnly" leaves bots' last village conquerable.
+   */
+  lastVillage: 'protected' | 'playersOnly' | 'canBeLost';
   /** Minimum share of strong bots (`DIFFICULTY_FLOOR`). */
   difficulty: Difficulty;
   /** How bots treat the human: peaceful (retaliation / reputation), normal, or everyone against them. */

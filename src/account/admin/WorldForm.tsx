@@ -39,10 +39,11 @@ export function WorldForm({ idPrefix, value, onChange, mode }: {
           return <Modifiers key={spec.key} id={id} spec={spec} value={value[spec.key]} onChange={set} />;
         }
         if (spec.flag) {
+          const on = !!value[spec.key];
           return (
             <div key={spec.key} className="field">
               <label htmlFor={id}>
-                <input id={id} type="checkbox" checked={!!value[spec.key]} disabled={locked} onChange={(e) => set(e.target.checked)} />
+                <input id={id} type="checkbox" checked={on} disabled={locked} onChange={(e) => set(e.target.checked)} />
                 {' '}{t(`admin.field.${spec.key}`)}
               </label>
             </div>
