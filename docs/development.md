@@ -33,7 +33,7 @@ The game server is a single Go program (`server/`) with a hexagonal layout:
 - `internal/game` — the game rules (building, troops, combat, conquest, bots, quests…). It knows
   nothing about the database or the clock: it gets the world through the `game.World` interface and time as an argument.
 - `internal/app` — use cases: accounts, sessions, admin panel, lobby, orders, player views, the event worker. It
-  imports only the standard library and `game` (`internal/archtest` enforces this).
+  imports only the standard library, `game` and the stdlib-only `buildinfo` package (`internal/archtest` enforces this).
 - `internal/adapters` — Postgres (world unit of work under an advisory lock, `LISTEN/NOTIFY` notifications), HTTP API
   (`/api/v1`), WebSocket with refresh hints, a file gate (game files only with a session), argon2id and tokens,
   Valkey counters for the limits.
@@ -144,6 +144,9 @@ The tag starts `.github/workflows/release.yml`: it publishes `ghcr.io/librehold-
 and `latest`, then creates the GitHub release with the same notes. `cliff.toml` sorts merged pull requests by label
 (`enhancement` or `idea` → Added, `bug` → Fixed, `security` → Security, anything else → Changed) and credits their
 authors; `GITHUB_TOKEN=$(gh auth token) git cliff --unreleased` previews the next release.
+
+The workflow stamps the release version into the server and web builds for startup logs, packed action logs and
+problem reports.
 
 A commit pushed straight to `main` has no labels, so its prefix picks the section, and the changelog shows the rest of
 the subject with a capital first letter:
