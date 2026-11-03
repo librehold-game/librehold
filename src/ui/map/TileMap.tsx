@@ -191,11 +191,17 @@ export function TileMap(p: TileMapProps) {
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     onHover?.(null);
+    // A primary press is the only finger down: any finger still listed lost its lift on the way, and would make a pinch
+    // out of a one-finger drag.
+    if (e.isPrimary) pointers.current.clear();
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     const pts = [...pointers.current.values()];
     if (pts.length >= 2) {
       pinchBase.current = touchDistance(pts[0]!, pts[1]!);
       drag.current = null;
+      // A pinch selects nothing, so its fingers can be held: the zoom may take a pressed tile out of the view, and iOS
+      // would then send that finger's lift to the gone tile.
+      for (const id of pointers.current.keys()) e.currentTarget.setPointerCapture?.(id);
       return;
     }
     drag.current = { sx: e.clientX, sy: e.clientY, cx: center.x, cy: center.y, moved: false };

@@ -133,6 +133,46 @@ describe('pinch changes the zoom', () => {
     }
   });
 
+  // iOS sends a lift to the tile the finger pressed, even once that tile has left the view and the DOM.
+  it('a finger whose lift never reached the map does not turn the next swipe into a pinch', () => {
+    const restore = setClientWidth(PHONE_W);
+    try {
+      const { container } = render(<MapView />);
+      const surface = container.querySelector<HTMLElement>('[data-map-surface]')!;
+      const tileW = () => container.querySelector<HTMLElement>('[data-tile]')!.style.width;
+      const firstTile = () => container.querySelector<HTMLElement>('[data-tile]')!.dataset.tile;
+      fireEvent.pointerDown(surface, { pointerId: 1, isPrimary: true, pointerType: 'touch', clientX: 20, clientY: 200 });
+      fireEvent.pointerDown(surface, { pointerId: 2, isPrimary: false, pointerType: 'touch', clientX: 200, clientY: 200 });
+      fireEvent.pointerUp(surface, { pointerId: 2, isPrimary: false, pointerType: 'touch', clientX: 200, clientY: 200 });
+      const width = tileW(), tile = firstTile();
+      fireEvent.pointerDown(surface, { pointerId: 3, isPrimary: true, pointerType: 'touch', clientX: 150, clientY: 200 });
+      for (let x = 160; x <= 300; x += 20) fireEvent.pointerMove(surface, { pointerId: 3, isPrimary: true, pointerType: 'touch', clientX: x, clientY: 200 });
+      fireEvent.pointerUp(surface, { pointerId: 3, isPrimary: true, pointerType: 'touch', clientX: 300, clientY: 200 });
+      expect(tileW()).toBe(width);
+      expect(firstTile()).not.toBe(tile);
+    } finally {
+      restore();
+    }
+  });
+
+  it('a pinch holds both fingers, so their lifts reach the map whatever tile they pressed', () => {
+    const restore = setClientWidth(PHONE_W);
+    const proto = globalThis.HTMLElement.prototype as unknown as { setPointerCapture?: (id: number) => void };
+    const original = proto.setPointerCapture;
+    const captured: number[] = [];
+    proto.setPointerCapture = function (id: number) { if (this instanceof HTMLElement && this.matches('[data-map-surface]')) captured.push(id); };
+    try {
+      const { container } = render(<MapView />);
+      const surface = container.querySelector<HTMLElement>('[data-map-surface]')!;
+      fireEvent.pointerDown(surface, { pointerId: 1, isPrimary: true, pointerType: 'touch', clientX: 100, clientY: 200 });
+      fireEvent.pointerDown(surface, { pointerId: 2, isPrimary: false, pointerType: 'touch', clientX: 200, clientY: 200 });
+      expect(captured.sort()).toEqual([1, 2]);
+    } finally {
+      proto.setPointerCapture = original;
+      restore();
+    }
+  });
+
   it('the map starts at zoom 1 and zooms in two steps further', () => {
     const { container } = render(<MapView />);
     const tileW = () => container.querySelector<HTMLElement>('[data-tile]')!.style.width;
