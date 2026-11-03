@@ -2,6 +2,7 @@ package gametest
 
 import (
 	"slices"
+	"sync"
 	"time"
 
 	"librehold/internal/game"
@@ -37,6 +38,57 @@ type SimResult struct {
 	World          *MemWorld
 }
 
+// The game's spies are global, so the simulations running at a time share one pair of them, which counts each
+// event for the world it happened in.
+var (
+	simsMu       sync.RWMutex
+	sims         = map[game.World]*simCounts{}
+	restoreSpies func()
+)
+
+type simCounts struct{ farmRuns, barb, botBot int }
+
+// trackSim counts w's bot farm runs and bot conquests until stop is called.
+func trackSim(w *MemWorld) (c *simCounts, stop func()) {
+	simsMu.Lock()
+	defer simsMu.Unlock()
+	if len(sims) == 0 {
+		of := func(w game.World) *simCounts {
+			simsMu.RLock()
+			defer simsMu.RUnlock()
+			return sims[w]
+		}
+		isBot := func(w game.World, id game.PlayerRef) bool { return id != "" && w.Brain(game.PlayerID(id)) != nil }
+		r1 := game.SpyBotBattles(func(w game.World, b game.BotBattle) {
+			if c := of(w); c != nil && b.TargetOwner == "" {
+				c.farmRuns++
+			}
+		})
+		r2 := game.SpyTransfers(func(w game.World, from, to game.PlayerRef, conquest bool) {
+			c := of(w)
+			if c == nil || !conquest || !isBot(w, to) {
+				return
+			}
+			if from == "" {
+				c.barb++
+			} else if isBot(w, from) {
+				c.botBot++
+			}
+		})
+		restoreSpies = func() { r2(); r1() }
+	}
+	c = &simCounts{}
+	sims[w] = c
+	return c, func() {
+		simsMu.Lock()
+		defer simsMu.Unlock()
+		delete(sims, w)
+		if len(sims) == 0 {
+			restoreSpies()
+		}
+	}
+}
+
 func median(xs []float64) float64 {
 	if len(xs) == 0 {
 		return 0
@@ -56,25 +108,10 @@ func RunSimBots(o SimOptions) (SimResult, error) {
 	if _, err := game.JoinHuman(w, "h1", "Player", 1, game.QuadrantRandom); err != nil {
 		return SimResult{}, err
 	}
-	farmRuns, barb, botBot := 0, 0, 0
-	defer game.SpyBotBattles(func(b game.BotBattle) {
-		if b.TargetOwner == "" {
-			farmRuns++
-		}
-	})()
-	isBot := func(id game.PlayerRef) bool { return id != "" && w.Brain(game.PlayerID(id)) != nil }
-	defer game.SpyTransfers(func(from, to game.PlayerRef, conquest bool) {
-		if !conquest || !isBot(to) {
-			return
-		}
-		if from == "" {
-			barb++
-		} else if isBot(from) {
-			botBot++
-		}
-	})()
+	counts, stop := trackSim(w)
+	defer stop()
 	row := func(day int) SimRow {
-		r := SimRow{Day: day, BarbConquests: barb, BotBotConquests: botBot, FarmRuns: farmRuns}
+		r := SimRow{Day: day, BarbConquests: counts.barb, BotBotConquests: counts.botBot, FarmRuns: counts.farmRuns}
 		var villages, strong, weak []float64
 		points := w.PointsByOwner()
 		for _, p := range w.Players() {
@@ -125,7 +162,7 @@ func RunSimBots(o SimOptions) (SimResult, error) {
 		}
 	}
 	res.SimRow = row(o.Days)
-	res.FarmRunsPerDay = float64(farmRuns) / float64(o.Days)
+	res.FarmRunsPerDay = float64(counts.farmRuns) / float64(o.Days)
 	res.QuitShare = float64(res.Quit) / float64(o.Bots)
 	return res, nil
 }

@@ -21,7 +21,8 @@ SLOTS = {k: P(*v) for k, v in {
     'statue': (400, 290), 'smithy': (278, 346), 'barracks': (580, 318), 'stable': (222, 320), 'workshop': (506, 356),
     'wood': (700, 444), 'clay': (96, 458), 'iron': (96, 118), 'farm': (722, 124),
 }.items()}
-RALLY = P(478, 322)
+# Right of the statue, under the town hall: the workshop's yard took the old spot once the workshop was built.
+RALLY = P(455.5, 231.7)
 INSIDE = ['main', 'barracks', 'stable', 'workshop', 'academy', 'smithy', 'market', 'storage', 'hide']
 GATE_W, GATE_E = P(188.0, 158.3), P(612.0, 158.3)
 SIDE_ROADS = [

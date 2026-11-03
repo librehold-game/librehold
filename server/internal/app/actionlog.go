@@ -8,8 +8,8 @@ import (
 	"errors"
 	"io"
 	"log/slog"
-	"runtime/debug"
 
+	"librehold/internal/buildinfo"
 	"librehold/internal/game"
 )
 
@@ -102,17 +102,6 @@ func (s *Service) countRejection(ctx context.Context, worldID int64, kind string
 	}
 }
 
-func buildVersion() string {
-	if info, ok := debug.ReadBuildInfo(); ok {
-		for _, kv := range info.Settings {
-			if kv.Key == "vcs.revision" && kv.Value != "" {
-				return kv.Value
-			}
-		}
-	}
-	return "dev"
-}
-
 // PackActionLog packs the world's log rows into one gzip blob kept with its seed and settings, and deletes
 // the rows. A world with no rows left is already packed.
 func (s *Service) PackActionLog(ctx context.Context, worldID int64) error {
@@ -128,7 +117,7 @@ func (s *Service) PackActionLog(ctx context.Context, worldID int64) error {
 	if err := PackLines(&buf, log); err != nil {
 		return err
 	}
-	return s.worlds.SavePackedLog(ctx, PackedLog{WorldID: worldID, Seed: row.Seed, Secret: row.Secret, Config: row.Config, Build: buildVersion(),
+	return s.worlds.SavePackedLog(ctx, PackedLog{WorldID: worldID, Seed: row.Seed, Secret: row.Secret, Config: row.Config, Build: buildinfo.Version(),
 		Rows: len(log), LastSeq: log[len(log)-1].Seq, Data: buf.Bytes(), PackedAtMs: s.clock.NowMs()})
 }
 

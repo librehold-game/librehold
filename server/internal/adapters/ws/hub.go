@@ -30,6 +30,9 @@ const (
 	closeTooSlow         websocket.StatusCode = 4408
 )
 
+// helloSent runs once a connection's hello is written; tests stall the connection there.
+var helloSent = func() {}
+
 type message struct {
 	Type       string   `json:"type"`
 	Topics     []string `json:"topics,omitempty"`
@@ -200,12 +203,14 @@ func write(ctx context.Context, conn *websocket.Conn, m message) error {
 // serve writes the connection's messages; the clock decides when to ping and when to check the session again.
 func (h *Hub) serve(ctx context.Context, conn *websocket.Conn, c *client) {
 	ctx = conn.CloseRead(ctx)
+	// Counted from before the hello: once the client has it, it may act, and its next check must not move later.
+	lastPing, lastAuth := h.clock.NowMs(), h.clock.NowMs()
 	now, wall, err := h.svc.WorldTime(ctx, c.world)
 	if err != nil || write(ctx, conn, message{Type: "hello", ServerTime: &wall, WorldNow: &now}) != nil {
 		_ = conn.CloseNow()
 		return
 	}
-	lastPing, lastAuth := h.clock.NowMs(), h.clock.NowMs()
+	helloSent()
 	ticker := time.NewTicker(tick)
 	defer ticker.Stop()
 	for {
