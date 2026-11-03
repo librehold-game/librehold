@@ -243,18 +243,18 @@ func MarkReportsRead(w World, actor PlayerID, ids []string, read bool) error {
 	return nil
 }
 
-func reportIDs(w World, actor PlayerID, keep func(*Report) bool) []string {
+func reportIDs(w World, actor PlayerID, skipAutoFarm bool, keep func(*Report) bool) []string {
 	var ids []string
 	for _, r := range w.Reports(actor, allReports, 0) {
-		if keep(r) {
+		if keep(r) && !(skipAutoFarm && r.AutoFarm) {
 			ids = append(ids, r.ID)
 		}
 	}
 	return ids
 }
 
-func MarkAllReportsRead(w World, actor PlayerID) error {
-	w.SetReportRead(actor, reportIDs(w, actor, func(r *Report) bool { return !r.Read }), true)
+func MarkAllReportsRead(w World, actor PlayerID, skipAutoFarm bool) error {
+	w.SetReportRead(actor, reportIDs(w, actor, skipAutoFarm, func(r *Report) bool { return !r.Read }), true)
 	return nil
 }
 
@@ -263,8 +263,8 @@ func DeleteReport(w World, actor PlayerID, id string) error {
 	return nil
 }
 
-func DeleteReadReports(w World, actor PlayerID) error {
-	w.DeleteReports(actor, reportIDs(w, actor, func(r *Report) bool { return r.Read }))
+func DeleteReadReports(w World, actor PlayerID, skipAutoFarm bool) error {
+	w.DeleteReports(actor, reportIDs(w, actor, skipAutoFarm, func(r *Report) bool { return r.Read }))
 	return nil
 }
 

@@ -130,8 +130,8 @@ export interface GameStore {
   /** Stores the player's language on the account; the switch itself already changed it locally. */
   setLocale: (locale: Locale) => void;
   markReportRead: (id: string, read?: boolean) => Promise<string | null>;
-  markAllReportsRead: () => Promise<string | null>;
-  deleteReadReports: () => Promise<string | null>;
+  markAllReportsRead: (skipAutoFarm: boolean) => Promise<string | null>;
+  deleteReadReports: (skipAutoFarm: boolean) => Promise<string | null>;
   deleteReport: (id: string) => Promise<string | null>;
 }
 
@@ -553,8 +553,8 @@ export const useGameStore = create<GameStore>()(
       renameVillage: (villageId, name) => run('rename-village', { villageId, name }),
       setLocale: (locale) => { void api.patch('/api/v1/me', { locale }).catch(() => undefined); },
       markReportRead: (id, read = true) => runThenReports('mark-reports-read', { ids: [id], read }),
-      markAllReportsRead: () => runThenReports('mark-all-reports-read', {}),
-      deleteReadReports: () => runThenReports('delete-read-reports', {}),
+      markAllReportsRead: (skipAutoFarm) => runThenReports('mark-all-reports-read', { skipAutoFarm }),
+      deleteReadReports: (skipAutoFarm) => runThenReports('delete-read-reports', { skipAutoFarm }),
       deleteReport: (id) => runThenReports('delete-report', { id }),
     };
   }),

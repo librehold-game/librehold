@@ -37,6 +37,7 @@ type SendCheck struct {
 
 type SendOpts struct {
 	CatapultTarget *BuildingID
+	AutoFarm       bool
 	Farm           bool
 }
 
@@ -129,7 +130,7 @@ func SendCommand(w World, actor PlayerID, originID string, tx, ty int, u UnitCou
 		}
 	}
 	c := &Command{ID: w.NewID("c"), Type: typ, OriginID: originID, TargetID: target.ID, Units: sent,
-		DepartedAt: w.Now(), ArrivesAt: w.Now() + check.TravelMs, Farm: opts.Farm}
+		DepartedAt: w.Now(), ArrivesAt: w.Now() + check.TravelMs, AutoFarm: opts.AutoFarm, Farm: opts.Farm}
 	if opts.CatapultTarget != nil && sent[UCatapult] > 0 {
 		ct := *opts.CatapultTarget
 		c.CatapultTarget = &ct

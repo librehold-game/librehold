@@ -6,7 +6,7 @@ import { UNITS } from '../../data/units.data';
 import { reportIcon, reportVillageOf } from '../../engine/reports';
 import { reportVillageLabel } from '../../i18n/names';
 import { t, useT } from '../../i18n/i18n';
-import { BotTag } from '../components/BotTag';
+import { AutoFarmTag, BotTag } from '../components/BotTag';
 import { RESOURCES, UNIT_IDS, type Report, type ReportType, type UnitId } from '../../engine/types';
 import { useGameStore } from '../../state/gameStore';
 import { useUiStore } from '../../state/uiStore';
@@ -99,7 +99,7 @@ function ReportDetail({ id, onBack }: { id: string; onBack: () => void }) {
     <div className="space-y-3 text-[12px]">
       <div className="flex items-center gap-2 flex-wrap">
         <button className="btn" onClick={onBack}>{t('reports.back')}</button>
-        <h3 className="text-[15px]"><PixelIcon name={reportIcon(r)} size={18} /> {reportVillageLabel(r.origin)}{r.origin.ownerIsBot && <BotTag />} → {targetLabel(r)}{r.target.ownerIsBot && <BotTag />}</h3>
+        <h3 className="text-[15px]"><PixelIcon name={reportIcon(r)} size={18} /> {reportVillageLabel(r.origin)}{r.origin.ownerIsBot && <BotTag />} → {targetLabel(r)}{r.target.ownerIsBot && <BotTag />}{r.autoFarm && <AutoFarmTag />}</h3>
         <span className="text-muted ml-auto">{clock.at(r.time)}</span>
       </div>
       <div className="flex gap-2 flex-wrap">
@@ -167,6 +167,8 @@ export function ReportsView() {
   const [selected, setSelected] = useState<string | null>(null);
   const villageFilter = useUiStore((s) => s.reportsVillageFilter);
   const setVillageFilter = useUiStore((s) => s.setReportsVillageFilter);
+  const hideAutoFarm = useUiStore((s) => s.reportsHideAutoFarm);
+  const setHideAutoFarm = useUiStore((s) => s.setReportsHideAutoFarm);
   const villageFilterLabel = useGameStore((s) => (villageFilter ? reportVillageLabel(reportVillageOf(s.game!, villageFilter)) : ''));
   const reportToOpen = useUiStore((s) => s.reportToOpen);
   const consumeReportToOpen = useUiStore((s) => s.consumeReportToOpen);
@@ -174,10 +176,11 @@ export function ReportsView() {
     s.game!.reports
       .filter((r) => !villageFilter || r.targetId === villageFilter || r.originId === villageFilter)
       .filter((r) => filter === 'all' || (filter === 'unread' ? !r.read : r.type === filter))
-      .map((r) => ({ id: r.id, time: r.time, type: r.type, read: r.read, icon: reportIcon(r), o: reportVillageLabel(r.origin), t: targetLabel(r), haul: r.haul ? r.haul.wood + r.haul.clay + r.haul.iron : null, cap: r.haulCapacity ?? null }))
+      .filter((r) => !hideAutoFarm || !r.autoFarm)
+      .map((r) => ({ id: r.id, time: r.time, type: r.type, read: r.read, autoFarm: !!r.autoFarm, icon: reportIcon(r), o: reportVillageLabel(r.origin), t: targetLabel(r), haul: r.haul ? r.haul.wood + r.haul.clay + r.haul.iron : null, cap: r.haulCapacity ?? null }))
       .reverse(),
   ));
-  const rows = JSON.parse(list) as { id: string; time: number; type: ReportType; read: boolean; icon: string; o: string; t: string; haul: number | null; cap: number | null }[];
+  const rows = JSON.parse(list) as { id: string; time: number; type: ReportType; read: boolean; autoFarm: boolean; icon: string; o: string; t: string; haul: number | null; cap: number | null }[];
   const markRead = useGameStore((s) => s.markReportRead);
   const markAll = useGameStore((s) => s.markAllReportsRead);
   const deleteRead = useGameStore((s) => s.deleteReadReports);
@@ -199,17 +202,18 @@ export function ReportsView() {
         <select className="px-1 border border-wood-border rounded bg-white/50" value={filter} onChange={(e) => setFilter(e.target.value as Filter)}>
           {(['all', 'unread', 'attack', 'scout', 'conquest', 'support'] as const).map((f) => <option key={f} value={f}>{t(`reports.filter.${f}`)}</option>)}
         </select>
+        <label className="inline-flex items-center gap-1"><input type="checkbox" checked={hideAutoFarm} onChange={(e) => setHideAutoFarm(e.target.checked)} /> {t('reports.hideAutoFarm')}</label>
         {villageFilter && (
           <span className="inline-flex items-center gap-1 px-1.5 py-0.5 border border-wood-border rounded bg-white/40">
             {t('reports.villageFilter')} <strong>{villageFilterLabel}</strong>
             <button className="ml-1 font-bold" title={t('reports.allVillages')} onClick={() => setVillageFilter(null)}>✕</button>
           </span>
         )}
-        <button className="btn ml-auto" onClick={markAll}>{t('reports.markAll')}</button>
-        <button className="btn" onClick={deleteRead}>{t('reports.deleteRead')}</button>
+        <button className="btn ml-auto" onClick={() => markAll(hideAutoFarm)}>{t('reports.markAll')}</button>
+        <button className="btn" onClick={() => deleteRead(hideAutoFarm)}>{t('reports.deleteRead')}</button>
       </div>
       {rows.length === 0 ? (
-        <p className="text-muted italic text-[12px]">{t('reports.empty')}</p>
+        <p className="text-muted italic text-[12px]">{t(total > 0 ? 'reports.noneMatch' : 'reports.empty')}</p>
       ) : (
         <table className="table-game table-stack">
           <thead><tr><th></th><th>{t('reports.colReport')}</th><th>{t('reports.colLoot')}</th><th>{t('reports.colTime')}</th></tr></thead>
@@ -217,7 +221,7 @@ export function ReportsView() {
             {rows.map((r) => (
               <tr key={r.id} className={`cursor-pointer ${r.read ? 'text-muted' : 'font-semibold'}`} onClick={() => { markRead(r.id); setSelected(r.id); }}>
                 <td className="text-center w-8 stack-inline"><PixelIcon name={r.icon} size={16} /></td>
-                <td className="stack-inline">{r.o} → {r.t}</td>
+                <td className="stack-inline">{r.o} → {r.t}{r.autoFarm && <AutoFarmTag />}</td>
                 <td className="tabular-nums" data-label={t('reports.colLoot')}>{r.haul !== null ? `${formatNumber(r.haul)}${r.cap ? ` / ${formatNumber(r.cap)}` : ''}` : '—'}</td>
                 <td className="tabular-nums whitespace-nowrap" data-label={t('reports.colTime')}>{clock.at(r.time)}</td>
               </tr>

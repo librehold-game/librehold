@@ -121,6 +121,8 @@ func reportRecipients(w World, attacker, defender PlayerID, target *Village) []P
 func sendReports(w World, to []PlayerID, r Report) {
 	for _, id := range to {
 		copy := r
+		// Only the sender learns the auto-farm sent the troops.
+		copy.AutoFarm = r.AutoFarm && id == r.Origin.OwnerID
 		w.AddReport(id, &copy)
 	}
 }
@@ -237,7 +239,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			Origin: ReportVillageOf(w, c.OriginID), Target: ReportVillageOf(w, target.ID),
 			Attacker: ReportSide{Units: c.Units, Losses: result.AttackerLosses},
 			Morale:   result.Morale, WallBefore: target.Buildings[BWall], WallAfter: target.Buildings[BWall],
-			Outcome: result.Outcome,
+			Outcome: result.Outcome, AutoFarm: c.AutoFarm,
 		}
 		if scoutOK {
 			r.Defender.Units = defenderUnits
@@ -347,7 +349,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			Attacker: ReportSide{Units: c.Units, Losses: result.AttackerLosses},
 			Defender: ReportSide{Units: defenderUnits, Losses: result.DefenderLosses},
 			Luck:     result.Luck, Morale: result.Morale, WallBefore: result.WallBefore, WallAfter: result.WallAfter,
-			BuildingDamage: result.BuildingDamage, Conquered: conquered, Outcome: result.Outcome,
+			BuildingDamage: result.BuildingDamage, Conquered: conquered, Outcome: result.Outcome, AutoFarm: c.AutoFarm,
 		}
 		if conquered {
 			r.Type = "conquest"

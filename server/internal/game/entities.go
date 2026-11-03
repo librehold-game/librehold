@@ -108,6 +108,8 @@ type Command struct {
 	Threats []string `json:"threats,omitempty"`
 	// FieldHit marks an army that survived a field battle; its owner may turn it back.
 	FieldHit bool `json:"fieldHit,omitempty"`
+	// AutoFarm marks an army the auto-farm sent; only its owner sees it.
+	AutoFarm bool `json:"autoFarm,omitempty"`
 	// Farm marks a raid the farm assistant sent (a template or the auto-farm) and its way home; only its owner
 	// sees it.
 	Farm bool `json:"farm,omitempty"`
@@ -184,6 +186,7 @@ type Report struct {
 	Conquered      bool            `json:"conquered,omitempty"`
 	Outcome        string          `json:"outcome"` // attackerWon | defenderWon
 	Read           bool            `json:"read"`
+	AutoFarm       bool            `json:"autoFarm,omitempty"`
 	Field          *FieldReport    `json:"field,omitempty"`
 }
 

@@ -78,6 +78,17 @@ func farmSetup(t *testing.T) (*gametest.MemWorld, *game.Village) {
 	return w, v
 }
 
+func startAutoFarm(t *testing.T, w *gametest.MemWorld, v *game.Village) {
+	t.Helper()
+	w.Human("h1").FarmAssistant.AutoFarmUnlocked = true
+	if err := game.SetFarmFilters(w, "h1", game.FarmFiltersPatch{Radius: ptr(6.0)}); err != nil {
+		t.Fatal(err)
+	}
+	if err := game.SetAutoFarm(w, "h1", true, []string{v.ID}); err != nil {
+		t.Fatal(err)
+	}
+}
+
 func farmTargetOf(w *gametest.MemWorld, v *game.Village, id string) *game.FarmTarget {
 	for _, ft := range game.FarmTargets(w, "h1", v.ID) {
 		if ft.ID == id {
@@ -140,13 +151,7 @@ func TestFarmAssistant(t *testing.T) {
 	t.Run("auto-farm: sends template A to the filtered targets, deterministically offline", func(t *testing.T) {
 		setup := func() (*gametest.MemWorld, *game.Village, int) {
 			w, v := farmSetup(t)
-			w.Human("h1").FarmAssistant.AutoFarmUnlocked = true
-			if err := game.SetFarmFilters(w, "h1", game.FarmFiltersPatch{Radius: ptr(6.0)}); err != nil {
-				t.Fatal(err)
-			}
-			if err := game.SetAutoFarm(w, "h1", true, []string{v.ID}); err != nil {
-				t.Fatal(err)
-			}
+			startAutoFarm(t, w, v)
 			sent := game.AutoFarmTick(w, "h1", v.ID)
 			return w, v, sent
 		}
@@ -168,13 +173,7 @@ func TestFarmAssistant(t *testing.T) {
 
 	t.Run("auto-farm logs every raid it sends, for the record of how the player farms", func(t *testing.T) {
 		w, v := farmSetup(t)
-		w.Human("h1").FarmAssistant.AutoFarmUnlocked = true
-		if err := game.SetFarmFilters(w, "h1", game.FarmFiltersPatch{Radius: ptr(6.0)}); err != nil {
-			t.Fatal(err)
-		}
-		if err := game.SetAutoFarm(w, "h1", true, []string{v.ID}); err != nil {
-			t.Fatal(err)
-		}
+		startAutoFarm(t, w, v)
 		w.TakeActions()
 		sent := game.AutoFarmTick(w, "h1", v.ID)
 		var logged []game.LoggedAction
@@ -195,6 +194,81 @@ func TestFarmAssistant(t *testing.T) {
 		if err := json.Unmarshal(logged[0].Payload, &payload); err != nil || payload.OriginID != v.ID ||
 			payload.Units[game.ULightCav] != 5 || logged[0].IsBot || logged[0].Actor != game.ActorOf(w.Player("h1")) {
 			t.Fatalf("entry %+v payload %s", logged[0], logged[0].Payload)
+		}
+	})
+
+	t.Run("auto-farm: the sender's reports are marked and arrive unread, scout reports too", func(t *testing.T) {
+		for _, tc := range []struct {
+			tpl game.UnitCounts
+			typ string
+		}{{game.UnitCounts{game.ULightCav: 5}, "attack"}, {game.UnitCounts{game.UScout: 1}, "scout"}} {
+			w, v := farmSetup(t)
+			v.Units[game.UScout] = 50
+			if err := game.SetFarmTemplate(w, "h1", "A", tc.tpl); err != nil {
+				t.Fatal(err)
+			}
+			startAutoFarm(t, w, v)
+			if game.AutoFarmTick(w, "h1", v.ID) == 0 {
+				t.Fatal("nothing sent")
+			}
+			for _, c := range w.Commands() {
+				if !c.AutoFarm {
+					t.Fatalf("unmarked command %+v", c)
+				}
+			}
+			advanceTouch(t, w, v, w.Now()+2*game.MsPerHour)
+			rs := w.ReportsOf("h1")
+			if len(rs) == 0 {
+				t.Fatal("no reports")
+			}
+			for _, r := range rs {
+				if r.Type != tc.typ || !r.AutoFarm || r.Read {
+					t.Fatalf("%s report: type %s autoFarm %v read %v", tc.typ, r.Type, r.AutoFarm, r.Read)
+				}
+			}
+		}
+	})
+
+	t.Run("a raid sent by hand is not marked", func(t *testing.T) {
+		w, v := farmSetup(t)
+		x, y := gametest.NearestBarbarianXY(w, v)
+		mustSend(t, w, v, x, y, game.UnitCounts{game.ULightCav: 5}, "attack")
+		if _, err := game.SendFarmTemplate(w, "h1", v.ID, "A", x, y); err != nil {
+			t.Fatal(err)
+		}
+		advanceTouch(t, w, v, w.Now()+2*game.MsPerHour)
+		rs := w.ReportsOf("h1")
+		if len(rs) != 2 {
+			t.Fatalf("%d reports", len(rs))
+		}
+		for _, r := range rs {
+			if r.AutoFarm {
+				t.Fatal("marked")
+			}
+		}
+	})
+
+	t.Run("auto-farm: a player who took the target before the raid arrived is not told it was automatic", func(t *testing.T) {
+		w, v := farmSetup(t)
+		startAutoFarm(t, w, v)
+		if game.AutoFarmTick(w, "h1", v.ID) == 0 {
+			t.Fatal("nothing sent")
+		}
+		raid := w.Commands()[0]
+		gametest.NewHumanPlayer(w, "h2")
+		game.SetOwner(w, w.Village(raid.TargetID), game.Ref("h2"))
+		advanceTouch(t, w, v, raid.ArrivesAt)
+		reportOn := func(p game.PlayerID) *game.Report {
+			for _, r := range w.ReportsOf(p) {
+				if r.TargetID == raid.TargetID {
+					return r
+				}
+			}
+			t.Fatalf("no report for %s", p)
+			return nil
+		}
+		if !reportOn("h1").AutoFarm || reportOn("h2").AutoFarm {
+			t.Fatal("only the sender's report is marked")
 		}
 	})
 
@@ -303,10 +377,10 @@ func TestReportManagement(t *testing.T) {
 	if err := game.MarkReportsRead(w, "h1", []string{reps[0].ID}, true); err != nil || !reps[0].Read || reps[1].Read {
 		t.Fatal("mark one")
 	}
-	if err := game.DeleteReadReports(w, "h1"); err != nil || len(w.Reports("h1", 1<<62, 0)) != 2 {
+	if err := game.DeleteReadReports(w, "h1", false); err != nil || len(w.Reports("h1", 1<<62, 0)) != 2 {
 		t.Fatal("delete read")
 	}
-	if err := game.MarkAllReportsRead(w, "h1"); err != nil {
+	if err := game.MarkAllReportsRead(w, "h1", false); err != nil {
 		t.Fatal(err)
 	}
 	for _, r := range w.Reports("h1", 1<<62, 0) {
@@ -320,6 +394,32 @@ func TestReportManagement(t *testing.T) {
 	}
 	if got := w.Reports("h1", 1<<62, 1); len(got) != 1 {
 		t.Fatal("limit")
+	}
+}
+
+func TestBulkReportActionsCanLeaveAutoFarmReports(t *testing.T) {
+	w, _ := gametest.NewTestWorld(101)
+	w.AddReport("h1", &game.Report{Type: "attack", Time: w.Now()})
+	w.AddReport("h1", &game.Report{Type: "attack", Time: w.Now(), AutoFarm: true})
+	if err := game.MarkAllReportsRead(w, "h1", true); err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range w.ReportsOf("h1") {
+		if r.Read == r.AutoFarm {
+			t.Fatalf("autoFarm %v read %v", r.AutoFarm, r.Read)
+		}
+	}
+	if err := game.MarkAllReportsRead(w, "h1", false); err != nil {
+		t.Fatal(err)
+	}
+	if err := game.DeleteReadReports(w, "h1", true); err != nil {
+		t.Fatal(err)
+	}
+	if rs := w.ReportsOf("h1"); len(rs) != 1 || !rs[0].AutoFarm {
+		t.Fatalf("left %+v", rs)
+	}
+	if err := game.DeleteReadReports(w, "h1", false); err != nil || len(w.ReportsOf("h1")) != 0 {
+		t.Fatal("the auto-farm's read report kept")
 	}
 }
 
