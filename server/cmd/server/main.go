@@ -22,6 +22,7 @@ import (
 	"librehold/internal/adapters/web"
 	"librehold/internal/adapters/ws"
 	"librehold/internal/app"
+	"librehold/internal/buildinfo"
 	"librehold/internal/config"
 )
 
@@ -47,6 +48,7 @@ func main() {
 }
 
 func run() error {
+	slog.Info("starting", "version", buildinfo.Version())
 	cfg, err := config.Load()
 	if err != nil {
 		return err
