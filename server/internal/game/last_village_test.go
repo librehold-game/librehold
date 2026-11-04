@@ -33,6 +33,15 @@ func TestLastVillageModes(t *testing.T) {
 		}
 	})
 
+	t.Run("playersOnly: bots can conquer other bots' last villages too", func(t *testing.T) {
+		w, _, _ := lastVillageWorld(t, "playersOnly")
+		gametest.NewBotPlayer(w, "b2")
+		v := gametest.AddStartVillage(w, "b2", 60, 60)
+		if !game.CanBeConquered(w, v) {
+			t.Fatal("a second bot's last village should be conquerable in playersOnly mode")
+		}
+	})
+
 	t.Run("playersOnly: a human's last village stays protected", func(t *testing.T) {
 		cfg := gametest.TestConfig()
 		cfg.LastVillage = "playersOnly"
