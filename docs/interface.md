@@ -59,10 +59,13 @@ Everything trading looks like lives in `src/ui/views/MarketScreen.tsx`, and ever
   page before joining, as a `Trading` row with on/off plus a separate `Offer lasts (hours)` row shown while it is on.
   The admin world form has it as a live-editable checkbox (`FIELDS`), and the hosting form has it as
   "Players and bots can trade", defaulting to on.
-- **Trading switched off in the world** (`WorldConfig.TradingEnabled` false): the screen collapses to the merchant line
-  plus the reason — `Your trade offers`, `Global Market` and the travelling trader are not rendered at all, so there is
-  no dead market to click. The server refuses the same actions and empties the board (`CloseMarket` refunds every open
-  offer when an admin flips the switch), so hiding is courtesy rather than the enforcement.
+- **Trading switched off in the world** (`WorldConfig.TradingEnabled` false): the screen looks the way the market did
+  before players could trade with each other — the merchant line with the reason under it, the transfer form for your own
+  villages, and the travelling trader. `Your trade offers`, `Global Market` and the merchant-shipments panel are not
+  rendered, because those exist only for player-to-player deals. Moving resources between your own villages and the
+  travelling trader's fixed-rate exchange are not deals with another player, so the server keeps them open; posting,
+  accepting and sending to somebody else refuse with `tradingOff`, and an admin flipping the switch empties the board
+  (`CloseMarket` refunds every open offer).
 - **Merchant line** above the panels: "Merchants: free / total", with the capacity hint (1 merchant = 1000 resources,
   6 min/field). The market level decides the total — one per level to 11, then quadratic (level 19 = 91, level 25 = 235) — so
   this line is also the limit on how big a single trade can be. The building table's Market row shows the same number, so a

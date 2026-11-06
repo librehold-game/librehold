@@ -102,7 +102,7 @@ and marches in progress finish at their own times.
 | Battle losses, difficulty, bots towards humans | normal, normal, normal | normal/reduced; easy–brutal; four stances | editable |
 | Field battles | on | on/off | editable |
 | Sight range (passing armies) | 1 tile | 1–10 | at creation only |
-| Trading (players and bots alike) | on for a new world, **off for a world stored before the setting existed** | on/off (`TradingEnabled`) | editable — closes every trade: posting, accepting, direct resource sends and the bots' own trading; withdrawing stays open so nobody is stuck with resources set aside |
+| Trading (players and bots alike) | on for a new world, **off for a world stored before the setting existed** | on/off (`TradingEnabled`) | editable — closes player-to-player trading: posting, accepting and sending resources to another player, plus the bots' own deals; moving resources between your own villages and the travelling trader stay open, as does withdrawing |
 | Trade offer duration | 24 game hours | admin-set hours | editable — applies to offers posted after the change; a world stored before this setting keeps the 24 h default until an admin picks a value |
 
 - With "gradually", bots join at the edge of the occupied area with a basic village — a message goes to Rumours.
@@ -114,10 +114,13 @@ and marches in progress finish at their own times.
 
 ## Player trading
 
-Trading is a **world setting** (`WorldConfig.TradingEnabled`), editable at any time. It governs *all* trade, not just
-offers: posting and accepting offers, the plain market send, the travelling trader's exchange, and the bots' own
-trading (a bot checks the flag before it plans any deal, so a world with trading off has a market that does nothing at
-all). Every one of those paths refuses with a `tradingOff` blocker; only withdrawing stays open. New worlds start with it **on**. A
+Trading is a **world setting** (`WorldConfig.TradingEnabled`), editable at any time. It governs deals *between
+players*: posting and accepting offers, sending resources to somebody else's village, and the bots' own trading (a bot
+checks the flag before it plans any deal). Those paths refuse with a `tradingOff` blocker. What it does not close is
+anything that is not a deal with another player: moving resources between your own villages (`CheckTrade` and
+`SendTrade` allow it when both villages share an owner), the travelling trader's fixed-rate exchange, and withdrawing an
+offer, so nobody is stuck with resources set aside. A world with trading off therefore keeps the market it had before
+player trading existed. New worlds start with it **on**. A
 world stored before the setting existed has no `tradingEnabled` key in its config; the flag is therefore stored as
 `TradingEnabled` rather than `NoTrading`, so the zero value means **off** and no running world changes behaviour. An
 admin flips it per world, both in the admin world form and in the player hosting form (where it defaults to on, so an

@@ -258,12 +258,19 @@ func TestTradeOfferLifecycle(t *testing.T) {
 		cfg.TradingEnabled = false
 		defer func() { cfg.TradingEnabled = true }()
 
-		// The plain market trade is closed too — it is trading, even though it is not an offer.
+		// A transfer to another player is trading, so it is closed.
 		if !slices.Contains(blockerKinds(game.CheckTrade(w, "h1", a.ID, b.ID, game.Resources{Wood: 5}).Blockers), "tradingOff") {
 			t.Fatal("checkTrade should report tradingOff")
 		}
 		if _, err := game.SendTrade(w, "h1", a.ID, b.ID, game.Resources{Wood: 5}); err == nil {
 			t.Fatal("SendTrade should refuse while trading is off")
+		}
+		// Moving resources between your own villages is not trading with anyone, so it keeps working: the market
+		// still looks like it did before players could trade, and it still does what it did back then.
+		mine := gametest.AddStartVillage(w, "h1", a.X+4, a.Y+1)
+		mine.Buildings[game.BMarket] = 5
+		if _, err := game.SendTrade(w, "h1", a.ID, mine.ID, game.Resources{Wood: 5}); err != nil {
+			t.Fatalf("a transfer between my own villages should survive the switch: %v", err)
 		}
 		if err := game.AcceptTradeOffers(w, "h2", []string{o.ID}, b.ID); err == nil {
 			t.Fatal("accepting an offer should refuse while trading is off")

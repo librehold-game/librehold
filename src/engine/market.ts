@@ -107,7 +107,8 @@ export function balanceAmount(origin: Village, target: Village): ResourceSet {
 }
 
 export function canAcceptTrader(state: GameState, v: Village): boolean {
+  // The travelling trader is a fixed-rate shop, not a deal with another player, so `tradingEnabled` does not close
+  // it: the same reason `AcceptTrader` on the server stopped checking the switch.
   const t = state.trader;
-  if (state.config.tradingEnabled === false) return false;
   return !!t && !t.accepted && v.buildings.market >= 1 && v.resources[t.offer.give] >= t.offer.giveAmount;
 }

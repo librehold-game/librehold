@@ -596,28 +596,42 @@ describe('grouping and withdrawing my own offers', () => {
 });
 
 describe('trading switched off in the world', () => {
-  it('replaces the market with the reason, keeping the merchant line', async () => {
+  it('leaves the market as it was before players could trade, and says why', async () => {
     g.config.tradingEnabled = false;
     g.tradeOffers = [offer({ id: 'botpost' })];
     stubServer(g);
     await useGameStore.getState().boot();
     render(<MarketScreen />);
-    // The merchants line still tells the player what the village could carry.
+    // The merchant line, the transfer panel and the travelling trader are what the market was before player trading.
+    // This village has no second own village here, so the panel states that instead of offering a form.
     expect(screen.getByText(/Merchants:/)).toBeTruthy();
-    // Every way of trading is gone, and the reason is stated rather than a set of dead buttons.
+    expect(screen.getByText(/Trading works between your own villages/)).toBeTruthy();
+    expect(screen.getByText('Travelling trader')).toBeTruthy();
+    // Only the things that came with player trading are gone, with one line saying so.
     expect(screen.getByText('Trading is switched off in this world')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Accept' })).toBeNull();
     expect(screen.queryByRole('button', { name: /Post offer/ })).toBeNull();
-    expect(screen.queryByRole('button', { name: 'Exchange' })).toBeNull();
-    // Nothing about the board or the offers table is rendered either.
     expect(screen.queryByText('Global Market')).toBeNull();
     expect(screen.queryByText('Your trade offers')).toBeNull();
-    expect(document.querySelectorAll('table.table-game')).toHaveLength(0);
+    // And the merchant shipments panel came with player trading, so it is gone too.
+    expect(screen.queryByText('Merchant shipments')).toBeNull();
     // The offer the server sent is not shown at all: no amounts, no poster, no withdrawal.
     const body = document.body.textContent ?? '';
     expect(body).not.toContain('×1');
     expect(screen.queryByRole('button', { name: /Withdraw/ })).toBeNull();
-    expect(screen.queryByText('Travelling trader')).toBeNull();
+  });
+
+  it('offers the transfer form once a second own village exists, even with trading off', async () => {
+    g.config.tradingEnabled = false;
+    const second = { ...home, id: 'v:9:9', x: 9, y: 9 };
+    g.villages[second.id] = second;
+    g.players[HUMAN_ID] = { ...g.players[HUMAN_ID]!, villageIds: [home.id, second.id] };
+    stubServer(g);
+    await useGameStore.getState().boot();
+    render(<MarketScreen />);
+    // Moving resources between your own villages is not trading with anyone, so the switch does not remove it.
+    expect(screen.getByRole('button', { name: 'Send resources' })).toBeTruthy();
+    expect(screen.queryByText(/conquer a second village/i)).toBeNull();
   });
 
   it('shows the full market again when the world has it on', async () => {

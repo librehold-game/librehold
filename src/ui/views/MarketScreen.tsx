@@ -519,6 +519,73 @@ function BoardTableRow({ group }: { group: BoardGroup }) {
   );
 }
 
+type PanelInfo = {
+  total: number; free: number; check: ReturnType<typeof checkTrade> | null; surplus: ResourceSet; balance: ResourceSet | null;
+  trader: { offer: { give: Resource; giveAmount: number; get: Resource; getAmount: number }; expiresAt: number; accepted: boolean };
+  canAccept: boolean; have: ResourceSet;
+};
+
+/** The plain transfer form: move resources between your own villages. It is not player trading, so it also works on a
+ * world where player trading is switched off — the server allows it for the same reason. */
+function TransferFields({ villageId, info: m, list, target, setTarget, amount, setAmount }: {
+  villageId: string; info: PanelInfo; list: { id: string; label: string }[]; target: string;
+  setTarget: (id: string) => void; amount: ResourceSet; setAmount: (fn: (a: ResourceSet) => ResourceSet) => void;
+}) {
+  const t = useT();
+  const trade = useGameStore((s) => s.trade);
+  const pushError = useGameStore((s) => s.pushError);
+  const setRes = (r: Resource, n: number) => setAmount((a) => ({ ...a, [r]: Math.max(0, Math.floor(n) || 0) }));
+  if (list.length === 0) return <p className="text-muted italic">{t('market.ownOnly')}</p>;
+  return (
+    <>
+      <label>{t('market.toVillage')} <select className="px-1 border border-wood-border rounded bg-white/50" value={target} onChange={(e) => setTarget(e.target.value)}>{list.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}</select></label>
+      <div className="flex flex-wrap gap-3 items-center">
+        {RESOURCES.map((r) => (
+          <label key={r} className="inline-flex items-center gap-1"><ResourceIcon r={r} size={14} />
+            <NumberInput min={0} className="w-24 px-1 border border-wood-border rounded bg-white/50 tabular-nums" value={amount[r]} onValue={(n) => setRes(r, n)} />
+            <span className="text-muted">/ {formatNumber(m.have[r])}</span>
+          </label>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-2 items-center">
+        <button className="btn" onClick={() => setAmount(() => m.surplus)} title={t('market.surplusTitle')}>{t('market.surplus')}</button>
+        <button className="btn" onClick={() => m.balance && setAmount(() => m.balance!)} title={t('market.balanceTitle')}>{t('market.balance')}</button>
+        <button className="btn" onClick={() => setAmount(() => ({ wood: 0, clay: 0, iron: 0 }))}>{t('market.clear')}</button>
+        {m.check && <span className="text-muted">{t('market.sendInfo', { merchants: m.check.merchants, time: formatDuration(m.check.travelMs) })}</span>}
+        {/* Like Accept: pressable while the transfer is refused, with the reason in the toast rather than as a line
+            under the row, which is long enough to be cut off on a phone. */}
+        <button className="btn ml-auto" disabled={!m.check} title={m.check?.blockers.map(blockerText).join('\n')}
+          onClick={async () => {
+            const reasons = m.check?.blockers ?? [];
+            if (reasons.length > 0) { pushError(blockedMessage(reasons)); return; }
+            if (!(await trade(villageId, target, amount))) setAmount(() => ({ wood: 0, clay: 0, iron: 0 }));
+          }}>
+          {t('market.send')}
+        </button>
+      </div>
+    </>
+  );
+}
+
+/** The market's own recurring offer. A fixed-rate shop rather than a deal with another player, so it stays open on a
+ * world with player trading switched off. */
+function TravellingTrader({ villageId, trader, canAccept }: {
+  villageId: string; trader: PanelInfo['trader']; canAccept: boolean;
+}) {
+  const t = useT();
+  const accept = useGameStore((s) => s.acceptTraderOffer);
+  return (
+    <div className="panel p-3 space-y-1">
+      <h3 className="text-[15px]">{t('market.trader')} <span className="text-muted font-body text-[11px]">{t('market.nextOffer')} <Countdown until={trader.expiresAt} />)</span></h3>
+      <div className="flex items-center gap-2 flex-wrap">
+        <span>{t('market.give')} <strong className="inline-flex items-center gap-0.5"><ResourceIcon r={trader.offer.give} size={14} />{t(`resourceAmount.${trader.offer.give}`, { n: formatNumber(trader.offer.giveAmount) })}</strong></span>
+        <span>{t('market.get')} <strong className="inline-flex items-center gap-0.5"><ResourceIcon r={trader.offer.get} size={14} />{t(`resourceAmount.${trader.offer.get}`, { n: formatNumber(trader.offer.getAmount) })}</strong></span>
+        <button className="btn ml-auto" disabled={!canAccept} title={trader.accepted ? t('market.used') : canAccept ? t('market.exchange') : t('market.cannotExchange')} onClick={() => accept(villageId)}>{trader.accepted ? t('market.usedShort') : t('market.exchange')}</button>
+      </div>
+    </div>
+  );
+}
+
 export function MarketScreen() {
   const villageId = useGameStore((s) => selectActiveVillage(s).id);
   const others = useGameStore((s) => JSON.stringify(humanVillageIds(s.game!).filter((id) => id !== villageId).map((id) => { const v = s.game!.villages[id]!; return { id, label: `${villageLabelOf(s.game!, v)} ${formatCoords(v.x, v.y)}` }; })));
@@ -526,10 +593,7 @@ export function MarketScreen() {
   const tradingOn = useGameStore((s) => s.game!.config.tradingEnabled !== false);
   const [target, setTarget] = useState(list[0]?.id ?? '');
   const [amount, setAmount] = useState<ResourceSet>({ wood: 0, clay: 0, iron: 0 });
-  const trade = useGameStore((s) => s.trade);
   useT();
-  const accept = useGameStore((s) => s.acceptTraderOffer);
-  const pushError = useGameStore((s) => s.pushError);
   const info = useGameStore((s) => {
     const g = s.game!;
     const v = selectActiveVillage(s);
@@ -546,17 +610,19 @@ export function MarketScreen() {
     total: number; free: number; check: ReturnType<typeof checkTrade> | null; surplus: ResourceSet; balance: ResourceSet | null;
     trader: { offer: { give: Resource; giveAmount: number; get: Resource; getAmount: number }; expiresAt: number; accepted: boolean }; canAccept: boolean; have: ResourceSet;
   };
-  const setRes = (r: Resource, n: number) => setAmount((a) => ({ ...a, [r]: Math.max(0, Math.floor(n) || 0) }));
 
-  // With trading switched off the world has no market to use: the merchants line still explains the village's
-  // capacity, but every way of trading is gone. The server refuses each of them too, so this is the honest face of it.
+  // With trading switched off the market looks like it did before players could trade with each other: the merchants
+  // line, moving resources between your own villages, and the travelling trader. Only the board and the offers that
+  // came with it are gone, with one line saying why.
   if (!tradingOn) {
     return (
       <div className="space-y-4 text-[12px]">
         <div className="panel p-3 space-y-2">
           <h3 className="text-[15px]">{t('market.merchants', { free: m.free, total: m.total })} <span className="text-muted font-body text-[11px]">{t('market.merchantHint')}</span></h3>
           <p className="text-muted italic">{t('market.tradingOff')}</p>
+          <TransferFields villageId={villageId} info={m} list={list} target={target} setTarget={setTarget} amount={amount} setAmount={setAmount} />
         </div>
+        <TravellingTrader villageId={villageId} trader={m.trader} canAccept={m.canAccept} />
       </div>
     );
   }
@@ -565,48 +631,11 @@ export function MarketScreen() {
     <div className="space-y-4 text-[12px]">
       <div className="panel p-3 space-y-2">
         <h3 className="text-[15px]">{t('market.merchants', { free: m.free, total: m.total })} <span className="text-muted font-body text-[11px]">{t('market.merchantHint')}</span></h3>
-        {list.length === 0 ? (
-          <p className="text-muted italic">{t('market.ownOnly')}</p>
-        ) : (
-          <>
-            <label>{t('market.toVillage')} <select className="px-1 border border-wood-border rounded bg-white/50" value={target} onChange={(e) => setTarget(e.target.value)}>{list.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}</select></label>
-            <div className="flex flex-wrap gap-3 items-center">
-              {RESOURCES.map((r) => (
-                <label key={r} className="inline-flex items-center gap-1"><ResourceIcon r={r} size={14} />
-                  <NumberInput min={0} className="w-24 px-1 border border-wood-border rounded bg-white/50 tabular-nums" value={amount[r]} onValue={(n) => setRes(r, n)} />
-                  <span className="text-muted">/ {formatNumber(m.have[r])}</span>
-                </label>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-2 items-center">
-              <button className="btn" onClick={() => setAmount(m.surplus)} title={t('market.surplusTitle')}>{t('market.surplus')}</button>
-              <button className="btn" onClick={() => m.balance && setAmount(m.balance)} title={t('market.balanceTitle')}>{t('market.balance')}</button>
-              <button className="btn" onClick={() => setAmount({ wood: 0, clay: 0, iron: 0 })}>{t('market.clear')}</button>
-              {m.check && <span className="text-muted">{t('market.sendInfo', { merchants: m.check.merchants, time: formatDuration(m.check.travelMs) })}</span>}
-              {/* Like Accept: pressable while the transfer is refused, with the reason in the toast rather than as a line
-                  under the row, which is long enough to be cut off on a phone. */}
-              <button className="btn ml-auto" disabled={!m.check} title={m.check?.blockers.map(blockerText).join('\n')}
-                onClick={async () => {
-                  const reasons = m.check?.blockers ?? [];
-                  if (reasons.length > 0) { pushError(blockedMessage(reasons)); return; }
-                  if (!(await trade(villageId, target, amount))) setAmount({ wood: 0, clay: 0, iron: 0 });
-                }}>
-                {t('market.send')}
-              </button>
-            </div>
-          </>
-        )}
+        <TransferFields villageId={villageId} info={m} list={list} target={target} setTarget={setTarget} amount={amount} setAmount={setAmount} />
       </div>
       <OffersPanel villageId={villageId} />
       <BoardPanel />
-      <div className="panel p-3 space-y-1">
-        <h3 className="text-[15px]">{t('market.trader')} <span className="text-muted font-body text-[11px]">{t('market.nextOffer')} <Countdown until={m.trader.expiresAt} /></span></h3>
-        <div className="flex items-center gap-2 flex-wrap">
-          <span>{t('market.give')} <strong className="inline-flex items-center gap-0.5"><ResourceIcon r={m.trader.offer.give} size={14} />{t(`resourceAmount.${m.trader.offer.give}`, { n: formatNumber(m.trader.offer.giveAmount) })}</strong></span>
-          <span>{t('market.get')} <strong className="inline-flex items-center gap-0.5"><ResourceIcon r={m.trader.offer.get} size={14} />{t(`resourceAmount.${m.trader.offer.get}`, { n: formatNumber(m.trader.offer.getAmount) })}</strong></span>
-          <button className="btn ml-auto" disabled={!m.canAccept} title={m.trader.accepted ? t('market.used') : m.canAccept ? t('market.exchange') : t('market.cannotExchange')} onClick={() => accept(villageId)}>{m.trader.accepted ? t('market.usedShort') : t('market.exchange')}</button>
-        </div>
-      </div>
+      <TravellingTrader villageId={villageId} trader={m.trader} canAccept={m.canAccept} />
       {/* Only merchant shipments: a march has nothing to do with the market, so the same panel is filtered to trades. */}
       <MovementsSection scope="trade" heading={t('market.shipments')} />
     </div>

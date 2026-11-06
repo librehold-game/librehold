@@ -37,6 +37,13 @@ func MerchantsForLevel(level int) int {
 	return steps*steps + n - 1
 }
 
+// sameOwner reports whether both villages belong to the same player, which is what makes a transfer a move between
+// one's own villages rather than a trade with somebody else.
+func sameOwner(w World, a, b string) bool {
+	va, vb := w.Village(a), w.Village(b)
+	return va != nil && vb != nil && va.OwnerID != "" && va.OwnerID == vb.OwnerID
+}
+
 func MerchantsInTransit(w World, villageID string) int {
 	n := 0
 	for _, c := range w.CommandsHome(villageID) {
@@ -77,7 +84,9 @@ func CheckTrade(w World, actor PlayerID, originID, targetID string, amount Resou
 		return TradeCheck{Blockers: []Blocker{{"kind": "notOwner"}}}
 	}
 	var blockers []Blocker
-	if !w.Config().TradingEnabled {
+	// Switching trading off closes the player to player market only. A village moving its own resources between its
+	// own villages is not trading with anyone, so it keeps working — the same reason the travelling trader stays.
+	if !w.Config().TradingEnabled && !sameOwner(w, originID, targetID) {
 		blockers = append(blockers, Blocker{"kind": "tradingOff"})
 	}
 	if origin.Buildings[BMarket] < 1 {
@@ -119,7 +128,7 @@ func dispatchSettled(w World, actor PlayerID, originID, targetID string, amount 
 }
 
 func sendTrade(w World, actor PlayerID, originID, targetID string, amount Resources, settled bool) (*Command, error) {
-	if !w.Config().TradingEnabled {
+	if !w.Config().TradingEnabled && !sameOwner(w, originID, targetID) {
 		return nil, Blocked("trade", Blocker{"kind": "tradingOff"})
 	}
 	if origin := w.Village(originID); origin != nil && origin.OwnerID == Ref(actor) {
@@ -215,11 +224,8 @@ func CanAcceptTrader(w World, actor PlayerID, v *Village) bool {
 }
 
 func AcceptTrader(w World, actor PlayerID, villageID string) error {
-	// The switch governs all trade, and the screen hides the travelling trader while it is off, so the order itself
-	// has to be refused too: the client is not the place to enforce it.
-	if !w.Config().TradingEnabled {
-		return Blocked("accept-trader", Blocker{"kind": "tradingOff"})
-	}
+	// The travelling trader is a fixed-rate shop, not a deal with another player, so the trading switch does not
+	// close it: the market keeps working on a world that has player to player trading switched off.
 	v, err := ownsVillage(w, actor, villageID, "accept-trader")
 	if err != nil {
 		return err
