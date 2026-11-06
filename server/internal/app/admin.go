@@ -79,6 +79,12 @@ func ClampWorldConfig(cfg game.WorldConfig) game.WorldConfig {
 	if cfg.TradeOfferDurationHrs > 0 {
 		cfg.TradeOfferDurationHrs = clamp(cfg.TradeOfferDurationHrs, l.TradeOfferDurationHrs)
 	}
+	// Fall back to "protected" if a request sends an unknown value; it is the safest default.
+	switch cfg.LastVillage {
+	case "protected", "playersOnly", "canBeLost":
+	default:
+		cfg.LastVillage = "protected"
+	}
 	return cfg
 }
 

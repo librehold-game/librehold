@@ -1,28 +1,29 @@
 version: 2
+
+# One monthly pull request with the bumps of every ecosystem below.
+multi-ecosystem-groups:
+  dependencies:
+    schedule:
+      interval: monthly
+
 updates:
   - package-ecosystem: npm
     directory: /
-    schedule:
-      interval: weekly
-    groups:
-      npm:
-        patterns: ["*"]
+    patterns: ["*"]
+    multi-ecosystem-group: dependencies
   - package-ecosystem: gomod
     directory: /server
-    schedule:
-      interval: weekly
-    groups:
-      go:
-        patterns: ["*"]
+    patterns: ["*"]
+    multi-ecosystem-group: dependencies
   - package-ecosystem: docker
     directory: /
-    schedule:
-      interval: weekly
+    patterns: ["*"]
+    multi-ecosystem-group: dependencies
   - package-ecosystem: docker-compose
     directories: ["/deploy", "/server"]
-    schedule:
-      interval: weekly
+    patterns: ["*"]
+    multi-ecosystem-group: dependencies
   - package-ecosystem: github-actions
     directory: /
-    schedule:
-      interval: weekly
+    patterns: ["*"]
+    multi-ecosystem-group: dependencies

@@ -79,6 +79,10 @@ func CanBeConquered(w World, v *Village) bool {
 	if owner != nil && owner.Status == StatusQuit {
 		return true
 	}
+	// Bots' last village is conquerable when the world protects players only.
+	if owner != nil && !owner.IsHuman && w.Config().LastVillage == "playersOnly" {
+		return true
+	}
 	return owner != nil && len(owner.VillageIDs) > 1
 }
 
