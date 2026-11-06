@@ -27,6 +27,10 @@ func FeedBuildPlan(w World, villageID string) int {
 	if v == nil || len(v.BuildPlan) == 0 || v.OwnerID == "" {
 		return 0
 	}
+	// The host's switch covers humans only; bots keep their plans.
+	if w.Config().NoBuildPlans && w.Player(PlayerID(v.OwnerID)).IsHuman {
+		return 0 // the plan waits as it is until the switch comes back on
+	}
 	owner := PlayerID(v.OwnerID)
 	Touch(w, v)
 	added := 0
@@ -67,6 +71,9 @@ func SetBuildPlan(w World, actor PlayerID, villageID string, steps []BuildingID)
 	v, err := ownsVillage(w, actor, villageID, "set-build-plan")
 	if err != nil {
 		return err
+	}
+	if w.Config().NoBuildPlans {
+		return Rule("buildPlansOff", nil)
 	}
 	if len(v.BuildPlan)+len(steps) > maxPlanSteps {
 		return Rule("planTooLong", map[string]any{"max": maxPlanSteps})

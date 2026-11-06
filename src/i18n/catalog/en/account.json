@@ -115,6 +115,8 @@
       "humanModifiers": "Human multipliers",
       "botModifiers": "Bot multipliers",
       "noFieldBattles": "No field battles",
+      "noBuildPlans": "No build plans",
+      "noAutoFarm": "No auto-farming",
       "sightRadius": "Sight radius (tiles)"
     },
     "choice": {

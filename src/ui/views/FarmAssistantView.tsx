@@ -60,14 +60,14 @@ export function FarmAssistantView() {
       // The counters are kept per local day; yesterday's numbers read zero until the first attack of today.
       today: g.stats.attacksToday.day === localDayIndex(g, g.now) ? g.stats.attacksToday.count : 0,
       looted: g.stats.lootedToday.day === localDayIndex(g, g.now) ? g.stats.lootedToday.total : 0, now: g.now,
-      autoUnlocked: autoFarmUnlocked(g), autoUnlockAt: FARM_BALANCE.autoFarmUnlockVillages, autoEnabled: g.farmAssistant.autoFarmEnabled, autoVillages: g.farmAssistant.autoFarmVillages,
+      autoUnlocked: autoFarmUnlocked(g), autoWorldOff: !!g.config.noAutoFarm, autoUnlockAt: FARM_BALANCE.autoFarmUnlockVillages, autoEnabled: g.farmAssistant.autoFarmEnabled, autoVillages: g.farmAssistant.autoFarmVillages,
       units: selectActiveVillage(s).units, villages: humanVillageIds(g).length,
     });
   });
   const m = { targets, ...JSON.parse(json) } as {
     targets: FarmTarget[]; filters: { radius: number; minMinutesSinceAttack: number; maxWall: number; hideLosses: boolean; hideInbound: boolean };
     templates: Record<'A' | 'B' | 'C' | 'D', { units: Record<string, number> }>; today: number; looted: number; now: number;
-    autoUnlocked: boolean; autoUnlockAt: number; autoEnabled: boolean; autoVillages: string[]; units: Record<string, number>; villages: number;
+    autoUnlocked: boolean; autoWorldOff: boolean; autoUnlockAt: number; autoEnabled: boolean; autoVillages: string[]; units: Record<string, number>; villages: number;
   };
   const sendTemplate = useGameStore((s) => s.sendTemplate);
   const sendC = useGameStore((s) => s.sendTemplateC);
@@ -117,19 +117,21 @@ export function FarmAssistantView() {
         <label className="inline-flex items-center gap-1"><input type="checkbox" checked={m.filters.hideLosses} onChange={(e) => setFilters({ hideLosses: e.target.checked })} /> {t('farm.hideLosses')}</label>
         <label className="inline-flex items-center gap-1"><input type="checkbox" checked={m.filters.hideInbound} onChange={(e) => setFilters({ hideInbound: e.target.checked })} /> {t('farm.hideInbound')}</label>
         <label>{t('farm.sort')} <select className="px-1 border border-wood-border rounded bg-white/50" value={sort} onChange={(e) => setSort(e.target.value as SortKey)}>{(['distance', 'lastAttackAt', 'estimatedLoot', 'points'] as const).map((k) => <option key={k} value={k}>{t(`farm.sortBy.${k}`)}</option>)}</select></label>
-        <span className="ml-auto">
-          {/* A disabled input swallows the hover, so it lets the pointer through to the label and its tooltip. */}
-          <label className={`inline-flex items-center gap-1${m.autoUnlocked ? '' : ' cursor-help'}`} title={autoHint}>
-            <input type="checkbox" disabled={!m.autoUnlocked} aria-describedby={m.autoUnlocked ? undefined : autoHintId}
-              className={m.autoUnlocked ? undefined : 'pointer-events-none'}
-              checked={m.autoEnabled && m.autoVillages.includes(villageId)} onChange={(e) => {
-                const ids = new Set(m.autoVillages);
-                if (e.target.checked) ids.add(villageId); else ids.delete(villageId);
-                setAutoFarm(ids.size > 0, [...ids]);
-              }} /> {t('farm.auto')} {!m.autoUnlocked && <PixelIcon name="lock" size={16} />}
-            {!m.autoUnlocked && <span id={autoHintId} className="sr-only">{autoHint}</span>}
-          </label>
-        </span>
+        {/* The host switched auto-farming off for this world: the toggle is hidden, not just disabled. */}
+        {!m.autoWorldOff && (
+          <span className="ml-auto">
+            <label className={`inline-flex items-center gap-1${m.autoUnlocked ? '' : ' cursor-help'}`} title={autoHint}>
+              <input type="checkbox" disabled={!m.autoUnlocked} aria-describedby={m.autoUnlocked ? undefined : autoHintId}
+                className={m.autoUnlocked ? undefined : 'pointer-events-none'}
+                checked={m.autoEnabled && m.autoVillages.includes(villageId)} onChange={(e) => {
+                  const ids = new Set(m.autoVillages);
+                  if (e.target.checked) ids.add(villageId); else ids.delete(villageId);
+                  setAutoFarm(ids.size > 0, [...ids]);
+                }} /> {t('farm.auto')} {!m.autoUnlocked && <PixelIcon name="lock" size={16} />}
+              {!m.autoUnlocked && <span id={autoHintId} className="sr-only">{autoHint}</span>}
+            </label>
+          </span>
+        )}
       </div>
       <p className="text-muted mb-1">{t('farm.keys')}</p>
       {failed && <p role="status" className="mb-1">{t('farm.refreshFailed')}</p>}

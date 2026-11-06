@@ -48,7 +48,8 @@ func TestHostFormClamps(t *testing.T) {
 		{"defaults", app.HostForm{}, func(c game.WorldConfig) bool {
 			return c.Kind == game.KindPlayer && c.DurationMin == 60 && c.HumanSeats == 12 && c.BotCount == 2 && c.WorldSpeed == 100 &&
 				c.UnitSpeed == 100 && c.StartPreset == "instant" && c.BarbarianDensity == "normal" && c.SightRadius == 5 && !c.NoSight &&
-				!c.NoFieldBattles && c.BeginnerProtectionDays == 10.0/1440 && c.DominationShare == 0.6 && c.JoinWindowMin == 10 &&
+				!c.NoFieldBattles && !c.NoBuildPlans && !c.NoAutoFarm && c.BeginnerProtectionDays == 10.0/1440 &&
+				c.DominationShare == 0.6 && c.JoinWindowMin == 10 &&
 				c.Difficulty == game.InstantWorldConfig.Difficulty && c.BotStance == game.InstantWorldConfig.BotStance &&
 				c.MapSize == game.PlayerMapSize(14)
 		}},
@@ -74,6 +75,8 @@ func TestHostFormClamps(t *testing.T) {
 		{"few barbarians", app.HostForm{Barbarians: "few"}, func(c game.WorldConfig) bool { return c.BarbarianDensity == "sparse" }},
 		{"fresh start", app.HostForm{StartVillage: "fresh"}, func(c game.WorldConfig) bool { return c.StartPreset == "" }},
 		{"no field battles", app.HostForm{FieldBattles: ptr(false)}, func(c game.WorldConfig) bool { return c.NoFieldBattles }},
+		{"no build plans", app.HostForm{BuildPlans: ptr(false)}, func(c game.WorldConfig) bool { return c.NoBuildPlans && !c.NoAutoFarm }},
+		{"no auto farm", app.HostForm{AutoFarm: ptr(false)}, func(c game.WorldConfig) bool { return c.NoAutoFarm && !c.NoBuildPlans }},
 		{"protection 30", app.HostForm{ProtectionMin: ptr(30)}, func(c game.WorldConfig) bool { return c.BeginnerProtectionDays == 15.0/1440 }},
 		{"unknown difficulty", app.HostForm{Difficulty: "godlike", BotStance: "chaotic"}, func(c game.WorldConfig) bool {
 			return c.Difficulty == game.InstantWorldConfig.Difficulty && c.BotStance == game.InstantWorldConfig.BotStance

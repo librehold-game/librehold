@@ -301,6 +301,9 @@ func SetAutoFarm(w World, actor PlayerID, enabled bool, villageIDs []string) err
 	if h == nil {
 		return NotOwner("set-auto-farm")
 	}
+	if enabled && w.Config().NoAutoFarm {
+		return Rule("autoFarmOff", nil)
+	}
 	if villageIDs != nil {
 		for _, id := range villageIDs {
 			if v := w.Village(id); v == nil || v.OwnerID != Ref(actor) {
@@ -325,6 +328,9 @@ type autoFarmSend struct {
 
 // AutoFarmTick sends template A from a village to filtered targets, nearest first, while the troops last.
 func AutoFarmTick(w World, actor PlayerID, villageID string) int {
+	if w.Config().NoAutoFarm { // defense in depth: replays and stale schedules must not raid while off
+		return 0
+	}
 	v, h := w.Village(villageID), w.Human(actor)
 	if v == nil || h == nil || v.OwnerID != Ref(actor) {
 		return 0
@@ -363,8 +369,28 @@ func AutoFarmTick(w World, actor PlayerID, villageID string) int {
 
 func autoFarmActive(w World, actor PlayerID, villageID string) bool {
 	h, v := w.Human(actor), w.Village(villageID)
-	return h != nil && v != nil && v.OwnerID == Ref(actor) && h.FarmAssistant.AutoFarmEnabled && autoFarmUnlocked(w, actor) &&
-		slices.Contains(h.FarmAssistant.AutoFarmVillages, villageID)
+	return h != nil && v != nil && v.OwnerID == Ref(actor) && !w.Config().NoAutoFarm && h.FarmAssistant.AutoFarmEnabled &&
+		autoFarmUnlocked(w, actor) && slices.Contains(h.FarmAssistant.AutoFarmVillages, villageID)
+}
+
+// SyncFeatureToggles runs after the world's feature switches changed: with auto-farming switched off it turns it
+// off for every human — their setting is cleared, not just suspended, so they must switch it back on themselves
+// when the host re-enables the feature. Build plans need no resync — their feeder just waits while the switch is
+// off.
+func SyncFeatureToggles(w World) {
+	for _, p := range w.Players() {
+		if !p.IsHuman {
+			continue
+		}
+		h := w.Human(p.ID)
+		if h == nil {
+			continue
+		}
+		if w.Config().NoAutoFarm && h.FarmAssistant.AutoFarmEnabled {
+			h.FarmAssistant.AutoFarmEnabled = false // cancel every tick; the setting is gone until the player re-enables it
+		}
+		SyncAutoFarm(w, p.ID)
+	}
 }
 
 func scheduleAutoFarm(w World, villageID string) { scheduleAutoFarmTick(w, "autofarm:", villageID) }
