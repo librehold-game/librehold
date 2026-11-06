@@ -35,6 +35,8 @@ export function WorldSettings({ settings: s, instant }: { settings: PublicSettin
     ['lastVillage', t('site.worlds.setting.lastVillage'), t(`site.worlds.lastVillage.${s.lastVillage}`)],
     ['battleLosses', t('site.worlds.setting.battleLosses'), t(`admin.choice.battleLosses.${s.battleLosses}`)],
     ['fieldBattles', t('site.worlds.setting.fieldBattles'), t(s.fieldBattles ? 'site.worlds.yes' : 'site.worlds.no')],
+    ['buildPlans', t('site.worlds.setting.buildPlans'), t(s.buildPlans ? 'site.worlds.yes' : 'site.worlds.no')],
+    ['autoFarm', t('site.worlds.setting.autoFarm'), t(s.autoFarm ? 'site.worlds.yes' : 'site.worlds.no')],
     ['sightRadius', t('site.worlds.setting.sightRadius'), sight],
   ];
   if (instant) {

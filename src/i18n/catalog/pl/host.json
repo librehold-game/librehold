@@ -17,6 +17,8 @@
       "difficulty": "Siła botów",
       "botStance": "Boty wobec graczy",
       "fieldBattles": "Armie mogą się spotkać w drodze",
+      "buildPlans": "Plany budowy są włączone",
+      "autoFarm": "Auto-farma jest włączona",
       "sightRadius": "Widać przechodzące armie (pola, 0 = wcale)",
       "protectionMin": "Ochrona początkujących (minuty)",
       "domination": "Wcześniejsza wygrana przy",
