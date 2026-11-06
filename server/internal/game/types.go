@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -381,9 +382,27 @@ type WorldConfig struct {
 	SightRadius float64 `json:"sightRadius,omitempty"`
 	// NoSight: nobody sees other players' armies pass (a player world's host may switch it off).
 	NoSight bool `json:"noSight,omitempty"`
+
+	// TradingEnabled turns player-to-player and bot trading on. It is opt-in rather than opt-out on purpose: a world
+	// stored before this setting existed has no key in its config, and the zero value must then mean off, so no
+	// running world changes behaviour. New worlds get it on from DefaultWorldConfig.
+	TradingEnabled bool `json:"tradingEnabled"`
+	// TradeOfferDurationHrs is how long an offer stays on the market, in real-world hours.
+	TradeOfferDurationHrs float64 `json:"tradeOfferDurationHrs,omitempty"`
 }
 
 func FieldBattlesOn(cfg *WorldConfig) bool { return !cfg.NoFieldBattles }
+
+// TradeOfferExpiryMs is how long an offer stays on the market. The world setting counts real-world
+// hours (world time runs at a 1:1 pace with wall clock, minus pauses); no value means the balance
+// default of one game day, for older worlds without the setting.
+func TradeOfferExpiryMs(cfg *WorldConfig) int64 {
+	hours := cfg.TradeOfferDurationHrs
+	if hours <= 0 {
+		return TradeBalance.OfferExpiryMs
+	}
+	return int64(math.Round(hours * float64(MsPerHour)))
+}
 
 func SightRadiusOf(cfg *WorldConfig) float64 {
 	if cfg.SightRadius <= 0 {

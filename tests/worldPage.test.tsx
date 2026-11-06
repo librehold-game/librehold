@@ -14,7 +14,7 @@ const longSettings = {
   worldSpeed: 8, unitSpeed: 1, mapSize: 200, beginnerProtectionDays: 7, lastVillage: 'protected', fieldBattles: true,
   barbarianDensity: 'normal', battleLosses: 'normal', botCount: 40, botArrival: 'rampUp', rampUpDays: 14, difficulty: 'hard',
   botStance: 'normal', humanModifiers: { resources: 1.5, recruitment: 1.2, building: 0.8 }, botModifiers: { resources: 1, recruitment: 1, building: 1 },
-  sightRadius: 2,
+  sightRadius: 2, tradingEnabled: true, tradeOfferDurationHrs: 24,
 };
 const world = { ...card, ended: false, settings: longSettings, events: [] };
 const instantCard = { ...card, id: 41, name: 'Game #41', gameNumber: 41, instant: true, day: undefined, bots: 18, humans: 3, speed: 100 };
@@ -82,6 +82,32 @@ describe('the world page', () => {
     expect(region.textContent).toContain(t('admin.choice.difficulty.hard'));
     expect(region.textContent).not.toContain(t('site.worlds.setting.coins'));
     expect(region.textContent).not.toContain(t('site.worlds.setting.nobleCost'));
+  });
+
+  it('says whether trading is on before anyone joins', async () => {
+    at('/worlds/3');
+    render(<App />);
+    await screen.findByRole('heading', { level: 1, name: 'Kraina' });
+    const text = settingsRegion().textContent!;
+    expect(text).toContain(t('site.worlds.setting.trading'));
+    expect(text).toContain(t('site.worlds.yes'));
+    // The duration of an offer is its own row while trading is on.
+    expect(text).toContain(t('site.worlds.setting.tradeOfferDuration'));
+    // A day, in the same short form the rest of the site uses for a duration.
+    expect(text).toContain('1 d 0 h');
+  });
+
+  it('shows trading as off and hides the offer duration when the world has it off', async () => {
+    routes['GET /api/v1/public/worlds/3'] = () => ({ status: 200, body: { ...world,
+      settings: { ...longSettings, tradingEnabled: false } } });
+    at('/worlds/3');
+    render(<App />);
+    await screen.findByRole('heading', { level: 1, name: 'Kraina' });
+    const text = settingsRegion().textContent!;
+    expect(text).toContain(t('site.worlds.setting.trading'));
+    expect(text).toContain(t('site.worlds.off'));
+    // An offer nobody can post has no duration to show.
+    expect(text).not.toContain(t('site.worlds.setting.tradeOfferDuration'));
   });
 
   it('shows the instant-only settings of a running game', async () => {
@@ -152,7 +178,9 @@ describe('the player page', () => {
     expect(container.textContent).toContain(new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(Date.UTC(2026, 9, 30, 20, 15)));
     expect(screen.getByRole('link', { name: new RegExp('Kraina') }).getAttribute('href')).toBe('/worlds/3');
     expect(screen.getByRole('link', { name: t('site.worlds.globalProfile') }).getAttribute('href')).toBe('/players/Ala%20ma%2Fkota');
-    expect(document.querySelector('meta[name="robots"]')?.getAttribute('content')).toContain('noindex');
+    // The head tags are written from an effect, which can land after the heading this test waits for. `waitFor`
+    // keeps `act` around it, so the assertion is not made between a state commit and its effects.
+    await waitFor(() => expect(document.querySelector('meta[name="robots"]')?.getAttribute('content')).toContain('noindex'));
   });
 
   it('has no global profile link for a bot or for a human without an account', async () => {

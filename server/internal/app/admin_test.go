@@ -311,3 +311,82 @@ func TestWorldConfigClampsSightRadiusToLimits(t *testing.T) {
 		t.Fatalf("0 → %v", got)
 	}
 }
+
+// A world stored before the offer-duration setting existed has no key for it, so the value is 0 and
+// TradeOfferExpiryMs reads that as the balance default. Clamping must leave it alone: turning it into the band's
+// minimum would rewrite every such world to one hour the next time any setting is edited.
+func TestWorldConfigLeavesAnUnsetOfferDurationAlone(t *testing.T) {
+	cfg := game.DefaultWorldConfig
+	cfg.TradeOfferDurationHrs = 0
+	if got := app.ClampWorldConfig(cfg).TradeOfferDurationHrs; got != 0 {
+		t.Fatalf("unset → %v, want 0", got)
+	}
+	cfg.TradeOfferDurationHrs = game.WorldLimits.TradeOfferDurationHrs.Max + 1
+	if got := app.ClampWorldConfig(cfg).TradeOfferDurationHrs; got != game.WorldLimits.TradeOfferDurationHrs.Max {
+		t.Fatalf("above the band → %v", got)
+	}
+	cfg.TradeOfferDurationHrs = 12
+	if got := app.ClampWorldConfig(cfg).TradeOfferDurationHrs; got != 12 {
+		t.Fatalf("a value inside the band → %v", got)
+	}
+}
+
+// Switching trading off must empty the market and refund what the open offers were holding, or a live world would lose
+// those resources the moment an admin flipped the switch — the market is hidden while trading is off.
+func TestSwitchingTradingOffClosesTheMarket(t *testing.T) {
+	f := newAdminFixture(t)
+	ctx := context.Background()
+	id := f.world(t)
+
+	// The world starts with trading on, so leave it alone until an offer is up.
+	var before float64
+	var offerID, villageID string
+	var poster game.PlayerID
+	if err := f.worlds.Run(ctx, id, func(w app.WorldTx) error {
+		// The fixture's world has no bots, so give one of them a village to post from.
+		oid := game.PlayerID("bot_0")
+		if w.Player(oid) == nil {
+			w.PutPlayer(&game.Player{ID: oid, Name: "Poster", Color: "#c8a54b", VillageIDs: []string{},
+				BuildQueueSlots: 2, Status: game.StatusActive})
+		}
+		v := game.CreatePlayerVillage(w, oid, 50, 50)
+		if v == nil {
+			t.Fatal("could not make a village")
+		}
+		v.Resources = game.Resources{Wood: 9000, Clay: 9000, Iron: 9000}
+		v.Buildings[game.BMarket] = 5
+		// Room for the refund: it goes through AddResourcesCapped, so a small storehouse would swallow it.
+		v.Buildings[game.BStorage] = 30
+		o, err := game.CreateTradeOffer(w, oid, game.TradeOfferInput{OriginID: v.ID,
+			Give: game.Resources{Wood: 500}, Want: game.Resources{Iron: 250}})
+		if err != nil {
+			return err
+		}
+		offerID = o.ID
+		poster = oid
+		villageID = v.ID
+		before = v.Resources.Wood // already net of the 500 reserved
+		return nil
+	}); err != nil {
+		t.Fatalf("setup: %v", err)
+	}
+
+	if err := f.svc.UpdateWorldSettings(ctx, admin, id, app.WorldSettingsPatch{"tradingEnabled": json.RawMessage("false")}); err != nil {
+		t.Fatalf("switch off: %v", err)
+	}
+
+	if err := f.worlds.Run(ctx, id, func(w app.WorldTx) error {
+		if w.TradeOffer(offerID) != nil {
+			t.Fatal("the offer should be gone")
+		}
+		if n := len(w.AllTradeOffers()); n != 0 {
+			t.Fatalf("the market should be empty, got %d offers", n)
+		}
+		if got := w.Village(villageID).Resources.Wood; got != before+500 {
+			t.Fatalf("reserved wood not refunded for %s: want %v, got %v", poster, before+500, got)
+		}
+		return nil
+	}); err != nil {
+		t.Fatal(err)
+	}
+}

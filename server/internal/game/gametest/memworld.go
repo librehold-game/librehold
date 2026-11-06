@@ -69,6 +69,7 @@ type MemWorld struct {
 	reports     map[game.PlayerID][]*game.Report
 	intel       map[intelKey]*game.Intel
 	scheduled   map[string]*game.ScheduledSend
+	offers      map[string]*game.TradeOffer
 	news        []*game.NewsItem
 	conquests   []game.Conquest
 	public      []game.PublicEvent
@@ -103,6 +104,7 @@ func NewMemWorld(seed uint32, cfg game.WorldConfig, clockOrigin int64) *MemWorld
 		reports:     map[game.PlayerID][]*game.Report{},
 		intel:       map[intelKey]*game.Intel{},
 		scheduled:   map[string]*game.ScheduledSend{},
+		offers:      map[string]*game.TradeOffer{},
 		eventIndex:  map[string]int64{},
 		touched:     map[game.PlayerID]bool{},
 	}
@@ -601,6 +603,19 @@ func (w *MemWorld) ScheduledSendsOf(owner game.PlayerID) []*game.ScheduledSend {
 
 func (w *MemWorld) PutScheduledSend(s *game.ScheduledSend) { w.scheduled[s.ID] = s }
 func (w *MemWorld) DeleteScheduledSend(id string)          { delete(w.scheduled, id) }
+
+func (w *MemWorld) TradeOffer(id string) *game.TradeOffer { return w.offers[id] }
+
+func (w *MemWorld) AllTradeOffers() []*game.TradeOffer {
+	var out []*game.TradeOffer
+	for _, o := range w.offers {
+		out = append(out, o)
+	}
+	return out
+}
+
+func (w *MemWorld) PutTradeOffer(o *game.TradeOffer) { w.offers[o.ID] = o }
+func (w *MemWorld) DeleteTradeOffer(id string)       { delete(w.offers, id) }
 
 func (w *MemWorld) AddNews(n *game.NewsItem) {
 	n.ID = w.NewID("news")

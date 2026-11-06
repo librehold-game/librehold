@@ -68,6 +68,11 @@ type PublicSettings struct {
 	SightRadius      float64            `json:"sightRadius"`
 	NoSight          bool               `json:"noSight,omitempty"`
 
+	// Trading (player to player and bots alike). No omitempty: without the key a client cannot tell "off" from
+	// "an older server that does not report it", and this flag is the whole point of the setting.
+	TradingEnabled        bool    `json:"tradingEnabled"`
+	TradeOfferDurationHrs float64 `json:"tradeOfferDurationHrs,omitempty"`
+
 	// Instant games only.
 	NoCoins            bool            `json:"noCoins,omitempty"`
 	NobleCost          *game.Resources `json:"nobleCost,omitempty"`
@@ -170,7 +175,8 @@ func publicSettingsOf(cfg *game.WorldConfig) PublicSettings {
 		DurationMin: cfg.DurationMin, BarbarianDensity: string(cfg.BarbarianDensity), BattleLosses: string(cfg.BattleLosses),
 		BotCount: cfg.BotCount, BotArrival: cfg.BotArrival, RampUpDays: cfg.RampUpDays, Difficulty: string(cfg.Difficulty),
 		BotStance: string(cfg.BotStance), HumanModifiers: cfg.HumanModifiers, BotModifiers: cfg.BotModifiers,
-		SightRadius: game.SightRadiusOf(cfg), NoSight: cfg.NoSight, NoCoins: cfg.NoCoins, OwnedNobleDropMin: cfg.OwnedNobleDropMin,
+		SightRadius: game.SightRadiusOf(cfg), NoSight: cfg.NoSight, TradingEnabled: cfg.TradingEnabled, TradeOfferDurationHrs: float64(game.TradeOfferExpiryMs(cfg)) / 3.6e6,
+		NoCoins: cfg.NoCoins, OwnedNobleDropMin: cfg.OwnedNobleDropMin,
 		OwnedNobleDropMax: cfg.OwnedNobleDropMax, AcademyExtraNobles: cfg.AcademyExtraNobles, HumanSeats: cfg.HumanSeats,
 		DominationShare: cfg.DominationShare}
 	if cfg.NobleCost != (game.Resources{}) {

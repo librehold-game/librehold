@@ -98,6 +98,8 @@ export interface Command {
   autoFarm?: boolean;
   /** A raid the farm assistant sent (a template or the auto-farm), or its way home; only the owner sees it. */
   farm?: boolean;
+  /** A shipment that paid for an accepted trade offer; it can't be recalled. */
+  settled?: boolean;
 }
 
 export interface FieldPoint { x: number; y: number }
@@ -109,7 +111,7 @@ export interface InterceptOrder { commandId: string; scout?: boolean; leg: Leg }
 
 export interface FieldReport { x: number; y: number; targetType: string; missed?: boolean; targetCommandId: string }
 
-export type ReportType = 'attack' | 'support' | 'scout' | 'conquest' | 'field' | 'fieldScout';
+export type ReportType = 'attack' | 'support' | 'scout' | 'conquest' | 'field' | 'fieldScout' | 'market';
 
 export interface ReportSide {
   units: Partial<Record<UnitId, number>>;
@@ -121,6 +123,22 @@ export interface ScoutIntel {
   buildings: Record<BuildingId, number>;
   units: Partial<Record<UnitId, number>>;
   loyalty: number;
+}
+
+/**
+ * One settled trade deal, as each side reads it. `counterpartyId`/`counterpartyName` are the other player; `fromVillage`
+ * is where the resources *this* reader is waiting for are shipped from, and `travelMs` how long that takes. `give` and
+ * `want` are the reader's own sides, totalled across every offer the deal settled.
+ */
+export interface MarketReport {
+  counterpartyId: string;
+  counterpartyName: string;
+  counterpartyIsBot?: boolean;
+  fromVillage: ReportVillage;
+  travelMs: number;
+  give: ResourceSet;
+  want: ResourceSet;
+  offers: number;
 }
 
 /** A village as a report remembers it; an empty name is the default one, worded by the client. */
@@ -161,6 +179,7 @@ export interface Report {
   read: boolean;
   autoFarm?: boolean;
   field?: FieldReport;
+  market?: MarketReport;
 }
 
 export const HUMAN_ID = 'human';
@@ -363,6 +382,10 @@ export interface WorldConfig {
   sightRadius?: number;
   /** Nobody sees other players' armies pass. */
   noSight?: boolean;
+  /** Player trading is off: offers cannot be posted and the board stays empty. */
+  tradingEnabled?: boolean;
+  /** How long an offer stays on the market, in real-world hours. */
+  tradeOfferDurationHrs?: number;
   /** Instant worlds: a nobleman needs no coins and coins cannot be minted. */
   noCoins?: boolean;
   /** Instant worlds: the nobleman's price, in place of the unit table's. */
@@ -477,6 +500,23 @@ export interface ScheduledSend {
   cancelAt?: number;
 }
 
+/** A player to player trade: a post on the public board anyone in range can take. */
+export interface TradeOffer {
+  id: string;
+  /** The player who posted it (a PlayerId). */
+  fromId: PlayerId;
+  originId: string;
+  /** What the poster sends to the taker. */
+  give: ResourceSet;
+  /** What the taker brings back. */
+  want: ResourceSet;
+  /** Longest a merchant may travel to deliver this post; 0 = unlimited. */
+  maxDeliveryMs: number;
+  /** World ms when it lapses. */
+  expiresAt: number;
+  createdAt: number;
+}
+
 export interface GameState {
   worldSeed: number;
   /** Current world time in ms. */
@@ -501,6 +541,7 @@ export interface GameState {
   /** Local wall-clock time (ms since epoch, with the zone offset) corresponding to world time 0. */
   clock: { originLocalMs: number };
   scheduled: ScheduledSend[];
+  tradeOffers: TradeOffer[];
   /** Until when the human is seen as an aggressor (attacked active bots) — for "peaceful — reputation". */
   humanAggressorUntil: number;
 }

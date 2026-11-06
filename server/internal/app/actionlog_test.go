@@ -191,7 +191,8 @@ func TestBotActionsLogged(t *testing.T) {
 	}
 	for k := range kinds {
 		if _, ok := map[string]bool{"build": true, "recruit": true, "research": true, "send": true, "schedule-send": true,
-			"dodge": true, "snipe": true, "mint": true}[k]; !ok {
+			"dodge": true, "snipe": true, "mint": true, "create-trade-offer": true,
+			"accept-trade-offer": true, "cancel-trade-offer": true}[k]; !ok {
 			t.Fatalf("bot kind %q is not an order name", k)
 		}
 	}
@@ -474,6 +475,15 @@ func TestObservationOfAnOrderAimedAtATile(t *testing.T) {
 // Auto-farm raids are logged as a record only: the replay sends them again from the world's own events.
 func TestReplaySkipsAutoFarmRecords(t *testing.T) {
 	e := game.LoggedAction{Kind: "auto-farm-send", Actor: "key", Payload: json.RawMessage(`{"originId":"v:1:1","x":2,"y":2}`)}
+	if err := app.ReplayEntry(nil, e, nil); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// Switching trading off logs a "marketClosed" note next to the "settings" entry that does the work. Replay only has to
+// skip the note; anything else aborts the whole log with an unknown kind.
+func TestReplaySkipsMarketClosedRecords(t *testing.T) {
+	e := game.LoggedAction{Kind: "marketClosed", Actor: "key", Payload: json.RawMessage(`{"offers":3}`)}
 	if err := app.ReplayEntry(nil, e, nil); err != nil {
 		t.Fatal(err)
 	}

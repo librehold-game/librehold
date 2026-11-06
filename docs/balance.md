@@ -8,7 +8,8 @@ Key rules: per-resource cost multipliers, the build time formula
 (`base·1.18·1.2^(L−1−14/(L−1))·1.05^−HQ`), building points (Town Hall 10, Barracks 16… ≈ 12,380 in total), hetman
 40k/50k/50k, the n-th hetman = `villages + nobles owned` coins (coin fixed at 28k/30k/25k), research +25%/+40%, base
 defence only from the wall (20·L), ~220 rams for wall 20, ~390 catapults for Town Hall 20→1, hideout
-`150·1.3335^(L−1)`, command cancel within 10 min, merchant 6 min/field, hetman range 70 fields.
+`150·1.3335^(L−1)`, command cancel within 10 min, merchant 6 min/field, hetman range 70 fields. Trading is capped by
+the market: a merchant carries 1000 resources, and the market level gives the merchant count (below).
 
 ## Balance formulas (where to change what)
 
@@ -33,6 +34,8 @@ Every value lives in `server/internal/game`; after changing one, run `npm run ge
 | Combat | luck ±25%, wall `1.037^L` + `20·L`, losses `(weaker/stronger)^1.5`, wall hp `0.27·L^1.5+0.7`, building hp `0.39·L^1.5+0.8` | `CombatBalance` in `data_units.go` |
 | Conquest | loyalty +1/h, drop 20–35, coin 28k/30k/25k, coins per hetman = villages + hetmans | `ConquestBalance` in `data_conquest.go` |
 | Units | stats table, recruitment time `base · 0.9666^(level−1)` | `data_units.go` |
+| Merchants | one per market level to 11, then `(L−10)² + 10`: level 19 gives 91, level 25 gives 235 | `TradeBalance.MerchantCurveAt` in `data_trade.go`, `MerchantsForLevel` in `market.go` |
+| Trade offers | expiry 24 game h, 3 *distinct* public deals per village (copies free), delivery limit 1–24 merchant h (0 unlimited) | `TradeBalance` in `data_trade.go` |
 | World | speeds, map size, queue slots, player start | `data_world.go` |
 | Instant worlds | no coins, hetman 18k/18k/18k, academy holds level+1 hetmans, owned villages lose 50–60 loyalty per hetman, barbarians start at 15 | `InstantWorldConfig` in `instant.go` |
 

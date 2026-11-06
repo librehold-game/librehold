@@ -8,3 +8,4 @@ contributions, licensed as described in `LICENSING.md` and `CONTRIBUTING.md`.
 - Ismaeel Habeeb <ismaeelakin09@gmail.com> — contributor
 - right-ward <ninja.notleft@proton.me> — contributor
 - [Sinkleberg](https://github.com/Sinkleberg) — contributor
+- [Stan Boeter](https://stanboeter.nl) — contributor

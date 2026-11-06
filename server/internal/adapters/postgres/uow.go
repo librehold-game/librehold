@@ -114,6 +114,7 @@ type uow struct {
 	commands   idmap[string, game.Command]
 	intel      idmap[intelKey, game.Intel]
 	sends      idmap[string, game.ScheduledSend]
+	offers     idmap[string, game.TradeOffer]
 	reports    idmap[reportKey, game.Report]
 	newReports map[game.PlayerID][]*game.Report
 	news       []*game.NewsItem
@@ -146,7 +147,8 @@ func loadUow(ctx context.Context, tx pgx.Tx, worldID int64, readOnly bool) (*uow
 		villages: idmap[string, game.Village]{}, players: idmap[string, game.Player]{}, accounts: map[string]int64{},
 		brains: idmap[string, game.BotBrain]{}, humans: idmap[string, game.HumanState]{},
 		commands: idmap[string, game.Command]{}, intel: idmap[intelKey, game.Intel]{},
-		sends: idmap[string, game.ScheduledSend]{}, reports: idmap[reportKey, game.Report]{},
+		sends: idmap[string, game.ScheduledSend]{}, offers: idmap[string, game.TradeOffer]{},
+		reports:    idmap[reportKey, game.Report]{},
 		newReports: map[game.PlayerID][]*game.Report{}, eventOverlay: map[string]*int64{},
 		touched: map[game.PlayerID]bool{}}
 	row, err := scanWorldRow(tx.QueryRow(ctx, `select `+worldCols+`, next_id, event_seq from worlds where id = $1`, worldID),

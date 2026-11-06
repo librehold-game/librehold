@@ -3,6 +3,7 @@ import { t, useT } from '../../i18n/i18n';
 import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
 import { meetsRequirements } from '../../engine/buildings';
 import { storageCapacity, farmCapacity, hideCapacity } from '../../engine/buildings';
+import { merchantsForLevel } from '../../engine/market';
 import { requirementChain } from '../../shared/encyclopedia/facts';
 import { InfoLink } from '../info/InfoLink';
 import { RequirementChips } from '../info/RequirementChips';
@@ -26,7 +27,7 @@ function effectLabel(id: BuildingId, v: Village, cfg: WorldConfig): string {
     case 'hide': return t('buildings.hides', { n: formatNumber(hideCapacity(level)) });
     case 'main': return t('buildings.buildTime', { n: Math.pow(1.05, -(level - 1)).toFixed(2) });
     case 'wall': return t('buildings.defence', { n: Math.pow(1.037, level).toFixed(2) });
-    case 'market': return t('buildings.merchants', { n: level });
+    case 'market': return t('buildings.merchants', { n: formatNumber(merchantsForLevel(level)) });
     case 'academy': return t('buildings.nobles', { n: level });
     default: return '';
   }

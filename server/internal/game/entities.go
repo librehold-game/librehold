@@ -113,6 +113,9 @@ type Command struct {
 	// Farm marks a raid the farm assistant sent (a template or the auto-farm) and its way home; only its owner
 	// sees it.
 	Farm bool `json:"farm,omitempty"`
+	// Settled marks a shipment that paid for something already given up: a leg of an accepted trade offer. Its
+	// owner may not turn it back, because the other side has shipped against it and there is no way to recall that.
+	Settled bool `json:"settled,omitempty"`
 }
 
 // FieldPoint is a place on the map between tiles, in tile units.
@@ -166,7 +169,7 @@ type BuildingDamage struct {
 type Report struct {
 	ID             string          `json:"id"`
 	Time           int64           `json:"time"`
-	Type           string          `json:"type"` // attack | support | scout | conquest | field | fieldScout
+	Type           string          `json:"type"` // attack | support | scout | conquest | field | fieldScout | market
 	OriginID       string          `json:"originId"`
 	TargetID       string          `json:"targetId"`
 	Origin         ReportVillage   `json:"origin"`
@@ -188,6 +191,25 @@ type Report struct {
 	Read           bool            `json:"read"`
 	AutoFarm       bool            `json:"autoFarm,omitempty"`
 	Field          *FieldReport    `json:"field,omitempty"`
+	Market         *MarketReport   `json:"market,omitempty"`
+}
+
+// MarketReport is one settled trade deal, written for both sides: who the other party was, the village their goods
+// come from, and what was swapped. A taker who settles ten posts in one deal gets a single report covering all ten.
+type MarketReport struct {
+	// CounterpartyID is the other player, in the reader's terms: the taker for the poster, the poster for the taker.
+	CounterpartyID   PlayerID `json:"counterpartyId"`
+	CounterpartyName string   `json:"counterpartyName"`
+	CounterpartyBot  bool     `json:"counterpartyIsBot,omitempty"`
+	// FromVillage is the village the resources the reader receives are shipped from, and TravelMs is how long that
+	// shipment takes to arrive.
+	FromVillage ReportVillage `json:"fromVillage"`
+	TravelMs    int64         `json:"travelMs"`
+	// Give and Want are what the reader hands over and receives, totalled across every offer in the deal.
+	Give Resources `json:"give"`
+	Want Resources `json:"want"`
+	// Offers is how many posts the deal settled.
+	Offers int `json:"offers"`
 }
 
 type PlayerStatus string
@@ -486,6 +508,21 @@ type Conquest struct {
 	Y         int       `json:"y"`
 	FromID    PlayerRef `json:"fromId"`
 	ToID      PlayerID  `json:"toId"`
+}
+
+// TradeOffer is a player's post on the public board: a proposal to swap resources that anyone in range can pick
+// up. Give and Want are both resource sets; a post wants only what the taker brings and gives what it promises
+// (either side may be partial).
+type TradeOffer struct {
+	ID       string    `json:"id"`
+	FromID   PlayerID  `json:"fromId"` // the player who posted it
+	OriginID string    `json:"originId"`
+	Give     Resources `json:"give"` // what From sends to the taker
+	Want     Resources `json:"want"` // what the taker brings back
+	// MaxDeliveryMs is the longest a merchant may travel to bring the give side to the taker; 0 = unlimited.
+	MaxDeliveryMs int64 `json:"maxDeliveryMs"`
+	ExpiresAt     int64 `json:"expiresAt"` // world ms when it lapses
+	CreatedAt     int64 `json:"createdAt"`
 }
 
 // VillageRef is the light projection of a stored village that area queries return.

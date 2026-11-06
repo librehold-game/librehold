@@ -2,6 +2,7 @@ package app_test
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"sync"
 	"testing"
@@ -74,6 +75,10 @@ func TestHostFormClamps(t *testing.T) {
 		{"few barbarians", app.HostForm{Barbarians: "few"}, func(c game.WorldConfig) bool { return c.BarbarianDensity == "sparse" }},
 		{"fresh start", app.HostForm{StartVillage: "fresh"}, func(c game.WorldConfig) bool { return c.StartPreset == "" }},
 		{"no field battles", app.HostForm{FieldBattles: ptr(false)}, func(c game.WorldConfig) bool { return c.NoFieldBattles }},
+		// Trading is on unless the host says otherwise, so the zero HostForm keeps it.
+		{"trading by default", app.HostForm{}, func(c game.WorldConfig) bool { return c.TradingEnabled }},
+		{"trading off", app.HostForm{TradingEnabled: ptr(false)}, func(c game.WorldConfig) bool { return !c.TradingEnabled }},
+		{"trading on", app.HostForm{TradingEnabled: ptr(true)}, func(c game.WorldConfig) bool { return c.TradingEnabled }},
 		{"protection 30", app.HostForm{ProtectionMin: ptr(30)}, func(c game.WorldConfig) bool { return c.BeginnerProtectionDays == 15.0/1440 }},
 		{"unknown difficulty", app.HostForm{Difficulty: "godlike", BotStance: "chaotic"}, func(c game.WorldConfig) bool {
 			return c.Difficulty == game.InstantWorldConfig.Difficulty && c.BotStance == game.InstantWorldConfig.BotStance
@@ -249,5 +254,31 @@ func TestHostedFormClampsSightRadiusToLimits(t *testing.T) {
 	}
 	if c := app.PlayerWorldConfig(app.HostForm{SightRadius: ptr(0)}, limits); !c.NoSight {
 		t.Fatal("0 must mean no sight")
+	}
+}
+
+// The world page shows these settings before anyone joins, so the flag has to be on the wire in both states. It
+// carries no omitempty for that reason: an absent key would be indistinguishable from an older server.
+func TestPublicSettingsAlwaysReportTrading(t *testing.T) {
+	on := app.PublicSettingsOf(game.DefaultWorldConfig)
+	if !on.TradingEnabled {
+		t.Fatal("the default world should report trading on")
+	}
+	cfg := game.DefaultWorldConfig
+	cfg.TradingEnabled = false
+	raw, err := json.Marshal(app.PublicSettingsOf(cfg))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var back map[string]any
+	if err := json.Unmarshal(raw, &back); err != nil {
+		t.Fatal(err)
+	}
+	v, ok := back["tradingEnabled"]
+	if !ok {
+		t.Fatalf("tradingEnabled must be present even when false: %s", raw)
+	}
+	if v != false {
+		t.Fatalf("want false, got %v", v)
 	}
 }

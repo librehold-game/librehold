@@ -32,8 +32,18 @@ func Migrate(ctx context.Context, pool *pgxpool.Pool) error {
 	return migrateTo(ctx, pool, 0)
 }
 
+// migrateDown undoes migrations back to version, or all of them for 0. Only the tests use it, to prove a rollback
+// leaves the world's resources intact.
+func migrateDown(ctx context.Context, pool *pgxpool.Pool, version int64) error {
+	return migrateWith(ctx, pool, version, true)
+}
+
 // migrateTo applies migrations up to version, or all of them for 0.
 func migrateTo(ctx context.Context, pool *pgxpool.Pool, version int64) error {
+	return migrateWith(ctx, pool, version, false)
+}
+
+func migrateWith(ctx context.Context, pool *pgxpool.Pool, version int64, down bool) error {
 	dir, err := fs.Sub(migrationFiles, "migrations")
 	if err != nil {
 		return err
@@ -44,9 +54,14 @@ func migrateTo(ctx context.Context, pool *pgxpool.Pool, version int64) error {
 	if err != nil {
 		return fmt.Errorf("migrations: %w", err)
 	}
-	if version == 0 {
+	switch {
+	case down && version == 0:
+		_, err = provider.Down(ctx)
+	case down:
+		_, err = provider.DownTo(ctx, version)
+	case version == 0:
 		_, err = provider.Up(ctx)
-	} else {
+	default:
 		_, err = provider.UpTo(ctx, version)
 	}
 	if err != nil {

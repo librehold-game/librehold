@@ -17,7 +17,25 @@ func init() {
 	})
 }
 
-func MerchantsTotal(v *Village) int { return v.Buildings[BMarket] }
+// MerchantsTotal is how many merchants a village's market gives. One per market level up to
+// TradeBalance.MerchantCurveAt, then quadratic — the same shape Tribal Wars uses, so the expensive top levels of the
+// market are worth building: level 19 gives 91 merchants rather than 19, level 25 gives 235 rather than 25.
+func MerchantsTotal(v *Village) int {
+	return MerchantsForLevel(v.Buildings[BMarket])
+}
+
+// MerchantsForLevel is MerchantsTotal without a village, for the table and the client.
+func MerchantsForLevel(level int) int {
+	if level <= 0 {
+		return 0
+	}
+	n := TradeBalance.MerchantCurveAt
+	if level <= n {
+		return level
+	}
+	steps := level - n + 1
+	return steps*steps + n - 1
+}
 
 func MerchantsInTransit(w World, villageID string) int {
 	n := 0
@@ -59,6 +77,9 @@ func CheckTrade(w World, actor PlayerID, originID, targetID string, amount Resou
 		return TradeCheck{Blockers: []Blocker{{"kind": "notOwner"}}}
 	}
 	var blockers []Blocker
+	if !w.Config().TradingEnabled {
+		blockers = append(blockers, Blocker{"kind": "tradingOff"})
+	}
 	if origin.Buildings[BMarket] < 1 {
 		blockers = append(blockers, Blocker{"kind": "noMarket"})
 	}
@@ -88,6 +109,19 @@ func CheckTrade(w World, actor PlayerID, originID, targetID string, amount Resou
 
 // SendTrade sends resources to a village; the merchants come back after delivering.
 func SendTrade(w World, actor PlayerID, originID, targetID string, amount Resources) (*Command, error) {
+	return sendTrade(w, actor, originID, targetID, amount, false)
+}
+
+// dispatchSettled ships the half of an accepted offer. Same shipment, but marked Settled so neither side can
+// recall it: by the time it is on the road the offer is gone and the other party has shipped against it.
+func dispatchSettled(w World, actor PlayerID, originID, targetID string, amount Resources) (*Command, error) {
+	return sendTrade(w, actor, originID, targetID, amount, true)
+}
+
+func sendTrade(w World, actor PlayerID, originID, targetID string, amount Resources, settled bool) (*Command, error) {
+	if !w.Config().TradingEnabled {
+		return nil, Blocked("trade", Blocker{"kind": "tradingOff"})
+	}
 	if origin := w.Village(originID); origin != nil && origin.OwnerID == Ref(actor) {
 		Touch(w, origin)
 	}
@@ -99,7 +133,7 @@ func SendTrade(w World, actor PlayerID, originID, targetID string, amount Resour
 	clean := cleanAmount(amount)
 	SubtractResources(&origin.Resources, clean)
 	c := &Command{ID: w.NewID("c"), Type: "trade", OriginID: originID, TargetID: targetID, Haul: &clean,
-		Merchants: check.Merchants, DepartedAt: w.Now(), ArrivesAt: w.Now() + check.TravelMs}
+		Merchants: check.Merchants, DepartedAt: w.Now(), ArrivesAt: w.Now() + check.TravelMs, Settled: settled}
 	AddCommand(w, c)
 	if h := w.Human(actor); h != nil {
 		h.Stats.TradesSent++
@@ -181,6 +215,11 @@ func CanAcceptTrader(w World, actor PlayerID, v *Village) bool {
 }
 
 func AcceptTrader(w World, actor PlayerID, villageID string) error {
+	// The switch governs all trade, and the screen hides the travelling trader while it is off, so the order itself
+	// has to be refused too: the client is not the place to enforce it.
+	if !w.Config().TradingEnabled {
+		return Blocked("accept-trader", Blocker{"kind": "tradingOff"})
+	}
 	v, err := ownsVillage(w, actor, villageID, "accept-trader")
 	if err != nil {
 		return err

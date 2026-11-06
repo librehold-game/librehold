@@ -314,6 +314,11 @@
     "noMarket": "brak Rynku",
     "empty": "nie ma czego wysłać",
     "tooLate": "Za późno: twoje wojsko nie zdąży przed dotarciem tej armii.",
+    "tradingOff": "handel jest wyłączony w tym świecie",
+    "boardFull": "masz już tyle ofert, ile pozwalają Twoje wioski",
+    "gone": "ta wioska już nie istnieje",
+    "outOfRange": "ta wioska jest za daleko na taką wymianę",
+    "marketTooSmall": "Rynek jest za mały na taki transport",
     "notInterceptable": "Tej armii nie da się spotkać w drodze.",
     "notVisible": "Nie widzisz już tej armii.",
     "fieldBattlesOff": "Bitwy w polu są w tym świecie wyłączone.",
@@ -324,6 +329,7 @@
     "scheduledLostVillage": "Zaplanowana wysyłka nie wyszła: wioska nie należy już do ciebie.",
     "respawn": "Twoje ostatnie wioski upadły. Zaczynasz od nowa w {x}|{y}.",
     "newPlayer": "Nowy gracz {player} osiedlił się w okolicy {x}|{y}.",
+    "tradeSettled": "Zawarto transakcję. Dwa transporty są już w drodze.",
     "title": "Pogłoski",
     "protection": "[icon:shield] Okres ochronny: jeszcze {time}",
     "empty": "Cisza. W karczmach jeszcze nic nie słychać."
@@ -386,7 +392,8 @@
     },
     "hideScene": "Zwiń ilustrację",
     "showScene": "Pokaż ilustrację",
-    "units": "Jednostki"
+    "units": "Jednostki",
+    "movements": "Ruchy"
   },
   "player": {
     "bot": "bot",
@@ -841,6 +848,7 @@
     "empty": "Podaj ilości",
     "noResources": "Za mało surowców",
     "merchantsShort": "Za mało kupców: potrzeba {needed}, wolnych {available}",
+    "tradingOff": "Handel jest wyłączony w tym świecie",
     "merchants": "Kupcy: {free} / {total} wolnych",
     "merchantHint": "(1 kupiec = 1000 surowców, 6 min/pole)",
     "ownOnly": "Handel działa między własnymi wioskami — podbij drugą wioskę.",
@@ -859,7 +867,63 @@
     "used": "Oferta już wykorzystana",
     "exchange": "Wymień",
     "cannotExchange": "Za mało surowców (albo brak rynku)",
-    "usedShort": "Wykorzystano"
+    "usedShort": "Wykorzystano",
+    "offersTitle": "Twoje oferty handlowe",
+    "postOffer": "Przyklej ofertę",
+    "deliveryLabel": "Dostarcz w ciągu:",
+    "deliveryUnlimited": "(0 = bez limitu)",
+    "giveBack": "Wysyłasz / odbierasz z powrotem:",
+    "boardFull": "Za wiele ofert publicznych na raz",
+    "sameResource": "Wymiana to zamiana surowców — ten sam surowiec nie może być jednocześnie wydawany i wymagany",
+    "post": "Opublikuj ofertę",
+    "expiresIn": "(wygasa za",
+    "offersEmpty": "Brak okolicznych ofert handlowych.",
+    "boardHeader": "Tablica publiczna",
+    "offerFrom": "od {player}",
+    "acceptWithVillage": "Przyjmij w:",
+    "accept": "Przyjmij",
+    "withdraw": "Cofnij",
+    "notOwnedShort": "Wybierz własną wioskę",
+    "boardTitle": "Rynek globalny",
+    "boardHint": "Publiczne oferty wszystkich, z którymi możesz handlować.",
+    "boardEmpty": "Brak publicznych ofert na tablicy.",
+    "dealHint": "Każda strona płaci kupców za surowce, które wysyła.",
+    "offerDistance": "{dist} pól · {time}",
+    "pagePrev": "← Poprzednia",
+    "pageNext": "Następna →",
+    "boardSearch": "Szukaj:",
+    "boardWants": "Oferta na:",
+    "boardGives": "Oferta daje:",
+    "boardAny": "dowolny surowiec",
+    "boardMaxTime": "Maks. czas dostawy:",
+    "boardHours": "h",
+    "boardMinRatio": "Minimalny kurs (np. 1,8):",
+    "boardOrderBy": "Sortuj według:",
+    "sortTime": "czasu dostawy",
+    "sortExpiry": "wygasania",
+    "sortRatio": "kursu",
+    "thOffer": "Oferta",
+    "thFor": "W zamian",
+    "thPlayer": "Gracz",
+    "thFrom": "Od",
+    "thFromVillage": "Z wioski",
+    "thMaxDelivery": "Maks. dostawa",
+    "deliveryNone": "bez limitu",
+    "thTime": "Dostawa",
+    "thAvailable": "Dostępne",
+    "thRatio": "Kurs",
+    "thAccept": "Akcja",
+    "thExpires": "Wygasa",
+    "postHowMany": "Ile razy:",
+    "postsLeft": "pozostało {n}",
+    "postMany": "Wystaw {n} ofert",
+    "postedSome": "Wystawiono {done} z {n}; tablica jest pełna",
+    "boardFullHint": "Wszystkie Twoje oferty są wystawione — cofnij którąś lub dodaj kopię już wystawionej",
+    "copiesFree": "kopie tej oferty są darmowe",
+    "notEnoughGiven": "Nie masz tyle do oddania",
+    "marketTooSmall": "Potrzeba {needed} kupców, a rynek ma tylko {total}. Rozbuduj Rynek, aby mieć więcej kupców",
+    "withdrawMany": "Cofnij {n}",
+    "shipments": "Transporty kupców"
   },
   "settings": {
     "interface": "Interfejs",
@@ -927,8 +991,8 @@
     "unitsLoot": "Jednostki / łup",
     "units": "Jednostki",
     "arrival": "Przybycie",
-    "tradeHaul": "{n} surowców ({m} kupców)",
     "merchantsBack": "{m} kupców wraca",
+    "merchantsBackOne": "1 kupiec wraca",
     "groupName": "Nazwa grupy",
     "addGroup": "Dodaj grupę",
     "delete": "Usuń",
@@ -938,9 +1002,11 @@
       "units": "Jednostki",
       "recruit": "Rekrutacja",
       "resources": "Surowce",
+      "trading": "Handel",
       "commands": "Komendy",
       "groups": "Grupy"
     },
+    "noTrade": "Żaden kupiec nie jest w drodze.",
     "allVillages": "wszystkie wioski"
   },
   "reports": {
@@ -977,7 +1043,8 @@
       "attack": "ataki",
       "scout": "zwiady",
       "conquest": "podboje",
-      "support": "wsparcie"
+      "support": "wsparcie",
+      "market": "handel"
     },
     "villageFilter": "wioska:",
     "allVillages": "Pokaż wszystkie wioski",
@@ -995,6 +1062,15 @@
       "place": "droga w {at}",
       "missed": "twoje wojsko nikogo nie zastało: armii już nie było.",
       "scouted": "Zbadana armia:"
+    },
+    "market": {
+      "title": "Umowa handlowa",
+      "offers": " · {n} ofert rozliczonych razem",
+      "acceptedBy": "Przyjęte przez",
+      "comingFrom": "Twoje surowce wysłano z",
+      "travel": "dotrą za około {time}",
+      "youGive": "Oddajesz",
+      "youGet": "Otrzymujesz"
     }
   },
   "farm": {
@@ -1286,5 +1362,10 @@
       "return": "Powrót",
       "intercept": "Przechwycenie"
     }
+  },
+  "movements": {
+    "incoming": "przychodzi",
+    "merchantOne": "{m} kupiec",
+    "merchantMany": "{m} kupców"
   }
 }

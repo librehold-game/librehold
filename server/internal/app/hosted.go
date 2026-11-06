@@ -43,6 +43,7 @@ type HostForm struct {
 	Difficulty     game.Difficulty `json:"difficulty"`
 	BotStance      game.BotStance  `json:"botStance"`
 	FieldBattles   *bool           `json:"fieldBattles"`
+	TradingEnabled *bool           `json:"tradingEnabled"`
 	SightRadius    *int            `json:"sightRadius"`
 	ProtectionMin  *int            `json:"protectionMin"`
 	DominationPct  *int            `json:"dominationPct"` // 0 = off
@@ -133,6 +134,8 @@ func PlayerWorldConfig(f HostForm, s HostSettings) game.WorldConfig {
 		cfg.BotStance = f.BotStance
 	}
 	cfg.NoFieldBattles = f.FieldBattles != nil && !*f.FieldBattles
+	// Omitted means the default, which is on; a host who switches it off gets a world that never trades.
+	cfg.TradingEnabled = f.TradingEnabled == nil || *f.TradingEnabled
 	sight := clampInt(orDefault(f.SightRadius, 5), int(game.WorldLimits.SightRadius.Min), int(game.WorldLimits.SightRadius.Max))
 	cfg.SightRadius, cfg.NoSight = float64(sight), sight == 0
 	cfg.BeginnerProtectionDays = float64(clampInt(orDefault(f.ProtectionMin, 10), 0, 15)) / 1440

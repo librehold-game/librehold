@@ -115,7 +115,9 @@
       "humanModifiers": "Human multipliers",
       "botModifiers": "Bot multipliers",
       "noFieldBattles": "No field battles",
-      "sightRadius": "Sight radius (tiles)"
+      "sightRadius": "Sight radius (tiles)",
+      "tradingEnabled": "Trading",
+      "tradeOfferDurationHrs": "Trade offer duration (hours)"
     },
     "choice": {
       "barbarianDensity": {

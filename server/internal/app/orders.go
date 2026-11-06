@@ -202,6 +202,64 @@ func (in *tradeIn) validate() error {
 	return nil
 }
 
+type tradeOfferIn struct {
+	OriginID      string         `json:"originId"`
+	Give          game.Resources `json:"give"`          // what From sends to the taker
+	Want          game.Resources `json:"want"`          // what the taker brings back
+	MaxDeliveryMs int64          `json:"maxDeliveryMs"` // 0 = unlimited
+}
+
+func (in *tradeOfferIn) validate() error {
+	neg := func(r game.Resources) bool { return r.Wood < 0 || r.Clay < 0 || r.Iron < 0 }
+	if neg(in.Give) || neg(in.Want) {
+		return &ErrValidation{Field: "resources", Code: "negative"}
+	}
+	if in.MaxDeliveryMs < 0 {
+		return &ErrValidation{Field: "maxDeliveryMs", Code: "negative"}
+	}
+	// A trade swaps resources: no single resource may be given and wanted at the same time.
+	bid := func(r game.Resources) bool {
+		return r.Wood > 0 && in.Give.Wood > 0 || r.Clay > 0 && in.Give.Clay > 0 || r.Iron > 0 && in.Give.Iron > 0
+	}
+	if bid(in.Want) {
+		return &ErrValidation{Field: "resources", Code: "overlap"}
+	}
+	return nil
+}
+
+type tradeOfferAcceptIn struct {
+	OfferID   string   `json:"offerId"`            // one offer; the rest, if any, ride in OfferIDs
+	OfferIDs  []string `json:"offerIds,omitempty"` // several copies of a board post taken in one deal
+	VillageID string   `json:"villageId"`          // which village takes the post
+}
+
+func (in *tradeOfferAcceptIn) ids() []string {
+	if len(in.OfferIDs) > 0 {
+		return in.OfferIDs
+	}
+	return []string{in.OfferID}
+}
+
+func (in *tradeOfferAcceptIn) validate() error {
+	if len(in.OfferIDs) > 0 {
+		// Every id costs a lookup inside the per-world lock, so this batch is bounded like every other one; the
+		// body size limit alone would allow over a hundred thousand.
+		if err := checkIDs("offerIds", in.OfferIDs); err != nil {
+			return err
+		}
+		for _, id := range in.OfferIDs {
+			if id == "" {
+				return &ErrValidation{Field: "offerIds", Code: "invalid"}
+			}
+		}
+		return nil
+	}
+	if in.OfferID == "" {
+		return &ErrValidation{Field: "offerId", Code: "invalid"}
+	}
+	return nil
+}
+
 type buildPlanIn struct {
 	VillageID string            `json:"villageId"`
 	Steps     []game.BuildingID `json:"steps"`
@@ -355,6 +413,17 @@ var orders = map[string]orderSpec{
 	"trade": order(func(w WorldTx, me game.PlayerID, in tradeIn) error {
 		_, err := game.SendTrade(w, me, in.OriginID, in.TargetID, in.Amount)
 		return err
+	}),
+	"create-trade-offer": order(func(w WorldTx, me game.PlayerID, in tradeOfferIn) error {
+		_, err := game.CreateTradeOffer(w, me, game.TradeOfferInput{OriginID: in.OriginID,
+			Give: in.Give, Want: in.Want, MaxDeliveryMs: in.MaxDeliveryMs})
+		return err
+	}),
+	"accept-trade-offer": order(func(w WorldTx, me game.PlayerID, in tradeOfferAcceptIn) error {
+		return game.AcceptTradeOffers(w, me, in.ids(), in.VillageID)
+	}),
+	"cancel-trade-offer": order(func(w WorldTx, me game.PlayerID, in idIn) error {
+		return game.CancelTradeOffer(w, me, in.ID)
 	}),
 	"accept-trader": order(func(w WorldTx, me game.PlayerID, in villageIn) error {
 		return game.AcceptTrader(w, me, in.VillageID)

@@ -151,6 +151,7 @@ export function stateFixture(g: GameState, me = HUMAN_ID, worldId = 1): PlayerSt
     me, worldId, worldName: 'Café Test World', now: g.now, serverTime: g.lastRealTime, clockOriginLocalMs: g.clock.originLocalMs,
     paused: !!g.config.paused, config: structuredClone(g.config), villages, player: { ...self, id: me }, players, commands, intel,
     scheduled: g.scheduled.map((s) => ({ ...structuredClone(s), ownerId: id(s.ownerId) })),
+    tradeOffers: structuredClone(g.tradeOffers),
     human: {
       stats: structuredClone(g.stats), quests: structuredClone(g.quests), farmAssistant: structuredClone(g.farmAssistant),
       trader: structuredClone(g.trader), villageGroups: structuredClone(g.villageGroups),

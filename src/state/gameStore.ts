@@ -105,12 +105,17 @@ export interface GameStore {
   setTemplate: (key: 'A' | 'B' | 'C' | 'D', units: UnitCounts) => Promise<string | null>;
   sendTemplate: (key: 'A' | 'B' | 'C' | 'D', x: number, y: number) => Promise<string | null>;
   lastError: string | null;
+  /** Raises the error toast for something the client itself refused, with no request behind it. */
+  pushError: (text: string) => void;
   clearError: () => void;
   notice: string | null;
   pushNotice: (text: string) => void;
   clearNotice: () => void;
   trade: (originId: string, targetId: string, amount: ResourceSet) => Promise<string | null>;
   acceptTraderOffer: (villageId: string) => Promise<string | null>;
+  createTradeOffer: (in_: { originId: string; give: ResourceSet; want: ResourceSet; maxDeliveryMs: number }) => Promise<string | null>;
+  acceptTradeOffer: (offerId: string | string[], villageId?: string) => Promise<string | null>;
+  cancelTradeOffer: (offerId: string) => Promise<string | null>;
   applyBuildTemplate: (villageId: string, templateId: string) => Promise<string | null>;
   clearPlan: (villageId: string) => Promise<string | null>;
   saveBuildTemplate: (tpl: BuildTemplate) => Promise<string | null>;
@@ -504,6 +509,7 @@ export const useGameStore = create<GameStore>()(
       cancelResearchJob: (villageId, jobId) => run('cancel-research', { villageId, jobId }),
 
       lastError: null,
+      pushError: (text) => set((s) => { s.lastError = text; }),
       clearError: () => set((s) => { s.lastError = null; }),
       notice: null,
       pushNotice: (text) => set((s) => { s.notice = text; }),
@@ -525,6 +531,12 @@ export const useGameStore = create<GameStore>()(
 
       trade: (originId, targetId, amount) => run('trade', { originId, targetId, amount }),
       acceptTraderOffer: (villageId) => run('accept-trader', { villageId }),
+      createTradeOffer: (in_) => run('create-trade-offer', in_),
+      acceptTradeOffer: (offerId, villageId) => run('accept-trade-offer', {
+        ...(Array.isArray(offerId) ? { offerIds: offerId } : { offerId }),
+        ...(villageId ? { villageId } : {}),
+      }),
+      cancelTradeOffer: (offerId) => run('cancel-trade-offer', { id: offerId }),
       applyBuildTemplate: (villageId, templateId) => run('apply-build-template', { villageId, templateId }),
       clearPlan: (villageId) => run('clear-build-plan', { villageId }),
       saveBuildTemplate: (tpl) => run('save-build-template', tpl),

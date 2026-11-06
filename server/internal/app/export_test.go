@@ -11,3 +11,6 @@ func (s *Service) InWorld(ctx context.Context, acct *Account, worldID int64, fn 
 }
 
 var ReplayEntry = replayEntry
+
+// PublicSettingsOf exposes the world page's settings projection to the tests.
+func PublicSettingsOf(cfg game.WorldConfig) PublicSettings { return publicSettingsOf(&cfg) }

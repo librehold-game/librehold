@@ -66,10 +66,23 @@ describe('hosting from the lobby', () => {
     await waitFor(() => expect(posted('POST /api/v1/hosted')).toBeTruthy());
     expect(posted('POST /api/v1/hosted')!.body).toMatchObject({
       name: "ala's game", durationMin: 60, seats: 10, bots: 3, sightRadius: 5, dominationPct: 60, lateJoinMin: 10,
-      fieldBattles: true, startVillage: 'grown', barbarians: 'normal', registeredOnly: false,
+      fieldBattles: true, tradingEnabled: true, startVillage: 'grown', barbarians: 'normal', registeredOnly: false,
     });
     const link = await screen.findByLabelText('Invite link');
     expect((link as HTMLInputElement).value).toBe(`${location.origin}/join/abcdefghijklmnopqrst`);
+  });
+
+  it('a host can switch trading off, and the choice is sent', async () => {
+    routes['GET /api/v1/worlds'] = () => ({ status: 200, body: lobby() });
+    routes['POST /api/v1/hosted'] = () => ({ status: 201, body: card({ humans: 0, players: [] }) });
+    render(<LobbyPage me={ala} onClaimed={() => {}} />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Host a game' }));
+    const box = await screen.findByLabelText('Players and bots can trade');
+    expect((box as HTMLInputElement).checked).toBe(true);
+    fireEvent.click(box);
+    fireEvent.click(screen.getByRole('button', { name: 'Create the game' }));
+    await waitFor(() => expect(posted('POST /api/v1/hosted')).toBeTruthy());
+    expect(posted('POST /api/v1/hosted')!.body).toMatchObject({ tradingEnabled: false });
   });
 
   it('guests see no host form', async () => {

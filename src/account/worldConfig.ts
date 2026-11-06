@@ -20,10 +20,14 @@ export interface WorldConfig {
   botStance: 'peacefulRetaliate' | 'peacefulReputation' | 'normal' | 'allAgainstHumans';
   noFieldBattles?: boolean;
   sightRadius?: number;
+  tradingEnabled?: boolean;
+  tradeOfferDurationHrs?: number;
 }
 
 /** The server's defaults; it leaves field battles on and the sight radius at 0, which means 1. */
-export const DEFAULT_CONFIG: WorldConfig = { ...(DEFAULT_WORLD_CONFIG as WorldConfig), noFieldBattles: false, sightRadius: 1 };
+// A new world trades from the start; a world stored before the setting existed has no key, and the server reads an
+// absent tradingEnabled as off, so nothing that already runs changes behaviour.
+export const DEFAULT_CONFIG: WorldConfig = { ...(DEFAULT_WORLD_CONFIG as WorldConfig), noFieldBattles: false, sightRadius: 1, tradingEnabled: true };
 
 const L = WORLD_LIMITS;
 
@@ -54,8 +58,10 @@ export const FIELDS: FieldSpec[] = [
   { key: 'botStance', creationOnly: false, choices: ['peacefulRetaliate', 'peacefulReputation', 'normal', 'allAgainstHumans'] },
   { key: 'battleLosses', creationOnly: false, choices: ['normal', 'reduced'] },
   { key: 'noFieldBattles', creationOnly: false, flag: true },
+  { key: 'tradingEnabled', creationOnly: false, flag: true },
   // 0 is "no sight", a separate switch in the hosted form.
   { key: 'sightRadius', creationOnly: true, min: 1, max: L.sightRadius.max, step: 1 },
+  { key: 'tradeOfferDurationHrs', creationOnly: false, min: L.tradeOfferDurationHrs.min, max: L.tradeOfferDurationHrs.max, step: 1 },
   { key: 'humanModifiers', creationOnly: false, min: L.modifier.min, max: L.modifier.max, step: 0.05 },
   { key: 'botModifiers', creationOnly: false, min: L.modifier.min, max: L.modifier.max, step: 0.05 },
 ];

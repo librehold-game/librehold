@@ -147,9 +147,9 @@ deploy/          Docker Compose, Caddy, backups
 | Document | Contents |
 |---|---|
 | [`docs/development.md`](docs/development.md) | running locally, server layout, environment variables, time model, scripts |
-| [`docs/gameplay.md`](docs/gameplay.md) | instant games, player worlds, world settings, bots, quests |
+| [`docs/gameplay.md`](docs/gameplay.md) | instant games, player trading, player worlds, world settings, bots, quests |
 | [`docs/balance.md`](docs/balance.md) | balance formulas, where to change them, pacing tests |
-| [`docs/interface.md`](docs/interface.md) | village view, map, art layers, phone layout |
+| [`docs/interface.md`](docs/interface.md) | village view, map, market, art layers, phone layout |
 | [`deploy/README.md`](deploy/README.md) | production deployment, HTTPS, backups and restore |
 | [`ASSETS.md`](ASSETS.md) | origin and licence of every art and font file |
 | [`CHANGELOG.md`](CHANGELOG.md) | changes per version, written from the git history by `scripts/release.sh` |

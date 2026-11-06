@@ -28,6 +28,7 @@ type PlayerState struct {
 	Commands      []CommandView                  `json:"commands"`
 	Intel         map[string]*game.Intel         `json:"intel"`
 	Scheduled     []*game.ScheduledSend          `json:"scheduled"`
+	TradeOffers   []*game.TradeOffer             `json:"tradeOffers"`
 	Human         *game.HumanState               `json:"human"`
 	UnreadReports int                            `json:"unreadReports"`
 	Instant       *InstantView                   `json:"instant,omitempty"`
@@ -192,6 +193,9 @@ func (s *Service) playerState(w WorldTx, me game.PlayerID) *PlayerState {
 	}
 	if st.Scheduled == nil {
 		st.Scheduled = []*game.ScheduledSend{}
+	}
+	if st.TradeOffers = game.VisibleOffers(w, me); st.TradeOffers == nil {
+		st.TradeOffers = []*game.TradeOffer{}
 	}
 	if p := w.Player(me); p != nil {
 		st.Player = &OwnPlayer{Player: p}

@@ -13,6 +13,6 @@ export function defaultHostForm(limits: HostLimits, hostName: string): HostForm 
   return {
     name: t('host.defaultName', { host: hostName }), durationMin: 60, seats: limits.maxSeats, bots: Math.min(3, limits.maxBots),
     worldSpeed: 100, unitSpeed: 100, startVillage: 'grown', barbarians: 'normal', difficulty: 'easy', botStance: 'normal',
-    fieldBattles: true, sightRadius: 5, protectionMin: 10, dominationPct: 60, lateJoinMin: 10, registeredOnly: false,
+    fieldBattles: true, tradingEnabled: true, sightRadius: 5, protectionMin: 10, dominationPct: 60, lateJoinMin: 10, registeredOnly: false,
   };
 }

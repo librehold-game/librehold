@@ -35,6 +35,8 @@
         "botStance": "Boty wobec graczy",
         "battleLosses": "Straty w bitwach",
         "sightRadius": "Zasięg widzenia",
+        "trading": "Handel",
+        "tradeOfferDuration": "Oferta ważna (godziny)",
         "coins": "Monety",
         "nobleCost": "Cena hetmana (drewno · glina · żelazo)",
         "nobleLoyalty": "Lojalność, którą hetman zabiera z wioski gracza",

@@ -58,9 +58,19 @@ func TestHostedGameEndToEnd(t *testing.T) {
 		t.Fatalf("the host's state: %d %s", r.status, r.body)
 	}
 	for _, name := range app.OrderNames() {
-		body := map[string]string{}
-		if name == "send" || name == "schedule-send" {
+		body := map[string]any{}
+		switch name {
+		case "send", "schedule-send":
 			body["type"] = "attack"
+		case "create-trade-offer":
+			body["originId"] = "v1"
+			body["give"] = map[string]int{"wood": 10}
+			body["want"] = map[string]int{"clay": 5}
+		case "accept-trade-offer":
+			body["offerId"] = "t0"
+			body["villageId"] = "v1"
+		case "cancel-trade-offer":
+			body["id"] = "t0"
 		}
 		if r := host.order(wid, name, body); r.status != 403 {
 			t.Fatalf("the host's %s: %d %s", name, r.status, r.body)

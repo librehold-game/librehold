@@ -175,6 +175,12 @@ func CanCancelCommand(w World, c *Command) bool {
 	if c.Type == "return" || c.Type == "intercept" {
 		return false
 	}
+	// A settled shipment already bought something: an accepted offer has been consumed and the other side has
+	// shipped against it, so recalling this leg would take the goods *and* the payment. Refused at the source, not
+	// just in the UI, since the order is reachable directly.
+	if c.Settled {
+		return false
+	}
 	// An army hit in the field may turn back at any time before it arrives.
 	if c.FieldHit && (c.Type == "attack" || c.Type == "support") {
 		return w.Now() < c.ArrivesAt
@@ -194,6 +200,10 @@ func CancelCommand(w World, actor PlayerID, commandID string) error {
 	}
 	if home := w.Village(CommandHome(c)); home == nil || home.OwnerID != Ref(actor) {
 		return NotOwner("cancel-command")
+	}
+	if c.Settled {
+		// Distinguishes a settled shipment from one that simply left too long ago, so the client can say why.
+		return Rule("settledTrade", map[string]any{"id": c.ID})
 	}
 	if !CanCancelCommand(w, c) {
 		return Rule("cannotCancel", nil)

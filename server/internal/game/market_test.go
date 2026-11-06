@@ -119,6 +119,26 @@ func TestMarket(t *testing.T) {
 			t.Fatalf("index %d", w.Human("h1").Trader.OfferIndex)
 		}
 	})
+
+	// The switch governs all trade and the screen hides the trader while it is off, so the order has to refuse too:
+	// the client is not what enforces a rule.
+	t.Run("travelling trader: refused while trading is switched off", func(t *testing.T) {
+		w, v := gametest.NewTestWorld(3)
+		v.Buildings[game.BMarket], v.Buildings[game.BStorage] = 1, 15
+		v.Resources = game.Resources{Wood: 10000, Clay: 10000, Iron: 10000}
+		cfg := w.Config()
+		cfg.TradingEnabled = false
+		defer func() { cfg.TradingEnabled = true }()
+		before := v.Resources
+		err := game.AcceptTrader(w, "h1", v.ID)
+		var be *game.BlockedError
+		if !errors.As(err, &be) || !be.HasKind("tradingOff") {
+			t.Fatalf("expected tradingOff, got %v", err)
+		}
+		if v.Resources != before || w.Human("h1").Trader.Accepted {
+			t.Fatal("a refused exchange must not move resources")
+		}
+	})
 }
 
 func TestTradeToFriend(t *testing.T) {

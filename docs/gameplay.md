@@ -102,6 +102,8 @@ and marches in progress finish at their own times.
 | Battle losses, difficulty, bots towards humans | normal, normal, normal | normal/reduced; easy–brutal; four stances | editable |
 | Field battles | on | on/off | editable |
 | Sight range (passing armies) | 1 tile | 1–10 | at creation only |
+| Trading (players and bots alike) | on for a new world, **off for a world stored before the setting existed** | on/off (`TradingEnabled`) | editable — closes every trade: posting, accepting, direct resource sends and the bots' own trading; withdrawing stays open so nobody is stuck with resources set aside |
+| Trade offer duration | 24 game hours | admin-set hours | editable — applies to offers posted after the change; a world stored before this setting keeps the 24 h default until an admin picks a value |
 
 - With "gradually", bots join at the edge of the occupied area with a basic village — a message goes to Rumours.
 - Protection: a protected player cannot be attacked or scouted; a protected player can only attack barbarians.
@@ -109,6 +111,82 @@ and marches in progress finish at their own times.
   over at the edge of the world (without coins).
 - The admin can pause a world: world time stands still and players see the banner "The world is paused by the
   administrator".
+
+## Player trading
+
+Trading is a **world setting** (`WorldConfig.TradingEnabled`), editable at any time. It governs *all* trade, not just
+offers: posting and accepting offers, the plain market send, the travelling trader's exchange, and the bots' own
+trading (a bot checks the flag before it plans any deal, so a world with trading off has a market that does nothing at
+all). Every one of those paths refuses with a `tradingOff` blocker; only withdrawing stays open. New worlds start with it **on**. A
+world stored before the setting existed has no `tradingEnabled` key in its config; the flag is therefore stored as
+`TradingEnabled` rather than `NoTrading`, so the zero value means **off** and no running world changes behaviour. An
+admin flips it per world, both in the admin world form and in the player hosting form (where it defaults to on, so an
+omitted field keeps it). It is part of `PublicSettings`, so the world page shows on/off before anyone joins — the
+field carries no `omitempty`, since an absent key could not be told apart from a world that has it off. The world
+page prints the offer duration as its own row, only while trading is on. Switching it off hides the two offer panels
+and the travelling trader outright — only the merchant line stays, since it still explains the village's capacity —
+and the server refuses posting, accepting and sending. The switch also **closes the market**: every open offer is taken
+down and its reserved share refunded (`game.CloseMarket`). Each share returns to the village that reserved it and is
+**capped at that village's storehouse**, exactly like any other refund: a village already above capacity, or one whose
+storehouse was
+demolished while the offer was up, keeps what fits and the excess is lost. That is what makes it safe to flip on a
+live world, because the panels are gone while it is off and a stranded offer would hold its resources where no player
+could reach them.
+
+Players trade resources with each other through **trade offers** (engine: `game.TradeOffer`, orders `create-trade-offer`,
+`accept-trade-offer`, `cancel-trade-offer`). An offer is posted from one of the player's villages and has two sides: what the
+poster's village gives, and what the taker brings back.
+
+- Every offer sits on the **public board** and is visible to every player whose village the post can reach inside its delivery
+  limit (1–24 merchant hours, or unlimited). There are no targeted offers: a player who wants to trade with one particular
+  neighbour simply posts the deal that neighbour needs.
+- An offer waits **24 game hours** before it lapses (`TradeBalance.OfferExpiryMs`), so at higher world speeds it lasts less real
+  time. A player may keep `3 × villages` *different* deals out (`PublicPerVillage`); **copies of a deal already on the board are
+  free of that cap**, so one deal can be split into many copies and several takers can each pick up a piece. There is no
+  world-wide limit on the board. Posting reserves the give side on the spot, so the village must hold it.
+- Storage: one migration, `0017_trade_offers.sql`, purely additive — the table plus one index and nothing else. The
+  trade settings live in the existing `worlds.config` jsonb and the settlement marker in `commands.data`, so no other
+  schema changes and no backfill. Migrations run at boot (`postgres.Migrate` in `cmd/server/main.go`), so an existing
+  database upgrades itself. Its Down refunds the reserved give side of every open offer back to its origin village
+  before dropping the table, so a rollback returns resources rather than destroying them.
+- Accepting settles the deal as **two market shipments**: each side loads free merchants with what it owes, pays its own merchant
+  fee, and the arrival works like any trade (storage capping, merchants return). Both villages need a level 1 market and must be
+  able to ship at the moment of acceptance. Both legs are marked `Command.Settled`, so **neither can be recalled** — the offer is
+  already consumed and the other side has shipped against it, and allowing a recall would let either party take the goods *and*
+  the payment. A plain market trade keeps its 5-minute cancel window; only settlement legs are frozen.
+- **Merchants are the hard limit on trade size**, and the market's level decides how many you have: one per level up to
+  **11**, then quadratic, `(L − 10)² + 10` — the same curve Tribal Wars uses (`TradeBalance.MerchantCurveAt`,
+  `MerchantsForLevel`). A level 12 market gives 14, level 15 gives 35, level 19 gives 91 and a maxed level 25 gives 235. One
+  merchant carries `CommandBalance.MerchantCapacity` (1000) resources, so a maxed market moves 235 000 per shipment — more
+  than a level 25 storehouse holds of one resource — while a level 10 market moves 10 000. The quadratic step is there
+  because a building's cost grows exponentially: without it the top Market levels would buy a single extra merchant each
+  and nobody would ever build them.
+
+  A deal needing more merchants than the market will *ever* have is refused as `marketTooSmall`; one needing more than are
+  *free right now* (because some are already on the road) is refused as `merchants`. The market screen raises the reason
+  in the error toast when the player presses Accept, so they know whether to upgrade the Market or simply wait.
+- Identical offers — same poster, same delivery time, same amounts — collapse into **one board row** with an "available" count.
+  A taker can pick up several copies at once: `accept-trade-offer` takes `offerIds` (a batch). The whole batch is checked against
+  the totals before anything moves, so the taker must hold every copy's cost and have merchants for the combined haul; the batch
+  then books **one haul each way** and consumes every copy (`AcceptTradeOffers`).
+- Visibility is per viewer: their own posts, and posts that can deliver to one of their villages — newest first
+  (`VisibleOffers`). Settlement sends each human side a news item and a market report.
+- A merchant shipment is an ordinary `trade` command, so it shows up wherever commands do: the **Village** view's
+  Movements list (under the building table, only while something is on the road) and **Rally Point → Commands**. Both read
+  the haul from the seller's village to the buyer's, with each resource and its amount, the merchant count and an arrival
+  countdown; a shipment another player sent to you is included and highlighted, because the state carries commands aimed
+  at your villages as well as your own. Marches show the troops they carry the same way.
+
+The market screen shows board and own offers with accept/withdraw actions and the post form. Both offer lists group
+identical deals (same sender, same delivery, same amounts) into one row with a count; on your own row a withdraw-count
+box takes back that many copies at a time (`cancel-trade-offer`, once per copy). The global board is
+a filterable table (player search, the resource it offers and the resource it wants, max delivery time, minimum ratio, sort) paged
+ten rows at a time, with a take-N input per row. Bots trade too (`bot_trade.go`): a bot short of one resource posts a public
+offer for it priced at the travelling trader's rate, and a bot takes any board post that gives what it lacks and asks for
+something it can spare, checked against its free merchants and its batch affordability. A bot also **withdraws its own post**
+(`CancelTradeOffer`) as soon as the situation behind it changed — it is now short of what it was offering, it no longer needs
+what it asked for, or a different resource became the one worth trading away. Everything goes through the ordinary
+`CreateTradeOffer` / `AcceptTradeOffers` / `CancelTradeOffer` rules, so bots trade with bots and with humans on the same terms.
 
 ## Bot players
 
@@ -137,6 +215,16 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
   military from mines 12–15, 30 % of troops, a 12-step plan and 2 days of check-ins. Strong and medium bots use the
   auto-farm as humans do, once unlocked the same way (5000 looted or 3 villages): up to 20 sized raids per village
   every 15 minutes, online or not, at barbarian and abandoned villages only. Weak bots and every bot in a short world play the classic way.
+- **Trading.** Bots trade like humans (`bot_trade.go`, run before the economy planners each think). A village with a
+  market that is lopsided — it holds less than half of its best resource — posts a public offer for its scarcest one,
+  giving its spare at the travelling trader's rate; the reserved share comes out of the village like a human's. A bot
+  takes any board post that gives a resource it is comparably short of and asks for one it can spare, paying no more
+  than `botTradeMaxCost` per unit received and checked against its free merchants, batch affordability included. It
+  keeps one post per village, and **withdraws** it (`CancelTradeOffer`) once the situation behind it changed: it is now
+  shortest of what it was offering, it no longer needs what it asked for, or the village became balanced. On instant
+  worlds only a share of the bots trade (`BotConfig.ShortTradeChance`), where every minute counts. The board itself is
+  a map, so its iteration order varies between runs: the planner reads it through `boardOffers`, which sorts by creation
+  time and then id, or two runs of the same world would take different offers and a replayed log would not match.
 - **Expansion.** An Academy in the best village (from three villages also in the second), coins where the world has
   them, hetmans against barbarians and the grey villages of players who left.
 - **War.** Moods (build-up → campaign → consolidation), targets from public data and report memory; operations:
