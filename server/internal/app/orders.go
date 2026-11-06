@@ -84,6 +84,10 @@ func checkUnits(u game.UnitCounts) error {
 	return nil
 }
 
+type hideFarmIn struct {
+	Hide bool `json:"hide"`
+}
+
 type villageIn struct {
 	VillageID string `json:"villageId"`
 }
@@ -264,6 +268,10 @@ type readIn struct {
 
 func (in *readIn) validate() error { return checkIDs("ids", in.IDs) }
 
+type allReportsIn struct {
+	SkipAutoFarm bool `json:"skipAutoFarm"`
+}
+
 type groupIn game.VillageGroup
 
 func (in *groupIn) validate() error {
@@ -281,8 +289,6 @@ type claimIn struct {
 	QuestID   string `json:"questId"`
 	VillageID string `json:"villageId"`
 }
-
-type none struct{}
 
 var orders = map[string]orderSpec{
 	"build": order(func(w WorldTx, me game.PlayerID, in buildIn) error {
@@ -382,6 +388,9 @@ var orders = map[string]orderSpec{
 	"set-farm-filters": order(func(w WorldTx, me game.PlayerID, in game.FarmFiltersPatch) error {
 		return game.SetFarmFilters(w, me, in)
 	}),
+	"hide-farm-on-map": order(func(w WorldTx, me game.PlayerID, in hideFarmIn) error {
+		return game.HideFarmOnMap(w, me, in.Hide)
+	}),
 	"set-auto-farm": order(func(w WorldTx, me game.PlayerID, in autoFarmIn) error {
 		return game.SetAutoFarm(w, me, in.Enabled, in.VillageIDs)
 	}),
@@ -405,14 +414,14 @@ var orders = map[string]orderSpec{
 	"mark-reports-read": order(func(w WorldTx, me game.PlayerID, in readIn) error {
 		return game.MarkReportsRead(w, me, in.IDs, in.Read)
 	}),
-	"mark-all-reports-read": order(func(w WorldTx, me game.PlayerID, _ none) error {
-		return game.MarkAllReportsRead(w, me)
+	"mark-all-reports-read": order(func(w WorldTx, me game.PlayerID, in allReportsIn) error {
+		return game.MarkAllReportsRead(w, me, in.SkipAutoFarm)
 	}),
 	"delete-report": order(func(w WorldTx, me game.PlayerID, in idIn) error {
 		return game.DeleteReport(w, me, in.ID)
 	}),
-	"delete-read-reports": order(func(w WorldTx, me game.PlayerID, _ none) error {
-		return game.DeleteReadReports(w, me)
+	"delete-read-reports": order(func(w WorldTx, me game.PlayerID, in allReportsIn) error {
+		return game.DeleteReadReports(w, me, in.SkipAutoFarm)
 	}),
 	"claim-quest": order(func(w WorldTx, me game.PlayerID, in claimIn) error {
 		_, err := game.ClaimQuest(w, me, in.QuestID, in.VillageID)

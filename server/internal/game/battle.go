@@ -121,6 +121,8 @@ func reportRecipients(w World, attacker, defender PlayerID, target *Village) []P
 func sendReports(w World, to []PlayerID, r Report) {
 	for _, id := range to {
 		copy := r
+		// Only the sender learns the auto-farm sent the troops.
+		copy.AutoFarm = r.AutoFarm && id == r.Origin.OwnerID
 		w.AddReport(id, &copy)
 	}
 }
@@ -207,7 +209,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			ObserveBattle(w, botAttacker, target, seen)
 		}
 		if result.AttackerSurvivors.Total() > 0 && origin != nil {
-			CreateReturn(w, target.ID, c.OriginID, result.AttackerSurvivors, nil)
+			markFarm(w, CreateReturn(w, target.ID, c.OriginID, result.AttackerSurvivors, nil), c.Farm)
 		}
 		RecordBattle(w, BattleRecord{AttackerID: attackerOwner, DefenderID: targetOwner, Shares: shares,
 			AttackerLost: result.AttackerLosses, DefenderLost: result.DefenderLosses})
@@ -237,7 +239,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			Origin: ReportVillageOf(w, c.OriginID), Target: ReportVillageOf(w, target.ID),
 			Attacker: ReportSide{Units: c.Units, Losses: result.AttackerLosses},
 			Morale:   result.Morale, WallBefore: target.Buildings[BWall], WallAfter: target.Buildings[BWall],
-			Outcome: result.Outcome,
+			Outcome: result.Outcome, AutoFarm: c.AutoFarm,
 		}
 		if scoutOK {
 			r.Defender.Units = defenderUnits
@@ -347,7 +349,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			Attacker: ReportSide{Units: c.Units, Losses: result.AttackerLosses},
 			Defender: ReportSide{Units: defenderUnits, Losses: result.DefenderLosses},
 			Luck:     result.Luck, Morale: result.Morale, WallBefore: result.WallBefore, WallAfter: result.WallAfter,
-			BuildingDamage: result.BuildingDamage, Conquered: conquered, Outcome: result.Outcome,
+			BuildingDamage: result.BuildingDamage, Conquered: conquered, Outcome: result.Outcome, AutoFarm: c.AutoFarm,
 		}
 		if conquered {
 			r.Type = "conquest"
@@ -373,9 +375,17 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 		if SumResources(haul) > 0 {
 			h = &haul
 		}
-		CreateReturn(w, target.ID, c.OriginID, survivors, h)
+		markFarm(w, CreateReturn(w, target.ID, c.OriginID, survivors, h), c.Farm)
 	}
 	return nil
+}
+
+// markFarm carries a farm raid's mark onto its way home.
+func markFarm(w World, ret *Command, farm bool) {
+	if farm {
+		ret.Farm = true
+		w.PutCommand(ret)
+	}
 }
 
 func intelCopy(in *Intel) *Intel {

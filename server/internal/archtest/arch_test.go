@@ -27,7 +27,7 @@ func isStdlib(path string) bool {
 }
 
 func TestCoreImportsOnlyStdlibAndInward(t *testing.T) {
-	cmd := exec.Command("go", "list", "-f", "{{.ImportPath}}|{{join .Imports \" \"}}", "./internal/game/...", "./internal/app/...")
+	cmd := exec.Command("go", "list", "-f", "{{.ImportPath}}|{{join .Imports \" \"}}", "./internal/game/...", "./internal/app/...", "./internal/buildinfo/...")
 	cmd.Dir = serverRoot(t)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -39,11 +39,16 @@ func TestCoreImportsOnlyStdlibAndInward(t *testing.T) {
 		allowed := []string{"librehold/internal/game"}
 		if strings.HasPrefix(pkg, "librehold/internal/app") {
 			allowed = append(allowed, "librehold/internal/app")
+		} else if strings.HasPrefix(pkg, "librehold/internal/buildinfo") {
+			allowed = nil
 		} else if !strings.HasPrefix(pkg, "librehold/internal/game") {
 			t.Fatalf("unexpected package %q", pkg)
 		}
 		pkgs++
 		for imp := range strings.FieldsSeq(imports) {
+			if strings.HasPrefix(pkg, "librehold/internal/app") && imp == "librehold/internal/buildinfo" {
+				continue
+			}
 			if isStdlib(imp) {
 				continue
 			}
@@ -58,14 +63,14 @@ func TestCoreImportsOnlyStdlibAndInward(t *testing.T) {
 			}
 		}
 	}
-	if pkgs < 2 {
-		t.Fatalf("expected at least the game and app packages, got %d", pkgs)
+	if pkgs < 3 {
+		t.Fatalf("expected at least the game, app and buildinfo packages, got %d", pkgs)
 	}
 }
 
 func TestCoreNeverReadsWallClockOrMathRand(t *testing.T) {
 	root := serverRoot(t)
-	for _, dir := range []string{"internal/game", "internal/app"} {
+	for _, dir := range []string{"internal/game", "internal/app", "internal/buildinfo"} {
 		base := filepath.Join(root, dir)
 		if _, err := os.Stat(base); err != nil {
 			t.Fatalf("%s: %v", dir, err)

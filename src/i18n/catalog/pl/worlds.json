@@ -47,7 +47,8 @@
         "other": "# dnia"
       },
       "lastVillage": {
-        "protected": "nie można jej stracić",
+        "protected": "chroniona dla graczy i botów",
+        "playersOnly": "chroniona dla graczy (nie dla botów)",
         "canBeLost": "można ją stracić"
       },
       "yes": "tak",

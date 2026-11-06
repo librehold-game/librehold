@@ -22,6 +22,7 @@ import (
 	"librehold/internal/adapters/web"
 	"librehold/internal/adapters/ws"
 	"librehold/internal/app"
+	"librehold/internal/buildinfo"
 	"librehold/internal/config"
 )
 
@@ -40,6 +41,13 @@ func (c scaledClock) NowMs() int64 {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "healthcheck" {
+		if err := healthcheck(); err != nil {
+			fmt.Fprintln(os.Stderr, "healthcheck:", err)
+			os.Exit(1)
+		}
+		return
+	}
 	if err := run(); err != nil {
 		slog.Error("server", "err", err)
 		os.Exit(1)
@@ -47,6 +55,7 @@ func main() {
 }
 
 func run() error {
+	slog.Info("starting", "version", buildinfo.Version())
 	cfg, err := config.Load()
 	if err != nil {
 		return err
@@ -125,6 +134,7 @@ func run() error {
 	mux.Handle("/api/", httpapi.New(svc, httpapi.Options{CookieSecure: cfg.CookieSecure, TrustedProxies: cfg.TrustedProxies}))
 	mux.Handle("GET /robots.txt", web.Robots(cfg.PublicURL))
 	mux.Handle("GET /sitemap.xml", web.NewSitemap(cfg.WebDir, svc, cfg.PublicURL))
+	mux.Handle("GET /healthz", web.Health(pool.Ping))
 	mux.Handle("/", web.New(cfg.WebDir, func(r *http.Request) web.AuthKind {
 		c, err := r.Cookie("lh_session")
 		if err != nil {

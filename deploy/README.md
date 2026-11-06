@@ -31,7 +31,8 @@ cd librehold/deploy
    docker compose up -d
    ```
 
-   Docker downloads the image on the first start.
+   Docker downloads the image on the first start. `docker compose ps` shows the server as `healthy` once it reaches
+   its database: Docker runs `/app/server healthcheck`, which asks the server's `GET /healthz`.
 
 3. Open `http://<server>:8080/` and log in as admin. Instant games start on their own; long worlds are created in
    the admin panel. Players sign up on the registration page or press **Play now** as guests.

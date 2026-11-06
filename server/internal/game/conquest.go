@@ -79,6 +79,10 @@ func CanBeConquered(w World, v *Village) bool {
 	if owner != nil && owner.Status == StatusQuit {
 		return true
 	}
+	// Bots' last village is conquerable when the world protects players only.
+	if owner != nil && !owner.IsHuman && w.Config().LastVillage == "playersOnly" {
+		return true
+	}
 	return owner != nil && len(owner.VillageIDs) > 1
 }
 
@@ -100,10 +104,11 @@ func dropTroopsAway(w World, villageID string) {
 	}
 }
 
-var transferSpy func(from, to PlayerRef, conquest bool)
+var transferSpy func(w World, from, to PlayerRef, conquest bool)
 
-// SpyTransfers observes every change of village owner (measurements and tests); returns a restore func.
-func SpyTransfers(fn func(from, to PlayerRef, conquest bool)) (restore func()) {
+// SpyTransfers observes every change of village owner (measurements and tests), with the world it happened in so
+// simulations running side by side can tell theirs apart; returns a restore func.
+func SpyTransfers(fn func(w World, from, to PlayerRef, conquest bool)) (restore func()) {
 	prev := transferSpy
 	transferSpy = fn
 	return func() { transferSpy = prev }
@@ -116,7 +121,7 @@ func SpyTransfers(fn func(from, to PlayerRef, conquest bool)) (restore func()) {
 func TransferVillage(w World, v *Village, newOwner PlayerRef, byVillageID string) {
 	prevOwner := v.OwnerID
 	if transferSpy != nil {
-		transferSpy(prevOwner, newOwner, byVillageID != "")
+		transferSpy(w, prevOwner, newOwner, byVillageID != "")
 	}
 	if byVillageID != "" {
 		rng := Mulberry32(HiddenSeed(w, v.ID, "conquest", w.Now()))

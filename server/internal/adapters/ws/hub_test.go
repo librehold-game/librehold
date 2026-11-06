@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strconv"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -222,8 +223,15 @@ func TestNonMemberRejected(t *testing.T) {
 	}
 }
 
+// The session is checked again a minute after the connection opened. The connection is held right after its hello
+// while the player logs out and the minute passes, the way a busy machine can leave it, so the check still has to
+// count from the opening and not from whenever the server got back to it.
 func TestSocketClosesAfterLogout(t *testing.T) {
 	e := newEnv(t)
+	release := make(chan struct{})
+	let := sync.OnceFunc(func() { close(release) })
+	t.Cleanup(ws.StallAfterHello(release))
+	t.Cleanup(let)
 	ala := e.connect(t, "ala")
 	req, _ := http.NewRequest("POST", e.srv.URL+"/api/v1/auth/logout", nil)
 	req.Header.Set("Authorization", "Bearer "+e.tokens["ala"])
@@ -232,6 +240,7 @@ func TestSocketClosesAfterLogout(t *testing.T) {
 		t.Fatalf("logout %v %v", res, err)
 	}
 	e.clock.ms.Add(60_000)
+	let()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	for {

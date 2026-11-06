@@ -45,7 +45,8 @@
         "other": "# days"
       },
       "lastVillage": {
-        "protected": "cannot be lost",
+        "protected": "cannot be lost (players and bots)",
+        "playersOnly": "cannot be lost for players (bots' last village excepted)",
         "canBeLost": "can be lost"
       },
       "yes": "on",

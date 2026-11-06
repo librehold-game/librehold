@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { BUILDING_IDS, type BuildingId } from '../src/engine/types';
 import { LAYOUT } from '../src/ui/scene/pixel/layout';
 import type { Pt } from '../src/ui/scene/pixel/path';
-import { buildRoutes, gateOpen, MOW_SPEED, mowerAt } from '../src/ui/scene/pixel/routes';
+import { buildRoutes, gateOpen, MOW_SPEED, mowerAt, zoneAt, type Route } from '../src/ui/scene/pixel/routes';
+import { pathLength, pointAt } from '../src/ui/scene/pixel/path';
 
 const zero = Object.fromEntries(BUILDING_IDS.map((id) => [id, 0])) as Record<BuildingId, number>;
 const nine = { ...zero, main: 5, barracks: 5, market: 5, stable: 5, academy: 1, smithy: 5, storage: 5, workshop: 5, hide: 5 };
@@ -79,3 +80,37 @@ describe('walker routes', () => {
     expect(at(back + 40 / (4 * MOW_SPEED) + 10 / MOW_SPEED)).toEqual({ at: [110, 50], mowing: true });
   });
 });
+
+describe('walker draw order along a route', () => {
+  const routes = buildRoutes({ levels: { ...zero, main: 5, iron: 3, farm: 3, academy: 1, storage: 5 }, construction: [] }, { citizens: 18, guards: 2 });
+  /** The draw order a walker has at each step of `step` px round its loop, with where it stands. */
+  const along = (r: Route, step = 2) => {
+    const out: { at: Pt; z: number }[] = [];
+    for (let d = 0; d < pathLength(r.points); d += step) out.push({ at: pointAt(r.points, d), z: r.zones![zoneAt(r.zones!, d)]!.z });
+    return out;
+  };
+  const backWall = (x: number) => [...LAYOUT.walls.stone.strips].reverse().find((s) => s.x0 <= x)!.zBack;
+
+  it.each([['carry_sack', 'academy', 'e'], ['walk', 'storage', 'w']] as const)('the %s walker passes in front of the %s, behind it on the side road and behind the wall past the gate', (state, building, gate) => {
+    const r = routes.find((x) => x.state === state && x.zones)!;
+    const anchor = LAYOUT.slots[building][1] + 12;
+    const [gx] = LAYOUT.gates[gate];
+    const steps = along(r);
+    const zs = [...new Set(steps.map((s) => s.z))];
+    expect(zs.some((z) => z > anchor)).toBe(true);
+    expect(zs).toContain(anchor - 0.5);
+    expect(zs.some((z) => z < backWall(gx))).toBe(true);
+    // The far end of the loop, out by the mine or the farm, is behind the wall; the start, on the building's road, is in front.
+    expect(steps[0]!.z).toBeGreaterThan(anchor);
+    expect(steps[Math.floor(steps.length / 2)]!.z).toBeLessThan(backWall(gx));
+  });
+
+  it('guards sort by where their feet are: in front of a building lower down, behind one further up', () => {
+    const guards = routes.filter((r) => r.state === 'guard');
+    expect(guards).toHaveLength(2);
+    for (const g of guards) {
+      for (const { at: [, y], z } of along(g, 7)) expect(Math.abs(z - y)).toBeLessThan(6);
+    }
+  });
+});
+

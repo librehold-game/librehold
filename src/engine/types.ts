@@ -94,6 +94,10 @@ export interface Command {
   threats?: string[];
   /** The army survived a field battle; its owner may turn it back. */
   fieldHit?: boolean;
+  /** The auto-farm sent the army; only its owner sees this. */
+  autoFarm?: boolean;
+  /** A raid the farm assistant sent (a template or the auto-farm), or its way home; only the owner sees it. */
+  farm?: boolean;
 }
 
 export interface FieldPoint { x: number; y: number }
@@ -155,6 +159,7 @@ export interface Report {
   conquered?: boolean;
   outcome: 'attackerWon' | 'defenderWon';
   read: boolean;
+  autoFarm?: boolean;
   field?: FieldReport;
 }
 
@@ -345,8 +350,11 @@ export interface WorldConfig {
   rampUpDays: number;
   /** Beginner protection in days since joining the world; 0 = off. */
   beginnerProtectionDays: number;
-  /** Whether a player's last village can be conquered (then the human starts over, the bot drops out). */
-  lastVillage: 'protected' | 'canBeLost';
+  /**
+   * Whether a player's last village can be conquered (then the human starts over, the bot drops out).
+   * "protected" counts for players and bots; "playersOnly" leaves bots' last village conquerable.
+   */
+  lastVillage: 'protected' | 'playersOnly' | 'canBeLost';
   /** Minimum share of strong bots (`DIFFICULTY_FLOOR`). */
   difficulty: Difficulty;
   /** How bots treat the human: peaceful (retaliation / reputation), normal, or everyone against them. */
@@ -408,6 +416,8 @@ export interface FarmAssistantState {
   /** Villages with auto-farm enabled. */
   autoFarmVillages: string[];
   filters: FarmFilters;
+  /** The player keeps their farm raids off the map. */
+  hideOnMap?: boolean;
 }
 
 export interface TraderOffer {

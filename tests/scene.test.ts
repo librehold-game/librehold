@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { MS_PER_HOUR, MS_PER_MINUTE } from '../src/engine/types';
 import { animationBudget, citizenCount, cycleMs, dayPhase, mergeBeat, sceneModel, trainingFigures, troopFigures, variantFor, wallGuards, woodSwingMs } from '../src/ui/scene/sceneModel';
+import { villageStorageCapacity } from '../src/engine/resources';
 import { activeVillage, newTestGame } from './helpers';
 
 describe('village illustration model (16.6)', () => {
@@ -90,6 +91,16 @@ describe('village illustration model (16.6)', () => {
     expect(b.troops).toBe(8);
     expect(b.citizens).toBeGreaterThanOrEqual(12);
     expect(b.citizens + b.troops + b.guards).toBeLessThanOrEqual(30);
+  });
+
+  it('a full warehouse of one resource stops only the workers of that resource', () => {
+    const g = newTestGame();
+    const v = activeVillage(g);
+    const cap = villageStorageCapacity(v);
+    v.resources.clay = cap;
+    v.resources.wood = 0;
+    v.resources.iron = cap - 1;
+    expect(sceneModel(g, v.id)!.full).toEqual({ wood: false, clay: true, iron: false });
   });
 
   it('alarm: an AI attack < 10 min away hides the villagers', () => {

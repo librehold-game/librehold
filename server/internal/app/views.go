@@ -102,11 +102,13 @@ type CommandView struct {
 	Intercept      *game.InterceptOrder `json:"intercept,omitempty"`
 	Threats        []string             `json:"threats,omitempty"`
 	FieldHit       bool                 `json:"fieldHit,omitempty"`
+	AutoFarm       bool                 `json:"autoFarm,omitempty"`
+	Farm           bool                 `json:"farm,omitempty"`
 }
 
 func ownCommand(c *game.Command) CommandView {
 	return CommandView{Command: c, Units: &c.Units, CatapultTarget: c.CatapultTarget, Haul: c.Haul, Intercept: c.Intercept,
-		Threats: c.Threats, FieldHit: c.FieldHit}
+		Threats: c.Threats, FieldHit: c.FieldHit, AutoFarm: c.AutoFarm, Farm: c.Farm}
 }
 
 func foreignCommand(c *game.Command) CommandView {
@@ -246,7 +248,7 @@ func (s *Service) playerState(w WorldTx, me game.PlayerID) *PlayerState {
 		return a.ID < b.ID
 	})
 	for _, r := range w.Reports(me, math.MaxInt64, 0) {
-		if !r.Read {
+		if !r.Read && !r.AutoFarm {
 			st.UnreadReports++
 		}
 	}

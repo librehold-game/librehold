@@ -14,6 +14,7 @@ import (
 	"librehold/internal/adapters/memory"
 	"librehold/internal/adapters/security"
 	"librehold/internal/app"
+	"librehold/internal/buildinfo"
 	"librehold/internal/game"
 )
 
@@ -244,7 +245,7 @@ func TestPackThenDeleteRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if p.Seed != row.Seed || p.Config.Kind != "instant" || p.Build == "" || p.Rows != len(log) {
+	if p.Seed != row.Seed || p.Config.Kind != "instant" || p.Build != buildinfo.Version() || p.Rows != len(log) {
 		t.Fatalf("packed %+v", p)
 	}
 	zr, err := gzip.NewReader(bytes.NewReader(p.Data))

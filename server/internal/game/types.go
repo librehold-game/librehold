@@ -347,9 +347,11 @@ type WorldConfig struct {
 	BotArrival             string           `json:"botArrival"`
 	RampUpDays             float64          `json:"rampUpDays"`
 	BeginnerProtectionDays float64          `json:"beginnerProtectionDays"`
-	LastVillage            string           `json:"lastVillage"`
-	Difficulty             Difficulty       `json:"difficulty"`
-	BotStance              BotStance        `json:"botStance"`
+	// LastVillage: "protected" (players and bots), "playersOnly" (bots' last village is conquerable) or
+	// "canBeLost". Worlds created before "playersOnly" existed store one of the other two.
+	LastVillage string     `json:"lastVillage"`
+	Difficulty  Difficulty `json:"difficulty"`
+	BotStance   BotStance  `json:"botStance"`
 
 	// Instant worlds only (see instant.go); zero values mean a long world.
 	Kind             WorldKind `json:"kind,omitempty"`

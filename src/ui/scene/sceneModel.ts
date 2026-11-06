@@ -45,6 +45,8 @@ export interface SceneModel {
   paladinHome: boolean;
   caravan: boolean;
   storageFull: boolean;
+  /** The warehouse holds as much of this resource as it can, so its producers stop work and rest. */
+  full: Record<'wood' | 'clay' | 'iron', boolean>;
   alarm: boolean;
   alarmEtaMs: number | null;
   defeated: boolean;
@@ -141,6 +143,7 @@ export function sceneModel(state: GameState, villageId: string): SceneModel | nu
   const woodPerHour = villageProductionPerHour(v, 'wood', state.config);
   const cap = villageStorageCapacity(v);
   const storageFull = cap > 0 && (['wood', 'clay', 'iron'] as const).some((r) => v.resources[r] / cap >= RESOURCE_BALANCE.storageWarningRatio);
+  const full = { wood: v.resources.wood >= cap, clay: v.resources.clay >= cap, iron: v.resources.iron >= cap };
 
   let troops = 0;
   for (const u of UNIT_IDS) if (u !== 'noble' && u !== 'paladin') troops += v.units[u];
@@ -214,6 +217,7 @@ export function sceneModel(state: GameState, villageId: string): SceneModel | nu
     paladinHome: statue.knightHome,
     caravan,
     storageFull,
+    full,
     alarm: alarmEta !== null,
     alarmEtaMs: alarmEta,
     defeated,

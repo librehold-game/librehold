@@ -77,6 +77,9 @@ interface UiStore {
   reportsVillageFilter: string | null;
   setReportsVillageFilter: (villageId: string | null) => void;
   openReportsFor: (villageId: string | null) => void;
+  /** Reports view: leave out the auto-farm's reports; unlike the village filter it holds while the game is open. */
+  reportsHideAutoFarm: boolean;
+  setReportsHideAutoFarm: (hide: boolean) => void;
   /** Report to open on entering the Reports view (one-off). */
   reportToOpen: string | null;
   openReport: (reportId: string) => void;
@@ -127,6 +130,8 @@ export const useUiStore = create<UiStore>()((set, get) => ({
   reportsVillageFilter: null,
   setReportsVillageFilter: (reportsVillageFilter) => set({ reportsVillageFilter }),
   openReportsFor: (reportsVillageFilter) => set({ reportsVillageFilter, view: 'reports' }),
+  reportsHideAutoFarm: false,
+  setReportsHideAutoFarm: (reportsHideAutoFarm) => set({ reportsHideAutoFarm }),
   reportToOpen: null,
   openReport: (reportToOpen) => set({ reportToOpen, view: 'reports' }),
   consumeReportToOpen: () => {
