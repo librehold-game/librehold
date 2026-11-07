@@ -1,11 +1,23 @@
-import { COMMAND_BALANCE } from '../data/world.config';
+import { COMMAND_BALANCE, TRADE_BALANCE } from '../data/world.config';
 import { villageStorageCapacity } from './resources';
 import { MS_PER_MINUTE, RESOURCES, type GameState, type ResourceSet, type Village } from './types';
 import { distance } from './world';
 import { isHumanVillage } from './players';
 
+/**
+ * How many merchants a market level gives: one per level up to `merchantCurveAt`, then quadratic, the same shape
+ * Tribal Wars uses (level 19 gives 91, level 25 gives 235). Mirrors `game.MerchantsForLevel` on the server.
+ */
+export function merchantsForLevel(level: number): number {
+  if (level <= 0) return 0;
+  const n = TRADE_BALANCE.merchantCurveAt;
+  if (level <= n) return level;
+  const steps = level - n + 1;
+  return steps * steps + n - 1;
+}
+
 export function merchantsTotal(v: Village): number {
-  return v.buildings.market;
+  return merchantsForLevel(v.buildings.market);
 }
 
 export function merchantsInTransit(state: GameState, villageId: string): number {
@@ -32,13 +44,23 @@ export function tradeTravelMs(origin: Village, target: Village, unitSpeed: numbe
   return Math.max(1, Math.round((d * COMMAND_BALANCE.merchantSpeed * MS_PER_MINUTE) / unitSpeed));
 }
 
+/** Travel time between two tile positions, for offers where only coordinates are known (e.g. other players' villages). */
+export function tradeTravelMsByCoords(from: { x: number; y: number }, to: { x: number; y: number }, unitSpeed: number): number {
+  const d = distance(from.x, from.y, to.x, to.y);
+  return Math.max(1, Math.round((d * COMMAND_BALANCE.merchantSpeed * MS_PER_MINUTE) / unitSpeed));
+}
+
 export type TradeBlocker =
   | { kind: 'noMarket' }
   | { kind: 'notOwned' }
   | { kind: 'self' }
   | { kind: 'empty' }
   | { kind: 'resources' }
-  | { kind: 'merchants'; needed: number; available: number };
+  /** The haul needs more merchants than the village has free right now (some are already on the road). */
+  | { kind: 'merchants'; needed: number; available: number }
+  /** The haul needs more merchants than the market will ever have: its level is the merchant count. */
+  | { kind: 'marketTooSmall'; needed: number; total: number }
+  | { kind: 'tradingOff' };
 
 export function checkTrade(state: GameState, originId: string, targetId: string, amount: ResourceSet): { blockers: TradeBlocker[]; merchants: number; travelMs: number } {
   const origin = state.villages[originId];
@@ -54,7 +76,13 @@ export function checkTrade(state: GameState, originId: string, targetId: string,
   if (clean.wood > origin.resources.wood || clean.clay > origin.resources.clay || clean.iron > origin.resources.iron) blockers.push({ kind: 'resources' });
   const merchants = merchantsNeeded(clean);
   const available = merchantsAvailable(state, origin);
-  if (merchants > available) blockers.push({ kind: 'merchants', needed: merchants, available });
+  if (merchants > merchantsTotal(origin)) {
+    // A bigger market would be needed: raising its level is the only fix, waiting will not help.
+    blockers.push({ kind: 'marketTooSmall', needed: merchants, total: merchantsTotal(origin) });
+  } else if (merchants > available) {
+    // Enough merchants in total, but some are still on the road.
+    blockers.push({ kind: 'merchants', needed: merchants, available });
+  }
   const travelMs = target ? tradeTravelMs(origin, target, state.config.unitSpeed) : 0;
   return { blockers, merchants, travelMs };
 }
@@ -79,6 +107,8 @@ export function balanceAmount(origin: Village, target: Village): ResourceSet {
 }
 
 export function canAcceptTrader(state: GameState, v: Village): boolean {
+  // The travelling trader is a fixed-rate shop, not a deal with another player, so `tradingEnabled` does not close
+  // it: the same reason `AcceptTrader` on the server stopped checking the switch.
   const t = state.trader;
   return !!t && !t.accepted && v.buildings.market >= 1 && v.resources[t.offer.give] >= t.offer.giveAmount;
 }

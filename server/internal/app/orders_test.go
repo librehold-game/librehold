@@ -39,6 +39,9 @@ func orderBodies(d *duel) map[string]string {
 		"mint":                  fmt.Sprintf(`{"villageId":%q}`, v),
 		"trade":                 fmt.Sprintf(`{"originId":%q,"targetId":%q,"amount":{"wood":100,"clay":0,"iron":0}}`, v, d.v2),
 		"accept-trader":         fmt.Sprintf(`{"villageId":%q}`, v),
+		"create-trade-offer":    fmt.Sprintf(`{"originId":%q,"give":{"wood":100},"want":{"clay":50},"maxDeliveryMs":0}`, v),
+		"accept-trade-offer":    `{"offerId":"nie_ma","villageId":""}`,
+		"cancel-trade-offer":    `{"id":"nie_ma"}`,
 		"set-build-plan":        fmt.Sprintf(`{"villageId":%q,"steps":["wood","clay"]}`, v),
 		"clear-build-plan":      fmt.Sprintf(`{"villageId":%q}`, v),
 		"apply-build-template":  fmt.Sprintf(`{"villageId":%q,"templateId":"nie_ma"}`, v),
@@ -113,6 +116,40 @@ func TestOrdersRefuseNegativeAmounts(t *testing.T) {
 		if !errors.As(err, &ve) {
 			t.Errorf("%s: %v", name, err)
 		}
+	}
+}
+
+func TestTradeOfferRefusesSameResourceGivenAndWanted(t *testing.T) {
+	d := newDuel(t)
+	ctx := context.Background()
+	for _, body := range []string{
+		fmt.Sprintf(`{"originId":%q,"give":{"wood":100},"want":{"wood":50}}`, d.v1),
+		fmt.Sprintf(`{"originId":%q,"give":{"wood":100,"clay":100},"want":{"iron":200,"wood":1}}`, d.v1),
+	} {
+		_, err := d.svc.Order(ctx, ala, d.world, "create-trade-offer", json.RawMessage(body))
+		wantValidation(t, err, "resources", "overlap")
+	}
+}
+
+func TestTradeOfferAcceptBatchInput(t *testing.T) {
+	d := newDuel(t)
+	ctx := context.Background()
+	// An empty list and a blank id inside the list are both refused before the world is touched.
+	for _, body := range []string{
+		`{"offerIds":[]}`,
+		`{"offerIds":[""]}`,
+	} {
+		_, err := d.svc.Order(ctx, ala, d.world, "accept-trade-offer", json.RawMessage(body))
+		var ve *app.ErrValidation
+		if !errors.As(err, &ve) {
+			t.Errorf("%s: %v", body, err)
+		}
+	}
+	// A well-formed batch reaches the engine (which reports the offer as unknown, not as a bad body).
+	_, err := d.svc.Order(ctx, ala, d.world, "accept-trade-offer", json.RawMessage(`{"offerIds":["nie_ma","tez_nie"]}`))
+	var re *game.RuleError
+	if !errors.As(err, &re) {
+		t.Fatalf("a valid batch should reach the engine, got %v", err)
 	}
 }
 

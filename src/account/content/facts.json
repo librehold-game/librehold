@@ -30,6 +30,7 @@
   "instantKeepHours": 24,
   "autoFarmUnlockVillages": 3,
   "autoFarmIntervalMin": 15,
+  "merchantCapacity": 1000,
   "reportsPerHour": 5,
   "reportTextMin": 10,
   "reportTextMax": 2000,

@@ -5,10 +5,10 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import type { ReactElement } from 'react';
 import { BUILDINGS } from '../src/data/buildings.data';
 import { MAP } from '../src/data/world.config';
-import { BUILDING_IDS, UNIT_IDS, type GameState } from '../src/engine/types';
+import { BUILDING_IDS, HUMAN_ID, UNIT_IDS, type GameState } from '../src/engine/types';
 import { useGameStore } from '../src/state/gameStore';
 import { useUiStore } from '../src/state/uiStore';
-import { addOwnVillage, newDefaultGame, activeVillage } from './helpers';
+import { addOwnVillage, makeBotVillage, newDefaultGame, activeVillage } from './helpers';
 import { FRAME_H, FRAME_W, MAX_H, MAX_W, mapViewport, pinchZoomDelta } from '../src/ui/map/viewport';
 import { Nav, PRIMARY_TABS, SECONDARY_TABS, TABS } from '../src/ui/layout/Nav';
 import { MapView } from '../src/ui/views/MapView';
@@ -19,6 +19,9 @@ import { FarmAssistantView } from '../src/ui/views/FarmAssistantView';
 import { RallyPointView } from '../src/ui/views/RallyPointView';
 import { RecruitScreen } from '../src/ui/views/RecruitScreen';
 import { ResearchScreen } from '../src/ui/views/ResearchScreen';
+import { MovementsSection } from '../src/ui/views/MovementsPanel';
+import { MarketScreen } from '../src/ui/views/MarketScreen';
+import { ErrorToast } from '../src/ui/components/ErrorToast';
 
 /**
  * Mobile layout: the map sizes its window from the available space, tables turn into cards,
@@ -175,6 +178,16 @@ describe('phone navigation', () => {
     expect(more.textContent).toContain('5');
   });
 
+  it('a toast stays clear of the bottom bar', () => {
+    // The bar is `fixed bottom-0` and 51 px tall; a toast at `bottom-4` lands half under it.
+    useGameStore.setState({ lastError: 'Nie dość kupców' });
+    render(<ErrorToast />);
+    const box = screen.getByText('Nie dość kupców').parentElement!;
+    expect(box.className).toMatch(/max-md:bottom-\[calc\(\s*62px\s*\+\s*env\(safe-area-inset-bottom/);
+    // The plain `bottom-4` stays for the desktop layout, where there is no bar to dodge.
+    expect(box.className).toContain('bottom-4');
+  });
+
   it('every tab has a unique 0–9 shortcut — otherwise the keyboard loses a view', () => {
     const keys = TABS.map((t) => t.key);
     expect(new Set(keys).size).toBe(TABS.length);
@@ -192,14 +205,33 @@ const VIEWS: [string, ReactElement][] = [
   ['Rally point', <RallyPointView />],
   ['Recruitment', <RecruitScreen building="barracks" />],
   ['Research', <ResearchScreen />],
+  ['Market', <MarketScreen />],
 ];
 
 /** Views where a table carries the main content — without card mode they can't be read on a phone. */
-const MUST_STACK = ['Village', 'Overview', 'Recruitment', 'Research'];
+const MUST_STACK = ['Village', 'Overview', 'Recruitment', 'Research', 'Market'];
+
+/** A market that actually draws both of its tables: one offer of mine, one from another player. */
+function seedMarket(): void {
+  const g = useGameStore.getState().game!;
+  const mine = activeVillage(g);
+  mine.buildings.market = 5;
+  const bot = activeVillage(g); // the fixture has no bots; any village stands in as the other trader
+  const common = { public: true, maxDeliveryMs: 0, expiresAt: g.now + 3_600_000, createdAt: g.now,
+    give: { wood: 100, clay: 0, iron: 0 }, want: { wood: 0, clay: 0, iron: 60 } };
+  g.players.other = { ...g.players[Object.keys(g.players)[0]!]!, id: 'other', name: 'Other', isHuman: false, villageIds: [] };
+  g.tradeOffers = [
+    { id: 'mine', fromId: HUMAN_ID, originId: mine.id, ...common },
+    { id: 'theirs', fromId: 'other', originId: bot.id, ...common },
+  ];
+}
 
 describe('tables turn into cards', () => {
   for (const [name, el] of VIEWS) {
     it(`${name}: every card cell has a column label`, () => {
+      // The market only draws its tables when there is something in them, so give it a market, an offer of my own and
+      // one on the board; otherwise the check below passes on an empty view and proves nothing.
+      if (name === 'Market') seedMarket();
       const { container } = render(el);
       const tables = container.querySelectorAll('table.table-stack');
       if (MUST_STACK.includes(name)) expect(tables.length, `${name}: no table has card mode`).toBeGreaterThan(0);
@@ -214,6 +246,69 @@ describe('tables turn into cards', () => {
       }
     });
   }
+});
+
+/** An attack and a trade in flight, plus one haul coming in, so the movements panel draws every row shape. */
+function seedMovements(): void {
+  const g = useGameStore.getState().game!;
+  const home = activeVillage(g);
+  const other = addOwnVillage(g, home.x + 4, home.y + 3, 'Far');
+  // A haul only counts as incoming when it comes from someone else, so the third row needs a foreign village.
+  const foreign = makeBotVillage(g, home.x + 6, home.y + 5);
+  const at = { departedAt: g.now - 60_000, arrivesAt: g.now + 600_000 };
+  g.commands.push(
+    { id: 'mv1', type: 'attack', originId: home.id, targetId: other.id, units: { spear: 40, sword: 12 }, ...at },
+    { id: 'mv2', type: 'trade', originId: home.id, targetId: other.id, units: {}, merchants: 3,
+      haul: { wood: 1200, clay: 800, iron: 400 }, ...at },
+    { id: 'mv3', type: 'trade', originId: foreign.id, targetId: home.id, units: {}, merchants: 2,
+      haul: { wood: 0, clay: 500, iron: 0 }, ...at },
+  );
+  g.commandsRev++;
+}
+
+describe('market cards on a phone', () => {
+  it('right-aligns the accept controls and keeps every label flush left', () => {
+    useGameStore.setState({ game: structuredClone(cached()), phase: 'ready', devMode: false, notice: null, lastError: null });
+    seedMarket();
+    const { container } = render(<MarketScreen />);
+    // The controls-only cell carries `action-end`, which the card CSS turns into a full-width row pushed to the
+    // right; the value cells must not set their own text alignment, or their label would stop lining up.
+    const action = [...container.querySelectorAll('td.action-end')];
+    expect(action.length, 'the accept cell should be marked action-end').toBeGreaterThan(0);
+    for (const td of action) expect(td.classList.contains('stack-inline')).toBe(true);
+    for (const td of container.querySelectorAll('td[data-label="Available"]')) {
+      expect(td.className).not.toContain('text-right');
+    }
+  });
+});
+
+describe('the movements panel on a phone', () => {
+  it('lists attacks and trades without overflowing the screen', () => {
+    const restore = setClientWidth(PHONE_W);
+    try {
+      useGameStore.setState({ game: structuredClone(cached()), phase: 'ready', devMode: false, notice: null, lastError: null });
+      seedMovements();
+      const { container } = render(<MovementsSection />);
+      // Both movement kinds are there, with the troops and the resources they carry. Asserted by number and count
+      // rather than by unit name, since this file runs in the Polish catalogue.
+      expect(container.textContent).toContain(t('village.movements'));
+      // The kind is an icon, as on the Overview's Commands tab, so it is named by its title rather than by text.
+      expect(screen.getAllByTitle(t('rally.cmd.attack')).length).toBe(1);
+      expect(screen.getAllByTitle(t('rally.cmd.trade')).length).toBe(2);
+      expect(container.textContent).toContain('1200');
+      expect(container.querySelectorAll('tbody tr').length, 'one row per movement').toBe(3);
+      // The table is the same one the Overview uses, and `table-stack` turns its rows into cards on a phone.
+      const table = container.querySelector('table');
+      expect(table?.className).toContain('table-stack');
+      // Nothing may demand more than the screen.
+      for (const node of container.querySelectorAll<HTMLElement>('[style]')) {
+        const m = node.getAttribute('style')!.match(/(?:^|[^-])width:\s*([\d.]+)px/);
+        if (m) expect(Number(m[1]), 'a movements row wider than the screen').toBeLessThanOrEqual(PHONE_W);
+      }
+    } finally {
+      restore();
+    }
+  });
 });
 
 describe('views fit on a 360 px screen', () => {

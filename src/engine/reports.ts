@@ -26,6 +26,7 @@ export function reportVillageOf(state: GameState, id: string): ReportVillage {
 
 /** The pixel icon of a report's outcome, for the report list. */
 export function reportIcon(r: Report): string {
+  if (r.type === 'market') return 'cart';
   if (r.type === 'conquest') return 'nav-village';
   if (r.field?.missed) return 'dust';
   if (r.type === 'scout' || r.type === 'fieldScout') return r.outcome === 'attackerWon' ? 'magnifier' : 'eye-closed';

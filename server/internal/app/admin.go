@@ -74,6 +74,11 @@ func ClampWorldConfig(cfg game.WorldConfig) game.WorldConfig {
 	cfg.RampUpDays = clamp(cfg.RampUpDays, l.RampUpDays)
 	cfg.BeginnerProtectionDays = clamp(cfg.BeginnerProtectionDays, l.BeginnerProtectionDays)
 	cfg.SightRadius = clamp(cfg.SightRadius, l.SightRadius)
+	// 0 means "not set", which TradeOfferExpiryMs reads as the balance default. Clamping it into the band would
+	// turn that default into the minimum: any settings edit would silently reset a running world to one hour.
+	if cfg.TradeOfferDurationHrs > 0 {
+		cfg.TradeOfferDurationHrs = clamp(cfg.TradeOfferDurationHrs, l.TradeOfferDurationHrs)
+	}
 	// Fall back to "protected" if a request sends an unknown value; it is the safest default.
 	switch cfg.LastVillage {
 	case "protected", "playersOnly", "canBeLost":
@@ -138,7 +143,8 @@ func (s *Service) Worlds(ctx context.Context, actor *Account) ([]WorldSummary, e
 type WorldSettingsPatch map[string]json.RawMessage
 
 var changeableSettings = []string{"worldSpeed", "unitSpeed", "humanModifiers", "botModifiers", "battleLosses",
-	"beginnerProtectionDays", "lastVillage", "difficulty", "botStance", "noFieldBattles"}
+	"beginnerProtectionDays", "lastVillage", "difficulty", "botStance", "noFieldBattles", "tradingEnabled",
+	"tradeOfferDurationHrs"}
 
 // UpdateWorldSettings changes the settings that may change in a running world. Every stored village is
 // settled at the old pace first; timers already running keep their end times.
@@ -175,6 +181,14 @@ func applySettings(w WorldTx, now int64, patch WorldSettingsPatch) error {
 	size := w.Config().MapSize
 	for _, ref := range w.VillagesIn(0, 0, size-1, size-1) {
 		game.Touch(w, w.Village(ref.ID))
+	}
+	// Switching trading off closes the market: the panels disappear and posting is refused, so offers left behind
+	// would hold their reserved resources where no player could reach them. Refunding here is what makes the switch
+	// safe to flip on a live world. Checked against the old value, before the new config lands.
+	if wasOn := w.Config().TradingEnabled; wasOn && !cfg.TradingEnabled {
+		if n := game.CloseMarket(w); n > 0 {
+			w.LogAction(actorAdmin, false, "marketClosed", map[string]any{"offers": n})
+		}
 	}
 	w.Row().Config = cfg
 	w.LogAction(actorAdmin, false, "settings", patch)

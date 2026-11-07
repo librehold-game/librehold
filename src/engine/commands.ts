@@ -98,6 +98,11 @@ export function unitsAway(state: GameState, villageId: string): Record<UnitId, n
   return out;
 }
 
+/** The village's active military movements: its attacks and support on their way out, and returns heading home. */
+export function militaryCommands(state: GameState, villageId: string): Command[] {
+  return state.commands.filter((c) => (c.type === 'attack' || c.type === 'support' || c.type === 'return') && commandHome(c) === villageId);
+}
+
 export type SendBlocker =
   | { kind: 'noUnits' }
   | { kind: 'notEnough'; unit: UnitId; have: number }
@@ -169,6 +174,8 @@ export function checkSend(
 
 export function canCancelCommand(state: GameState, cmd: Command): boolean {
   if (cmd.type === 'return' || cmd.type === 'intercept') return false;
+  // A leg of an accepted offer already bought something; the server refuses the recall, so don't offer it.
+  if (cmd.settled) return false;
   // An army hit in the field may turn back at any time before it arrives.
   if (cmd.fieldHit && (cmd.type === 'attack' || cmd.type === 'support')) return state.now < cmd.arrivesAt;
   const elapsed = state.now - cmd.departedAt;

@@ -10,14 +10,17 @@ import { RESOURCES, UNIT_IDS, type BuildingId, type Command, type Resource, type
 import { useGameStore } from '../../state/gameStore';
 import { Countdown } from '../components/Countdown';
 import { ResourceIcon } from '../components/ResourceIcon';
+import { ResourceList } from '../components/ResourceList';
 import { UnitCountList } from '../components/UnitCountList';
 import { UnitIcon } from '../components/UnitIcon';
 import { formatCoords, formatNumber } from '../format';
 import { useClock } from '../useClock';
 import { humanPlayer, humanVillageIds } from '../../engine/players';
 import { NumberInput } from '../../shared/NumberInput';
+import { isMovementOf } from './MovementsPanel';
+import { CommandsTable, commandRows, type CommandRow } from '../components/CommandsTable';
 
-type Tab = 'build' | 'units' | 'recruit' | 'resources' | 'commands' | 'groups';
+type Tab = 'build' | 'units' | 'recruit' | 'resources' | 'trading' | 'commands' | 'groups';
 
 function useVillageIds(groupId: string): string[] {
   return useGameStore((s) => {
@@ -128,29 +131,31 @@ function ResourcesTab({ ids }: { ids: string[] }) {
   );
 }
 
+/** Troop movements only. Merchant shipments have their own tab, so they are not listed twice. */
 function CommandsTab({ ids }: { ids: string[] }) {
-  const clock = useClock();
-  const json = useGameStore((s) => JSON.stringify([...s.game!.commands].filter((c) => ids.includes(c.originId) || ids.includes(c.targetId)).sort((a, b) => a.arrivesAt - b.arrivesAt)));
-  const cmds = JSON.parse(json) as Command[];
-  const game = useGameStore((s) => s.game!);
   const t = useT();
+  const json = useGameStore((s) => {
+    const g = s.game!;
+    return JSON.stringify(commandRows(g, g.commands.filter((c) => c.type !== 'trade' && (ids.includes(c.originId) || ids.includes(c.targetId))), () => false));
+  });
+  const rows = JSON.parse(json) as CommandRow[];
+  if (rows.length === 0) return <p className="text-muted italic">{t('overview.noMoves')}</p>;
+  return <CommandsTable rows={rows} />;
+}
 
-  if (cmds.length === 0) return <p className="text-muted italic">{t('overview.noMoves')}</p>;
-  return (
-    <table className="table-game table-stack">
-      <thead><tr><th>{t('overview.type')}</th><th>{t('overview.route')}</th><th>{t('overview.unitsLoot')}</th><th>{t('overview.arrival')}</th></tr></thead>
-      <tbody>
-        {cmds.map((c) => (
-          <tr key={c.id}>
-            <td><PixelIcon name={COMMAND_ICON[c.type]} size={16} /></td>
-            <td className="text-[11px]" data-label={t('overview.route')}>{commandEnds(game, c).from} → {commandEnds(game, c).to}</td>
-            <td data-label={t('overview.units')}>{c.type === 'trade' ? (c.haul ? t('overview.tradeHaul', { n: formatNumber(c.haul.wood + c.haul.clay + c.haul.iron), m: c.merchants ?? 0 }) : t('overview.merchantsBack', { m: c.merchants ?? 0 })) : <UnitCountList units={c.units} />}</td>
-            <td className="tabular-nums" data-label={t('overview.arrival')}><Countdown until={c.arrivesAt} /> <span className="text-muted text-[10px]">{clock.at(c.arrivesAt)}</span></td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+/** Every merchant shipment the villages in view have on the road, in the table the Commands tab uses. */
+function TradingTab({ ids }: { ids: string[] }) {
+  const t = useT();
+  // The panel's own predicate, so a shipment another player is bringing to one of these villages is listed too.
+  const json = useGameStore((s) => {
+    const g = s.game!;
+    const shown = new Set(ids);
+    const own = new Set(humanVillageIds(g));
+    return JSON.stringify(commandRows(g, g.commands.filter((c) => isMovementOf(c, shown, own, 'trade')), () => false));
+  });
+  const rows = JSON.parse(json) as CommandRow[];
+  if (rows.length === 0) return <p className="text-muted italic">{t('overview.noTrade')}</p>;
+  return <CommandsTable rows={rows} />;
 }
 
 function GroupsTab() {
@@ -195,7 +200,7 @@ export function OverviewView() {
     <div className="text-[12px]">
       <div className="flex items-center gap-2 flex-wrap mb-3">
         <h2 className="text-lg mr-2">{t('overview.title')}</h2>
-        {(['build', 'units', 'recruit', 'resources', 'commands', 'groups'] as const).map((id) => (
+        {(['build', 'units', 'recruit', 'resources', 'trading', 'commands', 'groups'] as const).map((id) => (
           <button key={id} className={`btn ${tab === id ? '!bg-panel-dark' : ''}`} onClick={() => setTab(id)}>{t(`overview.tab.${id}`)}</button>
         ))}
         <select className="ml-auto px-1 border border-wood-border rounded bg-white/50" value={groupId} onChange={(e) => setGroupId(e.target.value)}>
@@ -207,6 +212,7 @@ export function OverviewView() {
       {tab === 'units' && <UnitsTab ids={ids} />}
       {tab === 'recruit' && <RecruitTab ids={ids} />}
       {tab === 'resources' && <ResourcesTab ids={ids} />}
+      {tab === 'trading' && <TradingTab ids={ids} />}
       {tab === 'commands' && <CommandsTab ids={ids} />}
       {tab === 'groups' && <GroupsTab />}
     </div>

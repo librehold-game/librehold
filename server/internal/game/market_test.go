@@ -119,6 +119,25 @@ func TestMarket(t *testing.T) {
 			t.Fatalf("index %d", w.Human("h1").Trader.OfferIndex)
 		}
 	})
+
+	// The switch governs all trade and the screen hides the trader while it is off, so the order has to refuse too:
+	// the client is not what enforces a rule.
+	// The travelling trader is a fixed-rate shop rather than a deal with another player, so the trading switch does
+	// not close it: a world with player trading off still has a market, just without the board.
+	t.Run("travelling trader: still open while trading is switched off", func(t *testing.T) {
+		w, v := gametest.NewTestWorld(3)
+		v.Buildings[game.BMarket], v.Buildings[game.BStorage] = 1, 15
+		v.Resources = game.Resources{Wood: 10000, Clay: 10000, Iron: 10000}
+		cfg := w.Config()
+		cfg.TradingEnabled = false
+		defer func() { cfg.TradingEnabled = true }()
+		if err := game.AcceptTrader(w, "h1", v.ID); err != nil {
+			t.Fatalf("the trader should not be closed by the trading switch: %v", err)
+		}
+		if !w.Human("h1").Trader.Accepted {
+			t.Fatal("the exchange should have gone through")
+		}
+	})
 }
 
 func TestTradeToFriend(t *testing.T) {

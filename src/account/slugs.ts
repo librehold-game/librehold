@@ -1,4 +1,4 @@
-export const GUIDE_IDS = ['firstHour', 'raiding', 'defending', 'scouting', 'nobles'] as const;
+export const GUIDE_IDS = ['firstHour', 'raiding', 'defending', 'scouting', 'trading', 'nobles'] as const;
 
 export type SlugKind = 'guide' | 'unit' | 'building';
 
@@ -8,6 +8,7 @@ export const SLUGS: Record<SlugKind, Record<string, { en: string; pl: string }>>
     raiding: { en: 'raiding-barbarians', pl: 'grabienie-barbarzyncow' },
     defending: { en: 'defending-at-night', pl: 'obrona-noca' },
     scouting: { en: 'scouting-and-field-battles', pl: 'zwiad-i-bitwy-w-polu' },
+    trading: { en: 'trading-with-players', pl: 'handel-z-graczami' },
     nobles: { en: 'taking-a-village', pl: 'przejmowanie-wiosek' },
   },
   unit: {

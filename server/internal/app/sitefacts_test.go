@@ -56,6 +56,7 @@ func TestSiteFactsMatchTheServer(t *testing.T) {
 		"instantKeepHours":        instantKeep.Hours(),
 		"autoFarmUnlockVillages":  float64(game.FarmBalance.AutoFarmUnlockVillages),
 		"autoFarmIntervalMin":     float64(game.FarmBalance.AutoFarmIntervalMs) / float64(game.MsPerMinute),
+		"merchantCapacity":        game.CommandBalance.MerchantCapacity,
 		"reportsPerHour":          reportsPerHour,
 		"reportTextMin":           reportTextMin,
 		"reportTextMax":           reportTextMax,

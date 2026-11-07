@@ -37,6 +37,23 @@ describe('world settings form', () => {
     expect(value.sightRadius).toBe(5);
   });
 
+  it('trading is a checkbox, on by default, and changes live', () => {
+    setLocale('en');
+    expect(DEFAULT_CONFIG.tradingEnabled).toBe(true);
+    let value: WorldConfig = { ...DEFAULT_CONFIG };
+    const { rerender } = render(<WorldForm idPrefix="w" value={value} onChange={(v) => { value = v; }} mode="create" />);
+    const box = screen.getByLabelText('Trading') as HTMLInputElement;
+    expect(box.checked).toBe(true);
+    fireEvent.click(box);
+    expect(value.tradingEnabled).toBe(false);
+    rerender(<WorldForm idPrefix="w" value={value} onChange={(v) => { value = v; }} mode="create" />);
+    // Editable on a running world: the admin may switch it on or off at any time.
+    const spec = FIELDS.find((f) => f.key === 'tradingEnabled')!;
+    expect(spec.creationOnly).toBe(false);
+    const before: WorldConfig = { ...DEFAULT_CONFIG };
+    expect(liveChanges(before, { ...before, tradingEnabled: false })).toEqual({ tradingEnabled: false });
+  });
+
   it('switching field battles off is a live change, the sight radius is fixed at creation', () => {
     const before: WorldConfig = { ...DEFAULT_CONFIG };
     expect(liveChanges(before, { ...before, noFieldBattles: true, sightRadius: 3 })).toEqual({ noFieldBattles: true });

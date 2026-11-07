@@ -290,6 +290,11 @@
     "noMarket": "there is no Market",
     "empty": "nothing to send",
     "tooLate": "Too late: your troops cannot reach that army before it arrives.",
+    "tradingOff": "trading is switched off in this world",
+    "boardFull": "this village already has as many offers out as it may keep at once — withdraw one, or add a copy of a deal already on the board",
+    "gone": "that village is gone",
+    "outOfRange": "that village is too far away for a deal",
+    "marketTooSmall": "the Market is too small for this haul",
     "notInterceptable": "That army cannot be met on the road.",
     "notVisible": "You cannot see that army any more.",
     "fieldBattlesOff": "Field battles are switched off in this world.",
@@ -300,6 +305,7 @@
     "scheduledLostVillage": "A planned send didn't go out: the village is no longer yours.",
     "respawn": "Your last villages fell. You start again at {x}|{y}.",
     "newPlayer": "New player {player} settled near {x}|{y}.",
+    "tradeSettled": "A trade deal was settled. Two shipments are on the road.",
     "title": "Rumours",
     "protection": "[icon:shield] Beginner protection: {time} left",
     "empty": "Quiet. Nothing is heard in the taverns yet."
@@ -360,7 +366,8 @@
     },
     "hideScene": "Collapse the illustration",
     "showScene": "Show the illustration",
-    "units": "Units"
+    "units": "Units",
+    "movements": "Movements"
   },
   "player": {
     "bot": "bot",
@@ -809,6 +816,7 @@
     "empty": "Enter the amounts",
     "noResources": "Not enough resources",
     "merchantsShort": "Not enough merchants: {needed} needed, {available} free",
+    "tradingOff": "Trading is switched off in this world",
     "merchants": "Merchants: {free} / {total} free",
     "merchantHint": "(1 merchant = 1000 resources, 6 min/field)",
     "ownOnly": "Trading works between your own villages — conquer a second village.",
@@ -827,7 +835,66 @@
     "used": "The offer was already used",
     "exchange": "Exchange",
     "cannotExchange": "Not enough resources (or no Market)",
-    "usedShort": "Used"
+    "usedShort": "Used",
+    "offersTitle": "Your trade offers",
+    "postOffer": "Post an offer",
+    "deliveryLabel": "Deliver within:",
+    "deliveryUnlimited": "(0 = no limit)",
+    "giveBack": "You send / you receive back:",
+    "boardFull": "Too many public posts out",
+    "sameResource": "A trade swaps resources — a resource cannot be both given and wanted",
+    "post": "Post offer",
+    "expiresIn": "(expires in",
+    "offersEmpty": "No trade offers around.",
+    "boardHeader": "Public board",
+    "offerFrom": "from {player}",
+    "acceptWithVillage": "Accept at:",
+    "accept": "Accept",
+    "withdraw": "Withdraw",
+    "notOwnedShort": "Pick your own village",
+    "dealHint": "The resources you offer are set aside as soon as the offer goes up. Each side pays its own merchants for what it ships.",
+    "boardTitle": "Global Market",
+    "boardHint": "Public offers from everyone you can trade with.",
+    "boardEmpty": "No public offers on the board.",
+    "offerDistance": "{dist} tiles · {time}",
+    "pagePrev": "← Prev",
+    "pageNext": "Next →",
+    "boardSearch": "Search:",
+    "boardPoster": "Posted by:",
+    "boardPosterAny": "anyone",
+    "boardPosterHuman": "players",
+    "boardPosterBot": "bots",
+    "boardWants": "Offers wanting:",
+    "boardGives": "Offers giving:",
+    "boardAny": "any resource",
+    "boardMaxTime": "Maximum delivery time:",
+    "boardHours": "h",
+    "boardMinRatio": "Minimum ratio (e.g. 1.8):",
+    "boardOrderBy": "Order by:",
+    "sortTime": "delivery time",
+    "sortExpiry": "expiry",
+    "sortRatio": "ratio",
+    "thOffer": "Offer",
+    "thFor": "For",
+    "thPlayer": "Player",
+    "thFrom": "From",
+    "thFromVillage": "From village",
+    "thMaxDelivery": "Max delivery",
+    "deliveryNone": "no limit",
+    "thTime": "Delivery",
+    "thAvailable": "Available",
+    "thRatio": "Ratio",
+    "thAccept": "Action",
+    "thExpires": "Expires",
+    "postHowMany": "How many:",
+    "postMany": "Post {n} offers",
+    "postedSome": "Posted {done} of {n}; the rest were refused",
+    "boardFullHint": "This village already has all {max} of its offers out. Withdraw one to post a new deal — or add a copy of a deal you already have, which does not count.",
+    "copiesFree": "copies of this deal are free and do not count",
+    "notEnoughGiven": "You do not hold that much to give",
+    "marketTooSmall": "Needs {needed} merchants but the market only has {total}. Upgrade the Market to get more merchants",
+    "withdrawMany": "Withdraw {n}",
+    "shipments": "Merchant shipments"
   },
   "settings": {
     "interface": "Interface",
@@ -893,8 +960,8 @@
     "unitsLoot": "Units / loot",
     "units": "Units",
     "arrival": "Arrival",
-    "tradeHaul": "{n} resources ({m} merchants)",
     "merchantsBack": "{m} merchants returning",
+    "merchantsBackOne": "1 merchant returning",
     "groupName": "Group name",
     "addGroup": "Add group",
     "delete": "Delete",
@@ -904,9 +971,11 @@
       "units": "Units",
       "recruit": "Recruitment",
       "resources": "Resources",
+      "trading": "Trading",
       "commands": "Commands",
       "groups": "Groups"
     },
+    "noTrade": "No merchant is on the road.",
     "allVillages": "all villages"
   },
   "reports": {
@@ -943,7 +1012,8 @@
       "attack": "attacks",
       "scout": "scouting",
       "conquest": "conquests",
-      "support": "support"
+      "support": "support",
+      "market": "market"
     },
     "villageFilter": "village:",
     "allVillages": "Show all villages",
@@ -961,6 +1031,15 @@
       "place": "the road at {at}",
       "missed": "your troops found nothing: the army was gone.",
       "scouted": "Scouted army:"
+    },
+    "market": {
+      "title": "Market deal",
+      "offers": " · {n} offers settled together",
+      "acceptedBy": "Accepted by",
+      "comingFrom": "Your resources are shipped from",
+      "travel": "arrives in about {time}",
+      "youGive": "You give",
+      "youGet": "You get"
     }
   },
   "farm": {
@@ -1250,5 +1329,10 @@
       "return": "Return",
       "intercept": "Interception"
     }
+  },
+  "movements": {
+    "incoming": "incoming",
+    "merchantOne": "{m} merchant",
+    "merchantMany": "{m} merchants"
   }
 }

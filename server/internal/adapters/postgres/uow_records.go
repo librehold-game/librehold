@@ -226,6 +226,37 @@ func (u *uow) DeleteScheduledSend(id string) {
 	}
 }
 
+func (u *uow) TradeOffer(id string) *game.TradeOffer {
+	return loadOne(u, u.offers, "trade_offers", "id", id)
+}
+
+func (u *uow) AllTradeOffers() []*game.TradeOffer {
+	rows, err := u.tx.Query(u.ctx, `select id, data from trade_offers where world_id = $1`, u.row.ID)
+	u.must(err)
+	for rows.Next() {
+		var id string
+		var data []byte
+		u.must(rows.Scan(&id, &data))
+		track(u.offers, id, data)
+	}
+	u.must(rows.Err())
+	var out []*game.TradeOffer
+	for _, e := range u.offers {
+		if e.v != nil {
+			out = append(out, e.v)
+		}
+	}
+	return out
+}
+
+func (u *uow) PutTradeOffer(o *game.TradeOffer) { u.offers.put(o.ID, o) }
+
+func (u *uow) DeleteTradeOffer(id string) {
+	if u.TradeOffer(id) != nil {
+		u.offers[id].v = nil
+	}
+}
+
 func (u *uow) AddNews(n *game.NewsItem) {
 	n.ID = u.NewID("news")
 	u.news = append(u.news, n)
@@ -316,6 +347,11 @@ func (u *uow) flushRecords(b *pgx.Batch) {
 			on conflict (world_id, id) do update set owner_id = excluded.owner_id, send_at = excluded.send_at, data = excluded.data`,
 			wid, id, s.OwnerID, s.SendAt, data)
 	}, func(id string) { b.Queue(`delete from scheduled_sends where world_id = $1 and id = $2`, wid, id) })
+	changes(u.offers, func(id string, o *game.TradeOffer, data []byte) {
+		b.Queue(`insert into trade_offers (world_id, id, from_id, expires_at, data) values ($1, $2, $3, $4, $5)
+			on conflict (world_id, id) do update set from_id = excluded.from_id,
+				expires_at = excluded.expires_at, data = excluded.data`, wid, id, o.FromID, o.ExpiresAt, data)
+	}, func(id string) { b.Queue(`delete from trade_offers where world_id = $1 and id = $2`, wid, id) })
 	for _, n := range u.news {
 		b.Queue(`insert into news (world_id, id, time, data) values ($1, $2, $3, $4)`, wid, n.ID, n.Time, marshal(n))
 	}

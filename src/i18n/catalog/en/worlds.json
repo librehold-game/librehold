@@ -35,6 +35,8 @@
         "botStance": "Bots towards players",
         "battleLosses": "Battle losses",
         "sightRadius": "Sight radius",
+        "trading": "Trading",
+        "tradeOfferDuration": "Offer lasts (hours)",
         "coins": "Coins",
         "nobleCost": "Nobleman price (wood · clay · iron)",
         "nobleLoyalty": "Loyalty a nobleman takes from a player village",
