@@ -340,6 +340,7 @@ function BoardPanel() {
   const [search, setSearch] = useState('');
   const [resFilter, setResFilter] = useState<'any' | Resource>('any');
   const [giveFilter, setGiveFilter] = useState<'any' | Resource>('any');
+  const [posterFilter, setPosterFilter] = useState<'any' | 'human' | 'bot'>('any');
   const [maxHours, setMaxHours] = useState('');
   const [minRatio, setMinRatio] = useState('');
   const [sortBy, setSortBy] = useState<'time' | 'expiry' | 'ratio'>('time');
@@ -361,6 +362,7 @@ function BoardPanel() {
   if (q) rows = rows.filter((r) => r.name.toLowerCase().includes(q));
   if (resFilter !== 'any') rows = rows.filter((r) => r.offer.want[resFilter] > 0);
   if (giveFilter !== 'any') rows = rows.filter((r) => r.offer.give[giveFilter] > 0);
+  if (posterFilter !== 'any') rows = rows.filter((r) => r.isBot === (posterFilter === 'bot'));
   const maxMs = Number(maxHours) * 3_600_000;
   if (maxHours && !Number.isNaN(maxMs)) rows = rows.filter((r) => r.travelMs !== null && r.travelMs <= maxMs);
   if (minRatio && !Number.isNaN(Number(minRatio))) rows = rows.filter((r) => r.ratio >= Number(minRatio));
@@ -392,6 +394,14 @@ function BoardPanel() {
           {t('market.boardSearch')}
           <input type="text" value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }} placeholder={g.players[me]?.name ?? ''}
             className="w-32 px-1 border border-wood-border rounded bg-white/50" />
+        </label>
+        <label className="inline-flex items-center gap-1.5">
+          {t('market.boardPoster')}
+          <select className="px-1 border border-wood-border rounded bg-white/50" value={posterFilter} onChange={(e) => { setPosterFilter(e.target.value as typeof posterFilter); setPage(0); }}>
+            <option value="any">{t('market.boardPosterAny')}</option>
+            <option value="human">{t('market.boardPosterHuman')}</option>
+            <option value="bot">{t('market.boardPosterBot')}</option>
+          </select>
         </label>
         <label className="inline-flex items-center gap-1.5">
           {t('market.boardWants')}

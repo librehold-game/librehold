@@ -304,6 +304,67 @@ describe('the global market shows only other players', () => {
 
 });
 
+describe('filtering the global market by who posted', () => {
+  /** Both kinds of poster on the board: the fixture's bot and a second human, each with a village in range. */
+  const bothPosters = () => {
+    const other = makeBotVillage(g);
+    other.ownerId = 'human_test';
+    g.players.human_test = {
+      id: 'human_test', name: 'Other player', isHuman: true, color: '#a3522b', villageIds: [other.id], coins: 0,
+      noblesTrained: 0, buildQueueSlots: 2, protectedUntil: 0, joinAt: 0, status: 'active', points: 0,
+      history: { hourly: [], daily: [] },
+    };
+    g.tradeOffers = [
+      offer({ id: 'from_bot', fromId: 'bot_test' }),
+      offer({ id: 'from_human', fromId: 'human_test', originId: other.id }),
+    ];
+  };
+  /** The poster column of the board's visible rows. */
+  const posters = () => [...globalMarketPanel().querySelectorAll('tbody tr td:nth-child(3)')].map((td) => td.textContent ?? '');
+  const selectByLabel = (panel: HTMLElement, label: string) => {
+    const field = [...panel.querySelectorAll('label')].find((l) => l.textContent?.startsWith(label))!;
+    return field.querySelector('select') as HTMLSelectElement;
+  };
+
+  it('shows everyone by default, then only players or only bots', async () => {
+    bothPosters();
+    stubServer(g);
+    await useGameStore.getState().boot();
+    render(<MarketScreen />);
+    const panel = globalMarketPanel();
+
+    expect(posters().sort()).toEqual([expect.stringContaining('Other player'), expect.stringContaining('Test bot')].sort());
+
+    const filter = selectByLabel(panel, 'Posted by:');
+    fireEvent.change(filter, { target: { value: 'human' } });
+    expect(posters().every((p) => p.includes('Other player'))).toBe(true);
+    expect(posters().some((p) => p.includes('Test bot'))).toBe(false);
+
+    fireEvent.change(filter, { target: { value: 'bot' } });
+    expect(posters().every((p) => p.includes('Test bot'))).toBe(true);
+    expect(posters().some((p) => p.includes('Other player'))).toBe(false);
+
+    fireEvent.change(filter, { target: { value: 'any' } });
+    expect(posters()).toHaveLength(2);
+  });
+
+  it('starts on its own page again when the filter changes', async () => {
+    // Eleven bot posts fill two pages; filtering must not leave the reader stranded on an empty second page.
+    g.tradeOffers = Array.from({ length: 11 }, (_, i) => offer({
+      id: `b${i}`, fromId: 'bot_test', give: { wood: 10 + i, clay: 0, iron: 0 }, want: { wood: 0, clay: 0, iron: 5 },
+    }));
+    stubServer(g);
+    await useGameStore.getState().boot();
+    render(<MarketScreen />);
+    const panel = globalMarketPanel();
+    fireEvent.click(screen.getByRole('button', { name: 'Next →' }));
+    expect(panel.textContent).toContain('2 / 2');
+
+    fireEvent.change(selectByLabel(panel, 'Posted by:'), { target: { value: 'bot' } });
+    expect(panel.textContent).toContain('1 / 2');
+  });
+});
+
 describe('posting a deal several times', () => {
   /** Open the form and return its number inputs. The submit button must be looked up *after* typing: each change
    * re-renders the panel, and a button captured earlier keeps the closure from the render that made it. */

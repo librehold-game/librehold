@@ -96,10 +96,10 @@ Everything trading looks like lives in `src/ui/views/MarketScreen.tsx`, and ever
   a deal already out still posts because copies do not count.
 - **Global Market** panel: everyone else's public offers, as a table with the same columns plus Available. Identical deals
   — same poster, same delivery time, same amounts — collapse into one row with `×N`, and a take-N number box next to Accept
-  posts `offerIds` in a batch. Filters above the table: player search, the resource it gives, the resource it wants, maximum
-  delivery time, minimum ratio and the sort order; ten rows a page. Your own offers never appear here (`publicBoard` keeps
-  `o.public && o.fromId !== HUMAN_ID`), which is what makes the two panels disjoint: the Global Market is everyone else's
-  public posts, Your trade offers is your own.
+  posts `offerIds` in a batch. Filters above the table: player search, player-or-bot, the resource it gives, the resource
+  it wants, maximum delivery time, minimum ratio and the sort order; ten rows a page. Your own offers never appear here
+  (`publicBoard` keeps `o.public && o.fromId !== HUMAN_ID`), which is what makes the two panels disjoint: the Global
+  Market is everyone else's public posts, Your trade offers is your own.
 - **Travelling trader** panel: the market's own recurring single-resource offer, unchanged.
 - **Merchant shipments** (bottom of the screen, under the travelling trader): the same Movements panel the village
   screen shows, mounted with `scope="trade"` so only merchant shipments appear — an attack or a support has nothing

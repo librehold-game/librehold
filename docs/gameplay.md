@@ -184,13 +184,15 @@ poster's village gives, and what the taker brings back.
 The market screen shows board and own offers with accept/withdraw actions and the post form. Both offer lists group
 identical deals (same sender, same delivery, same amounts) into one row with a count; on your own row a withdraw-count
 box takes back that many copies at a time (`cancel-trade-offer`, once per copy). The global board is
-a filterable table (player search, the resource it offers and the resource it wants, max delivery time, minimum ratio, sort) paged
-ten rows at a time, with a take-N input per row. Bots trade too (`bot_trade.go`): a bot short of one resource posts a public
-offer for it priced at the travelling trader's rate, and a bot takes any board post that gives what it lacks and asks for
-something it can spare, checked against its free merchants and its batch affordability. A bot also **withdraws its own post**
-(`CancelTradeOffer`) as soon as the situation behind it changed — it is now short of what it was offering, it no longer needs
-what it asked for, or a different resource became the one worth trading away. Everything goes through the ordinary
-`CreateTradeOffer` / `AcceptTradeOffers` / `CancelTradeOffer` rules, so bots trade with bots and with humans on the same terms.
+a filterable table (player search, player or bot poster, the resource it offers and the resource it wants, max delivery
+time, minimum ratio, sort) paged ten rows at a time, with a take-N input per row. Bots trade too (`bot_trade.go`): a bot
+short of one resource posts a public offer for it priced by how badly it needs it — a ratio of 1.15 while it is only
+mildly lopsided, rising to 1.40 as the missing resource runs out — and a bot takes any board post that gives what it
+lacks and asks for something it can spare, checked against its free merchants and its batch affordability. A bot also
+**withdraws its own post** (`CancelTradeOffer`) as soon as the situation behind it changed — it is now short of what it
+was offering, it no longer needs what it asked for, or a different resource became the one worth trading away. Everything
+goes through the ordinary `CreateTradeOffer` / `AcceptTradeOffers` / `CancelTradeOffer` rules, so bots trade with bots and
+with humans on the same terms.
 
 ## Bot players
 
@@ -220,15 +222,17 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
   auto-farm as humans do, once unlocked the same way (5000 looted or 3 villages): up to 20 sized raids per village
   every 15 minutes, online or not, at barbarian and abandoned villages only. Weak bots and every bot in a short world play the classic way.
 - **Trading.** Bots trade like humans (`bot_trade.go`, run before the economy planners each think). A village with a
-  market that is lopsided — it holds less than half of its best resource — posts a public offer for its scarcest one,
-  giving its spare at the travelling trader's rate; the reserved share comes out of the village like a human's. A bot
-  takes any board post that gives a resource it is comparably short of and asks for one it can spare, paying no more
-  than `botTradeMaxCost` per unit received and checked against its free merchants, batch affordability included. It
-  keeps one post per village, and **withdraws** it (`CancelTradeOffer`) once the situation behind it changed: it is now
-  shortest of what it was offering, it no longer needs what it asked for, or the village became balanced. On instant
-  worlds only a share of the bots trade (`BotConfig.ShortTradeChance`), where every minute counts. The board itself is
-  a map, so its iteration order varies between runs: the planner reads it through `boardOffers`, which sorts by creation
-  time and then id, or two runs of the same world would take different offers and a replayed log would not match.
+  market that is lopsided — it holds less than half of its best resource — posts a public offer for its scarcest one.
+  The rate it pays (`botTradeRate`) climbs with need: 1.15 units of spare per unit wanted just past that threshold, up
+  to 1.40 when the resource is nearly gone, so a starving village bids harder than a comfortable one; the reserved
+  share comes out of the village like a human's. A bot takes any board post that gives a resource it is comparably
+  short of and asks for one it can spare, paying no more than `botTradeMaxCost` per unit received and checked against
+  its free merchants, batch affordability included. It keeps one post per village, and **withdraws** it
+  (`CancelTradeOffer`) once the situation behind it changed: it is now shortest of what it was offering, it no longer
+  needs what it asked for, or the village became balanced. On instant worlds only a share of the bots trade
+  (`BotConfig.ShortTradeChance`), where every minute counts. The board itself is a map, so its iteration order varies
+  between runs: the planner reads it through `boardOffers`, which sorts by creation time and then id, or two runs of the
+  same world would take different offers and a replayed log would not match.
 - **Expansion.** An Academy in the best village (from three villages also in the second), coins where the world has
   them, hetmans against barbarians and the grey villages of players who left.
 - **War.** Moods (build-up → campaign → consolidation), targets from public data and report memory; operations:

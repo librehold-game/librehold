@@ -592,21 +592,22 @@ func TestOneSidedOffersAreRefused(t *testing.T) {
 func TestDeliveryVariantsStillCountAgainstTheCap(t *testing.T) {
 	w, a, _ := tradeWorld(t, 5)
 	base := game.TradeOfferInput{OriginID: a.ID, Give: game.Resources{Wood: 100}, Want: game.Resources{Iron: 50}}
-	for i, hours := range []int64{2, 3, 4} {
+	// One variant per slot the village has: each is a distinct deal, so each fills one.
+	for i := 0; i < game.TradeBalance.PublicPerVillage; i++ {
 		in := base
-		in.MaxDeliveryMs = hours * 3_600_000
+		in.MaxDeliveryMs = int64(2+i) * 3_600_000
 		if _, err := game.CreateTradeOffer(w, "h1", in); err != nil {
 			t.Fatalf("post %d: %v", i, err)
 		}
 	}
-	// Three distinct deals fill the cap for a one-village player, so a fourth variant is refused.
+	// The slots are full, so one more variant is refused rather than slipping past the cap as "a copy".
 	in := base
-	in.MaxDeliveryMs = 5 * 3_600_000
+	in.MaxDeliveryMs = int64(2+game.TradeBalance.PublicPerVillage) * 3_600_000
 	if !slices.Contains(offerKinds(t, func() error {
 		_, e := game.CreateTradeOffer(w, "h1", in)
 		return e
 	}), "boardFull") {
-		t.Fatal("a fourth distinct delivery variant should hit the cap")
+		t.Fatal("a variant past the cap should be refused")
 	}
 }
 

@@ -374,3 +374,48 @@ func TestBotPostsDoNotPileUp(t *testing.T) {
 	}
 	t.Logf("posts: %d, settled: %d, withdrawn: %d, open at the end: %d", posted, settled, cancelled, len(w.AllTradeOffers()))
 }
+
+// TestBotPostsArePricedByNeed pins the band a bot posts at: it must ask more per unit than it gives, never more
+// than it would itself pay as a taker, and a village that is nearly out of the resource it wants pays more than one
+// that is only mildly lopsided. The board's Ratio column is want/give, so the band reads 1.15 to 1.40.
+func TestBotPostsArePricedByNeed(t *testing.T) {
+	// post is a village's rate for iron, the resource it lacks, after PlanTrading posts one deal.
+	post := func(t *testing.T, wood, iron float64) float64 {
+		t.Helper()
+		w, bot, _ := botTradeWorld(t, 5)
+		game.TouchVillages(w, "bot_0")
+		bot.Resources = game.Resources{Wood: wood, Clay: wood, Iron: iron}
+		game.PlanTrading(w, "bot_0", bot)
+		offers := w.AllTradeOffers()
+		if len(offers) != 1 {
+			t.Fatalf("want one post, got %d", len(offers))
+		}
+		give, want := game.SumResources(offers[0].Give), game.SumResources(offers[0].Want)
+		if give <= 0 || want <= 0 {
+			t.Fatalf("two-sided post expected, give %v want %v", give, want)
+		}
+		return want / give
+	}
+
+	// Barely lopsided: iron is just under half the best store, so the village pays the cheap end of the band.
+	cheap := post(t, 4000, 1900)
+	// Nearly out of iron: the same gap in kind, but the scarce side is close to nothing.
+	dear := post(t, 9000, 20)
+	// A small stash makes a small post, where rounding the give side moves the ratio the most: the band must hold here
+	// too, not just on the large deals where a single unit is worth less than a percent.
+	small := post(t, 2200, 1090)
+
+	for name, rate := range map[string]float64{"cheap": cheap, "dear": dear, "small": small} {
+		if rate < 1.15 || rate > 1.40 {
+			t.Fatalf("%s post at %.3f is outside the 1.15–1.40 band", name, rate)
+		}
+	}
+	if dear <= cheap {
+		t.Fatalf("a starving village should pay more: dear %.3f, cheap %.3f", dear, cheap)
+	}
+	t.Logf("cheap %.3f dear %.3f small %.3f", cheap, dear, small)
+	// The worst a bot posts at stays under what a bot will pay as a taker, or its own posts would price themselves out.
+	if dear > 1.25*1.25 {
+		t.Fatalf("a post at %.3f exceeds botTradeMaxCost and no bot would take it", dear)
+	}
+}

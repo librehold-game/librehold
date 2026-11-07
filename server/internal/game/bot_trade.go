@@ -19,6 +19,17 @@ const botTradeMaxCopies = 5
 // botTradeMinAmount is the smallest stash a bot will trade from: below this there is nothing worth a merchant trip.
 const botTradeMinAmount = 200
 
+// botTradeRateMin and botTradeRateMax bound what a bot asks per unit it gives, the `want/give` figure the board's
+// Ratio column shows. A village posts only once its scarcest resource is under half its best (tradeGap); the nearer
+// that resource is to gone, the more the village pays for it, from a mild imbalance at the low end to a near-empty
+// store at the high end. The travelling trader's 0.8 gives 1.25, so the band straddles it. Both ends stay under
+// botTradeMaxCost, so one bot's post is still worth taking to another bot, and a human undercutting the band is the
+// cheapest deal on the board.
+const (
+	botTradeRateMin = 1.15
+	botTradeRateMax = 1.40
+)
+
 // botTradeMaxCost is the worst rate a bot accepts, in units paid per unit received. A post priced at the
 // travelling trader's ratio costs 1/ratio, and a little slack above that keeps fair posts acceptable.
 const botTradeMaxCost = 1.25 * 1.25
@@ -113,8 +124,8 @@ func tradeAllowed(w World, botID PlayerID) bool {
 	return Mulberry32(HiddenSeed(w, "tradeShort", botID, LocalDayIndex(w, w.Now())))() < BotConfig.ShortTradeChance
 }
 
-// postWant offers a spare resource for the one the village is shortest of: give a quarter of the surplus at the
-// travelling trader's rate, ask for a quarter of the surplus of the resource we lack.
+// postWant offers a spare resource for the one the village is shortest of: ask for a share of the surplus and give
+// what that share is worth at the bot's going rate for the missing resource.
 func postWant(w World, botID PlayerID, v *Village) {
 	// One post per village at a time; a fresh one simply waits for the old one to settle or lapse.
 	for _, o := range boardOffers(w) {
@@ -126,13 +137,14 @@ func postWant(w World, botID PlayerID, v *Village) {
 	if !ok {
 		return
 	}
-	// Hand over the trader's worth of what we ask for, and take at most a quarter of the surplus so a single
-	// post never drains the village.
+	// Take at most a tenth of the surplus so a single post never drains the village.
 	ask := math.Floor(v.Resources.Get(spare) * botTradeShare)
 	if ask < botTradeMinAmount {
 		return
 	}
-	giveAmount := math.Floor(ask * TraderBalance.Ratio)
+	// Round rather than floor: flooring gives less, which pushes the displayed want/give ratio above the band's top
+	// on a small post (ask 200 at 1.40 would read 1.41), while rounding keeps it at 1.40 or just under.
+	giveAmount := math.Round(ask / botTradeRate(v, short))
 	if giveAmount < 1 {
 		return
 	}
@@ -151,6 +163,25 @@ func postWant(w World, botID PlayerID, v *Village) {
 			})
 			return err
 		})
+}
+
+// botTradeRate is what the village pays per unit of `short` it asks for: botTradeRateMin while it is merely lopsided
+// enough to post at all, rising to botTradeRateMax as the resource runs out. Scarcity is measured past the point
+// tradeGap posts at (the scarce resource at half the best store), so the two ends line up with what a bot actually
+// does: right at that threshold it pays the cheap end, with none of the resource left it pays the most.
+func botTradeRate(v *Village, short Resource) float64 {
+	best := 0.0
+	for _, r := range ResourceIDs {
+		if have := v.Resources.Get(r); have > best {
+			best = have
+		}
+	}
+	if best <= 0 {
+		return botTradeRateMax
+	}
+	// 0 = the scarce resource is half the best store (the threshold for posting), 1 = none of it left.
+	scarcity := math.Min(1, math.Max(0, (best-2*v.Resources.Get(short))/best))
+	return botTradeRateMin + (botTradeRateMax-botTradeRateMin)*scarcity
 }
 
 // CheckPostOffer are the local reasons not to post, checked before the real call so a bot does not spam
@@ -226,8 +257,8 @@ func takeBoardOffer(w World, botID PlayerID, v *Village) bool {
 		if giveTotal <= 0 {
 			continue
 		}
-		// value = what we pay per unit we receive. Posters price at the travelling trader's rate, so a fair post
-		// costs 1/ratio; anything meaningfully worse than that is left alone.
+		// value = what we pay per unit we receive. Bots post between botTradeRateMin and botTradeRateMax, and humans
+		// price however they like; botTradeMaxCost is the worst rate still worth taking.
 		value := wantTotal / giveTotal
 		if value > botTradeMaxCost {
 			continue
