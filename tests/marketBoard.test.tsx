@@ -10,6 +10,7 @@ import { stubServer } from './serverStub';
 import { villageLabelOf } from '../src/ui/villageName';
 import { canCancelCommand } from '../src/engine/commands';
 import { formatCoords } from '../src/ui/format';
+import { TRADE_BALANCE } from '../src/data/world.config';
 
 const HOUR = 3_600_000;
 
@@ -340,9 +341,9 @@ describe('posting a deal several times', () => {
     }
   });
 
-  /** Fill this player's public-post slots with distinct deals, so the board has no room left. */
+  /** Fill this village's public-post slots with distinct deals, so it has no room for another new deal. */
   const fillBoard = () => {
-    g.tradeOffers = [0, 1, 2].map((i) => offer({
+    g.tradeOffers = Array.from({ length: TRADE_BALANCE.publicPerVillage }, (_, i) => offer({
       id: `mine${i}`, fromId: HUMAN_ID, originId: home.id, maxDeliveryMs: 0,
       give: { wood: 10 + i, clay: 0, iron: 0 }, want: { wood: 0, clay: 0, iron: 5 + i },
     }));
@@ -361,7 +362,7 @@ describe('posting a deal several times', () => {
     // The first open deal is exactly 10 wood for 5 iron at "no limit"; give this post a limit instead.
     fireEvent.focus(nums[0]!); fireEvent.change(nums[0]!, { target: { value: '2' } });
     expect(submit()).toHaveProperty('disabled', true);
-    expect(submit().getAttribute('title')).toContain(t('market.boardFullHint'));
+    expect(submit().getAttribute('title')).toContain(t('market.boardFullHint', { max: TRADE_BALANCE.publicPerVillage }));
   });
 
   it('treats the same amounts at the same limit as a free copy', async () => {
@@ -371,6 +372,56 @@ describe('posting a deal several times', () => {
     render(<MarketScreen />);
     const { nums, submit } = openForm();
     // Same amounts and the same "no limit" as the first open deal, so this is a copy of it and free of the cap.
+    fireEvent.focus(nums[1]!); fireEvent.change(nums[1]!, { target: { value: '10' } });
+    fireEvent.focus(nums[6]!); fireEvent.change(nums[6]!, { target: { value: '5' } });
+    expect(submit()).toHaveProperty('disabled', false);
+    expect(submit().getAttribute('title')).toBe('');
+  });
+
+  it('counts the cap per village, not pooled across the villages I own', async () => {
+    // A second village of mine: under a pooled cap its slots would top up this village's three, and a fourth deal
+    // here would go up. The cap is per origin village, so this village's own three fill it.
+    const second: Village = { ...home, id: 'second', x: home.x + 1, y: home.y + 1 };
+    g.villages[second.id] = second;
+    g.players[HUMAN_ID] = { ...g.players[HUMAN_ID]!, villageIds: [home.id, second.id] };
+    fillBoard();
+    stubServer(g);
+    await useGameStore.getState().boot();
+    // Boot may recall another village from a previous test; this deal is posted from `home`, so make it active.
+    useGameStore.getState().setActiveVillage(home.id);
+    render(<MarketScreen />);
+    const { nums, submit } = openForm();
+    fireEvent.focus(nums[1]!); fireEvent.change(nums[1]!, { target: { value: '77' } });
+    fireEvent.focus(nums[6]!); fireEvent.change(nums[6]!, { target: { value: '5' } });
+    expect(submit()).toHaveProperty('disabled', true);
+    expect(submit().getAttribute('title')).toContain(t('market.boardFullHint', { max: TRADE_BALANCE.publicPerVillage }));
+  });
+
+  it('no longer shows a per-day count on the form', async () => {
+    stubServer(g);
+    await useGameStore.getState().boot();
+    render(<MarketScreen />);
+    const { panel } = openForm();
+    expect(panel.textContent).not.toContain('left today');
+  });
+
+  it('raises the refusal in the toast when the form is opened at the cap', async () => {
+    fillBoard();
+    stubServer(g);
+    await useGameStore.getState().boot();
+    render(<MarketScreen />);
+    useGameStore.getState().clearError();
+    openForm();
+    expect(useGameStore.getState().lastError).toBe(t('market.boardFullHint', { max: TRADE_BALANCE.publicPerVillage }));
+  });
+
+  it('still lets a copy of a deal already out be posted after that warning', async () => {
+    // The warning is about new deals. A copy needs no slot, so the form stays usable at the cap.
+    fillBoard();
+    stubServer(g);
+    await useGameStore.getState().boot();
+    render(<MarketScreen />);
+    const { nums, submit } = openForm();
     fireEvent.focus(nums[1]!); fireEvent.change(nums[1]!, { target: { value: '10' } });
     fireEvent.focus(nums[6]!); fireEvent.change(nums[6]!, { target: { value: '5' } });
     expect(submit()).toHaveProperty('disabled', false);

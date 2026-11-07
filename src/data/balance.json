@@ -1117,7 +1117,7 @@
     "merchantCurveAt": 11,
     "minDeliveryMs": 3600000,
     "offerExpiryMs": 86400000,
-    "publicPerVillage": 3
+    "publicPerVillage": 6
   },
   "UNITS": {
     "archer": {

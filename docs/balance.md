@@ -35,7 +35,7 @@ Every value lives in `server/internal/game`; after changing one, run `npm run ge
 | Conquest | loyalty +1/h, drop 20–35, coin 28k/30k/25k, coins per hetman = villages + hetmans | `ConquestBalance` in `data_conquest.go` |
 | Units | stats table, recruitment time `base · 0.9666^(level−1)` | `data_units.go` |
 | Merchants | one per market level to 11, then `(L−10)² + 10`: level 19 gives 91, level 25 gives 235 | `TradeBalance.MerchantCurveAt` in `data_trade.go`, `MerchantsForLevel` in `market.go` |
-| Trade offers | expiry 24 game h, 3 *distinct* public deals per village (copies free), delivery limit 1–24 merchant h (0 unlimited) | `TradeBalance` in `data_trade.go` |
+| Trade offers | expiry 24 game h, 6 *distinct* public deals per village at a time (copies free), delivery limit 1–24 merchant h (0 unlimited) | `TradeBalance` in `data_trade.go` |
 | World | speeds, map size, queue slots, player start | `data_world.go` |
 | Instant worlds | no coins, hetman 18k/18k/18k, academy holds level+1 hetmans, owned villages lose 50–60 loyalty per hetman, barbarians start at 15 | `InstantWorldConfig` in `instant.go` |
 

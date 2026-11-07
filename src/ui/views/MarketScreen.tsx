@@ -175,6 +175,7 @@ function OfferRow({ group, villageId, showOrigin }: { group: OfferGroup; village
 function OffersPanel({ villageId }: { villageId: string }) {
   const game = useGameStore((s) => s.game);
   const createOffer = useGameStore((s) => s.createTradeOffer);
+  const pushError = useGameStore((s) => s.pushError);
   useT();
   const [form, setForm] = useState<{ maxHours: number; copies: number; give: ResourceSet; want: ResourceSet }>({
     maxHours: 0, copies: 1, give: { wood: 0, clay: 0, iron: 0 }, want: { wood: 0, clay: 0, iron: 0 },
@@ -207,10 +208,10 @@ function OffersPanel({ villageId }: { villageId: string }) {
   if (RESOURCES.some((r) => form.give[r] > 0 && form.want[r] > 0)) postBlockers.push(t('market.sameResource'));
 
   // One post may go up several times, so several takers can each take a smaller piece. The cap counts *distinct*
-  // deals (server: offerCap over postKey), so more copies of a deal already out are free of it — mirror that
-  // here so the form's hint is honest and does not block a legitimate copy.
+  // deals of this village (server: PublicPerVillage per origin), so more copies of a deal already out are free of
+  // it — mirror that here so the form does not block a legitimate copy.
   // Bounded: every copy is its own order, so an accidental "1000" would fire a thousand serial requests. No rule
-  // caps this otherwise (copies are free of the board cap), so the form has to.
+  // caps this otherwise (copies are free of the cap), so the form has to.
   const copies = Math.min(POST_COPIES_MAX, Math.max(1, Math.floor(form.copies) || 1));
   // The delivery limit is part of a deal's identity on the server (dealKey), so a different limit is a new post:
   // leaving it out here would promise a free copy of a post the server counts against the cap.
@@ -218,12 +219,15 @@ function OffersPanel({ villageId }: { villageId: string }) {
   const sameDeal = (o: TradeOffer) => o.fromId === HUMAN_ID && o.originId === villageId
     && o.maxDeliveryMs === deliveryMs
     && RESOURCES.every((r) => o.give[r] === form.give[r] && o.want[r] === form.want[r]);
-  // Same key the server counts (postKey: origin, amounts, delivery limit), so the hint agrees with the refusal.
-  const myDeals = new Set(g.tradeOffers.filter((o) => o.fromId === HUMAN_ID)
-    .map((o) => `${o.originId}|${RESOURCES.map((r) => `${o.give[r]}:${o.want[r]}`).join(',')}|${o.maxDeliveryMs}`)).size;
-  const room = Math.max(0, humanVillageIds(g).length * TRADE_BALANCE.publicPerVillage - myDeals);
+  // Same key the server counts (postKey: amounts, delivery limit), kept to this village because its merchants
+  // deliver and so its own posts are what fill its slots.
+  const myDeals = new Set(g.tradeOffers.filter((o) => o.fromId === HUMAN_ID && o.originId === villageId)
+    .map((o) => `${RESOURCES.map((r) => `${o.give[r]}:${o.want[r]}`).join(',')}|${o.maxDeliveryMs}`)).size;
   const freeCopies = g.tradeOffers.some(sameDeal);
-  if (!freeCopies && room === 0) postBlockers.push(t('market.boardFullHint'));
+  const atCap = myDeals >= TRADE_BALANCE.publicPerVillage;
+  /** The refusal a new deal meets once this village's slots are taken; a copy of a deal already out is still free. */
+  const capText = t('market.boardFullHint', { max: TRADE_BALANCE.publicPerVillage });
+  if (atCap && !freeCopies) postBlockers.push(capText);
   // Every copy reserves its share up front, so the village must hold the whole batch at once.
   const village = g.villages[villageId];
   if (village && RESOURCES.some((r) => form.give[r] * 1 > Math.floor(village.resources[r]))) {
@@ -260,7 +264,8 @@ function OffersPanel({ villageId }: { villageId: string }) {
       {mine.length === 0 ? (
         <p className="text-muted italic">{t('market.offersEmpty')}</p>
       ) : null}
-      <details className={g.tradeOffers.length === 0 ? '' : 'pt-1'}>
+      <details className={g.tradeOffers.length === 0 ? '' : 'pt-1'}
+        onToggle={(e) => { if (e.currentTarget.open && atCap && !freeCopies) pushError(capText); }}>
         <summary className="cursor-pointer font-medium">{t('market.postOffer')}</summary>
         <div className="mt-2 space-y-2">
           <label>{t('market.deliveryLabel')}{' '}
@@ -291,9 +296,7 @@ function OffersPanel({ villageId }: { villageId: string }) {
             <NumberInput min={1} max={POST_COPIES_MAX} step={1}
               className="w-14 px-1 border border-wood-border rounded bg-white/50 tabular-nums"
               value={form.copies} onValue={(n) => setForm((f) => ({ ...f, copies: n }))} />
-            <span className="text-muted text-[11px]">
-              {freeCopies ? t('market.copiesFree') : t('market.postsLeft', { n: room })}
-            </span>
+            {freeCopies && <span className="text-muted text-[11px]">{t('market.copiesFree')}</span>}
           </label>
           <span className="inline-flex items-center gap-2">
             <button className="btn" disabled={postBlockers.length > 0} title={postBlockers.join('\n')}

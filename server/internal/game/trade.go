@@ -55,7 +55,7 @@ func CreateTradeOffer(w World, actor PlayerID, in TradeOfferInput) (*TradeOffer,
 		// The share is reserved from the village there and then, so it has to be there to reserve.
 		blockers = append(blockers, Blocker{"kind": "resources"})
 	}
-	if !isKnownPost(w, actor, in, give, want) && activeOffers(w, actor) >= offerCap(w, actor) {
+	if !isKnownPost(w, actor, in, give, want) && activeOffersAt(w, actor, in.OriginID) >= TradeBalance.PublicPerVillage {
 		blockers = append(blockers, Blocker{"kind": "boardFull"})
 	}
 	if len(blockers) > 0 {
@@ -76,25 +76,18 @@ func CreateTradeOffer(w World, actor PlayerID, in TradeOfferInput) (*TradeOffer,
 	return o, nil
 }
 
-// offerCap is how many *different* posts a player may keep out: one allotment per village they own. Copies of a
-// post already on the board are free, so a player can split one deal into as many copies as they like and let
-// several takers each pick up a smaller piece.
-func offerCap(w World, actor PlayerID) int {
-	p := w.Player(actor)
-	if p == nil {
-		return 0
-	}
-	return len(p.VillageIDs) * TradeBalance.PublicPerVillage
-}
-
-// activeOffers counts a player's distinct posts that have not lapsed yet. Copies of one deal count once: they are
-// the same offer, however many takers they are meant for.
-func activeOffers(w World, actor PlayerID) int {
+// activeOffersAt counts the distinct posts one village has out. The cap is per origin village because it is that
+// village's merchants that deliver, so owning more villages adds slots per village rather than raising a pool they
+// all share. Copies of one deal count once: they are the same offer, however many takers they are meant for.
+func activeOffersAt(w World, actor PlayerID, originID string) int {
 	seen := make(map[string]bool)
 	n := 0
 	for _, o := range w.AllTradeOffers() {
-		if o.FromID == actor && tradeOfferReady(w, o) && !seen[postKey(o)] {
-			seen[postKey(o)] = true
+		if o.FromID != actor || o.OriginID != originID || !tradeOfferReady(w, o) {
+			continue
+		}
+		if key := postKey(o); !seen[key] {
+			seen[key] = true
 			n++
 		}
 	}

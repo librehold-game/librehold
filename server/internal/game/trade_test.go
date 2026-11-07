@@ -107,11 +107,18 @@ func TestTradeOfferLifecycle(t *testing.T) {
 			t.Fatalf("a refused post must not reserve anything, wood %v", a2v.Resources.Wood)
 		}
 
-		// A second village adds another allotment of distinct deals.
+		// A second village has its own allotment, but the first village's slots do not refill: the cap is per origin
+		// village, because it is that village's merchants that deliver.
 		a2 := gametest.AddStartVillage(w, "h1", a.X+7, a.Y+9)
 		a2.Buildings[game.BMarket] = 5
 		if _, err := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a2.ID, Give: game.Resources{Wood: 5}, Want: game.Resources{Clay: 5}}); err != nil {
-			t.Fatal(err)
+			t.Fatalf("a second village brings its own slots: %v", err)
+		}
+		if !slices.Contains(offerKinds(t, func() error {
+			_, e := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID, Give: game.Resources{Wood: 777}, Want: game.Resources{Clay: 5}})
+			return e
+		}), "boardFull") {
+			t.Fatal("owning a second village must not top up the first village's cap")
 		}
 	})
 

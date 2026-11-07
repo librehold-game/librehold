@@ -144,9 +144,10 @@ poster's village gives, and what the taker brings back.
   limit (1–24 merchant hours, or unlimited). There are no targeted offers: a player who wants to trade with one particular
   neighbour simply posts the deal that neighbour needs.
 - An offer waits **24 game hours** before it lapses (`TradeBalance.OfferExpiryMs`), so at higher world speeds it lasts less real
-  time. A player may keep `3 × villages` *different* deals out (`PublicPerVillage`); **copies of a deal already on the board are
-  free of that cap**, so one deal can be split into many copies and several takers can each pick up a piece. There is no
-  world-wide limit on the board. Posting reserves the give side on the spot, so the village must hold it.
+  time. A village may keep `PublicPerVillage` (6) *different* deals out, so a player's cap is that times their village count;
+  **copies of a deal already on the board are free of that cap**, so one deal can be split into many copies and several takers
+  can each pick up a piece. There is no world-wide limit on the board. Posting reserves the give side on the spot, so the
+  village must hold it.
 - Storage: one migration, `0017_trade_offers.sql`, purely additive — the table plus one index and nothing else. The
   trade settings live in the existing `worlds.config` jsonb and the settlement marker in `commands.data`, so no other
   schema changes and no backfill. Migrations run at boot (`postgres.Migrate` in `cmd/server/main.go`), so an existing

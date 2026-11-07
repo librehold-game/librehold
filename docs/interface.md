@@ -77,9 +77,9 @@ Everything trading looks like lives in `src/ui/views/MarketScreen.tsx`, and ever
   Offer | For | From village | Max delivery | Ratio | Expires | Action, and Withdraw as the only action — taking a deal is
   what the Global Market below is for. The second column names the posting village rather
   than repeating your own name, because the origin is what matters here: its Market supplies the merchants and the
-  three-deal cap is per village, so identical deals from two of your villages stay on separate rows. The fourth column is
-  the **delivery limit you set when posting** ("no limit" for 0), not the merchant trip the board shows — on a public post
-  there is no taker yet, so the trip is unknowable and would read as a dash. Identical deals — same sender, same delivery, same amounts —
+  offer cap is per village, so identical deals from two of your villages stay on separate rows and each village
+  fills its own slots. The fourth column is the **delivery limit you set when posting** ("no limit" for 0), not the
+  merchant trip the board shows — on a public post there is no taker yet, so the trip is unknowable and would read as a dash. Identical deals — same sender, same delivery, same amounts —
   collapse into one row with a `×N` count, exactly like the board. `For` is tinted green where your village holds enough and
   red where it does not. On the board, Accept stays pressable while a deal is refused, and pressing
   it raises the reason in the app's error toast — "Not enough merchants: 2 needed, 1 free", "Needs 2 merchants but the
@@ -90,6 +90,10 @@ Everything trading looks like lives in `src/ui/views/MarketScreen.tsx`, and ever
 - **Post an offer** (collapsed under a summary): the delivery limit in hours (0 = no limit), the give and get resource
   rows, **"How many:"** copies and the submit button, which reads "Post N offers" when the count is above one. There is no
   offer type to choose: every post goes on the board, because a targeted offer would only let one named village take it.
+  The form shows no count of what is left: the limit is a concurrency one — six distinct deals per village at a time
+  (`TradeBalance.PublicPerVillage`) — not a daily allowance. Once this village has its quota of distinct deals out, opening
+  the form raises the refusal in the error toast and the submit button stays disabled with the same reason, while a copy of
+  a deal already out still posts because copies do not count.
 - **Global Market** panel: everyone else's public offers, as a table with the same columns plus Available. Identical deals
   — same poster, same delivery time, same amounts — collapse into one row with `×N`, and a take-N number box next to Accept
   posts `offerIds` in a batch. Filters above the table: player search, the resource it gives, the resource it wants, maximum
