@@ -11,7 +11,10 @@ import { BIOME, tileBiome, type Biome } from './biomes';
 import { MAP_GROUND, TileArt, villageSize, villageTint, type TileArtProps } from './MapArt';
 import { MINIMAP_PALETTE, minimapImage } from './minimap';
 import { TerrainLayer } from './TerrainLayer';
-import { FRAME_H, FRAME_W, MAX_H, MAX_W, RULER_H, RULER_W, mapViewport, pinchZoomDelta, touchDistance, type MapHover } from './viewport';
+import {
+  FRAME_H, FRAME_W, MAX_H, MAX_W, MIN_H, MIN_W, RULER_H, RULER_W, clampWindow, mapViewportAt, pinchZoomDelta,
+  readMapWindow, saveMapWindow, touchDistance, type MapHover,
+} from './viewport';
 
 export type Dot = NonNullable<TileArtProps['dot']>;
 
@@ -122,14 +125,28 @@ function Minimap({ seed, mapSize, dots, center, cols, rows, onJump }: {
 
 /** The minimap and the side panel fit beside the map only from this width on. */
 const SIDE_COL = 212;
+/** The pixel frame paints its bevel this many px outside its box on every side. */
+const FRAME_OUTSET = 10;
+/** The frame's own border, which the gutter painted out there continues (`.frame-wood`). */
+const FRAME_BORDER = 10;
+/** The page's own bottom breathing room, kept free under the map window. */
+const PAGE_BOTTOM = 16;
+/** A map at least this wide has room for a card anchored to a tile; a narrower one slides a sheet up instead. */
+const CARD_MIN_W = 380;
 /** A finger trembles more than a mouse: below this a touch is still a click, not a drag. */
 const TAP_SLOP = 8;
+/** The cards and menus drawn over the map: the wheel leaves them alone, so a long one can still be read. */
+const OVERLAY = '.panel, .map-card';
 
 export function TileMap(p: TileMapProps) {
   const { mapSize, seed, center, onCenter, zoomIdx, onZoom, onRegion, onHover } = p;
-  const [avail, setAvail] = useState({ w: MAX_W + FRAME_W, h: MAX_H + FRAME_H, wide: true });
+  /** What the page gives the map: the wrapper's width, the height left under its top, and the viewport height. */
+  const [room, setRoom] = useState({ w: MAX_W + FRAME_W, h: MAX_H + FRAME_H, vh: MAX_H + FRAME_H });
+  /** The window the player dragged out of the corner; `null` keeps the default that follows the screen. */
+  const [custom, setCustom] = useState<{ w: number; h: number } | null>(readMapWindow);
   const wrapRef = useRef<HTMLDivElement>(null);
   const drag = useRef<{ sx: number; sy: number; cx: number; cy: number; moved: boolean } | null>(null);
+  const grip = useRef<{ sx: number; sy: number; w: number; h: number; size: { w: number; h: number } } | null>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinchBase = useRef<number | null>(null);
   const surfaceRef = useRef<HTMLDivElement>(null);
@@ -143,17 +160,34 @@ export function TileMap(p: TileMapProps) {
     return () => el.removeEventListener('touchmove', block);
   }, []);
 
+  // The wheel zooms the map. It is a native, non-passive listener: React's `onWheel` is passive, so the page would
+  // scroll under it as well. Only the map itself zooms — a card or menu open over it scrolls on its own.
+  const zoomRef = useRef(onZoom);
+  zoomRef.current = onZoom;
+  useEffect(() => {
+    const el = surfaceRef.current;
+    if (!el) return;
+    const zoom = (e: WheelEvent) => {
+      const overlay = (e.target as Element | null)?.closest?.(OVERLAY);
+      // Only a card or menu drawn over the map keeps its own wheel; the panel wrapping the whole page is not one.
+      if (overlay && overlay !== el && el.contains(overlay)) return;
+      e.preventDefault();
+      zoomRef.current(e.deltaY > 0 ? 1 : -1);
+    };
+    el.addEventListener('wheel', zoom, { passive: false });
+    return () => el.removeEventListener('wheel', zoom);
+  }, []);
+
   useLayoutEffect(() => {
     const el = wrapRef.current;
     if (!el) return;
     const measure = () => {
-      const room = el.clientWidth || MAX_W + FRAME_W;
-      const wide = room >= MAX_W + FRAME_W + SIDE_COL;
       const vh = typeof window === 'undefined' ? MAX_H + FRAME_H : window.innerHeight;
-      setAvail({
-        w: wide ? MAX_W + FRAME_W : room,
-        h: wide ? MAX_H + FRAME_H : Math.round(vh * 0.56),
-        wide,
+      const top = el.getBoundingClientRect?.().top || 0;
+      setRoom({
+        w: el.clientWidth || MAX_W + FRAME_W,
+        h: Math.max(MIN_H + FRAME_H, Math.round(vh - top - PAGE_BOTTOM)),
+        vh,
       });
     };
     measure();
@@ -163,12 +197,31 @@ export function TileMap(p: TileMapProps) {
     return () => { ro?.disconnect(); window.removeEventListener('resize', measure); };
   }, []);
 
-  const { tw, th, width, height, cols, rows } = mapViewport(avail.w, avail.h, zoomIdx);
+  /** The widest window the room takes: the frame and the bevel it paints outside its box come off both sides. */
+  const maxW = Math.max(MIN_W, room.w - FRAME_W - 2 * FRAME_OUTSET);
+  const maxH = Math.max(MIN_H, room.h - FRAME_H - 2 * FRAME_OUTSET);
+  /** The default window and its minimap stand side by side in the room — the desktop layout. */
+  const roomy = room.w >= MAX_W + FRAME_W + SIDE_COL;
+  /** A room this wide holds the smallest window with its minimap still beside it, so the corner has something to
+   * drag. On a phone the map follows the screen and there is no corner to grab. */
+  const resizable = room.w >= MIN_W + FRAME_W + 2 * FRAME_OUTSET + SIDE_COL;
+  /** The default window: the 15 × 13 fields on a desktop, the full width of the screen otherwise. */
+  const fit = roomy
+    ? { w: Math.min(MAX_W, maxW), h: Math.min(MAX_H, maxH) }
+    : {
+      w: Math.min(MAX_W, Math.max(MIN_W, room.w - FRAME_W)),
+      h: Math.min(MAX_H, Math.max(MIN_H, Math.round(room.vh * 0.56) - FRAME_H)),
+    };
+  const size = resizable && custom ? clampWindow(custom, { w: maxW, h: maxH }) : fit;
+  const { tw, th, width, height, cols, rows } = mapViewportAt(size.w, size.h, zoomIdx);
   const x0 = Math.floor(center.x - width / tw / 2);
   const y0 = Math.floor(center.y - height / th / 2);
   const offX = (center.x - width / tw / 2 - x0) * tw;
   const offY = (center.y - height / th / 2 - y0) * th;
-  const view: TileMapView = { x0, y0, offX, offY, tw, th, width, height, wide: avail.wide };
+  /** The minimap still stands beside a map this wide; once the map is dragged wider, it goes underneath. */
+  const beside = width + FRAME_W + 2 * FRAME_OUTSET + SIDE_COL <= room.w;
+  /** Cards are placed against the map surface, so its own width decides between an anchored card and a sheet. */
+  const view: TileMapView = { x0, y0, offX, offY, tw, th, width, height, wide: width >= CARD_MIN_W };
 
   // The fields in view and 10 more around them, so dragging never uncovers fields not loaded yet.
   useEffect(() => onRegion?.(x0 - 10, y0 - 10, x0 + cols + 10, y0 + rows + 10), [x0, y0, cols, rows, onRegion]);
@@ -228,6 +281,36 @@ export function TileMap(p: TileMapProps) {
     window.setTimeout(() => { drag.current = null; }, 0);
   };
 
+  /** The corner grip: dragging it resizes the map window, and the size is remembered for the next visit. */
+  const onGripDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'touch') return;
+    e.preventDefault();
+    e.stopPropagation();
+    onHover?.(null);
+    const start = { ...size };
+    grip.current = { sx: e.clientX, sy: e.clientY, w: start.w, h: start.h, size: start };
+    const el = e.currentTarget;
+    el.setPointerCapture?.(e.pointerId);
+    const move = (ev: PointerEvent) => {
+      const g = grip.current;
+      if (!g) return;
+      const next = clampWindow({ w: g.w + ev.clientX - g.sx, h: g.h + ev.clientY - g.sy }, { w: maxW, h: maxH });
+      g.size = next;
+      setCustom(next);
+    };
+    const stop = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', stop);
+      window.removeEventListener('pointercancel', stop);
+      const done = grip.current?.size;
+      grip.current = null;
+      if (done) saveMapWindow(done);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', stop);
+    window.addEventListener('pointercancel', stop);
+  };
+
   const tiles: React.ReactNode[] = [];
   for (let i = 0; i < cols; i++) {
     for (let j = 0; j < rows; j++) {
@@ -264,8 +347,8 @@ export function TileMap(p: TileMapProps) {
   }
 
   return (
-    <div ref={wrapRef} className={`flex gap-3 items-start ${avail.wide ? 'flex-row' : 'flex-col'}`}>
-      <div className="relative frame-wood shrink-0 self-center lg:self-start" style={{ width: width + FRAME_W, height: height + FRAME_H }}>
+    <div ref={wrapRef} className={`flex gap-3 items-start ${beside ? 'flex-row' : 'flex-col'}`}>
+      <div className="relative frame-wood shrink-0" style={{ width: width + FRAME_W, height: height + FRAME_H }}>
         <div className="absolute left-7 overflow-hidden wood-strip border-2 border-t-0 border-border-dark" style={{ width, height: RULER_H, top: height + 2 }}>{rulerX}</div>
         <div className="absolute left-0 top-0 overflow-hidden wood-strip map-ruler-y border-2 border-r-0 border-border-dark" style={{ width: RULER_W, height }}>{rulerY}</div>
         <div
@@ -278,7 +361,6 @@ export function TileMap(p: TileMapProps) {
           onPointerCancel={onPointerEnd}
           onPointerLeave={() => onHover?.(null)}
           data-map-surface
-          onWheel={(e) => onZoom(e.deltaY > 0 ? 1 : -1)}
         >
           <TerrainLayer
             seed={seed} x0={x0} y0={y0} cols={cols} rows={rows} offX={offX} offY={offY} tw={tw} th={th} mapSize={mapSize}
@@ -293,14 +375,40 @@ export function TileMap(p: TileMapProps) {
           />
           {p.surface?.(view)}
         </div>
+        {resizable && <CornerGrip onPointerDown={onGripDown} />}
       </div>
       {p.outside?.(view)}
-      <div className={`flex gap-3 ${avail.wide ? 'flex-col' : 'flex-row flex-wrap w-full justify-center'}`}>
+      {/* Beside the map while it fits there; once the player drags it too wide, underneath and centred on the map.
+          The column is capped to the frame's width so its `items-center` centres on the map, not on the page, and the
+          minimap keeps that centre even when the details panel arrives beside it. */}
+      <div
+        className={`flex gap-3 flex-col ${beside ? '' : 'items-center'}`}
+        style={beside ? undefined : { width: width + FRAME_W }}
+      >
         <Minimap seed={seed} mapSize={mapSize} dots={p.minimapDots} center={center} cols={width / tw} rows={height / th}
           onJump={(x, y) => onCenter(clampCenter({ x: x + 0.5, y: y + 0.5 }))} />
         {p.side}
       </div>
     </div>
+  );
+}
+
+/**
+ * The grey stone corner of the map frame, made grabbable: dragging it resizes the map window. The offsets are against
+ * the frame's padding box, so the border and the bevel painted outside it are added on to reach the corner itself.
+ */
+function CornerGrip({ onPointerDown }: { onPointerDown: (e: React.PointerEvent<HTMLDivElement>) => void }) {
+  const out = FRAME_BORDER + FRAME_OUTSET;
+  return (
+    <div
+      className="absolute z-20 cursor-nwse-resize touch-none rounded-br-[2px] transition-colors hover:bg-white/25 active:bg-white/35"
+      style={{ right: -out, bottom: -out, width: 26, height: 26 }}
+      data-map-resize
+      role="separator"
+      aria-orientation="horizontal"
+      aria-label={tr('map.resize')}
+      onPointerDown={onPointerDown}
+    />
   );
 }
 

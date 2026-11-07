@@ -67,6 +67,12 @@ The game works on screens from 360 px. Three mechanisms, all checked by `tests/m
   (the `SIDE_COL` threshold), and the village menu slides in from the bottom instead of sticking to the tile. Dragging
   works on `pointerdown` (mouse and finger), a **two-finger pinch** changes the zoom level (`pinchZoomDelta`,
   threshold 1.3 — below that it is finger jitter), and the threshold that tells a tap from a drag is 8 px.
+  The grey corner of the frame is a **resize grip** (`data-map-resize`): dragging it grows or shrinks the window
+  between `MIN_W`/`MIN_H` and the room the page gives it, and the size is remembered per browser (`lh-map-window` in
+  `localStorage`, `readMapWindow`/`saveMapWindow`). Once the map is dragged too wide for the side column
+  (`beside`), the minimap moves under the map and is centred on the map's own width — the column under it is capped to
+  the frame, so the map itself never moves. The grip only exists from the width that can hold
+  the smallest window plus its minimap (`resizable`), so on a phone the map follows the screen as before.
 
 On top of that: buttons and fields are at least 34 px with `pointer: coarse`, `overscroll-behavior-y: none` on `body`
 (otherwise dragging the map down reloads the game) and `viewport-fit=cover` in `index.html`.
