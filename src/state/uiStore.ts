@@ -19,13 +19,17 @@ export interface UiPrefs {
   showScene: boolean;
   /** The list of buildings that are not yet available is unfolded. */
   lockedOpen: boolean;
+  /** The build planner is shown on the Village tab; the Town Hall always has it. */
+  showBuildPlan: boolean;
+  /** Buildings that are not yet available are listed on the Village tab; the Town Hall always lists them. */
+  showLockedBuildings: boolean;
 }
 
 const PREFS_KEY = 'lh-ui-prefs';
 
 function defaultPrefs(): UiPrefs {
   const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return { animations: reduced ? 'limited' : 'full', sound: false, showScene: true, lockedOpen: true };
+  return { animations: reduced ? 'limited' : 'full', sound: false, showScene: true, lockedOpen: true, showBuildPlan: true, showLockedBuildings: true };
 }
 
 function loadPrefs(): UiPrefs {
