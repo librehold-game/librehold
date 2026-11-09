@@ -1103,6 +1103,7 @@
     "distance": "Dystans: <b>{n}</b> pól",
     "travel": "Czas marszu:",
     "arrival": "Przybycie:",
+    "maxLoot": "Łup: do <b>{n}</b> surowców",
     "scoutMission": "Misja zwiadowcza (same zwiadowcy).",
     "when": "Kiedy:",
     "mode": {

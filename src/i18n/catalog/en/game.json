@@ -1069,6 +1069,7 @@
     "distance": "Distance: <b>{n}</b> fields",
     "travel": "Travel time:",
     "arrival": "Arrival:",
+    "maxLoot": "Loot: up to <b>{n}</b> resources",
     "scoutMission": "A scouting mission (scouts only).",
     "when": "When:",
     "mode": {
