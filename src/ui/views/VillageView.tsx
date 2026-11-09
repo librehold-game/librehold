@@ -61,9 +61,9 @@ function ProductionPanel() {
       <table className="w-full text-[12px]">
         <tbody className="divide-y divide-wood-border/40">
           {RESOURCES.map((r) => (
-            <tr key={r} className="cursor-pointer hover:bg-white/30" onClick={() => setFocus(RESOURCE_BUILDING[r])} title={t('village.levelTitle', { building: buildingName(RESOURCE_BUILDING[r]), n: levels[r] })}>
+            <tr key={r} className="cursor-pointer hover:bg-white/30" onClick={() => setFocus(RESOURCE_BUILDING[r])}>
               <td className="w-6 py-[3px] pl-2"><ResourceIcon r={r} size={15} /></td>
-              <td className="py-[3px]">{resourceName(r)}</td>
+              <td className="py-[3px]"><button type="button" className="cursor-pointer text-left hover:underline focus:underline" title={t('village.levelTitle', { building: buildingName(RESOURCE_BUILDING[r]), n: levels[r] })}>{resourceName(r)}</button></td>
               <td className="py-[3px] pr-2 text-right tabular-nums"><strong>{formatNumber(out[r])}</strong> <span className="text-muted">{t('village.perHour')}</span></td>
             </tr>
           ))}

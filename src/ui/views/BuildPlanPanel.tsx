@@ -39,7 +39,7 @@ export function BuildPlanPanel() {
             {BUILDING_ORDER.map((b) => <button key={b} className="btn !px-1.5" onClick={() => setDraftSteps((d) => [...d, b])}>+{buildingName(b)}</button>)}
           </div>
           <div className="flex flex-wrap gap-1 min-h-[24px]">
-            {draftSteps.map((b, i) => <span key={i} className="px-1 border border-wood-border rounded bg-white/50 cursor-pointer" title={t('plan.clickToRemove')} onClick={() => setDraftSteps((d) => d.filter((_, j) => j !== i))}>{i + 1}. {buildingName(b)}</span>)}
+            {draftSteps.map((b, i) => <button type="button" key={i} className="px-1 border border-wood-border rounded bg-white/50 cursor-pointer" title={t('plan.clickToRemove')} aria-label={t('plan.removeStep', { n: i + 1, building: buildingName(b) })} onClick={() => setDraftSteps((d) => d.filter((_, j) => j !== i))}>{i + 1}. {buildingName(b)}</button>)}
             {draftSteps.length === 0 && <span className="text-muted italic">{t('plan.addSteps')}</span>}
           </div>
           <div className="flex gap-2">
