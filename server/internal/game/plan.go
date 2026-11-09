@@ -27,10 +27,6 @@ func FeedBuildPlan(w World, villageID string) int {
 	if v == nil || len(v.BuildPlan) == 0 || v.OwnerID == "" {
 		return 0
 	}
-	// The host's switch covers humans only; bots keep their plans.
-	if w.Config().NoBuildPlans && w.Player(PlayerID(v.OwnerID)).IsHuman {
-		return 0 // the plan waits as it is until the switch comes back on
-	}
 	owner := PlayerID(v.OwnerID)
 	Touch(w, v)
 	added := 0
@@ -94,6 +90,15 @@ func ClearBuildPlan(w World, actor PlayerID, villageID string) error {
 	v.BuildPlan = nil
 	w.Unschedule("plan:" + villageID)
 	return nil
+}
+
+// clearBuildPlans drops every plan a human has waiting and takes their feed ticks off the grid: while the host's
+// switch is off no plan may exist, or it would start building on its own the moment the feature comes back.
+func clearBuildPlans(w World, actor PlayerID) {
+	for _, v := range PlayerVillages(w, actor) {
+		v.BuildPlan = nil
+		w.Unschedule("plan:" + v.ID)
+	}
 }
 
 // schedulePlan: a plan tries to send its next step every PlanBalance.FeedIntervalMs (grid offset per village).

@@ -374,13 +374,15 @@ func autoFarmActive(w World, actor PlayerID, villageID string) bool {
 }
 
 // SyncFeatureToggles runs after the world's feature switches changed: with auto-farming switched off it turns it
-// off for every human — their setting is cleared, not just suspended, so they must switch it back on themselves
-// when the host re-enables the feature. Build plans need no resync — their feeder just waits while the switch is
-// off.
+// off for every human, and with build plans off it drops the plans humans have waiting. Neither is suspended: the
+// player must set it up again once the host re-enables the feature, so nothing starts on its own when it comes back.
 func SyncFeatureToggles(w World) {
 	for _, p := range w.Players() {
 		if !p.IsHuman {
 			continue
+		}
+		if w.Config().NoBuildPlans {
+			clearBuildPlans(w, p.ID)
 		}
 		h := w.Human(p.ID)
 		if h == nil {

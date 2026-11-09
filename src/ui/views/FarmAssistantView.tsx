@@ -120,6 +120,7 @@ export function FarmAssistantView() {
         {/* The host switched auto-farming off for this world: the toggle is hidden, not just disabled. */}
         {!m.autoWorldOff && (
           <span className="ml-auto">
+            {/* A disabled input swallows the hover, so it lets the pointer through to the label and its tooltip. */}
             <label className={`inline-flex items-center gap-1${m.autoUnlocked ? '' : ' cursor-help'}`} title={autoHint}>
               <input type="checkbox" disabled={!m.autoUnlocked} aria-describedby={m.autoUnlocked ? undefined : autoHintId}
                 className={m.autoUnlocked ? undefined : 'pointer-events-none'}

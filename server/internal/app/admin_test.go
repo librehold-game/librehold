@@ -227,9 +227,32 @@ func TestFeatureTogglesApplyToRunningWorld(t *testing.T) {
 	if !ok {
 		t.Fatal("the tick is not back after the player re-enabled auto-farming")
 	}
-	// Build plans: a human cannot set one while the world's switch is off.
+	// Build plans: a plan a player already has is dropped when the world's switch goes off, so nothing starts
+	// building on its own when it comes back.
+	err = f.svc.InWorld(ctx, ala, id, func(w app.WorldTx, me game.PlayerID) error {
+		return game.SetBuildPlan(w, me, home, []game.BuildingID{game.BMain, game.BWood, game.BClay})
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	readPlan := func() (int, bool, error) {
+		var steps int
+		var tick bool
+		err := f.worlds.Read(ctx, id, func(w app.WorldTx) error {
+			steps = len(w.Village(home).BuildPlan)
+			_, tick = w.ScheduledAt("plan:" + home)
+			return nil
+		})
+		return steps, tick, err
+	}
+	if steps, tick, err := readPlan(); err != nil || steps == 0 || !tick {
+		t.Fatalf("setup: the plan should wait with its tick (steps %d, tick %v, %v)", steps, tick, err)
+	}
 	if err := f.svc.UpdateWorldSettings(ctx, admin, id, app.WorldSettingsPatch{"noBuildPlans": json.RawMessage("true")}); err != nil {
 		t.Fatal(err)
+	}
+	if steps, tick, err := readPlan(); err != nil || steps != 0 || tick {
+		t.Fatalf("after the switch off: steps %d, tick %v, err %v", steps, tick, err)
 	}
 	err = f.svc.InWorld(ctx, ala, id, func(w app.WorldTx, me game.PlayerID) error {
 		var re *game.RuleError
@@ -241,6 +264,12 @@ func TestFeatureTogglesApplyToRunningWorld(t *testing.T) {
 	})
 	if err != nil {
 		t.Fatal(err)
+	}
+	if err := f.svc.UpdateWorldSettings(ctx, admin, id, app.WorldSettingsPatch{"noBuildPlans": json.RawMessage("false")}); err != nil {
+		t.Fatal(err)
+	}
+	if steps, tick, err := readPlan(); err != nil || steps != 0 || tick {
+		t.Fatalf("after the switch back on: steps %d, tick %v, err %v", steps, tick, err)
 	}
 }
 
