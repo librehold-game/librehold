@@ -7,12 +7,12 @@ import { reportIcon, reportVillageOf } from '../../engine/reports';
 import { reportVillageLabel } from '../../i18n/names';
 import { t, useT } from '../../i18n/i18n';
 import { AutoFarmTag, BotTag } from '../components/BotTag';
-import { RESOURCES, UNIT_IDS, type Report, type ReportType, type UnitId } from '../../engine/types';
+import { RESOURCES, UNIT_IDS, type MarketReport, type Report, type ReportType, type ResourceSet, type UnitId } from '../../engine/types';
 import { useGameStore } from '../../state/gameStore';
 import { useUiStore } from '../../state/uiStore';
 import { ResourceIcon } from '../components/ResourceIcon';
 import { UnitIcon } from '../components/UnitIcon';
-import { formatNumber } from '../format';
+import { formatDuration, formatNumber } from '../format';
 import { useClock } from '../useClock';
 import { humanVillageIds, isHumanVillage } from '../../engine/players';
 import { canCancelCommand } from '../../engine/commands';
@@ -70,6 +70,61 @@ function resultText(r: Report): string {
   return r.outcome === 'attackerWon' ? t('reports.attackerWon') : t('reports.defenderWon');
 }
 
+/** A settled trade deal: who took it, what was swapped, and where the incoming goods are shipped from. */
+function MarketReportDetail({ r, market, onBack }: { r: Report; market: MarketReport; onBack: () => void }) {
+  const clock = useClock();
+  const deleteReport = useGameStore((s) => s.deleteReport);
+  const t = useT();
+  const others = market.offers > 1 ? t('reports.market.offers', { n: market.offers }) : '';
+  return (
+    <div className="space-y-3 text-[12px]">
+      <div className="flex items-center gap-2 flex-wrap">
+        <button className="btn" onClick={onBack}>{t('reports.back')}</button>
+        <h3 className="text-[15px]"><PixelIcon name="cart" size={18} /> {t('reports.market.title')}{others}</h3>
+        <span className="text-muted ml-auto">{clock.at(r.time)}</span>
+      </div>
+      <div className="flex gap-2 flex-wrap">
+        <button className="btn ml-auto" onClick={() => { deleteReport(r.id); onBack(); }}>{t('reports.delete')}</button>
+      </div>
+      <div className="panel p-2 space-y-1">
+        <div>
+          {t('reports.market.acceptedBy')} <strong>{market.counterpartyName}</strong>
+          {market.counterpartyIsBot && <BotTag />}
+        </div>
+        <div>
+          {t('reports.market.comingFrom')} <strong>{reportVillageLabel(market.fromVillage)}</strong>
+          {market.fromVillage.ownerIsBot && <BotTag />}
+          {' · '}{t('reports.market.travel', { time: formatDuration(market.travelMs) })}
+        </div>
+      </div>
+      <div className="grid md:grid-cols-2 gap-3">
+        <div className="panel p-2">
+          <h4 className="text-[13px] font-semibold mb-1">{t('reports.market.youGive')}</h4>
+          <ResourceLine set={market.give} />
+        </div>
+        <div className="panel p-2">
+          <h4 className="text-[13px] font-semibold mb-1">{t('reports.market.youGet')}</h4>
+          <ResourceLine set={market.want} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** The non-zero resources of one side of a deal, each with its icon. */
+function ResourceLine({ set }: { set: ResourceSet }) {
+  const t = useT();
+  const shown = RESOURCES.filter((r) => (set[r] ?? 0) > 0);
+  if (shown.length === 0) return <span className="text-muted italic">{t('reports.none')}</span>;
+  return (
+    <div className="flex flex-wrap gap-2 tabular-nums">
+      {shown.map((res) => (
+        <span key={res} className="inline-flex items-center gap-0.5"><ResourceIcon r={res} size={14} />{formatNumber(set[res] ?? 0)}</span>
+      ))}
+    </div>
+  );
+}
+
 function ReportDetail({ id, onBack }: { id: string; onBack: () => void }) {
   const clock = useClock();
   const json = useGameStore((s) => JSON.stringify(s.game!.reports.find((r) => r.id === id) ?? null));
@@ -88,6 +143,7 @@ function ReportDetail({ id, onBack }: { id: string; onBack: () => void }) {
   });
   const t = useT();
   if (!r) return <p className="text-muted italic">{t('reports.missing')}</p>;
+  if (r.type === 'market' && r.market) return <MarketReportDetail r={r} market={r.market} onBack={onBack} />;
   const isField = r.type === 'field' || r.type === 'fieldScout';
   const target = villages[r.targetId];
   const tx = r.target.x;
@@ -177,7 +233,11 @@ export function ReportsView() {
       .filter((r) => !villageFilter || r.targetId === villageFilter || r.originId === villageFilter)
       .filter((r) => filter === 'all' || (filter === 'unread' ? !r.read : r.type === filter))
       .filter((r) => !hideAutoFarm || !r.autoFarm)
-      .map((r) => ({ id: r.id, time: r.time, type: r.type, read: r.read, autoFarm: !!r.autoFarm, icon: reportIcon(r), o: reportVillageLabel(r.origin), t: targetLabel(r), haul: r.haul ? r.haul.wood + r.haul.clay + r.haul.iron : null, cap: r.haulCapacity ?? null }))
+      .map((r) => {
+        // A market report has no loot: the interesting number is what the player receives in the deal.
+        const market = r.type === 'market' && r.market ? r.market.want.wood + r.market.want.clay + r.market.want.iron : null;
+        return { id: r.id, time: r.time, type: r.type, read: r.read, autoFarm: !!r.autoFarm, icon: reportIcon(r), o: reportVillageLabel(r.origin), t: targetLabel(r), haul: r.haul ? r.haul.wood + r.haul.clay + r.haul.iron : market, cap: r.haulCapacity ?? null };
+      })
       .reverse(),
   ));
   const rows = JSON.parse(list) as { id: string; time: number; type: ReportType; read: boolean; autoFarm: boolean; icon: string; o: string; t: string; haul: number | null; cap: number | null }[];
@@ -200,7 +260,7 @@ export function ReportsView() {
       <div className="flex items-center gap-2 flex-wrap mb-2 text-[12px]">
         <h2 className="text-lg mr-2">{t('reports.title')} <span className="text-muted font-body text-[12px]">({total}/500)</span></h2>
         <select className="px-1 border border-wood-border rounded bg-white/50" value={filter} onChange={(e) => setFilter(e.target.value as Filter)}>
-          {(['all', 'unread', 'attack', 'scout', 'conquest', 'support'] as const).map((f) => <option key={f} value={f}>{t(`reports.filter.${f}`)}</option>)}
+          {(['all', 'unread', 'attack', 'scout', 'conquest', 'support', 'market'] as const).map((f) => <option key={f} value={f}>{t(`reports.filter.${f}`)}</option>)}
         </select>
         <label className="inline-flex items-center gap-1"><input type="checkbox" checked={hideAutoFarm} onChange={(e) => setHideAutoFarm(e.target.checked)} /> {t('reports.hideAutoFarm')}</label>
         {villageFilter && (

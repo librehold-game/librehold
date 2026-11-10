@@ -21,6 +21,8 @@
   },
   "errors": {
     "unknown": "Coś poszło nie tak",
+    "noOffer": "Tej oferty nie ma już na rynku",
+    "overlap": "Inne zlecenie już to robi",
     "network": "Brak połączenia z serwerem",
     "internal": "Błąd serwera",
     "blocked": "Nie można tego zrobić: {reasons}",
@@ -76,6 +78,7 @@
     "noTarget": "Brak celu",
     "noCommand": "Nie ma takiej komendy",
     "cannotCancel": "Komendy nie można już odwołać",
+    "settledTrade": "Ten transport rozliczył już handel i nie można go odwołać",
     "notPorted": "Jeszcze nieobsługiwane",
     "smallGap": "Za mała przerwa między hetmanami",
     "noTroops": "W wiosce nie ma wojska do wyprowadzenia",

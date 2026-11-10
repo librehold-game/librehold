@@ -21,6 +21,8 @@
   },
   "errors": {
     "unknown": "Something went wrong",
+    "noOffer": "That offer is no longer on the market",
+    "overlap": "Another order is already doing that",
     "network": "No connection to the server",
     "internal": "Server error",
     "blocked": "That can't be done: {reasons}",
@@ -76,6 +78,7 @@
     "noTarget": "No target",
     "noCommand": "That command doesn't exist",
     "cannotCancel": "The command can't be recalled any more",
+    "settledTrade": "This shipment already settled a trade and can't be recalled",
     "notPorted": "Not supported yet",
     "smallGap": "The gap between the hetmans is too small",
     "noTroops": "There are no troops in the village to move out",

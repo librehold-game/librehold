@@ -41,6 +41,8 @@ func Think(w World, id PlayerID, defenceOnly bool) {
 	PlanCampaign(w, id)
 	armyFirst := economyPlay(w, id).ArmyShare > 0
 	for _, v := range PlayerVillages(w, id) {
+		// A resource gap is worth closing before the planners spend it on troops and buildings.
+		PlanTrading(w, id, v)
 		if armyFirst {
 			PlanResearch(w, id, v)
 			PlanRecruitment(w, id, v)

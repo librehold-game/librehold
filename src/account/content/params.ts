@@ -1,6 +1,7 @@
 import { BUILDINGS } from '../../data/buildings.data';
 import { CONQUEST_BALANCE } from '../../data/conquest.data';
 import { COMBAT_BALANCE, UNITS } from '../../data/units.data';
+import { TRADE_BALANCE } from '../../data/world.config';
 import { formatNumber } from '../../i18n/format';
 import facts from './facts.json';
 
@@ -28,6 +29,11 @@ export function guideParams(): Record<string, string | number> {
     coinWood: C.coinBaseCost.wood,
     coinClay: C.coinBaseCost.clay,
     coinIron: C.coinBaseCost.iron,
+    tradeOfferHours: TRADE_BALANCE.offerExpiryMs / 3_600_000,
+    publicPerVillage: TRADE_BALANCE.publicPerVillage,
+    tradeMinDeliveryHours: TRADE_BALANCE.minDeliveryMs / 3_600_000,
+    tradeMaxDeliveryHours: TRADE_BALANCE.maxDeliveryMs / 3_600_000,
+    merchantCurveAt: TRADE_BALANCE.merchantCurveAt,
     academyMain: academyNeeds('main'),
     academyMarket: academyNeeds('market'),
     academySmithy: academyNeeds('smithy'),

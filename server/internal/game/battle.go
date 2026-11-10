@@ -209,7 +209,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			ObserveBattle(w, botAttacker, target, seen)
 		}
 		if result.AttackerSurvivors.Total() > 0 && origin != nil {
-			markFarm(w, CreateReturn(w, target.ID, c.OriginID, result.AttackerSurvivors, nil), c.Farm)
+			markFarm(w, CreateReturn(w, target.ID, c.OriginID, result.AttackerSurvivors, nil), c.Farm, c.AutoFarm)
 		}
 		RecordBattle(w, BattleRecord{AttackerID: attackerOwner, DefenderID: targetOwner, Shares: shares,
 			AttackerLost: result.AttackerLosses, DefenderLost: result.DefenderLosses})
@@ -375,15 +375,17 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 		if SumResources(haul) > 0 {
 			h = &haul
 		}
-		markFarm(w, CreateReturn(w, target.ID, c.OriginID, survivors, h), c.Farm)
+		markFarm(w, CreateReturn(w, target.ID, c.OriginID, survivors, h), c.Farm, c.AutoFarm)
 	}
 	return nil
 }
 
-// markFarm carries a farm raid's mark onto its way home.
-func markFarm(w World, ret *Command, farm bool) {
+// markFarm carries a farm raid's mark onto its way home, so the player sees the way back as the raid it was — and an
+// auto-farm raid keeps the tag that tells it apart from one the player sent by hand.
+func markFarm(w World, ret *Command, farm, autoFarm bool) {
 	if farm {
 		ret.Farm = true
+		ret.AutoFarm = autoFarm
 		w.PutCommand(ret)
 	}
 }

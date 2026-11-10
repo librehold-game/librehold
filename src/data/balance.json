@@ -451,6 +451,8 @@
       "wood": 0
     },
     "rampUpDays": 14,
+    "tradeOfferDurationHrs": 24,
+    "tradingEnabled": true,
     "unitSpeed": 1,
     "worldSpeed": 8
   },
@@ -1110,6 +1112,13 @@
     "storageLevel0": 500,
     "storageWarningRatio": 0.9
   },
+  "TRADE_BALANCE": {
+    "maxDeliveryMs": 86400000,
+    "merchantCurveAt": 11,
+    "minDeliveryMs": 3600000,
+    "offerExpiryMs": 86400000,
+    "publicPerVillage": 6
+  },
   "UNITS": {
     "archer": {
       "attack": 15,
@@ -1474,6 +1483,10 @@
     "sightRadius": {
       "max": 10,
       "min": 0
+    },
+    "tradeOfferDurationHrs": {
+      "max": 720,
+      "min": 1
     },
     "unitSpeed": {
       "max": 10,

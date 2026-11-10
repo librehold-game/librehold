@@ -5,11 +5,13 @@ import { useShallow } from 'zustand/react/shallow';
 import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
 import { UNITS } from '../../data/units.data';
 import { canCancelCommand, commandHome, playerCommands, type SendBlocker, type SendCheck, type UnitCounts } from '../../engine/commands';
+import { merchantCount, merchantText } from '../components/CommandsTable';
 import { checkSendClient } from './rallyCheck';
 import { HUMAN_ID, UNIT_IDS, type BuildingId, type Command, type UnitId } from '../../engine/types';
 import { selectActiveVillage, useGameStore } from '../../state/gameStore';
 import { useUiStore } from '../../state/uiStore';
 import { Countdown } from '../components/Countdown';
+import { ResourceList } from '../components/ResourceList';
 import { UnitCountList } from '../components/UnitCountList';
 import { UnitIcon } from '../components/UnitIcon';
 import { IncomingList } from '../components/IncomingList';
@@ -239,11 +241,17 @@ function CommandRow({ cmd }: { cmd: Command }) {
   const cancel = useGameStore((s) => s.cancelCmd);
   const icon = COMMAND_ICON[cmd.type];
   const label = t(`rally.cmd.${cmd.type}`);
+  // A merchant shipment carries resources, not troops, so its column reads as a haul instead of unit icons.
+  const haul = cmd.type === 'trade'
+    ? (cmd.haul
+      ? <span className="inline-flex items-center gap-1.5 flex-wrap"><PixelIcon name="cart" size={14} /><ResourceList set={cmd.haul} size={13} /><span className="text-muted">· {merchantCount(cmd.merchants ?? 0)}</span></span>
+      : <span className="text-muted">{merchantText(cmd.merchants ?? 0)}</span>)
+    : <UnitCountList units={cmd.units} />;
   return (
     <tr className={incoming ? 'text-bad font-semibold' : ''}>
       <td className="whitespace-nowrap"><PixelIcon name={icon} size={16} /> {incoming ? t('rally.incoming') : ''}{label}</td>
       <td className="text-[11px]" data-label={t('rally.col.route')}>{o}<br />→ {to}</td>
-      <td data-label={t('rally.col.units')}><UnitCountList units={cmd.units} /></td>
+      <td data-label={t('rally.col.units')}>{haul}</td>
       <td className="tabular-nums" data-label={t('rally.col.arrives')}><Countdown until={cmd.arrivesAt} /><div className="text-[10px] text-muted">{clock.at(cmd.arrivesAt)}</div></td>
       <td className="stack-inline">
         {cmd.type !== 'return' && cmd.type !== 'intercept' && !incoming && (

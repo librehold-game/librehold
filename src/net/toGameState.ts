@@ -50,6 +50,10 @@ export function toGameState(s: PlayerState, reports: Report[], news: (NewsItem |
     stats: s.human.stats,
     clock: { originLocalMs: s.clockOriginLocalMs },
     scheduled: s.scheduled.map((x) => ({ ...x, ownerId: toClientId(x.ownerId, me) })),
+    tradeOffers: (s.tradeOffers ?? []).map((o) => {
+      const { fromId, ...rest } = o;
+      return { ...rest, fromId: toClientId(fromId, me) };
+    }),
     humanAggressorUntil: s.human.aggressorUntil,
   };
 }

@@ -2,7 +2,7 @@ import { buildingName, resourceName } from '../../i18n/names';
 import { t, useT } from '../../i18n/i18n';
 import { bonusLabel } from '../map/villageInfo';
 import { villageLabelOf } from '../villageName';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { BUILDINGS } from '../../data/buildings.data';
 import { villageProductionPerHour, villageStorageCapacity, villageFarmCapacity, villagePopulationUsed } from '../../engine/resources';
 import { loyaltyAt } from '../../engine/conquest';
@@ -19,30 +19,14 @@ import { BuildQueuePanel } from './BuildQueuePanel';
 import { BuildingScreen } from './BuildingScreen';
 import { BuildingsTable } from './BuildingsTable';
 import { UnitsPanel } from './UnitsPanel';
+import { SidePanel } from '../components/SidePanel';
+import { MovementsSection } from './MovementsPanel';
 import { IncomingList } from '../components/IncomingList';
 import { BuildPlanPanel } from './BuildPlanPanel';
 import { humanPlayer, humanVillageIds } from '../../engine/players';
 
 
 const RESOURCE_BUILDING: Record<Resource, BuildingId> = { wood: 'wood', clay: 'clay', iron: 'iron' };
-
-/** Panel with a header and a collapse button. */
-function SidePanel({ title, children, defaultOpen = true, right }: { title: string; children: React.ReactNode; defaultOpen?: boolean; right?: React.ReactNode }) {
-  const [open, setOpen] = useState(defaultOpen);
-  useT();
-  return (
-    <section className="panel overflow-hidden">
-      <div className="panel-header flex items-center justify-between !py-1 !px-2">
-        <span className="italic font-bold">{title}</span>
-        <span className="flex items-center gap-1">
-          {right}
-          <button className="btn !px-1.5 !py-0 !text-[11px] leading-4" onClick={() => setOpen((o) => !o)} title={open ? t('village.collapse') : t('village.expand')}>{open ? '−' : '+'}</button>
-        </span>
-      </div>
-      {open && children}
-    </section>
-  );
-}
 
 function ProductionPanel() {
   const json = useGameStore((s) => {
@@ -149,6 +133,7 @@ export function VillageView() {
         <IncomingList villageId={activeId} />
         <BuildQueuePanel />
         <BuildingsTable onOpen={open} focus={focus} />
+        <MovementsSection />
         <BuildPlanPanel />
       </div>
       <aside className="min-w-0 flex flex-col gap-3 lg:sticky lg:top-2">

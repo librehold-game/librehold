@@ -17,6 +17,9 @@ var DefaultWorldConfig = WorldConfig{
 	LastVillage:            "protected",
 	Difficulty:             Normal,
 	BotStance:              StanceNormal,
+	TradeOfferDurationHrs:  24, // a day in the real world; an offer outlives a full game cycle.
+	// A new world trades from the start. Worlds stored before the setting existed keep the zero value, which is off.
+	TradingEnabled: true,
 }
 
 type Range struct {
@@ -34,7 +37,8 @@ var WorldLimits = struct {
 	RampUpDays             Range `json:"rampUpDays"`
 	BeginnerProtectionDays Range `json:"beginnerProtectionDays"`
 	SightRadius            Range `json:"sightRadius"`
-}{Range{1, 100}, Range{0.5, 10}, []int{100, 200, 400}, Range{2, 5}, Range{0.25, 10}, Range{0, 300}, Range{1, 60}, Range{0, 30}, Range{0, 10}}
+	TradeOfferDurationHrs  Range `json:"tradeOfferDurationHrs"` // real-world hours, up to a month.
+}{Range{1, 100}, Range{0.5, 10}, []int{100, 200, 400}, Range{2, 5}, Range{0.25, 10}, Range{0, 300}, Range{1, 60}, Range{0, 30}, Range{0, 10}, Range{1, 720}}
 
 var StartVillage = struct {
 	Buildings map[BuildingID]int `json:"buildings"`

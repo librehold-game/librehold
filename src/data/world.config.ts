@@ -1,6 +1,6 @@
 import {
   COMMAND_BALANCE as commandBalance, DEFAULT_WORLD_CONFIG as defaultWorldConfig, FARM_BALANCE as farmBalance, MAP as map,
-  WORLD_LIMITS as worldLimits,
+  TRADE_BALANCE as tradeBalance, WORLD_LIMITS as worldLimits,
 } from './balance.json';
 import type { BarbarianDensity, WorldConfig } from '../engine/types';
 
@@ -13,5 +13,6 @@ export const WORLD_LIMITS = worldLimits;
 
 export const MAP = map as Omit<typeof map, 'density'> & { density: Record<BarbarianDensity, number> };
 
+export const TRADE_BALANCE = tradeBalance as { offerExpiryMs: number; publicPerVillage: number; minDeliveryMs: number; maxDeliveryMs: number; merchantCurveAt: number };
 export const COMMAND_BALANCE = commandBalance;
 export const FARM_BALANCE = farmBalance;

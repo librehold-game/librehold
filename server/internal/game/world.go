@@ -49,6 +49,10 @@ type World interface {
 	ScheduledSendsOf(owner PlayerID) []*ScheduledSend // sorted by (SendAt, ID)
 	PutScheduledSend(s *ScheduledSend)
 	DeleteScheduledSend(id string)
+	TradeOffer(id string) *TradeOffer // stored offers only; nil if none
+	AllTradeOffers() []*TradeOffer    // unsorted
+	PutTradeOffer(o *TradeOffer)      // insert a new offer
+	DeleteTradeOffer(id string)
 
 	AddNews(n *NewsItem)        // assigns ID
 	News(limit int) []*NewsItem // newest first

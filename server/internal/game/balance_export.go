@@ -45,6 +45,7 @@ func BalanceExport() map[string]any {
 		"MAP":                  MapConfig,
 		"COMMAND_BALANCE":      CommandBalance,
 		"FARM_BALANCE":         FarmBalance,
+		"TRADE_BALANCE":        TradeBalance,
 		"QUESTS":               quests,
 	}
 }

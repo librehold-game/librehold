@@ -263,10 +263,12 @@
     border-bottom: 1px dashed rgba(125, 81, 15, 0.35);
     padding: 5px 8px;
   }
-  /* The label is a separate flex item, so the value stays on one line next to it. */
+  /* The label is a separate flex item, so the value stays on one line next to it. It gives up part of its width on a
+     narrow card (45% of the row instead of a flat 6.5rem) so a longer value — a player name with a bot tag after it —
+     still fits beside it instead of being pushed underneath. */
   :is(.table-stack, .ranking-table) td::before {
     content: attr(data-label);
-    flex: 0 0 6.5rem;
+    flex: 0 0 min(6.5rem, 45%);
     font-weight: 600;
     color: var(--color-muted);
   }
@@ -292,6 +294,13 @@
   }
   :is(.table-stack, .ranking-table) tr:has(td.stack-inline:last-child) td.stack-inline {
     padding-bottom: 8px;
+  }
+  /* A cell of controls only (a number box and its button) takes the whole card row and sits at its right edge, so
+     the controls line up down the list instead of sitting under the labels. */
+  :is(.table-stack, .ranking-table) td.stack-inline.action-end {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 

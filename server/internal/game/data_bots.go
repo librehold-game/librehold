@@ -44,6 +44,7 @@ var BotConfig = struct {
 	GrudgeFadeDays        float64              `json:"grudgeFadeDays"`
 	NukeAttack            float64              `json:"nukeAttack"`
 	WeakExpandDailyChance float64              `json:"weakExpandDailyChance"`
+	ShortTradeChance      float64              `json:"shortTradeChance"`
 	OffShare              map[BotStyle]float64 `json:"offShare"`
 	StyleWeights          map[BotStyle]float64 `json:"styleWeights"`
 }{
@@ -77,6 +78,7 @@ var BotConfig = struct {
 	GrudgeFadeDays:        5,
 	NukeAttack:            150_000,
 	WeakExpandDailyChance: 0.3,
+	ShortTradeChance:      0.25,
 	OffShare: map[BotStyle]float64{StyleAggressor: 0.75, StyleFarmer: 0.6, StyleOpportunist: 0.6,
 		StylePointBuilder: 0.5, StyleTurtle: 0.3},
 	StyleWeights: map[BotStyle]float64{StyleFarmer: 1, StyleTurtle: 1, StyleAggressor: 1, StylePointBuilder: 1,

@@ -19,12 +19,12 @@ export function GuidePage({ guide }: { guide: GuideDef }) {
   const title = t(`${key}.title`);
   const items = howToPlayTrail(locale, { name: title, path: guidePath(guide.id, locale) });
   const next = GUIDES[(GUIDES.indexOf(guide) + 1) % GUIDES.length]!;
-  const first = guide.shots[0]!;
+  const first = guide.shots[0];
   return (
     <div className="encyclopedia guide">
       <Head
         title={t('guides.pageTitle', { title, app: t('app.name') })} description={t(`${key}.description`)}
-        image={first.src} imageAlt={t(`${key}.shots.${first.id}.alt`)} jsonLd={[breadcrumbList(items)]}
+        image={first?.src} imageAlt={first ? t(`${key}.shots.${first.id}.alt`) : undefined} jsonLd={[breadcrumbList(items)]}
       />
       <Breadcrumbs items={items} label={t('encyclopedia.label.breadcrumbs')} />
       <article className="card prose">

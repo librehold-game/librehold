@@ -17,6 +17,7 @@
       "difficulty": "Bot difficulty",
       "botStance": "Bots towards players",
       "fieldBattles": "Armies can meet on the road",
+      "tradingEnabled": "Players and bots can trade",
       "sightRadius": "Sight of passing armies (tiles, 0 = none)",
       "protectionMin": "Beginner protection (minutes)",
       "domination": "Win early by holding",

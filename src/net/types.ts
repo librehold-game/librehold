@@ -2,7 +2,7 @@ import type { HostedCard } from '../account/api';
 import type { Locale } from '../i18n/i18n';
 import type {
   BuildTemplate, BuildingId, Command, FarmAssistantState, NewsItem, Player, PlayerId, PlayerStats, PlayerStatus, QuestState, Report,
-  ScheduledSend, TraderState, UnitId, Village, VillageBonus, VillageGroup, VillageIntel, WorldConfig,
+  ScheduledSend, TradeOffer, TraderState, UnitId, Village, VillageBonus, VillageGroup, VillageIntel, WorldConfig,
 } from '../engine/types';
 import type { PlayerRow } from '../shared/ranking/types';
 
@@ -97,6 +97,7 @@ export interface PlayerState {
   commands: CommandView[];
   intel: Record<string, Intel>;
   scheduled: ScheduledSend[];
+  tradeOffers: TradeOffer[];
   human: HumanState;
   unreadReports: number;
   instant?: InstantView;

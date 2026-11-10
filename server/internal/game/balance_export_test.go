@@ -12,7 +12,7 @@ import (
 func TestBalanceExportHoldsOnlyBrowserTables(t *testing.T) {
 	want := []string{"BONUS_BALANCE", "BUILDINGS", "BUILDING_BALANCE", "BUILDING_ORDER", "COMBAT_BALANCE", "COMMAND_BALANCE",
 		"CONQUEST_BALANCE", "DEFAULT_WORLD_CONFIG", "FARM_BALANCE", "MAP", "QUESTS", "RESEARCH_BALANCE", "RESEARCH_UNLOCK_COST",
-		"RESOURCE_BALANCE", "UNITS", "UNIT_BALANCE", "WORLD_LIMITS"}
+		"RESOURCE_BALANCE", "TRADE_BALANCE", "UNITS", "UNIT_BALANCE", "WORLD_LIMITS"}
 	got := slices.Sorted(maps.Keys(game.BalanceExport()))
 	if !slices.Equal(got, want) {
 		t.Fatalf("keys %v, want %v", got, want)

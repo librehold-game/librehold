@@ -44,6 +44,10 @@ export const GUIDES: GuideDef[] = [
     related: [unit('scout'), unit('lightCav'), building('smithy')],
   },
   {
+    id: 'trading', sections: ['offers', 'accepting', 'limits'], shots: [],
+    related: [building('market'), building('storage')],
+  },
+  {
     id: 'nobles', sections: ['academy', 'coins', 'loyalty', 'train'],
     shots: [shot('nobles-academy', noblesAcademy, 'academy'), shot('nobles-conquest', noblesConquest, 'loyalty')],
     related: [unit('noble'), building('academy'), building('main'), building('market'), building('smithy')],

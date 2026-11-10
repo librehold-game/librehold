@@ -17,8 +17,35 @@ func init() {
 	})
 }
 
-func MerchantsTotal(v *Village) int { return v.Buildings[BMarket] }
+// MerchantsTotal is how many merchants a village's market gives. One per market level up to
+// TradeBalance.MerchantCurveAt, then quadratic — the same shape Tribal Wars uses, so the expensive top levels of the
+// market are worth building: level 19 gives 91 merchants rather than 19, level 25 gives 235 rather than 25.
+func MerchantsTotal(v *Village) int {
+	return MerchantsForLevel(v.Buildings[BMarket])
+}
 
+// MerchantsForLevel is MerchantsTotal without a village, for the table and the client.
+func MerchantsForLevel(level int) int {
+	if level <= 0 {
+		return 0
+	}
+	n := TradeBalance.MerchantCurveAt
+	if level <= n {
+		return level
+	}
+	steps := level - n + 1
+	return steps*steps + n - 1
+}
+
+// sameOwner reports whether both villages belong to the same player, which is what makes a transfer a move between
+// one's own villages rather than a trade with somebody else.
+func sameOwner(w World, a, b string) bool {
+	va, vb := w.Village(a), w.Village(b)
+	return va != nil && vb != nil && va.OwnerID != "" && va.OwnerID == vb.OwnerID
+}
+
+// MerchantsInTransit is every merchant of the village that is spoken for: those carrying a shipment and those held
+// against an offer it still has on the board, which is why posting an offer costs merchants before anyone accepts.
 func MerchantsInTransit(w World, villageID string) int {
 	n := 0
 	for _, c := range w.CommandsHome(villageID) {
@@ -26,7 +53,21 @@ func MerchantsInTransit(w World, villageID string) int {
 			n += c.Merchants
 		}
 	}
+	for _, o := range w.AllTradeOffers() {
+		if o.OriginID == villageID {
+			n += ReservedMerchants(o)
+		}
+	}
 	return n
+}
+
+// ReservedMerchants is how many of the seller's merchants an offer holds. Offers posted before merchants were
+// booked carry no count, so they are valued from what they give — the amount an accept would have needed anyway.
+func ReservedMerchants(o *TradeOffer) int {
+	if o.Reserved > 0 {
+		return o.Reserved
+	}
+	return MerchantsNeeded(o.Give)
 }
 
 func MerchantsAvailable(w World, v *Village) int {
@@ -59,6 +100,11 @@ func CheckTrade(w World, actor PlayerID, originID, targetID string, amount Resou
 		return TradeCheck{Blockers: []Blocker{{"kind": "notOwner"}}}
 	}
 	var blockers []Blocker
+	// Switching trading off closes the player to player market only. A village moving its own resources between its
+	// own villages is not trading with anyone, so it keeps working — the same reason the travelling trader stays.
+	if !w.Config().TradingEnabled && !sameOwner(w, originID, targetID) {
+		blockers = append(blockers, Blocker{"kind": "tradingOff"})
+	}
 	if origin.Buildings[BMarket] < 1 {
 		blockers = append(blockers, Blocker{"kind": "noMarket"})
 	}
@@ -88,6 +134,19 @@ func CheckTrade(w World, actor PlayerID, originID, targetID string, amount Resou
 
 // SendTrade sends resources to a village; the merchants come back after delivering.
 func SendTrade(w World, actor PlayerID, originID, targetID string, amount Resources) (*Command, error) {
+	return sendTrade(w, actor, originID, targetID, amount, false)
+}
+
+// dispatchSettled ships the half of an accepted offer. Same shipment, but marked Settled so neither side can
+// recall it: by the time it is on the road the offer is gone and the other party has shipped against it.
+func dispatchSettled(w World, actor PlayerID, originID, targetID string, amount Resources) (*Command, error) {
+	return sendTrade(w, actor, originID, targetID, amount, true)
+}
+
+func sendTrade(w World, actor PlayerID, originID, targetID string, amount Resources, settled bool) (*Command, error) {
+	if !w.Config().TradingEnabled && !sameOwner(w, originID, targetID) {
+		return nil, Blocked("trade", Blocker{"kind": "tradingOff"})
+	}
 	if origin := w.Village(originID); origin != nil && origin.OwnerID == Ref(actor) {
 		Touch(w, origin)
 	}
@@ -99,7 +158,7 @@ func SendTrade(w World, actor PlayerID, originID, targetID string, amount Resour
 	clean := cleanAmount(amount)
 	SubtractResources(&origin.Resources, clean)
 	c := &Command{ID: w.NewID("c"), Type: "trade", OriginID: originID, TargetID: targetID, Haul: &clean,
-		Merchants: check.Merchants, DepartedAt: w.Now(), ArrivesAt: w.Now() + check.TravelMs}
+		Merchants: check.Merchants, DepartedAt: w.Now(), ArrivesAt: w.Now() + check.TravelMs, Settled: settled}
 	AddCommand(w, c)
 	if h := w.Human(actor); h != nil {
 		h.Stats.TradesSent++
@@ -181,6 +240,8 @@ func CanAcceptTrader(w World, actor PlayerID, v *Village) bool {
 }
 
 func AcceptTrader(w World, actor PlayerID, villageID string) error {
+	// The travelling trader is a fixed-rate shop, not a deal with another player, so the trading switch does not
+	// close it: the market keeps working on a world that has player to player trading switched off.
 	v, err := ownsVillage(w, actor, villageID, "accept-trader")
 	if err != nil {
 		return err

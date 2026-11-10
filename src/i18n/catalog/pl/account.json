@@ -115,7 +115,9 @@
       "humanModifiers": "Mnożniki ludzi",
       "botModifiers": "Mnożniki botów",
       "noFieldBattles": "Bez bitew w polu",
-      "sightRadius": "Zasięg wzroku (pola)"
+      "sightRadius": "Zasięg wzroku (pola)",
+      "tradingEnabled": "Handel",
+      "tradeOfferDurationHrs": "Czas trwania oferty (godziny)"
     },
     "choice": {
       "barbarianDensity": {

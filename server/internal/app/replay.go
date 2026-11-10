@@ -53,7 +53,9 @@ func Replay(ctx context.Context, svc *Service, log []game.LoggedAction, seed uin
 
 func replayEntry(w WorldTx, e game.LoggedAction, players map[string]game.PlayerID) error {
 	switch e.Kind {
-	case "snapshot", "observe", "pause", "invite", "joinRule", "auto-farm-send":
+	// Entries that only record what happened elsewhere. "marketClosed" is one of them: the "settings" entry it
+	// accompanies re-derives CloseMarket from the patch itself.
+	case "snapshot", "observe", "pause", "invite", "joinRule", "auto-farm-send", "marketClosed":
 		return nil
 	case "join":
 		var j joinEntry

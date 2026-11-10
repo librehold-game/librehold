@@ -218,6 +218,9 @@ func TestSpectatorOrdersRefused(t *testing.T) {
 		if name == "send" || name == "schedule-send" {
 			body = `{"type":"attack"}`
 		}
+		if name == "accept-trade-offer" {
+			body = `{"offerId":"nie_ma"}`
+		}
 		if _, err := g.f.svc.Order(ctx, hoster, g.id, name, json.RawMessage(body)); !errors.Is(err, app.ErrNotMember) {
 			t.Fatalf("order %s by the host: %v", name, err)
 		}

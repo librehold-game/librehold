@@ -3935,6 +3935,8 @@
         "wood": 0
       },
       "rampUpDays": 14,
+      "tradeOfferDurationHrs": 24,
+      "tradingEnabled": true,
       "unitSpeed": 1,
       "worldSpeed": 1
     },
@@ -4170,6 +4172,7 @@
     },
     "scheduled": [],
     "serverTime": 1700000000000,
+    "tradeOffers": [],
     "unreadReports": 0,
     "villages": {
       "v:99:98": {
