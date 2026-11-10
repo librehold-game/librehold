@@ -1,6 +1,6 @@
 import { COMMAND_BALANCE, TRADE_BALANCE } from '../data/world.config';
 import { villageStorageCapacity } from './resources';
-import { MS_PER_MINUTE, RESOURCES, type GameState, type ResourceSet, type Village } from './types';
+import { MS_PER_MINUTE, RESOURCES, type GameState, type ResourceSet, type TradeOffer, type Village } from './types';
 import { distance } from './world';
 import { isHumanVillage } from './players';
 
@@ -27,7 +27,17 @@ export function merchantsInTransit(state: GameState, villageId: string): number 
     const home = c.returning ? c.targetId : c.originId;
     if (home === villageId) n += c.merchants ?? 0;
   }
+  // An offer on the board holds the merchants that will carry it, so posting costs merchants before anyone accepts.
+  for (const o of state.tradeOffers) {
+    if (o.originId === villageId) n += reservedMerchants(o);
+  }
   return n;
+}
+
+/** The merchants an offer holds, from its own count or — for a post made before that was booked — from its give side. */
+export function reservedMerchants(o: TradeOffer): number {
+  if (o.reserved) return o.reserved;
+  return merchantsNeeded(o.give);
 }
 
 export function merchantsAvailable(state: GameState, v: Village): number {

@@ -108,10 +108,6 @@ func AddResourcesCapped(v *Village, amount Resources) Resources {
 	return accepted
 }
 
-func ScaleResources(set Resources, f float64) Resources {
-	return Resources{set.Wood * f, set.Clay * f, set.Iron * f}
-}
-
 // AddResources sums two sets, e.g. to check a batch of deals against one pool of resources.
 func AddResources(a, b Resources) Resources {
 	return Resources{Wood: a.Wood + b.Wood, Clay: a.Clay + b.Clay, Iron: a.Iron + b.Iron}

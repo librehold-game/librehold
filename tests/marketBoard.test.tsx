@@ -402,8 +402,11 @@ describe('posting a deal several times', () => {
     }
   });
 
-  /** Fill this village's public-post slots with distinct deals, so it has no room for another new deal. */
+  /** Fill this village's public-post slots with distinct deals, so it has no room for another new deal. The market
+   * is raised so that the six booked posts (one merchant each) leave merchants free: these tests are about the
+   * board cap, and a market too small would refuse the posts for the other reason. */
   const fillBoard = () => {
+    home.buildings.market = 8; // 8 merchants, 6 of them booked by the posts below
     g.tradeOffers = Array.from({ length: TRADE_BALANCE.publicPerVillage }, (_, i) => offer({
       id: `mine${i}`, fromId: HUMAN_ID, originId: home.id, maxDeliveryMs: 0,
       give: { wood: 10 + i, clay: 0, iron: 0 }, want: { wood: 0, clay: 0, iron: 5 + i },
@@ -487,6 +490,35 @@ describe('posting a deal several times', () => {
     fireEvent.focus(nums[6]!); fireEvent.change(nums[6]!, { target: { value: '5' } });
     expect(submit()).toHaveProperty('disabled', false);
     expect(submit().getAttribute('title')).toBe('');
+  });
+
+  it('refuses a post the village has no free merchants for', async () => {
+    // Posting books the merchants that will carry the give side, so it needs them free the same way a shipment does.
+    home.buildings.market = 2; // two merchants
+    addCommand(g, { type: 'trade', originId: home.id, targetId: bot.id, merchants: 2, haul: { wood: 2000, clay: 0, iron: 0 } });
+    stubServer(g);
+    await useGameStore.getState().boot();
+    render(<MarketScreen />);
+    const { nums, submit } = openForm();
+    fireEvent.focus(nums[1]!); fireEvent.change(nums[1]!, { target: { value: '1000' } });
+    fireEvent.focus(nums[6]!); fireEvent.change(nums[6]!, { target: { value: '500' } });
+    expect(submit()).toHaveProperty('disabled', true);
+    expect(submit().getAttribute('title')).toContain(t('market.merchantsShort', { needed: 1, available: 0 }));
+  });
+
+  it('counts the merchants already booked by this village\'s own posts', async () => {
+    // A post on the board holds its merchants, so a market with them all booked cannot post another deal.
+    home.buildings.market = 3;
+    g.tradeOffers = [offer({ id: 'mine', fromId: HUMAN_ID, originId: home.id, give: { wood: 3000, clay: 0, iron: 0 },
+      want: { wood: 0, clay: 0, iron: 10 }, reserved: 3 })];
+    stubServer(g);
+    await useGameStore.getState().boot();
+    render(<MarketScreen />);
+    const { nums, submit } = openForm();
+    fireEvent.focus(nums[1]!); fireEvent.change(nums[1]!, { target: { value: '1000' } });
+    fireEvent.focus(nums[6]!); fireEvent.change(nums[6]!, { target: { value: '500' } });
+    expect(submit()).toHaveProperty('disabled', true);
+    expect(submit().getAttribute('title')).toContain(t('market.merchantsShort', { needed: 1, available: 0 }));
   });
 
   it('refuses to post more than the village holds', async () => {

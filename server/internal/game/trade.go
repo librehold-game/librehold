@@ -55,7 +55,26 @@ func CreateTradeOffer(w World, actor PlayerID, in TradeOfferInput) (*TradeOffer,
 		// The share is reserved from the village there and then, so it has to be there to reserve.
 		blockers = append(blockers, Blocker{"kind": "resources"})
 	}
-	if !isKnownPost(w, actor, in, give, want) && activeOffersAt(w, actor, in.OriginID) >= TradeBalance.PublicPerVillage {
+
+	// The merchants that will carry the give side are booked now, next to the resources, so a post on the board can
+	// always be accepted: the taker is never refused for a stranger's busy merchants, which they cannot see and
+	// cannot fix. The market's level is the merchant count, so a share larger than the whole market is the same
+	// answer as a target that cannot hold it — a smaller offer, not a wait.
+	// Every post books, copies included: each copy a taker picks up ships its own haul, so a shared booking would
+	// let a village promise more than its market can carry. The board cap counts distinct deals only, so that — not
+	// the merchant pool — is what stops a village filling itself up with copies.
+	known := isKnownPost(w, actor, in, give, want)
+	reserved := 0
+	if SumResources(give) > 0 {
+		reserved = MerchantsNeeded(give)
+		switch {
+		case reserved > MerchantsTotal(origin):
+			blockers = append(blockers, Blocker{"kind": "marketTooSmall", "needed": reserved, "total": MerchantsTotal(origin)})
+		case reserved > MerchantsAvailable(w, origin):
+			blockers = append(blockers, Blocker{"kind": "merchants", "needed": reserved, "available": MerchantsAvailable(w, origin)})
+		}
+	}
+	if !known && activeOffersAt(w, actor, in.OriginID) >= TradeBalance.PublicPerVillage {
 		blockers = append(blockers, Blocker{"kind": "boardFull"})
 	}
 	if len(blockers) > 0 {
@@ -68,8 +87,8 @@ func CreateTradeOffer(w World, actor PlayerID, in TradeOfferInput) (*TradeOffer,
 		SubtractResources(&origin.Resources, give)
 	}
 	o := &TradeOffer{ID: w.NewID("to"), FromID: actor, OriginID: in.OriginID,
-		Give: give, Want: want, MaxDeliveryMs: normalizeDelivery(in.MaxDeliveryMs), ExpiresAt: now + TradeOfferExpiryMs(w.Config()),
-		CreatedAt: now}
+		Give: give, Want: want, Reserved: reserved, MaxDeliveryMs: normalizeDelivery(in.MaxDeliveryMs),
+		ExpiresAt: now + TradeOfferExpiryMs(w.Config()), CreatedAt: now}
 	w.PutTradeOffer(o)
 	w.Schedule("tradeExpire:"+o.ID, o.ExpiresAt)
 	Touch(w, origin)
@@ -217,10 +236,9 @@ func AcceptTradeOffers(w World, actor PlayerID, ids []string, villageID string) 
 		return Blocked("accept-trade-offer", blockers...)
 	}
 
-	// The giver's share was set aside when each offer went up; only its free merchants matter here.
-	if SumResources(totalGive) > 0 && MerchantsNeeded(totalGive) > MerchantsAvailable(w, origin) {
-		blockers = append(blockers, Blocker{"kind": "merchants"})
-	}
+	// Both the giver's resources and its merchants were set aside when each offer went up, so there is nothing left to
+	// refuse here: an offer on the board can always be accepted. Checking again would count its own reservation
+	// against it and turn every accept into "not enough merchants".
 	// The taker's side must hold everything it owes at once and have enough free merchants for the whole haul. The
 	// market's level is the merchant count, so a haul bigger than the whole market can never be shipped: that is a
 	// different answer from "some merchants are busy", and the player fixes it a different way.

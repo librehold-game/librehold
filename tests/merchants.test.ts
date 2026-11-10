@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { merchantsForLevel, merchantsTotal, merchantsAvailable } from '../src/engine/market';
+import { merchantsForLevel, merchantsTotal, merchantsAvailable, merchantsNeeded } from '../src/engine/market';
 import { normalizeDelivery } from '../src/engine/trade';
 import { TRADE_BALANCE } from '../src/data/world.config';
-import type { GameState } from '../src/engine/types';
+import { HUMAN_ID, type GameState, type TradeOffer } from '../src/engine/types';
 import { activeVillage, newTestGame } from './helpers';
 
 /** The published Tribal Wars market table: merchants per level, 1–25. */
@@ -51,5 +51,49 @@ describe('a posted delivery limit', () => {
     expect(normalizeDelivery(TRADE_BALANCE.maxDeliveryMs)).toBe(TRADE_BALANCE.maxDeliveryMs);
     expect(normalizeDelivery(TRADE_BALANCE.maxDeliveryMs + 1)).toBe(TRADE_BALANCE.maxDeliveryMs);
     expect(normalizeDelivery(2 * TRADE_BALANCE.maxDeliveryMs)).toBe(TRADE_BALANCE.maxDeliveryMs);
+  });
+});
+
+/** A post on the board from the human's own village, as the server sends it. */
+function offer(originId: string, wood: number, reserved?: number): TradeOffer {
+  return {
+    id: `o-${wood}-${reserved ?? 'x'}`, fromId: HUMAN_ID, originId,
+    give: { wood, clay: 0, iron: 0 }, want: { wood: 0, clay: wood, iron: 0 },
+    ...(reserved === undefined ? {} : { reserved }),
+    maxDeliveryMs: 0, expiresAt: 0, createdAt: 0,
+  };
+}
+
+describe('the merchants a post on the board holds', () => {
+  it('takes the booked count out of the free pool, the same way the server does', () => {
+    // Posting costs merchants up front, so a board full of posts can exhaust a village before anything ships.
+    const g: GameState = newTestGame();
+    const v = activeVillage(g);
+    v.buildings.market = 6; // 6 merchants
+    expect(merchantsAvailable(g, v)).toBe(6);
+    g.tradeOffers = [offer(v.id, 2000)];
+    expect(merchantsAvailable(g, v)).toBe(4);
+    g.tradeOffers = [offer(v.id, 2000), offer(v.id, 3000, 3)];
+    expect(merchantsAvailable(g, v)).toBe(1);
+    // Over-booked can happen on a board posted before the cap was known: never report a negative.
+    g.tradeOffers = [offer(v.id, 12_000)];
+    expect(merchantsAvailable(g, v)).toBe(0);
+  });
+
+  it('values a post made before the count was booked from its give side', () => {
+    const g: GameState = newTestGame();
+    const v = activeVillage(g);
+    v.buildings.market = 4;
+    g.tradeOffers = [offer(v.id, 2000)]; // no `reserved`
+    expect(merchantsAvailable(g, v)).toBe(4 - merchantsNeeded({ wood: 2000, clay: 0, iron: 0 }));
+    expect(merchantsAvailable(g, v)).toBe(2);
+  });
+
+  it('ignores posts from other villages and their roads', () => {
+    const g: GameState = newTestGame();
+    const v = activeVillage(g);
+    v.buildings.market = 4;
+    g.tradeOffers = [offer('v:0:0', 2000)];
+    expect(merchantsAvailable(g, v)).toBe(4);
   });
 });

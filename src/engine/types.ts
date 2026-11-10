@@ -513,6 +513,11 @@ export interface TradeOffer {
   give: ResourceSet;
   /** What the taker brings back. */
   want: ResourceSet;
+  /**
+   * The poster's merchants booked for this post's give side when it went up, so an offer on the board can always be
+   * accepted. Missing on offers posted before that was booked; those are valued from `give`.
+   */
+  reserved?: number;
   /** Longest a merchant may travel to deliver this post; 0 = unlimited. */
   maxDeliveryMs: number;
   /** World ms when it lapses. */

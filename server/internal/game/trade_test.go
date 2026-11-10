@@ -72,6 +72,10 @@ func TestTradeOfferLifecycle(t *testing.T) {
 
 	t.Run("create: the public board is capped per distinct offer, not per copy", func(t *testing.T) {
 		w, a, _ := tradeWorld(t, 5)
+		// Every post books its own merchants, copies included, so the market has to carry six deals plus ten copies
+		// of one of them; the cap is what this test is about, not the merchant pool.
+		a.Buildings[game.BMarket] = 20 // 110 merchants
+		a.Resources = game.Resources{Wood: 1000, Clay: 1000, Iron: 1000}
 		// h1 owns one village, so the cap is the per-village allotment of *different* deals.
 		for i := 0; i < game.TradeBalance.PublicPerVillage; i++ {
 			if _, err := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID, Give: game.Resources{Wood: 10 + float64(i)}, Want: game.Resources{Clay: 5}}); err != nil {
@@ -591,6 +595,8 @@ func TestOneSidedOffersAreRefused(t *testing.T) {
 // both the "copy of something already out" test and the cap count must use it, or a variant would be cap-free.
 func TestDeliveryVariantsStillCountAgainstTheCap(t *testing.T) {
 	w, a, _ := tradeWorld(t, 5)
+	// One merchant per distinct post is booked on creation, so the market has to be able to carry the whole board.
+	a.Buildings[game.BMarket] = game.TradeBalance.PublicPerVillage
 	base := game.TradeOfferInput{OriginID: a.ID, Give: game.Resources{Wood: 100}, Want: game.Resources{Iron: 50}}
 	// One variant per slot the village has: each is a distinct deal, so each fills one.
 	for i := 0; i < game.TradeBalance.PublicPerVillage; i++ {
@@ -824,6 +830,8 @@ func TestSettledDealReports(t *testing.T) {
 
 	t.Run("ten offers settled at once make one report, totalled", func(t *testing.T) {
 		w, a, b := mk(t)
+		// Ten copies each book their own merchant on posting, so the market has to hold all ten of them.
+		a.Buildings[game.BMarket] = 10
 		var ids []string
 		for i := 0; i < 10; i++ {
 			o, err := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID, Give: game.Resources{Wood: 100}, Want: game.Resources{Iron: 100}})
@@ -886,6 +894,126 @@ func TestSettledDealReports(t *testing.T) {
 		}
 		if !reps[0].Market.CounterpartyBot {
 			t.Fatalf("the report should say a bot took it: %+v", reps[0].Market)
+		}
+	})
+}
+
+// A post books the merchants that will carry it, so an offer on the board can always be accepted: the taker must
+// never be refused for the seller's busy merchants, which they can neither see nor fix.
+func TestPostingAnOfferBooksItsMerchants(t *testing.T) {
+	t.Run("posting needs free merchants, and refuses with numbers when it has none", func(t *testing.T) {
+		w, a, b := tradeWorld(t, 9)
+		a.Buildings[game.BMarket] = 2 // two merchants
+		// Spend them on a shipment so none are free.
+		if _, err := game.SendTrade(w, "h1", a.ID, b.ID, game.Resources{Wood: 2000}); err != nil {
+			t.Fatal(err)
+		}
+		if got := game.MerchantsAvailable(w, a); got != 0 {
+			t.Fatalf("%d merchants free, want 0", got)
+		}
+		be, ok := func() error {
+			_, e := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID,
+				Give: game.Resources{Wood: 1000}, Want: game.Resources{Clay: 1000}})
+			return e
+		}().(*game.BlockedError)
+		if !ok {
+			t.Fatal("an offer with no free merchants went up")
+		}
+		b0 := be.Blockers[0]
+		if b0["kind"] != "merchants" || b0["needed"] != 1 || b0["available"] != 0 {
+			t.Fatalf("blocker %+v, want merchants 1 of 0", b0)
+		}
+	})
+
+	t.Run("a booked offer takes its merchants out of the free pool", func(t *testing.T) {
+		w, a, _ := tradeWorld(t, 9)
+		a.Buildings[game.BMarket] = 4
+		before := game.MerchantsAvailable(w, a)
+		if _, err := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID,
+			Give: game.Resources{Wood: 2000}, Want: game.Resources{Clay: 2000}}); err != nil {
+			t.Fatal(err)
+		}
+		if after := game.MerchantsAvailable(w, a); after != before-2 {
+			t.Fatalf("%d free after posting 2000 (2 merchants), was %d", after, before)
+		}
+	})
+
+	t.Run("a copy of a deal books its own merchants", func(t *testing.T) {
+		// Each copy a taker picks up is its own haul, so a shared booking would promise more than the market carries.
+		w, a, _ := tradeWorld(t, 9)
+		a.Buildings[game.BMarket] = 4
+		for i := 0; i < 2; i++ {
+			if _, err := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID,
+				Give: game.Resources{Wood: 2000}, Want: game.Resources{Clay: 2000}}); err != nil {
+				t.Fatalf("copy %d: %v", i, err)
+			}
+		}
+		if got := game.MerchantsAvailable(w, a); got != 0 {
+			t.Fatalf("%d merchants free after two copies of a 2-merchant deal, want 0", got)
+		}
+		// A third copy would need a merchant the market does not have, and says so with the numbers.
+		be, ok := func() error {
+			_, e := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID,
+				Give: game.Resources{Wood: 2000}, Want: game.Resources{Clay: 2000}})
+			return e
+		}().(*game.BlockedError)
+		if !ok {
+			t.Fatal("a third copy went up with no merchants left")
+		}
+		if b0 := be.Blockers[0]; b0["kind"] != "merchants" || b0["needed"] != 2 || b0["available"] != 0 {
+			t.Fatalf("blocker %+v, want merchants 2 of 0", b0)
+		}
+	})
+
+	t.Run("withdrawing an offer hands its merchants back", func(t *testing.T) {
+		w, a, _ := tradeWorld(t, 9)
+		a.Buildings[game.BMarket] = 4
+		before := game.MerchantsAvailable(w, a)
+		o, err := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID,
+			Give: game.Resources{Wood: 2000}, Want: game.Resources{Clay: 2000}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := game.CancelTradeOffer(w, "h1", o.ID); err != nil {
+			t.Fatal(err)
+		}
+		if after := game.MerchantsAvailable(w, a); after != before {
+			t.Fatalf("%d free after withdrawing, want %d", after, before)
+		}
+	})
+
+	t.Run("accepting works even when the seller spent its other merchants", func(t *testing.T) {
+		w, a, b := tradeWorld(t, 9)
+		a.Buildings[game.BMarket], b.Buildings[game.BMarket] = 4, 4
+		o, err := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID,
+			Give: game.Resources{Clay: 2000}, Want: game.Resources{Iron: 4000}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		// The seller now spends what little is left, so its *free* pool is empty but the offer is still booked.
+		if _, err := game.SendTrade(w, "h1", a.ID, b.ID, game.Resources{Wood: 2000}); err != nil {
+			t.Fatal(err)
+		}
+		if err := game.AcceptTradeOffer(w, "h2", o.ID, b.ID); err != nil {
+			t.Fatalf("accept was refused: %v", err)
+		}
+	})
+
+	t.Run("an offer posted before merchants were booked still reserves its share", func(t *testing.T) {
+		w, a, b := tradeWorld(t, 9)
+		a.Buildings[game.BMarket], b.Buildings[game.BMarket] = 4, 4
+		// Simulate a legacy row: no Reserved count, as an existing world has.
+		o, err := game.CreateTradeOffer(w, "h1", game.TradeOfferInput{OriginID: a.ID,
+			Give: game.Resources{Clay: 2000}, Want: game.Resources{Iron: 4000}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		o.Reserved = 0
+		if got, want := game.ReservedMerchants(o), 2; got != want {
+			t.Fatalf("a legacy offer reserves %d merchants, want %d from its give side", got, want)
+		}
+		if err := game.AcceptTradeOffer(w, "h2", o.ID, b.ID); err != nil {
+			t.Fatalf("a legacy offer could not be accepted: %v", err)
 		}
 	})
 }

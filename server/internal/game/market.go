@@ -44,6 +44,8 @@ func sameOwner(w World, a, b string) bool {
 	return va != nil && vb != nil && va.OwnerID != "" && va.OwnerID == vb.OwnerID
 }
 
+// MerchantsInTransit is every merchant of the village that is spoken for: those carrying a shipment and those held
+// against an offer it still has on the board, which is why posting an offer costs merchants before anyone accepts.
 func MerchantsInTransit(w World, villageID string) int {
 	n := 0
 	for _, c := range w.CommandsHome(villageID) {
@@ -51,7 +53,21 @@ func MerchantsInTransit(w World, villageID string) int {
 			n += c.Merchants
 		}
 	}
+	for _, o := range w.AllTradeOffers() {
+		if o.OriginID == villageID {
+			n += ReservedMerchants(o)
+		}
+	}
 	return n
+}
+
+// ReservedMerchants is how many of the seller's merchants an offer holds. Offers posted before merchants were
+// booked carry no count, so they are valued from what they give — the amount an accept would have needed anyway.
+func ReservedMerchants(o *TradeOffer) int {
+	if o.Reserved > 0 {
+		return o.Reserved
+	}
+	return MerchantsNeeded(o.Give)
 }
 
 func MerchantsAvailable(w World, v *Village) int {

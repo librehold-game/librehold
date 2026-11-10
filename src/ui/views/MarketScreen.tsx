@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { balanceAmount, canAcceptTrader, checkTrade, merchantsAvailable, merchantsTotal, surplus, tradeTravelMs, tradeTravelMsByCoords, type TradeBlocker } from '../../engine/market';
+import { balanceAmount, canAcceptTrader, checkTrade, merchantsAvailable, merchantsNeeded, merchantsTotal, surplus, tradeTravelMs, tradeTravelMsByCoords, type TradeBlocker } from '../../engine/market';
 import { distance } from '../../engine/world';
 import { HUMAN_ID, RESOURCES, type GameState, type Resource, type ResourceSet, type TradeOffer } from '../../engine/types';
 import { acceptBlockers, myOffers, normalizeDelivery, offerActions, publicBoard } from '../../engine/trade';
@@ -232,6 +232,14 @@ function OffersPanel({ villageId }: { villageId: string }) {
   const village = g.villages[villageId];
   if (village && RESOURCES.some((r) => form.give[r] * 1 > Math.floor(village.resources[r]))) {
     postBlockers.push(t('market.notEnoughGiven'));
+  }
+  // Posting books the merchants that will carry the give side, so it needs them free just like shipping does. Copies
+  // book their own, since each one a taker picks up is its own haul.
+  if (village) {
+    const need = merchantsNeeded(form.give);
+    const free = merchantsAvailable(g, village);
+    if (need > merchantsTotal(village)) postBlockers.push(t('market.marketTooSmall', { needed: need, total: merchantsTotal(village) }));
+    else if (need > free) postBlockers.push(t('market.merchantsShort', { needed: need, available: free }));
   }
   const mine = groupOffers(g, myOffers(g), villageId);
   // The second column names the village that posts the offer, since the player would just repeat my own name on

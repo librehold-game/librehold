@@ -308,13 +308,10 @@ func maxCopies(w World, v *Village, o *TradeOffer) int {
 		if !HasResources(v.Resources, want) {
 			break
 		}
-		// Mirror what the engine checks for the batch: the seller must have merchants for the whole give side and
-		// the taker for the whole want side, so a batch can be refused for merchants even when one copy fits.
+		// Mirror what the engine checks for the batch: the taker needs merchants for the whole want side, so a batch
+		// can be refused for merchants even when one copy fits. The seller's side is not checked: every post booked
+		// its own merchants when it went up, which is why an accept never waits on a stranger's free pool.
 		if SumResources(want) > 0 && MerchantsNeeded(want) > MerchantsAvailable(w, v) {
-			break
-		}
-		if seller := w.Village(o.OriginID); seller != nil && SumResources(o.Give) > 0 &&
-			MerchantsNeeded(ScaleResources(o.Give, float64(next))) > MerchantsAvailable(w, seller) {
 			break
 		}
 		n = next

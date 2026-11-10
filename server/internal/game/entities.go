@@ -519,6 +519,10 @@ type TradeOffer struct {
 	OriginID string    `json:"originId"`
 	Give     Resources `json:"give"` // what From sends to the taker
 	Want     Resources `json:"want"` // what the taker brings back
+	// Reserved are the seller's merchants set aside for this offer's give side, booked when it was posted so the
+	// board can never hold an offer that fails on the seller's account. Offers posted before this was booked carry
+	// 0 and are valued from Give instead, so an existing world needs no migration.
+	Reserved int `json:"reserved,omitempty"`
 	// MaxDeliveryMs is the longest a merchant may travel to bring the give side to the taker; 0 = unlimited.
 	MaxDeliveryMs int64 `json:"maxDeliveryMs"`
 	ExpiresAt     int64 `json:"expiresAt"` // world ms when it lapses
