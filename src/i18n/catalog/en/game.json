@@ -1333,6 +1333,9 @@
   "movements": {
     "incoming": "incoming",
     "merchantOne": "{m} merchant",
-    "merchantMany": "{m} merchants"
+    "merchantMany": "{m} merchants",
+    "hideAutoFarm": "Hide auto-farm",
+    "autoFarmHidden": "Only the auto-farm is on the road right now, and it is hidden.",
+    "autoFarmBadge": "AF"
   }
 }

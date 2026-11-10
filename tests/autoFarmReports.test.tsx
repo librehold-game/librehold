@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { setLocale } from '../src/i18n/i18n';
+import { setLocale, t } from '../src/i18n/i18n';
 import { reportVillageOf, unreadReports } from '../src/engine/reports';
 import type { GameState, Report, Village } from '../src/engine/types';
 import { useGameStore } from '../src/state/gameStore';
@@ -55,20 +55,20 @@ afterEach(() => {
 });
 
 describe('auto-farm reports', () => {
-  it('the list and the report itself carry the auto-farm tag, other reports do not', () => {
+  it('the list and the report itself carry the auto-farm tag in words, other reports do not', () => {
     render(<ReportsView />);
     expect(rows()).toHaveLength(2);
-    const tagged = rows().filter((r) => r.textContent!.includes('auto-farm'));
+    const tagged = rows().filter((r) => r.textContent!.includes(t('reports.autoFarmTag')));
     expect(tagged).toHaveLength(1);
     fireEvent.click(tagged[0]!);
-    expect(screen.getByRole('heading', { level: 3 }).textContent).toContain('auto-farm');
+    expect(screen.getByRole('heading', { level: 3 }).textContent).toContain(t('reports.autoFarmTag'));
   });
 
   it('the checkbox hides the auto-farm reports and shows them again', () => {
     render(<ReportsView />);
     fireEvent.click(hideBox());
     expect(rows()).toHaveLength(1);
-    expect(screen.queryByText('auto-farm')).toBeNull();
+    expect(screen.queryByText(t('reports.autoFarmTag'))).toBeNull();
     fireEvent.click(hideBox());
     expect(rows()).toHaveLength(2);
   });

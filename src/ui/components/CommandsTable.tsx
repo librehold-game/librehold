@@ -2,6 +2,7 @@ import type { Command, GameState, ResourceSet } from '../../engine/types';
 import { t, useT } from '../../i18n/i18n';
 import { COMMAND_ICON, commandEnds } from '../villageName';
 import { useClock } from '../useClock';
+import { AutoFarmBadge } from './BotTag';
 import { Countdown } from './Countdown';
 import { PixelIcon } from '../pixelIcons';
 import { ResourceList } from './ResourceList';
@@ -27,6 +28,8 @@ export interface CommandRow {
   merchants: number;
   incoming: boolean;
   arrivesAt: number;
+  /** The auto-farm sent this march — or, on the way home, that it came from one. */
+  autoFarm: boolean;
 }
 
 /** Turns commands into table rows, soonest arrival first. `isIncoming` marks a haul another player is bringing. */
@@ -47,6 +50,7 @@ export function commandRows(
       merchants: c.merchants ?? 0,
       incoming: isIncoming(c),
       arrivesAt: c.arrivesAt,
+      autoFarm: !!c.autoFarm,
     }));
 }
 
@@ -71,7 +75,9 @@ export function CommandsTable({ rows }: { rows: readonly CommandRow[] }) {
         {rows.map((r) => (
           <tr key={r.id}>
             <td><PixelIcon name={COMMAND_ICON[r.type]} size={16} label={t(`rally.cmd.${r.type}`)} /></td>
-            <td className="text-[11px]" data-label={t('overview.route')}>{r.ends.from} → {r.ends.to}</td>
+            <td className="text-[11px]" data-label={t('overview.route')}>
+              {r.ends.from} → {r.ends.to}{r.autoFarm && <AutoFarmBadge />}
+            </td>
             <td data-label={t('overview.units')}>
               <span className="inline-flex items-center gap-1.5 flex-wrap">
                 {r.type === 'trade'

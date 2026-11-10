@@ -24,13 +24,18 @@ export interface UiPrefs {
    * lands — without this, folding it would last only until the next march ends.
    */
   movementsCollapsed: boolean;
+  /**
+   * The Movements card leaves out the auto-farm's marches. Remembered for the same reason as the fold: the card
+   * unmounts whenever the last movement lands.
+   */
+  movementsHideAutoFarm: boolean;
 }
 
 const PREFS_KEY = 'lh-ui-prefs';
 
 function defaultPrefs(): UiPrefs {
   const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return { animations: reduced ? 'limited' : 'full', sound: false, showScene: true, lockedOpen: true, movementsCollapsed: false };
+  return { animations: reduced ? 'limited' : 'full', sound: false, showScene: true, lockedOpen: true, movementsCollapsed: false, movementsHideAutoFarm: false };
 }
 
 function loadPrefs(): UiPrefs {

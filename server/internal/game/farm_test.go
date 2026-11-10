@@ -229,6 +229,48 @@ func TestFarmAssistant(t *testing.T) {
 		}
 	})
 
+	t.Run("auto-farm: the way home keeps the mark, so the movement list can tag it too", func(t *testing.T) {
+		w, v := farmSetup(t)
+		startAutoFarm(t, w, v)
+		if game.AutoFarmTick(w, "h1", v.ID) == 0 {
+			t.Fatal("nothing sent")
+		}
+		// Home the raid at the current time rather than letting the whole march run, so the return is still on the road.
+		raid := w.Commands()[0]
+		advanceTouch(t, w, v, raid.ArrivesAt)
+		var back *game.Command
+		for _, c := range w.Commands() {
+			if c.Type == "return" {
+				back = c
+			}
+		}
+		if back == nil {
+			t.Fatal("the raid left no way home")
+		}
+		if !back.AutoFarm || !back.Farm {
+			t.Fatalf("the way home lost its marks: autoFarm %v farm %v", back.AutoFarm, back.Farm)
+		}
+	})
+
+	t.Run("auto-farm: a raid sent by hand and its way home carry no auto-farm mark", func(t *testing.T) {
+		w, v := farmSetup(t)
+		w.TakeActions()
+		x, y := gametest.NearestBarbarianXY(w, v)
+		if _, err := game.SendFarmTemplate(w, "h1", v.ID, "A", x, y); err != nil {
+			t.Fatal(err)
+		}
+		raid := w.Commands()[0]
+		if raid.AutoFarm || !raid.Farm {
+			t.Fatalf("the raid: autoFarm %v farm %v", raid.AutoFarm, raid.Farm)
+		}
+		advanceTouch(t, w, v, raid.ArrivesAt)
+		for _, c := range w.Commands() {
+			if c.Type == "return" && c.AutoFarm {
+				t.Fatal("the way home of a hand-sent raid was marked as an auto-farm's")
+			}
+		}
+	})
+
 	t.Run("a raid sent by hand is not marked", func(t *testing.T) {
 		w, v := farmSetup(t)
 		x, y := gametest.NearestBarbarianXY(w, v)

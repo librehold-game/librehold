@@ -18,7 +18,7 @@ let other: Village;
 
 beforeEach(() => {
   setLocale('en');
-  useUiStore.setState((s) => ({ prefs: { ...s.prefs, movementsCollapsed: false } }));
+  useUiStore.setState((s) => ({ prefs: { ...s.prefs, movementsCollapsed: false, movementsHideAutoFarm: false } }));
   g = newTestGame();
   home = activeVillage(g);
   other = addOwnVillage(g, home.x + 3, home.y + 2, 'Second');
@@ -285,6 +285,75 @@ describe('movements panel and the Overview share one table', () => {
     expect(cell.children).toHaveLength(2);
     expect(cell.textContent).toMatch(/\d+:\d\d:\d\d/);
     expect(cell.textContent).toMatch(/at \d/);
+  });
+});
+
+describe('movements panel auto-farm marks', () => {
+  const rows = (container: HTMLElement) => [...container.querySelectorAll('tbody tr')];
+
+  it('tags an auto-farm march with a short badge, whose tooltip is the wording the reports use', () => {
+    addCommand(g, { type: 'attack', originId: other.id, targetId: home.id, units: { spear: 40 }, autoFarm: true });
+    addCommand(g, { type: 'attack', originId: other.id, targetId: home.id, units: { sword: 5 } });
+    const { container } = show(<MovementsPanel />);
+    expect(screen.getAllByText(t('movements.autoFarmBadge'))).toHaveLength(1);
+    // The badge sits on the route, next to the villages it goes between, and names itself on hover.
+    const routeCells = [...container.querySelectorAll('tbody td[data-label]')].filter((td) => td.getAttribute('data-label') === t('overview.route'));
+    expect(routeCells.filter((td) => td.textContent?.includes(t('movements.autoFarmBadge')))).toHaveLength(1);
+    expect(routeCells[0]!.querySelector(`[title="${t('reports.autoFarmTag')}"]`)).toBeTruthy();
+  });
+
+  it('tags the way home of an auto-farm raid too, which the server carries over', () => {
+    addCommand(g, { type: 'return', originId: home.id, targetId: other.id, units: { spear: 9 }, autoFarm: true, farm: true });
+    show(<MovementsPanel />);
+    expect(screen.getByText(t('movements.autoFarmBadge'))).toBeTruthy();
+  });
+
+  it('leaves a raid the player sent by hand untagged, even though the farm assistant sent it', () => {
+    addCommand(g, { type: 'attack', originId: other.id, targetId: home.id, units: { spear: 40 }, farm: true });
+    const { container } = show(<MovementsPanel />);
+    expect(rows(container)).toHaveLength(1);
+    expect(screen.queryByText(t('movements.autoFarmBadge'))).toBeNull();
+  });
+
+  it('hides the auto-farm marches and brings them back when unticked', () => {
+    addCommand(g, { type: 'attack', originId: other.id, targetId: home.id, units: { spear: 40 }, autoFarm: true });
+    addCommand(g, { type: 'support', originId: other.id, targetId: home.id, units: { sword: 5 } });
+    const { container } = show(<MovementsSection />);
+    expect(rows(container)).toHaveLength(2);
+    const box = screen.getByRole('checkbox', { name: t('movements.hideAutoFarm') });
+    expect((box as HTMLInputElement).checked).toBe(false);
+    fireEvent.click(box);
+    expect(rows(container)).toHaveLength(1);
+    // The only "auto-farm" left on screen is the toggle's own label.
+    expect([...container.querySelectorAll('tbody td')].some((td) => td.textContent === t('movements.autoFarmBadge'))).toBe(false);
+    // The choice is a browser preference, so it outlives the card unmounting with its last movement.
+    expect(useUiStore.getState().prefs.movementsHideAutoFarm).toBe(true);
+    fireEvent.click(box);
+    expect(rows(container)).toHaveLength(2);
+  });
+
+  it('says the auto-farm is hidden rather than showing an empty table', () => {
+    addCommand(g, { type: 'attack', originId: other.id, targetId: home.id, units: { spear: 40 }, autoFarm: true });
+    useUiStore.setState((s) => ({ prefs: { ...s.prefs, movementsHideAutoFarm: true } }));
+    const { container } = show(<MovementsSection />);
+    expect(container.querySelector('table')).toBeNull();
+    expect(container.textContent).toContain(t('movements.autoFarmHidden'));
+    // The toggle stays reachable, so the player can bring the marches back.
+    expect(screen.getByRole('checkbox', { name: t('movements.hideAutoFarm') })).toBeTruthy();
+  });
+
+  it("offers no filter when none of the village's marches came from the auto-farm", () => {
+    addCommand(g, { type: 'attack', originId: other.id, targetId: home.id, units: { spear: 40 } });
+    show(<MovementsSection />);
+    expect(screen.queryByRole('checkbox', { name: t('movements.hideAutoFarm') })).toBeNull();
+  });
+
+  it('does not let another village\'s auto-farm march bring the filter to this one', () => {
+    // `other` is the active village; this march is homed at `home` and so belongs on home's panel.
+    addCommand(g, { type: 'attack', originId: home.id, targetId: other.id, units: { spear: 40 }, autoFarm: true });
+    addCommand(g, { type: 'support', originId: other.id, targetId: home.id, units: { sword: 5 } });
+    show(<MovementsSection />);
+    expect(screen.queryByRole('checkbox', { name: t('movements.hideAutoFarm') })).toBeNull();
   });
 });
 

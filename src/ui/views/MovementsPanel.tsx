@@ -53,7 +53,12 @@ export const MOVEMENTS_PER_PAGE = 8;
  *
  * `scope` narrows it to merchant shipments: the Market screen shows this panel too, where a march is not its business.
  */
-export function MovementsPanel({ scope = 'all', villageIds }: { scope?: MovementScope; villageIds?: readonly string[] }) {
+export function MovementsPanel({ scope = 'all', villageIds, hideAutoFarm }: {
+  scope?: MovementScope;
+  villageIds?: readonly string[];
+  /** Leave the auto-farm's marches off the list; the section's toggle passes its preference in. */
+  hideAutoFarm?: boolean;
+}) {
   useT();
   const activeId = useGameStore((s) => selectActiveVillage(s).id);
   // The panel follows one village in the sidebar and a whole group on the Overview. Both go through `homes`, so there
@@ -70,13 +75,17 @@ export function MovementsPanel({ scope = 'all', villageIds }: { scope?: Movement
   });
   const rows = JSON.parse(json) as Row[];
   if (rows.length === 0) return null;
-  const pages = Math.ceil(rows.length / MOVEMENTS_PER_PAGE);
+  // Hiding the auto-farm can empty a list that the heading still announces, so the panel says why rather than
+  // leaving an empty card — and the toggle above it stays reachable.
+  const visible = hideAutoFarm ? rows.filter((r) => !r.autoFarm) : rows;
+  if (visible.length === 0) return <p className="text-muted italic text-[11px]">{t('movements.autoFarmHidden')}</p>;
+  const pages = Math.ceil(visible.length / MOVEMENTS_PER_PAGE);
   // Switching village (or group) starts at the first page again; otherwise the old page number would point into a
   // list that has nothing to do with what the player is now looking at.
   const page = paging.key === key ? paging.page : 0;
   // Movements leave the list all the time, so the last page can empty out under the player.
   const p = Math.max(0, Math.min(page, pages - 1));
-  const pageRows = rows.slice(p * MOVEMENTS_PER_PAGE, (p + 1) * MOVEMENTS_PER_PAGE);
+  const pageRows = visible.slice(p * MOVEMENTS_PER_PAGE, (p + 1) * MOVEMENTS_PER_PAGE);
   const turn = (to: number) => setPaging({ key, page: to });
   return (
     <>
@@ -95,7 +104,7 @@ export function MovementsPanel({ scope = 'all', villageIds }: { scope?: Movement
 /**
  * The Movements panel plus its heading, or nothing at all when the village has nothing of that kind under way. The
  * heading carries a − / + toggle, as the village side panels do; the choice is a browser preference, so it survives
- * the card unmounting when the last movement lands.
+ * the card unmounting when the last movement lands. The same goes for the auto-farm filter beside it.
  */
 export function MovementsSection({ scope = 'all', heading }: { scope?: MovementScope; heading?: string }) {
   const moving = useGameStore((s) => {
@@ -103,8 +112,16 @@ export function MovementsSection({ scope = 'all', heading }: { scope?: MovementS
     return g.commands.some((c) => isMovementOf(c, new Set([selectActiveVillage(s).id]), new Set(humanVillageIds(g)), scope));
   });
   const collapsed = useUiStore((s) => s.prefs.movementsCollapsed);
+  const hideAutoFarm = useUiStore((s) => s.prefs.movementsHideAutoFarm);
   const setPrefs = useUiStore((s) => s.setPrefs);
   const t = useT();
+  // Only worth offering when there is something for it to hide: the filter sits in the heading, and the player is
+  // looking for the auto-farm's marches among their own.
+  const someAutoFarm = useGameStore((s) => {
+    const g = s.game!;
+    const own = new Set(humanVillageIds(g));
+    return g.commands.some((c) => !!c.autoFarm && isMovementOf(c, new Set([selectActiveVillage(s).id]), own, scope));
+  });
   if (!moving) return null;
   return (
     <div className="mt-3">
@@ -112,8 +129,15 @@ export function MovementsSection({ scope = 'all', heading }: { scope?: MovementS
         title={heading ?? t('village.movements')}
         open={!collapsed}
         onToggle={(open) => setPrefs({ movementsCollapsed: !open })}
+        right={someAutoFarm || hideAutoFarm ? (
+          <label className="inline-flex items-center gap-1 font-body font-normal not-italic text-[11px] cursor-pointer">
+            <input type="checkbox" className="align-middle" checked={hideAutoFarm}
+              onChange={(e) => setPrefs({ movementsHideAutoFarm: e.target.checked })} />
+            {t('movements.hideAutoFarm')}
+          </label>
+        ) : undefined}
       >
-        <div className="p-2"><MovementsPanel scope={scope} /></div>
+        <div className="p-2"><MovementsPanel scope={scope} hideAutoFarm={hideAutoFarm} /></div>
       </SidePanel>
     </div>
   );
