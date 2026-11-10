@@ -26,7 +26,7 @@ beforeEach(() => {
   calls = [];
   routes = {
     'GET /api/v1/worlds/3/state': () => ({ status: 200, body: fixture }),
-    'GET /api/v1/worlds/3/reports?limit=100': () => ({ status: 200, body: [] }),
+    'GET /api/v1/worlds/3/reports?limit=500': () => ({ status: 200, body: [] }),
     'GET /api/v1/worlds/3/news?limit=50': () => ({ status: 200, body: [] }),
   };
   FakeSocket.all = [];
@@ -101,7 +101,7 @@ describe('game store backed by the server', () => {
     calls = [];
     FakeSocket.all[0]!.emit({ type: 'update', topics: ['reports'], serverTime: 0, worldNow: 0 });
     await vi.waitFor(() => expect(calls).toHaveLength(1));
-    expect(calls[0]!.key).toBe('GET /api/v1/worlds/3/reports?limit=100');
+    expect(calls[0]!.key).toBe('GET /api/v1/worlds/3/reports?limit=500');
     const rev = useGameStore.getState().rankingRev;
     FakeSocket.all[0]!.emit({ type: 'update', topics: ['ranking'], serverTime: 0, worldNow: 0 });
     expect(useGameStore.getState().rankingRev).toBe(rev + 1);

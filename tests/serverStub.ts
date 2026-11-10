@@ -52,7 +52,7 @@ export function stubServer(g: GameState, opts: StubOptions = {}): string[] {
     [`${base}/state`]: () => ({ ...stateFixture(g, me, worldId), paused: !!opts.paused, ...(opts.instant ? { instant: opts.instant } : {}),
       ...(opts.hosted ? { hosted: opts.hosted } : {}),
       ...(opts.gameNumber ? { gameNumber: opts.gameNumber } : {}) }),
-    [`${base}/reports?limit=100`]: () => [...g.reports].reverse(),
+    [`${base}/reports?limit=500`]: () => [...g.reports].reverse(),
     [`${base}/news?limit=50`]: () => [...g.news].reverse(),
     [`${base}/ranking?tab=points`]: playerRows,
     [`${base}/ranking?tab=villages`]: playerRows,

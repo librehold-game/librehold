@@ -8,6 +8,7 @@ import type { UnitCounts } from '../engine/commands';
 import type { FarmTargetList } from '../engine/farm';
 import { humanVillageIds } from '../engine/players';
 import { accrue } from '../engine/resources';
+import { COMBAT_BALANCE } from '../data/units.data';
 import { settleRecruitQueues } from '../engine/units';
 import type {
   BuildingId, BuildTemplate, FarmFilters, GameState, Report, Resource, ResourceSet, UnitId, Village, VillageGroup,
@@ -194,6 +195,9 @@ function coalesced(load: () => Promise<void>): () => Promise<void> {
   };
 }
 
+/** The whole inbox: the server keeps a player's newest COMBAT_BALANCE.maxReports reports and sends that many at once. */
+const REPORTS_PATH = `/reports?limit=${COMBAT_BALANCE.maxReports}`;
+
 function worldPath(path: string): string {
   return `/api/v1/worlds/${server.state?.worldId ?? useGameStore.getState().worldId}${path}`;
 }
@@ -243,7 +247,7 @@ export const useGameStore = create<GameStore>()(
 
     const fetchState = coalesced(async () => applyState(await api.get<PlayerState>(worldPath('/state'))));
     const fetchReports = coalesced(async () => {
-      server.reports = await api.get<Report[]>(worldPath('/reports?limit=100'));
+      server.reports = await api.get<Report[]>(worldPath(REPORTS_PATH));
       rebuild();
     });
     const fetchNews = coalesced(async () => {
@@ -336,7 +340,7 @@ export const useGameStore = create<GameStore>()(
           try {
             const [st, reports, news] = await Promise.all([
               api.get<PlayerState>(worldPath('/state')),
-              api.get<Report[]>(worldPath('/reports?limit=100')),
+              api.get<Report[]>(worldPath(REPORTS_PATH)),
               api.get<NewsEntry[]>(worldPath('/news?limit=50')),
             ]);
             server.reports = reports;
