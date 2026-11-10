@@ -73,6 +73,10 @@ export function CrowdCanvas({ armies, toPx, th, width, height, seed, isVillage, 
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
+    // Kept from the moment the canvas is mounted: React takes it out of the map before the cleanup below runs, so by
+    // then it no longer has a parent — but the host it was taken from still holds the army markers to hand the icons
+    // back to, which is what makes them reappear when the crowds go away again (zooming out).
+    const host = canvas.parentElement;
     const draw = () => {
       const { armies: as, toPx: px, th: h, width: w, height: ht, seed: sd, isVillage: iv, mode: m } = state.current;
       const ctx = canvas.getContext('2d');
@@ -128,7 +132,6 @@ export function CrowdCanvas({ armies, toPx, th, width, height, seed, isVillage, 
       }
       canvas.setAttribute('data-figures', String(figures));
       canvas.setAttribute('data-boats', String(boats));
-      const host = canvas.parentElement;
       for (const marker of host?.querySelectorAll<SVGGElement>('[data-army] [data-marker]') ?? []) {
         const id = marker.closest('[data-army]')!.getAttribute('data-army')!;
         const on = inCrowd.has(id);
@@ -151,7 +154,7 @@ export function CrowdCanvas({ armies, toPx, th, width, height, seed, isVillage, 
     return () => {
       unsubscribe();
       if (raf) cancelAnimationFrame(raf);
-      for (const marker of canvas.parentElement?.querySelectorAll<SVGGElement>('[data-in-crowd]') ?? []) {
+      for (const marker of host?.querySelectorAll<SVGGElement>('[data-in-crowd]') ?? []) {
         marker.removeAttribute('data-in-crowd');
         marker.querySelector('[data-icon]')?.setAttribute('display', 'inline');
         marker.querySelector('[data-counts]')?.setAttribute('display', 'none');

@@ -161,6 +161,24 @@ describe('marching crowds', () => {
     expect(crowd(again.container)).toBeNull();
   });
 
+  it('armies get their icons back when the crowds go away again', () => {
+    setup((g, home) => addCmd(g, { id: 'own', type: 'attack', originId: home.id, targetId: makeBotVillage(g).id, units: { axe: 50 } }));
+    const { container } = renderZoomed();
+    const marker = () => container.querySelector<HTMLElement>('[data-army="own"] [data-marker]')!;
+    const icon = () => container.querySelector<HTMLElement>('[data-army="own"] [data-icon]')!;
+    // Zoomed in far enough that the crowd is drawn, so the plain icon steps aside for it.
+    expect(crowd(container)).not.toBeNull();
+    expect(marker().hasAttribute('data-in-crowd')).toBe(true);
+    expect(icon().getAttribute('display')).toBe('none');
+    // Zoomed back out the crowd is no longer drawn — the icon has to come back, or the army vanishes altogether.
+    const out = screen.getByRole('button', { name: '－' });
+    fireEvent.click(out);
+    fireEvent.click(out);
+    expect(crowd(container)).toBeNull();
+    expect(marker().hasAttribute('data-in-crowd')).toBe(false);
+    expect(icon().getAttribute('display')).not.toBe('none');
+  });
+
   it('crowdLayout puts every figure behind the head in rows of up to six, hetmans in the middle', () => {
     const spots = crowdLayout([{ unit: 'axe', figures: 10 }, { unit: 'noble', figures: 1 }, { unit: 'lightCav', figures: 10 }], { dx: 1, dy: 0 }, 10);
     expect(spots).toHaveLength(21);
