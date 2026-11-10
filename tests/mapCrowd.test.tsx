@@ -7,6 +7,9 @@ import { useUiStore } from '../src/state/uiStore';
 import { BIOME, tileBiome } from '../src/ui/map/biomes';
 import { crowdLayout } from '../src/ui/map/crowdLayout';
 import { groundAt } from '../src/ui/map/armies';
+import { CrowdCanvas } from '../src/ui/map/CrowdCanvas';
+import type { ArmyClock } from '../src/ui/map/armyClock';
+import type { MapArmy } from '../src/ui/map/armies';
 import type { Command, GameState, Village } from '../src/engine/types';
 import { activeVillage, makeBotVillage, newTestGame } from './helpers';
 
@@ -95,15 +98,30 @@ describe('marching crowds', () => {
     expect(crowd(container)!.getAttribute('data-figures')).toBe('0');
   });
 
-  it('crowd budget leaves extra armies as icons', () => {
+  it('six armies share the crowd budget instead of the far ones dropping to icons', () => {
     setup((g, home) => {
       const bot = makeBotVillage(g);
-      for (let i = 0; i < 5; i++) addCmd(g, { id: `own${i}`, type: 'attack', originId: home.id, targetId: bot.id, units: { axe: 5000 } });
+      for (let i = 0; i < 6; i++) addCmd(g, { id: `own${i}`, type: 'attack', originId: home.id, targetId: bot.id, units: { axe: 5000 } });
     });
     const { container } = renderZoomed();
+    const figures = Number(crowd(container)!.getAttribute('data-figures'));
+    expect(figures).toBeLessThanOrEqual(600);
+    const markers = [...container.querySelectorAll('[data-army] [data-marker]')];
+    expect(markers).toHaveLength(6);
+    // Six crowds of a hundred figures each, not six of a hundred and forty-seven only for those nearest the middle.
+    expect(markers.every((m) => m.hasAttribute('data-in-crowd'))).toBe(true);
+    expect(figures).toBe(6 * 100);
+  });
+
+  it('past the budget a crowd still left over keeps its icon', () => {
+    setup((g, home) => {
+      const bot = makeBotVillage(g);
+      for (let i = 0; i < 20; i++) addCmd(g, { id: `own${i}`, type: 'attack', originId: home.id, targetId: bot.id, units: { axe: 5000 } });
+    });
+    const { container } = renderZoomed();
+    // Every crowd is cut to its floor, so the last ones still cannot be drawn and stay as markers.
     expect(Number(crowd(container)!.getAttribute('data-figures'))).toBeLessThanOrEqual(600);
     const markers = [...container.querySelectorAll('[data-army] [data-marker]')];
-    expect(markers).toHaveLength(5);
     expect(markers.some((m) => !m.hasAttribute('data-in-crowd'))).toBe(true);
     expect(markers.some((m) => m.hasAttribute('data-in-crowd'))).toBe(true);
   });
@@ -155,5 +173,53 @@ describe('marching crowds', () => {
     expect(noble).toBeGreaterThan(0);
     expect(noble).toBeLessThan(order.length - 1);
     expect(order.slice(0, noble).every((u) => u === order[0])).toBe(true);
+  });
+});
+
+describe('the crowds the window shows', () => {
+  const W = 795, H = 494, TW = 53, TH = 38;
+  const clockAt = (t: number): ArmyClock => ({ now: () => t, subscribe: () => () => {} });
+
+  /** An army mid-march whose head sits on tile (`x`, `y`), as a crowd of `units`. */
+  const marching = (id: string, x: number, y: number): MapArmy => ({
+    id, kind: 'ownAttack', originId: 'a', targetId: 'b',
+    from: { x: x - 2, y }, to: { x: x + 2, y }, departedAt: 0, arrivesAt: 1000, units: { axe: 50 },
+  });
+
+  /** The figures and boat hulls drawn for these armies in a `width` × `height` window. */
+  function drawn(armies: MapArmy[], width = W, height = H): number {
+    const { container } = render(
+      <CrowdCanvas
+        armies={armies} toPx={(x, y) => [x * TW, y * TH]} tw={TW} th={TH} width={width} height={height}
+        seed={1} isVillage={() => false} mode="full" clock={clockAt(500)}
+      />,
+    );
+    const c = crowd(container)!;
+    const n = Number(c.getAttribute('data-figures')) + Number(c.getAttribute('data-boats'));
+    cleanup();
+    return n;
+  }
+
+  /** Enough armies that their crowds together would overrun the on-screen figure budget. */
+  const many = (at: (i: number) => [number, number]): MapArmy[] =>
+    Array.from({ length: 15 }, (_, i) => marching(`a${i}`, ...at(i)));
+
+  it('draws a crowd at the window edge even when the middle is crowded', () => {
+    // Fourteen armies bunched in the middle, one away at the left edge.
+    const armies = [...many((i) => [7 + (i % 3), 6 + Math.floor(i / 3)]), marching('edge', 1, 6)];
+    // The budget is spread over every crowd in view, so the one at the edge is drawn too.
+    expect(drawn(armies)).toBeGreaterThan(0);
+    const withoutEdge = drawn(armies.slice(0, 14));
+    const withEdge = drawn(armies);
+    // The edge crowd adds its own figures rather than being squeezed out by the ones nearer the middle.
+    expect(withEdge).toBeGreaterThan(withoutEdge);
+  });
+
+  it('growing the window shows more of the map, not the same few crowds drawn bigger', () => {
+    // An army just past the right edge of the smaller window, and one past the edge of the grown one.
+    expect(drawn([marching('near', 16, 6)], W, H)).toBeGreaterThan(0);
+    expect(drawn([marching('far', 28, 6)], W, H)).toBe(0);
+    // The same army the smaller window cannot reach is in view once the window is dragged wider.
+    expect(drawn([marching('far', 28, 6)], W * 2, H)).toBeGreaterThan(0);
   });
 });

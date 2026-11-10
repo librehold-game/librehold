@@ -24,7 +24,28 @@ export interface MapArmy {
   units: Partial<Record<UnitId, number>> | null;
 }
 
-export const CROWD = { maxPerArmy: 240, maxOnScreen: 600, genericFigures: 8 } as const;
+export const CROWD = { maxPerArmy: 240, maxOnScreen: 600, genericFigures: 8, minPerArmy: 40, figureSpacing: 17, crowdHeight: 125 } as const;
+
+/**
+ * How far a crowd is seen at its nearest point. One crowd is figures laid out behind its head at a fixed footing, so
+ * this is the crowd's own size, not a share of the window; the window only ever grows what else may come into view.
+ */
+const CROWD_REACH = 180;
+
+/** The figure count at a given zoom; the crowd's size on screen follows the tiles, so it grows with them. */
+export function crowdSpacing(th: number): number {
+  return CROWD.figureSpacing * (th / CROWD.crowdHeight);
+}
+
+/** Far enough outside the window that the crowd edge and the return badge beside it are still seen. */
+export function crowdReach(th: number): number {
+  return CROWD_REACH + crowdSpacing(th);
+}
+
+/** One army's share of the on-screen figure budget: the crowds are spread over the window, never spent on the middle. */
+export function crowdShare(armies: number): number {
+  return Math.max(CROWD.minPerArmy, Math.round(CROWD.maxOnScreen / Math.max(1, armies)));
+}
 
 export const FOREIGN_KINDS: ReadonlySet<ArmyKind> = new Set(['incomingAttack', 'incomingSupport', 'threat', 'passingAttack', 'passingSupport', 'passingReturn']);
 

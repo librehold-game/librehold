@@ -3,7 +3,7 @@ import type { AnimationMode } from '../../state/uiStore';
 import { pixelIcon } from '../pixelIcons';
 import { useDocumentHidden } from '../useDocumentHidden';
 import { facing } from '../scene/pixel/path';
-import { CROWD, FOREIGN_KINDS, TORCH_KINDS, armyPosition, crowdOf, groundAt, leadUnit, type MapArmy } from './armies';
+import { CROWD, FOREIGN_KINDS, TORCH_KINDS, armyPosition, crowdOf, crowdReach, crowdShare, crowdSpacing, groundAt, leadUnit, type MapArmy } from './armies';
 import { armySprite, boatSprite, type Walk } from './armySprites';
 import { crowdLayout, type CrowdUnit } from './crowdLayout';
 import type { ArmyClock } from './armyClock';
@@ -78,8 +78,8 @@ export function CrowdCanvas({ armies, toPx, th, width, height, seed, isVillage, 
       const ctx = canvas.getContext('2d');
       const now = clock.now();
       const frame = m === 'full' ? Math.floor((typeof performance === 'undefined' ? Date.now() : performance.now()) / FRAME_MS) : 0;
-      const scale = h / 125;
-      const spacing = 17 * scale;
+      const scale = h / CROWD.crowdHeight;
+      const spacing = crowdSpacing(h);
       if (ctx) {
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, w, ht);
@@ -88,14 +88,18 @@ export function CrowdCanvas({ armies, toPx, th, width, height, seed, isVillage, 
       const placed = as.map((a) => {
         const pos = armyPosition(a, now);
         const [x, y] = px(pos.x, pos.y);
-        return { a, pos, x, y, d: Math.hypot(x - w / 2, y - ht / 2) };
-      }).filter((p) => p.x > -w / 2 && p.x < w * 1.5 && p.y > -ht / 2 && p.y < ht * 1.5).sort((p, q) => p.d - q.d);
+        return { a, pos, x, y };
+      });
+      const reach = crowdReach(h);
+      // The window sees the armies inside it and as far again beyond its border, so growing the map shows more of them
+      // rather than the same few drawn larger. Only the figures themselves can shrink, once the budget runs out.
+      const shown = placed.filter((p) => p.x >= -reach && p.x <= w + reach && p.y >= -reach && p.y <= ht + reach);
       let figures = 0, boats = 0, budget: number = CROWD.maxOnScreen;
       const inCrowd = new Set<string>();
       const labelled = new Set<string>();
-      for (const p of placed) {
+      for (const p of shown) {
         if (p.a.kind === 'trade') continue;
-        const crowd = crowdFor(p.a);
+        const crowd = crowdFor(p.a, Math.min(CROWD.maxPerArmy, crowdShare(shown.length)));
         const n = crowd.reduce((s, c) => s + c.figures, 0);
         if (n === 0 || n > budget) continue;
         budget -= n;
