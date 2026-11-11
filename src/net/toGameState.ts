@@ -58,5 +58,6 @@ export function toGameState(s: PlayerState, reports: Report[], news: (NewsItem |
     clock: { originLocalMs: s.clockOriginLocalMs },
     scheduled: s.scheduled.map((x) => ({ ...x, ownerId: toClientId(x.ownerId, me) })),
     humanAggressorUntil: s.human.aggressorUntil,
+    supportAbroad: s.supportAbroad ?? {},
   };
 }

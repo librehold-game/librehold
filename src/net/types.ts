@@ -101,6 +101,8 @@ export interface PlayerState {
   unreadReports: number;
   instant?: InstantView;
   hosted?: HostedView;
+  /** By own village: its units stationed as support in other players' villages (absent when there are none). */
+  supportAbroad?: Record<string, Partial<Record<UnitId, number>>>;
 }
 
 export interface MapTile {

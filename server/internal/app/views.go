@@ -32,6 +32,9 @@ type PlayerState struct {
 	UnreadReports int                            `json:"unreadReports"`
 	Instant       *InstantView                   `json:"instant,omitempty"`
 	Hosted        *HostedView                    `json:"hosted,omitempty"`
+	// SupportAbroad is, for each of the player's villages, its units stationed as support in other players' villages,
+	// which the browser can't see in their SupportFrom.
+	SupportAbroad map[string]game.UnitCounts `json:"supportAbroad,omitempty"`
 }
 
 // InstantView is a short world's clock as its players see it, in world time.
@@ -217,6 +220,19 @@ func (s *Service) playerState(w WorldTx, me game.PlayerID) *PlayerState {
 					st.Commands = append(st.Commands, ownCommand(c))
 					mine = append(mine, c)
 				}
+			}
+			for _, host := range w.SupportHosts(id) {
+				if host.OwnerID == own {
+					continue
+				}
+				if st.SupportAbroad == nil {
+					st.SupportAbroad = map[string]game.UnitCounts{}
+				}
+				sum := st.SupportAbroad[id]
+				for u, n := range host.SupportFrom[id] {
+					sum[u] += n
+				}
+				st.SupportAbroad[id] = sum
 			}
 		}
 		for _, c := range game.LooseArmies(w, me) {

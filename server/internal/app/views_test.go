@@ -169,6 +169,27 @@ func TestSupportVisibleToHost(t *testing.T) {
 	}
 }
 
+// Support stationed with another player is in no village the sender's browser has, so the state carries it.
+func TestStateCarriesSupportInOtherPlayersVillages(t *testing.T) {
+	d := newDuel(t)
+	support := d.send(t, ala, d.v1, d.v2, "support", game.UnitCounts{game.USpear: 4})
+	if st := d.state(t, ala); len(st.SupportAbroad) != 0 {
+		t.Fatalf("support on its way is a command, not support abroad: %v", st.SupportAbroad)
+	}
+	d.clock.Set(accountsStart + support.ArrivesAt + 1)
+	st := d.state(t, ala)
+	if len(st.SupportAbroad) != 1 || st.SupportAbroad[d.v1] != (game.UnitCounts{game.USpear: 4}) {
+		t.Fatalf("support abroad %v", st.SupportAbroad)
+	}
+	raw, err := json.Marshal(d.state(t, bartek))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(raw), `"supportAbroad"`) {
+		t.Fatal("the host's state lists the support as its own support abroad")
+	}
+}
+
 func TestOnlyTheSenderLearnsOfTheAutoFarm(t *testing.T) {
 	d := newDuel(t)
 	var raid *game.Command

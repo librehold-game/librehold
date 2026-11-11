@@ -516,6 +516,11 @@ export interface GameState {
   scheduled: ScheduledSend[];
   /** Until when the human is seen as an aggressor (attacked active bots) — for "peaceful — reputation". */
   humanAggressorUntil: number;
+  /**
+   * By own village: its units stationed as support in other players' villages. Those villages aren't in `villages`,
+   * so the server counts them.
+   */
+  supportAbroad: Record<string, Partial<Record<UnitId, number>>>;
 }
 
 export const MS_PER_SECOND = 1000;

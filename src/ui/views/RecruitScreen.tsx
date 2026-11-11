@@ -6,6 +6,7 @@ import { UNITS } from '../../data/units.data';
 import {
   checkRecruit, maxRecruitable, unitsForBuilding, type RecruitBlocker,
 } from '../../engine/units';
+import { unitsAwayParts } from '../../engine/commands';
 import type { BuildingId, RecruitBuilding, UnitId } from '../../engine/types';
 import { selectActiveVillage, useGameStore, type GameStore } from '../../state/gameStore';
 import { selectNow } from '../../state/selectors';
@@ -31,6 +32,21 @@ export function blockerText(b: RecruitBlocker): string {
   }
 }
 
+/** Units in the village out of all the village's units, and where the rest are when some are away. */
+function TroopCount({ present, moving, supporting }: { present: number; moving: number; supporting: number }) {
+  const away = [
+    moving > 0 && t('recruit.onTheMove', { n: formatNumber(moving) }),
+    supporting > 0 && t('recruit.supporting', { n: formatNumber(supporting) }),
+  ].filter(Boolean);
+  return (
+    <div>
+      <span className="font-semibold">{formatNumber(present)}</span>
+      <span className="text-muted"> / {formatNumber(present + moving + supporting)}</span>
+      {away.length > 0 && <div className="text-[11px] text-muted">{away.join(' · ')}</div>}
+    </div>
+  );
+}
+
 function UnitRow({ unit }: { unit: UnitId }) {
   const [count, setCount] = useState(1);
   const villageId = useGameStore((s) => selectActiveVillage(s).id);
@@ -41,17 +57,20 @@ function UnitRow({ unit }: { unit: UnitId }) {
     if (!s.game) return '';
     const v = selectActiveVillage(s);
     const check = checkRecruit(s.game, v, unit, Math.max(1, count));
+    const away = unitsAwayParts(s.game, v.id);
     return JSON.stringify({
       perUnitMs: check.perUnitMs,
       blockers: check.blockers,
       max: maxRecruitable(v, unit, s.game),
       present: v.units[unit],
+      moving: away.moving[unit],
+      supporting: away.supporting[unit],
       have: { wood: Math.floor(v.resources.wood), clay: Math.floor(v.resources.clay), iron: Math.floor(v.resources.iron) },
     });
   });
   if (!json) return null;
   const m = JSON.parse(json) as {
-    perUnitMs: number; blockers: RecruitBlocker[]; max: number; present: number;
+    perUnitMs: number; blockers: RecruitBlocker[]; max: number; present: number; moving: number; supporting: number;
     have: { wood: number; clay: number; iron: number };
   };
   const def = UNITS[unit];
@@ -71,7 +90,7 @@ function UnitRow({ unit }: { unit: UnitId }) {
       <td data-label={t('recruit.colCost')}><CostRow cost={def.cost} have={m.have} /></td>
       <td className="tabular-nums" data-label={t('recruit.colPopulation')}>{def.pop}</td>
       <td className="tabular-nums" data-label={t('recruit.colTimeEach')}>{formatDuration(m.perUnitMs)}</td>
-      <td className="tabular-nums" data-label={t('recruit.colInVillage')}>{formatNumber(m.present)}</td>
+      <td className="tabular-nums" data-label={t('recruit.colInVillage')}><TroopCount present={m.present} moving={m.moving} supporting={m.supporting} /></td>
       <td className="whitespace-nowrap stack-inline">
         {locked ? (
           <span className="text-[11px]">
@@ -142,7 +161,7 @@ export function RecruitScreen({ building }: { building: RecruitBuilding }) {
     <div>
       <table className="table-game table-stack">
         <thead>
-          <tr><th>{t('recruit.colUnit')}</th><th>{t('recruit.colCost')}</th><th>{t('recruit.colPop')}</th><th>{t('recruit.colTimeEach')}</th><th>{t('recruit.colInVillage')}</th><th>{t('recruit.colRecruitment')}</th></tr>
+          <tr><th>{t('recruit.colUnit')}</th><th>{t('recruit.colCost')}</th><th>{t('recruit.colPop')}</th><th>{t('recruit.colTimeEach')}</th><th title={t('recruit.colInVillageHint')}>{t('recruit.colInVillage')}</th><th>{t('recruit.colRecruitment')}</th></tr>
         </thead>
         <tbody>{units.map((u) => <UnitRow key={u} unit={u} />)}</tbody>
       </table>
