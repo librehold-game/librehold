@@ -17,6 +17,8 @@
       "difficulty": "Bot difficulty",
       "botStance": "Bots towards players",
       "fieldBattles": "Armies can meet on the road",
+      "buildPlans": "Build plans are on",
+      "autoFarm": "Auto-farming is on",
       "sightRadius": "Sight of passing armies (tiles, 0 = none)",
       "protectionMin": "Beginner protection (minutes)",
       "domination": "Win early by holding",

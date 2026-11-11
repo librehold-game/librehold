@@ -101,8 +101,12 @@ and marches in progress finish at their own times.
 | Human / bot multipliers | ×1 (resources, recruitment, building) | 0.25–10 | editable |
 | Battle losses, difficulty, bots towards humans | normal, normal, normal | normal/reduced; easy–brutal; four stances | editable |
 | Field battles | on | on/off | editable |
+| Build plans, auto-farming | on | on/off | editable |
 | Sight range (passing armies) | 1 tile | 1–10 | at creation only |
 
+- Build plans and auto-farming are switches over the humans of a world; bots keep playing as they do. Switching one
+  off clears what the players have, it does not pause it: their build plans are dropped and stop feeding, and their
+  auto-farming is turned off. A player sets it up again once the switch is back on, so nothing starts on its own.
 - With "gradually", bots join at the edge of the occupied area with a basic village — a message goes to Rumours.
 - Protection: a protected player cannot be attacked or scouted; a protected player can only attack barbarians.
 - Last village "protected": nobles lower loyalty to 1 at most. "Can be lost": the player is out, and a human starts

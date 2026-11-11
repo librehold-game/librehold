@@ -19,6 +19,10 @@ export interface WorldConfig {
   difficulty: 'easy' | 'normal' | 'hard' | 'brutal';
   botStance: 'peacefulRetaliate' | 'peacefulReputation' | 'normal' | 'allAgainstHumans';
   noFieldBattles?: boolean;
+  /** Build plans are off for the humans of this world. */
+  noBuildPlans?: boolean;
+  /** The auto-farm is off for the humans of this world. */
+  noAutoFarm?: boolean;
   sightRadius?: number;
 }
 
@@ -54,6 +58,8 @@ export const FIELDS: FieldSpec[] = [
   { key: 'botStance', creationOnly: false, choices: ['peacefulRetaliate', 'peacefulReputation', 'normal', 'allAgainstHumans'] },
   { key: 'battleLosses', creationOnly: false, choices: ['normal', 'reduced'] },
   { key: 'noFieldBattles', creationOnly: false, flag: true },
+  { key: 'noBuildPlans', creationOnly: false, flag: true },
+  { key: 'noAutoFarm', creationOnly: false, flag: true },
   // 0 is "no sight", a separate switch in the hosted form.
   { key: 'sightRadius', creationOnly: true, min: 1, max: L.sightRadius.max, step: 1 },
   { key: 'humanModifiers', creationOnly: false, min: L.modifier.min, max: L.modifier.max, step: 0.05 },

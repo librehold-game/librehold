@@ -115,6 +115,8 @@
       "humanModifiers": "Mnożniki ludzi",
       "botModifiers": "Mnożniki botów",
       "noFieldBattles": "Bez bitew w polu",
+      "noBuildPlans": "Bez planów budowy",
+      "noAutoFarm": "Bez auto-farmy",
       "sightRadius": "Zasięg wzroku (pola)"
     },
     "choice": {

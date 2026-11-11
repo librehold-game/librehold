@@ -39,6 +39,27 @@ describe('farm assistant', () => {
     expect(await screen.findByText(/could not be refreshed/)).toBeTruthy();
   });
 
+  it('shows an unlocked auto-farming toggle while it is allowed for the world', async () => {
+    await boot(
+      () => ({ status: 200, body: { targets: [], hidden: {} } }),
+      (g) => { g.farmAssistant.autoFarmUnlocked = true; },
+    );
+    render(<FarmAssistantView />);
+    expect(await screen.findByText('Auto-farming')).toBeTruthy();
+  });
+
+  it('hides the auto-farming toggle when the host has switched it off for the world', async () => {
+    await boot(
+      () => ({ status: 200, body: { targets: [], hidden: {} } }),
+      (g) => { g.config.noAutoFarm = true; g.farmAssistant.autoFarmUnlocked = true; },
+    );
+    render(<FarmAssistantView />);
+    // The view renders normally with no matching targets.
+    expect(await screen.findByText(/No targets match the filter/)).toBeTruthy();
+    // But the auto-farming toggle is absent.
+    expect(screen.queryByText('Auto-farming')).toBeNull();
+  });
+
   it("yesterday's counters read zero", async () => {
     await boot(() => ({ status: 200, body: { targets: [], hidden: {} } }), (g) => {
       const yesterday = localDayIndex(g, g.now) - 1;

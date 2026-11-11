@@ -8,6 +8,7 @@ import { selectActiveVillage, useGameStore } from '../../state/gameStore';
 /** Build templates: loading a plan into a village + a simple editor. */
 export function BuildPlanPanel() {
   const villageId = useGameStore((s) => selectActiveVillage(s).id);
+  const plansOff = useGameStore((s) => !!s.game!.config.noBuildPlans);
   const plan = useGameStore((s) => (selectActiveVillage(s).buildPlan ?? []).join(','));
   const templates = useGameStore((s) => JSON.stringify(s.game!.buildTemplates));
   const apply = useGameStore((s) => s.applyBuildTemplate);
@@ -21,6 +22,8 @@ export function BuildPlanPanel() {
   const [draftSteps, setDraftSteps] = useState<BuildingId[]>([]);
   const steps = plan ? (plan.split(',') as BuildingId[]) : [];
   const t = useT();
+
+  if (plansOff) return null; // the host switched build plans off for this world: no header, no controls
 
   return (
     <div className="mt-4 text-[12px]">

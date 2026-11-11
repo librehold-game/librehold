@@ -43,6 +43,8 @@ type HostForm struct {
 	Difficulty     game.Difficulty `json:"difficulty"`
 	BotStance      game.BotStance  `json:"botStance"`
 	FieldBattles   *bool           `json:"fieldBattles"`
+	BuildPlans     *bool           `json:"buildPlans"`
+	AutoFarm       *bool           `json:"autoFarm"`
 	SightRadius    *int            `json:"sightRadius"`
 	ProtectionMin  *int            `json:"protectionMin"`
 	DominationPct  *int            `json:"dominationPct"` // 0 = off
@@ -133,6 +135,8 @@ func PlayerWorldConfig(f HostForm, s HostSettings) game.WorldConfig {
 		cfg.BotStance = f.BotStance
 	}
 	cfg.NoFieldBattles = f.FieldBattles != nil && !*f.FieldBattles
+	cfg.NoBuildPlans = f.BuildPlans != nil && !*f.BuildPlans
+	cfg.NoAutoFarm = f.AutoFarm != nil && !*f.AutoFarm
 	sight := clampInt(orDefault(f.SightRadius, 5), int(game.WorldLimits.SightRadius.Min), int(game.WorldLimits.SightRadius.Max))
 	cfg.SightRadius, cfg.NoSight = float64(sight), sight == 0
 	cfg.BeginnerProtectionDays = float64(clampInt(orDefault(f.ProtectionMin, 10), 0, 15)) / 1440
