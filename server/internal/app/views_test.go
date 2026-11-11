@@ -431,6 +431,34 @@ func TestViewsHaveNoNullsForFreshPlayer(t *testing.T) {
 	}
 }
 
+// The inbox header counts against CombatBalance.MaxReports, so one call must be able to return every report kept.
+func TestReportsReturnsTheWholeInbox(t *testing.T) {
+	d := newDuel(t)
+	ctx := context.Background()
+	kept := game.CombatBalance.MaxReports
+	err := d.worlds.Run(ctx, d.world, func(w app.WorldTx) error {
+		for i := range kept + 10 {
+			w.AddReport("h1", &game.Report{Type: "attack", Time: int64(i + 1)})
+		}
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, limit := range []int{0, kept, kept + 1} {
+		got, err := d.svc.Reports(ctx, ala, d.world, 0, limit)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(got) != kept {
+			t.Fatalf("limit %d: %d reports, want %d", limit, len(got), kept)
+		}
+	}
+	if got, _ := d.svc.Reports(ctx, ala, d.world, 0, 20); len(got) != 20 {
+		t.Fatalf("limit 20: %d reports", len(got))
+	}
+}
+
 var unknownFarmFields = []string{"lastAttackAt", "lastHaul", "lastHaulCapacity", "lastLosses", "wall", "defenders"}
 
 func nullPaths(v any, path string) []string {

@@ -8,6 +8,7 @@ import type { UnitCounts } from '../engine/commands';
 import type { FarmTargetList } from '../engine/farm';
 import { humanVillageIds } from '../engine/players';
 import { accrue } from '../engine/resources';
+import { COMBAT_BALANCE } from '../data/units.data';
 import { settleRecruitQueues } from '../engine/units';
 import type {
   BuildingId, BuildTemplate, FarmFilters, GameState, Report, Resource, ResourceSet, UnitId, Village, VillageGroup,
@@ -194,6 +195,36 @@ function coalesced(load: () => Promise<void>): () => Promise<void> {
   };
 }
 
+/** The whole inbox: the server keeps a player's newest COMBAT_BALANCE.maxReports reports and sends that many at once. */
+const REPORTS_PATH = `/reports?limit=${COMBAT_BALANCE.maxReports}`;
+
+/** A new report only changes the top of the inbox, so the refresh after one reads just this many. */
+const NEWEST_REPORTS = 100;
+
+/**
+ * The server's report order: a longer id is newer, and ids of one length compare as text. Times can't order
+ * reports, since many share one (an auto-farm burst lands in a single tick).
+ */
+function compareReportIds(a: string, b: string): number {
+  return a.length - b.length || (a < b ? -1 : a > b ? 1 : 0);
+}
+
+/**
+ * Merges the newest page of reports (newest first) into the ones already held. A page shorter than `pageSize` is the
+ * whole inbox. A full page keeps the held reports older than its last one and drops the newer ones it no longer has,
+ * as they were deleted. Null when a full page doesn't hold the newest held report: more may have arrived than one
+ * page holds, so the whole inbox has to be read again.
+ */
+export function mergeNewestReports(held: Report[], newest: Report[], pageSize: number): Report[] | null {
+  if (newest.length < pageSize) return newest;
+  const inPage = new Set(newest.map((r) => r.id));
+  const newestHeld = held[0];
+  const oldest = newest.at(-1);
+  if (!oldest || !newestHeld || !inPage.has(newestHeld.id)) return null;
+  const older = held.filter((r) => compareReportIds(r.id, oldest.id) < 0);
+  return [...newest, ...older].slice(0, COMBAT_BALANCE.maxReports);
+}
+
 function worldPath(path: string): string {
   return `/api/v1/worlds/${server.state?.worldId ?? useGameStore.getState().worldId}${path}`;
 }
@@ -242,10 +273,25 @@ export const useGameStore = create<GameStore>()(
     };
 
     const fetchState = coalesced(async () => applyState(await api.get<PlayerState>(worldPath('/state'))));
-    const fetchReports = coalesced(async () => {
-      server.reports = await api.get<Report[]>(worldPath('/reports?limit=100'));
+    let wholeInbox = false;
+    const loadReports = coalesced(async () => {
+      const whole = wholeInbox;
+      wholeInbox = false;
+      try {
+        const newest = whole ? null : await api.get<Report[]>(worldPath(`/reports?limit=${NEWEST_REPORTS}`));
+        server.reports = (newest && mergeNewestReports(server.reports, newest, NEWEST_REPORTS))
+          ?? await api.get<Report[]>(worldPath(REPORTS_PATH));
+      } catch (e) {
+        if (whole) wholeInbox = true;
+        throw e;
+      }
       rebuild();
     });
+    /** Merges the newest page into the inbox, or reads the whole inbox again when `whole`. */
+    const fetchReports = (whole = false) => {
+      if (whole) wholeInbox = true;
+      return loadReports();
+    };
     const fetchNews = coalesced(async () => {
       const before = new Set(server.news.map((n) => n.id));
       server.news = await api.get<NewsEntry[]>(worldPath('/news?limit=50'));
@@ -261,7 +307,7 @@ export const useGameStore = create<GameStore>()(
         // missed updates.
         if (server.greeted) {
           quietly(fetchState());
-          quietly(fetchReports());
+          quietly(fetchReports(true));
           quietly(fetchNews());
         }
         server.greeted = true;
@@ -294,10 +340,15 @@ export const useGameStore = create<GameStore>()(
         return msg;
       }
     };
-    const runThenReports = async (name: string, body: object) => {
+    /** After a change to many reports the whole inbox is read again; a change to one is made in place. */
+    const runThenReports = async (name: string, body: object, change?: (reports: Report[]) => Report[]) => {
       const err = await run(name, body);
-      if (!err) quietly(fetchReports());
-      return err;
+      if (err) return err;
+      if (change) {
+        server.reports = change(server.reports);
+        rebuild();
+      } else quietly(fetchReports(true));
+      return null;
     };
     const active = () => get().game?.activeVillageId ?? '';
 
@@ -336,7 +387,7 @@ export const useGameStore = create<GameStore>()(
           try {
             const [st, reports, news] = await Promise.all([
               api.get<PlayerState>(worldPath('/state')),
-              api.get<Report[]>(worldPath('/reports?limit=100')),
+              api.get<Report[]>(worldPath(REPORTS_PATH)),
               api.get<NewsEntry[]>(worldPath('/news?limit=50')),
             ]);
             server.reports = reports;
@@ -552,10 +603,11 @@ export const useGameStore = create<GameStore>()(
       mint: (villageId) => run('mint', { villageId }),
       renameVillage: (villageId, name) => run('rename-village', { villageId, name }),
       setLocale: (locale) => { void api.patch('/api/v1/me', { locale }).catch(() => undefined); },
-      markReportRead: (id, read = true) => runThenReports('mark-reports-read', { ids: [id], read }),
+      markReportRead: (id, read = true) => runThenReports('mark-reports-read', { ids: [id], read },
+        (reports) => reports.map((r) => (r.id === id ? { ...r, read } : r))),
       markAllReportsRead: (skipAutoFarm) => runThenReports('mark-all-reports-read', { skipAutoFarm }),
       deleteReadReports: (skipAutoFarm) => runThenReports('delete-read-reports', { skipAutoFarm }),
-      deleteReport: (id) => runThenReports('delete-report', { id }),
+      deleteReport: (id) => runThenReports('delete-report', { id }, (reports) => reports.filter((r) => r.id !== id)),
     };
   }),
 );

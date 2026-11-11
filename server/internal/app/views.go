@@ -266,10 +266,11 @@ func (s *Service) playerState(w WorldTx, me game.PlayerID) *PlayerState {
 	return st
 }
 
-// Reports pages the player's reports, newest first, before a report time; at most 100 at once.
+// Reports pages the player's reports, newest first, before a report time; at most all the reports a player keeps
+// (CombatBalance.MaxReports) at once, so the client can show the whole inbox.
 func (s *Service) Reports(ctx context.Context, acct *Account, worldID int64, before int64, limit int) ([]*game.Report, error) {
-	if limit <= 0 || limit > 100 {
-		limit = 100
+	if limit <= 0 || limit > game.CombatBalance.MaxReports {
+		limit = game.CombatBalance.MaxReports
 	}
 	if before <= 0 {
 		before = math.MaxInt64

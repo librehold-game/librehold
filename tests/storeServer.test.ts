@@ -2,8 +2,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { navigation } from '../src/net/api';
 import type { LiveMessage, PlayerState } from '../src/net/types';
-import { HUMAN_ID } from '../src/engine/types';
-import { useGameStore } from '../src/state/gameStore';
+import { HUMAN_ID, type Report } from '../src/engine/types';
+import { mergeNewestReports, useGameStore } from '../src/state/gameStore';
 import { newTestGame, stateFixture } from './helpers';
 
 class FakeSocket {
@@ -26,7 +26,7 @@ beforeEach(() => {
   calls = [];
   routes = {
     'GET /api/v1/worlds/3/state': () => ({ status: 200, body: fixture }),
-    'GET /api/v1/worlds/3/reports?limit=100': () => ({ status: 200, body: [] }),
+    'GET /api/v1/worlds/3/reports?limit=500': () => ({ status: 200, body: [] }),
     'GET /api/v1/worlds/3/news?limit=50': () => ({ status: 200, body: [] }),
   };
   FakeSocket.all = [];
@@ -95,9 +95,10 @@ describe('game store backed by the server', () => {
     expect(useGameStore.getState().lastError).toBe('Nie można tego zrobić: za mało surowców, kolejka jest pełna');
   });
 
-  it('an update on the reports topic fetches only reports', async () => {
+  it('an update on the reports topic fetches only the newest reports', async () => {
     await useGameStore.getState().boot();
     FakeSocket.all[0]!.emit({ type: 'hello', serverTime: 0, worldNow: 0 });
+    routes['GET /api/v1/worlds/3/reports?limit=100'] = () => ({ status: 200, body: [] });
     calls = [];
     FakeSocket.all[0]!.emit({ type: 'update', topics: ['reports'], serverTime: 0, worldNow: 0 });
     await vi.waitFor(() => expect(calls).toHaveLength(1));
@@ -105,6 +106,29 @@ describe('game store backed by the server', () => {
     const rev = useGameStore.getState().rankingRev;
     FakeSocket.all[0]!.emit({ type: 'update', topics: ['ranking'], serverTime: 0, worldNow: 0 });
     expect(useGameStore.getState().rankingRev).toBe(rev + 1);
+  });
+
+  it('a new report merges the newest page into the whole inbox loaded at boot', async () => {
+    routes['GET /api/v1/worlds/3/reports?limit=500'] = () => ({ status: 200, body: burst(150, 1) });
+    await useGameStore.getState().boot();
+    FakeSocket.all[0]!.emit({ type: 'hello', serverTime: 0, worldNow: 0 });
+    routes['GET /api/v1/worlds/3/reports?limit=100'] = () => ({ status: 200, body: burst(151, 52) });
+    FakeSocket.all[0]!.emit({ type: 'update', topics: ['reports'], serverTime: 0, worldNow: 0 });
+    await vi.waitFor(() => expect(inbox()).toEqual(burst(151, 1).map((r) => r.id)));
+  });
+
+  it('marking one report read changes it in place; marking all reads the whole inbox again', async () => {
+    routes['GET /api/v1/worlds/3/reports?limit=500'] = () => ({ status: 200, body: [report('r2', 2), report('r1', 1)] });
+    routes['POST /api/v1/worlds/3/orders/mark-reports-read'] = () => ({ status: 200, body: fixture });
+    routes['POST /api/v1/worlds/3/orders/mark-all-reports-read'] = () => ({ status: 200, body: fixture });
+    await useGameStore.getState().boot();
+    calls = [];
+    expect(await useGameStore.getState().markReportRead('r1')).toBeNull();
+    expect(useGameStore.getState().game!.reports.find((r) => r.id === 'r1')!.read).toBe(true);
+    expect(calls.map((c) => c.key)).toEqual(['POST /api/v1/worlds/3/orders/mark-reports-read']);
+    calls = [];
+    await useGameStore.getState().markAllReportsRead(false);
+    await vi.waitFor(() => expect(calls.map((c) => c.key)).toContain('GET /api/v1/worlds/3/reports?limit=500'));
   });
 
   it('a burst of state updates fetches the state once more after the fetch in flight, not once per update', async () => {
@@ -153,5 +177,35 @@ describe('game store backed by the server', () => {
     const g = useGameStore.getState().game!;
     expect(g.now).toBe(fixture.now + 60 * 60_000);
     expect(g.villages[v.id]!.resources.wood).toBeGreaterThan(before);
+  });
+});
+
+const report = (id: string, time: number) =>
+  ({ id, time, read: false, origin: { ownerId: 'b1' }, target: { ownerId: 'b2' } }) as unknown as Report;
+/** Reports rep{from} down to rep{to}, newest first, all in one tick like an auto-farm burst. */
+const burst = (from: number, to: number) => Array.from({ length: from - to + 1 }, (_, i) => report(`rep${from - i}`, 7));
+const inbox = () => [...useGameStore.getState().game!.reports].reverse().map((r) => r.id);
+
+describe('mergeNewestReports', () => {
+  const held = [report('r3', 3), report('r2', 2), report('r1', 1)];
+  const ids = (reports: Report[] | null) => reports?.map((r) => r.id) ?? null;
+
+  it('takes a page shorter than a full one as the whole inbox, so reports deleted elsewhere stay gone', () => {
+    expect(ids(mergeNewestReports(held, [report('r4', 4), report('r2', 2)], 100))).toEqual(['r4', 'r2']);
+    expect(mergeNewestReports(held, [], 100)).toEqual([]);
+  });
+
+  it('keeps the held reports older than a full page that holds the newest held report', () => {
+    expect(ids(mergeNewestReports(held, [report('r5', 5), report('r4', 4), report('r3', 3)], 3))).toEqual(['r5', 'r4', 'r3', 'r2', 'r1']);
+  });
+
+  it('orders by id as the server does: a longer id is newer', () => {
+    const tens = [report('rep10', 1), report('rep9', 1), report('rep8', 1)];
+    expect(ids(mergeNewestReports(tens, [report('rep11', 1), report('rep10', 1)], 2))).toEqual(['rep11', 'rep10', 'rep9', 'rep8']);
+  });
+
+  it('reads the whole inbox again when a full page misses the newest held report, even at the same time', () => {
+    const sameTick = [report('r3', 5), report('r2', 5), report('r1', 5)];
+    expect(mergeNewestReports(sameTick, [report('r6', 5), report('r5', 5), report('r4', 5)], 3)).toBeNull();
   });
 });

@@ -2,7 +2,7 @@ import { buildingName, unitName } from '../../i18n/names';
 import { PixelIcon } from '../pixelIcons';
 import { useEffect, useState } from 'react';
 import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
-import { UNITS } from '../../data/units.data';
+import { COMBAT_BALANCE, UNITS } from '../../data/units.data';
 import { reportIcon, reportVillageOf } from '../../engine/reports';
 import { reportVillageLabel } from '../../i18n/names';
 import { t, useT } from '../../i18n/i18n';
@@ -199,7 +199,7 @@ export function ReportsView() {
   return (
     <div>
       <div className="flex items-center gap-2 flex-wrap mb-2 text-[12px]">
-        <h2 className="text-lg mr-2">{t('reports.title')} <span className="text-muted font-body text-[12px]">({total}/500)</span></h2>
+        <h2 className="text-lg mr-2">{t('reports.title')} <span className="text-muted font-body text-[12px]">({total}/{COMBAT_BALANCE.maxReports})</span></h2>
         <select className="px-1 border border-wood-border rounded bg-white/50" value={filter} onChange={(e) => setFilter(e.target.value as Filter)}>
           {(['all', 'unread', 'attack', 'scout', 'conquest', 'support'] as const).map((f) => <option key={f} value={f}>{t(`reports.filter.${f}`)}</option>)}
         </select>
