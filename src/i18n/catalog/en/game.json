@@ -764,7 +764,7 @@
     "colPopulation": "Population",
     "colTimeEach": "Time / unit",
     "colInVillage": "In the village / total",
-    "colInVillageHint": "Units in the village / all of this village's units, counting those on the move and those supporting your other villages",
+    "colInVillageHint": "Units in the village / all of this village's units, counting those on the move and those supporting other villages",
     "onTheMove": "{n} on the move",
     "supporting": "{n} supporting",
     "max": "Max. {n}",

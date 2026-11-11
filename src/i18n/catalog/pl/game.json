@@ -796,7 +796,7 @@
     "colPopulation": "Populacja",
     "colTimeEach": "Czas / szt.",
     "colInVillage": "W wiosce / łącznie",
-    "colInVillageHint": "Jednostki w wiosce / wszystkie jednostki tej wioski, razem z tymi w drodze i wspierającymi twoje inne wioski",
+    "colInVillageHint": "Jednostki w wiosce / wszystkie jednostki tej wioski, razem z tymi w drodze i wspierającymi inne wioski",
     "onTheMove": "{n} w drodze",
     "supporting": "{n} jako wsparcie",
     "max": "Maks. {n}",

@@ -86,7 +86,7 @@ function awayByHome(state: GameState): AwayByHome {
 
 /**
  * A village's units away from home, in two parts: on the move (attacks, support on its way, armies coming back) and
- * stationed as support in the owner's other villages. Support only goes to one's own villages, so this is all of them.
+ * stationed as support, in the owner's other villages and in other players' villages (`supportAbroad`, from the server).
  */
 export function unitsAwayParts(state: GameState, villageId: string): { moving: Record<UnitId, number>; supporting: Record<UnitId, number> } {
   const moving = {} as Record<UnitId, number>;
@@ -100,6 +100,8 @@ export function unitsAwayParts(state: GameState, villageId: string): { moving: R
     if (!sup) continue;
     for (const u of UNIT_IDS) supporting[u] += sup[u] ?? 0;
   }
+  const abroad = state.supportAbroad[villageId];
+  if (abroad) for (const u of UNIT_IDS) supporting[u] += abroad[u] ?? 0;
   return { moving, supporting };
 }
 

@@ -2,12 +2,15 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { cleanup, render, screen, within } from '@testing-library/react';
 import { unitsAway, unitsAwayParts } from '../src/engine/commands';
+import { villagePopulationUsed } from '../src/engine/resources';
+import { UNITS } from '../src/data/units.data';
+import { toGameState } from '../src/net/toGameState';
 import type { GameState, Village } from '../src/engine/types';
 import { setLocale, t } from '../src/i18n/i18n';
 import { unitName } from '../src/i18n/names';
 import { useGameStore } from '../src/state/gameStore';
 import { RecruitScreen } from '../src/ui/views/RecruitScreen';
-import { activeVillage, addCommand, addOwnVillage, makeBotVillage, newTestGame } from './helpers';
+import { activeVillage, addCommand, addOwnVillage, makeBotVillage, newTestGame, stateFixture } from './helpers';
 
 let g: GameState;
 let home: Village;
@@ -46,6 +49,18 @@ describe('units away from a village', () => {
     expect(supporting.spear).toBe(5);
     expect(unitsAway(g, home.id).spear).toBe(25);
   });
+
+  it("include support stationed in other players' villages, which the server sends", () => {
+    g.supportAbroad = toGameState({ ...stateFixture(g), supportAbroad: { [home.id]: { spear: 20 } } }, [], []).supportAbroad;
+    expect(unitsAwayParts(g, home.id).supporting.spear).toBe(20);
+    expect(unitsAwayParts(g, second.id).supporting.spear).toBe(0);
+  });
+
+  it('take up room on the farm wherever they are', () => {
+    const before = villagePopulationUsed(home, g);
+    g.supportAbroad = { [home.id]: { spear: 20 } };
+    expect(villagePopulationUsed(home, g)).toBe(before + 20 * UNITS.spear.pop);
+  });
 });
 
 describe('the recruitment table', () => {
@@ -62,6 +77,13 @@ describe('the recruitment table', () => {
     useGameStore.setState({ game: g, phase: 'ready' });
     render(<RecruitScreen building="barracks" />);
     expect(cell().textContent).toBe('12 / 12');
+  });
+
+  it('counts units supporting another player', () => {
+    g.supportAbroad = { [home.id]: { spear: 20 } };
+    useGameStore.setState({ game: g, phase: 'ready' });
+    render(<RecruitScreen building="barracks" />);
+    expect(cell().textContent).toBe('12 / 3220 supporting');
   });
 
   it('names just the part that is away', () => {

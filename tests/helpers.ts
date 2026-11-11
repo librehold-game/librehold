@@ -157,5 +157,6 @@ export function stateFixture(g: GameState, me = HUMAN_ID, worldId = 1): PlayerSt
       buildTemplates: structuredClone(g.buildTemplates), aggressorUntil: g.humanAggressorUntil,
     },
     unreadReports: g.reports.filter((r) => !r.read).length,
+    ...(Object.keys(g.supportAbroad).length > 0 ? { supportAbroad: structuredClone(g.supportAbroad) } : {}),
   };
 }
