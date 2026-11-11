@@ -27,7 +27,7 @@ type World interface {
 	PutHuman(id PlayerID, h *HumanState)
 
 	Command(id string) *Command
-	CommandsHome(villageID string) []*Command // CommandHome(c) == villageID, sorted by (ArrivesAt, ID)
+	CommandsHome(villageID string) []*Command // CommandHome(c) == villageID (or a player id: their armies cut loose), sorted by (ArrivesAt, ID)
 	CommandsTo(villageID string) []*Command   // c.TargetID == villageID, sorted by (ArrivesAt, ID)
 	PutCommand(c *Command)
 	DeleteCommand(id string)
@@ -70,10 +70,19 @@ type World interface {
 }
 
 // CommandHome is the village a command belongs to: the origin of an outgoing command, the target of a return
-// (troops or merchants on their way back).
+// (troops or merchants on their way back); an army cut loose from its village by a conquest belongs to its owner
+// and is filed under the owner's id.
 func CommandHome(c *Command) string {
+	if c.OwnerID != "" {
+		return string(c.OwnerID)
+	}
 	if c.Type == "return" || (c.Type == "trade" && c.Returning) {
 		return c.TargetID
 	}
 	return c.OriginID
+}
+
+// LooseArmies are the owner's armies cut loose from their villages by a conquest, sorted by (ArrivesAt, ID).
+func LooseArmies(w World, owner PlayerID) []*Command {
+	return w.CommandsHome(owner)
 }

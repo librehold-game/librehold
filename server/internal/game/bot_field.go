@@ -23,11 +23,11 @@ func fieldForce(v *Village) UnitCounts {
 	return u
 }
 
-// threatenedFrom says whether one of the bot's villages already sent an interception at c.
-func threatenedFrom(w World, c *Command, own map[string]bool) bool {
+// threatenedFrom says whether the bot already sent an interception at c.
+func threatenedFrom(w World, c *Command, botID PlayerID) bool {
 	return slices.ContainsFunc(c.Threats, func(id string) bool {
 		in := w.Command(id)
-		return in != nil && own[in.OriginID]
+		return in != nil && commandOwner(w, in) == botID
 	})
 }
 
@@ -56,10 +56,6 @@ func PlanFieldBattles(w World, botID PlayerID) {
 		return
 	}
 	mine := PlayerVillages(w, botID)
-	own := map[string]bool{}
-	for _, v := range mine {
-		own[v.ID] = true
-	}
 	strong := b.Skill >= BotConfig.StrongSkill
 	notices := func(c *Command) bool {
 		return strong || Mulberry32(HiddenSeed(w, "field", botID, c.ID))() < fieldWeakNotice
@@ -75,7 +71,7 @@ func PlanFieldBattles(w World, botID PlayerID) {
 	}
 	for _, v := range mine {
 		for _, c := range w.CommandsTo(v.ID) {
-			if c.Type != "attack" || own[c.OriginID] || w.Human(commandOwner(w, c)) == nil || threatenedFrom(w, c, own) || !notices(c) {
+			if c.Type != "attack" || w.Human(commandOwner(w, c)) == nil || threatenedFrom(w, c, botID) || !notices(c) {
 				continue
 			}
 			wave := estimateWave(w, botID, c)

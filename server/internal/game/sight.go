@@ -40,9 +40,7 @@ func segmentCircle(a, b, p FieldPoint, r float64) (float64, float64, bool) {
 
 // watchers are the two players who never watch an army pass: its owner and the owner of the village it is going to.
 func watchers(w World, c *Command) (owner, targetOwner PlayerRef) {
-	if v := w.Village(CommandHome(c)); v != nil {
-		owner = v.OwnerID
-	}
+	owner = Ref(commandOwner(w, c))
 	if v := w.Village(c.TargetID); v != nil {
 		targetOwner = v.OwnerID
 	}

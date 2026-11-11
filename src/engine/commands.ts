@@ -1,9 +1,9 @@
 import { UNITS } from '../data/units.data';
 import { COMMAND_BALANCE } from '../data/world.config';
 import { CONQUEST_BALANCE } from '../data/conquest.data';
-import { MS_PER_MINUTE, UNIT_IDS, villageIdFor, type Command, type GameState, type UnitId, type Village } from './types';
+import { HUMAN_ID, MS_PER_MINUTE, UNIT_IDS, villageIdFor, type Command, type GameState, type UnitId, type Village } from './types';
 import { distance } from './world';
-import { humanVillageIds, isProtected } from './players';
+import { humanVillageIds, isHumanVillage, isProtected } from './players';
 
 export type UnitCounts = Partial<Record<UnitId, number>>;
 
@@ -30,8 +30,9 @@ export function travelTimeForUnits(state: GameState, origin: Village, tx: number
   return travelTimeMs(d, slowestSpeed(units), state.config.unitSpeed);
 }
 
-/** A command's home (the village the troops belong to). */
+/** A command's home (the village the troops belong to); an army cut loose from its village has none. */
 export function commandHome(cmd: Command): string {
+  if (cmd.cutLoose) return '';
   return cmd.type === 'return' ? cmd.targetId : cmd.originId;
 }
 
@@ -168,7 +169,7 @@ export function checkSend(
 }
 
 export function canCancelCommand(state: GameState, cmd: Command): boolean {
-  if (cmd.type === 'return' || cmd.type === 'intercept') return false;
+  if (cmd.type === 'return' || cmd.type === 'intercept' || cmd.cutLoose) return false;
   // An army hit in the field may turn back at any time before it arrives.
   if (cmd.fieldHit && (cmd.type === 'attack' || cmd.type === 'support')) return state.now < cmd.arrivesAt;
   const elapsed = state.now - cmd.departedAt;
@@ -176,8 +177,15 @@ export function canCancelCommand(state: GameState, cmd: Command): boolean {
   return elapsed < Math.min(window, cmd.arrivesAt - cmd.departedAt);
 }
 
+/** Whether the army is the player's: its own owner's once cut loose from its village, else its home village's. */
+export function isOwnCommand(state: GameState, cmd: Command): boolean {
+  if (cmd.cutLoose) return cmd.ownerId === HUMAN_ID;
+  const home = state.villages[commandHome(cmd)];
+  return home !== undefined && isHumanVillage(home);
+}
+
 /** Commands visible to the player: their own movements and everything heading for their villages (AI movements between barbarians are hidden). */
 export function playerCommands(state: GameState): Command[] {
   const mine = new Set(humanVillageIds(state));
-  return state.commands.filter((c) => mine.has(commandHome(c)) || mine.has(c.targetId));
+  return state.commands.filter((c) => isOwnCommand(state, c) || mine.has(c.targetId));
 }

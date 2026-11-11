@@ -37,7 +37,8 @@ func QuitPlayer(w World, id PlayerID) {
 	w.Schedule("abandon:"+id, w.Now()+BotDur(w, int64(BotConfig.AbandonAfterDays*float64(MsPerDay))))
 }
 
-// onAbandonEvent: the villages of a player who left turn barbarian with the buildings they had.
+// onAbandonEvent: the villages of a player who left turn barbarian with the buildings they had, and the armies
+// cut loose from their villages are lost.
 func onAbandonEvent(w World, id PlayerID) error {
 	p := w.Player(id)
 	if p == nil || p.Status != StatusQuit {
@@ -46,5 +47,6 @@ func onAbandonEvent(w World, id PlayerID) error {
 	for _, v := range PlayerVillages(w, id) {
 		TransferVillage(w, v, "", "")
 	}
+	dropLooseArmies(w, id)
 	return nil
 }

@@ -11,8 +11,8 @@ let routes: Record<string, () => Route>;
 
 const card = { id: 3, name: 'Kraina', instant: false, status: 'open', paused: false, startedAt: 0, day: 21, humans: 4, bots: 40, speed: 8 };
 const longSettings = {
-  worldSpeed: 8, unitSpeed: 1, mapSize: 200, beginnerProtectionDays: 7, lastVillage: 'protected', fieldBattles: true,
-  barbarianDensity: 'normal', battleLosses: 'normal', botCount: 40, botArrival: 'rampUp', rampUpDays: 14, difficulty: 'hard',
+  worldSpeed: 8, unitSpeed: 1, mapSize: 200, beginnerProtectionDays: 7, lastVillage: 'protected', fieldBattles: true, buildPlans: true,
+  autoFarm: true, barbarianDensity: 'normal', battleLosses: 'normal', botCount: 40, botArrival: 'rampUp', rampUpDays: 14, difficulty: 'hard',
   botStance: 'normal', humanModifiers: { resources: 1.5, recruitment: 1.2, building: 0.8 }, botModifiers: { resources: 1, recruitment: 1, building: 1 },
   sightRadius: 2,
 };
@@ -78,6 +78,10 @@ describe('the world page', () => {
     expect(region.textContent).toContain('×8');
     expect(region.textContent).toContain('40');
     expect(region.textContent).toContain('×1.5');
+    for (const key of ['buildPlans', 'autoFarm']) {
+      const row = within(region).getByText(t(`site.worlds.setting.${key}`)).closest('div')!;
+      expect(row.textContent).toContain(t('site.worlds.yes'));
+    }
     expect(region.textContent).toContain('×0.8');
     expect(region.textContent).toContain(t('admin.choice.difficulty.hard'));
     expect(region.textContent).not.toContain(t('site.worlds.setting.coins'));

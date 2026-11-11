@@ -24,6 +24,8 @@
         "protection": "Beginner protection",
         "lastVillage": "Last village",
         "fieldBattles": "Field battles",
+        "buildPlans": "Build plans",
+        "autoFarm": "Auto-farming",
         "duration": "Game length",
         "seats": "Player seats",
         "dominationShare": "Ends early at village share",

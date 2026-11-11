@@ -15,8 +15,12 @@ type InterceptCheck struct {
 	Point    FieldPoint
 }
 
-// commandOwner is the player a command belongs to: the owner of its home village.
+// commandOwner is the player a command belongs to: the owner of its home village, or its own owner once it was cut
+// loose from its village.
 func commandOwner(w World, c *Command) PlayerID {
+	if c.OwnerID != "" {
+		return PlayerID(c.OwnerID)
+	}
 	if home := w.Village(CommandHome(c)); home != nil {
 		return PlayerID(home.OwnerID)
 	}
@@ -71,7 +75,8 @@ func CheckIntercept(w World, actor PlayerID, originID, commandID string, u UnitC
 	if IsProtected(w, actor) {
 		blockers = append(blockers, Blocker{"kind": "selfProtected"})
 	}
-	if IsProtected(w, owner) {
+	// A fresh start's beginner protection guards the new village, not an army cut loose from the old one.
+	if IsProtected(w, owner) && target.OwnerID == "" {
 		blockers = append(blockers, Blocker{"kind": "targetProtected", "until": w.Player(owner).ProtectedUntil})
 	}
 	if scout && u[UScout] != n {
@@ -175,6 +180,15 @@ func researchOf(w World, villageID string) UnitCounts {
 	return UnitCounts{}
 }
 
+// commandResearch is the research an army fights with: its home village's, or what it left with once it was cut
+// loose from its village.
+func commandResearch(w World, c *Command) UnitCounts {
+	if c.Research != nil {
+		return UnitCounts(*c.Research)
+	}
+	return researchOf(w, CommandHome(c))
+}
+
 func fieldReportType(scout bool) string {
 	if scout {
 		return "fieldScout"
@@ -189,8 +203,8 @@ func onFieldEvent(w World, id string) error {
 		return nil
 	}
 	w.DeleteCommand(id)
-	at, homeID := *c.Point, c.OriginID
-	A := humanOwner(w, w.Village(homeID))
+	at, homeID, loose := *c.Point, c.OriginID, c.OwnerID != ""
+	A := humanID(w, commandOwner(w, c))
 	target := w.Command(c.Intercept.CommandID)
 	if target != nil {
 		target.Threats = slices.DeleteFunc(target.Threats, func(t string) bool { return t == id })
@@ -205,20 +219,27 @@ func onFieldEvent(w World, id string) error {
 		}
 		if A != "" {
 			sendReports(w, []PlayerID{A}, Report{Time: w.Now(), Type: fieldReportType(c.Intercept.Scout), OriginID: homeID,
-				Origin: ReportVillageOf(w, homeID), Attacker: ReportSide{Units: c.Units}, Outcome: "defenderWon", Field: field})
+				Origin: armyVillage(w, c, homeID), Attacker: ReportSide{Units: c.Units}, Outcome: "defenderWon", Field: field})
 		}
-		ReturnFromPoint(w, at, homeID, c.Units, nil)
+		if !loose {
+			ReturnFromPoint(w, at, homeID, c.Units, nil)
+		}
 		return nil
 	}
 	field.TargetType = target.Type
+	// An army cut loose from its village is reported as coming from the village it left.
 	targetHome := CommandHome(target)
-	D := humanOwner(w, w.Village(targetHome))
+	if target.OwnerID != "" {
+		targetHome = target.OriginID
+	}
+	defender := commandOwner(w, target)
+	D := humanID(w, defender)
 	rng := Mulberry32(HiddenSeed(w, "field", id, target.ID))
 	luck := -CombatBalance.LuckRange + rng()*2*CombatBalance.LuckRange
 	before := target.Units
 	in := BattleInput{
-		Attacker: BattleSide{Units: c.Units, Research: researchOf(w, homeID)},
-		Defender: BattleDefender{BattleSide: BattleSide{Units: before, Research: researchOf(w, targetHome)}},
+		Attacker: BattleSide{Units: c.Units, Research: commandResearch(w, c)},
+		Defender: BattleDefender{BattleSide: BattleSide{Units: before, Research: commandResearch(w, target)}},
 		Luck:     luck, Morale: CombatBalance.MoraleVsBarbarian, Rng: rng, LossMode: w.Config().BattleLosses,
 	}
 	var result BattleResult
@@ -228,7 +249,7 @@ func onFieldEvent(w World, id string) error {
 		result = ResolveBattle(in)
 	}
 	r := Report{Time: w.Now(), Type: fieldReportType(result.Kind == "scout"), OriginID: homeID, TargetID: targetHome,
-		Origin: ReportVillageOf(w, homeID), Target: ReportVillageOf(w, targetHome),
+		Origin: armyVillage(w, c, homeID), Target: armyVillage(w, target, targetHome),
 		Attacker: ReportSide{Units: c.Units, Losses: result.AttackerLosses},
 		Luck:     result.Luck, Morale: result.Morale, Outcome: result.Outcome, Field: field}
 	var captured *Resources
@@ -243,6 +264,10 @@ func onFieldEvent(w World, id string) error {
 		if target.Haul != nil {
 			keep, take := SplitLoot(*target.Haul, haulCapacity(survivors), haulCapacity(result.AttackerSurvivors))
 			target.Haul = &keep
+			// An interceptor cut loose from its village has no home to carry loot to: it takes nothing.
+			if loose && SumResources(take) > 0 {
+				take, r.NoHome = Resources{}, true
+			}
 			if SumResources(take) > 0 {
 				captured = &take
 				r.Haul = &take
@@ -270,8 +295,8 @@ func onFieldEvent(w World, id string) error {
 			s.UnitsKilled += lostA
 		}
 		countBattle(w, c.Units.Total()+before.Total(), "")
-		recordPublicEvent(w, "battle", ownerOf(w, homeID), ownerOf(w, targetHome), int(math.Round(at.X)), int(math.Round(at.Y)))
-		battle := TimelineEntry{Kind: "battle", X: at.X, Y: at.Y, Attacker: ownerOf(w, homeID), Defender: ownerOf(w, targetHome),
+		recordPublicEvent(w, "battle", Ref(commandOwner(w, c)), Ref(defender), int(math.Round(at.X)), int(math.Round(at.Y)))
+		battle := TimelineEntry{Kind: "battle", X: at.X, Y: at.Y, Attacker: Ref(commandOwner(w, c)), Defender: Ref(defender),
 			Troops: c.Units.Total() + before.Total()}
 		if home := w.Village(homeID); home != nil {
 			battle.FromX, battle.FromY = home.X, home.Y
@@ -285,7 +310,7 @@ func onFieldEvent(w World, id string) error {
 		}
 	}
 	sendReports(w, to, r)
-	if result.AttackerSurvivors.Total() > 0 {
+	if result.AttackerSurvivors.Total() > 0 && !loose {
 		ReturnFromPoint(w, at, homeID, result.AttackerSurvivors, captured)
 	}
 	return nil

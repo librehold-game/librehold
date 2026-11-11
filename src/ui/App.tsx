@@ -19,6 +19,7 @@ import { useGameSounds } from './useGameSounds';
 import { PlayerProfile } from './components/PlayerProfile';
 import { RankingView } from './views/RankingView';
 import { humanVillageIds } from '../engine/players';
+import { isOwnCommand } from '../engine/commands';
 import { t, useT } from '../i18n/i18n';
 import { ClaimDialog } from './instant/ClaimDialog';
 import { ReportDialog } from './components/ReportDialog';
@@ -43,7 +44,7 @@ function Shell() {
   const claimable = useGameStore((s) => (s.game ? claimableQuests(s.game).length : 0));
   const paused = useGameStore((s) => !!s.game?.config.paused);
   const hosted = useGameStore((s) => s.hosted);
-  const incoming = useGameStore((s) => (s.game ? s.game.commands.filter((c) => c.type === 'attack' && humanVillageIds(s.game!).includes(c.targetId) && !humanVillageIds(s.game!).includes(c.originId)).length : 0));
+  const incoming = useGameStore((s) => (s.game ? s.game.commands.filter((c) => c.type === 'attack' && humanVillageIds(s.game!).includes(c.targetId) && !isOwnCommand(s.game!, c)).length : 0));
   useGameSounds();
 
   useEffect(() => {

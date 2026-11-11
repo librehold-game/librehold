@@ -88,7 +88,7 @@ func nobleClaimer(w World, botID PlayerID) func(x, y int) bool {
 	return func(x, y int) bool {
 		for _, c := range w.CommandsTo(fmt.Sprintf("v:%d:%d", x, y)) {
 			if c.Units[UNoble] > 0 {
-				if o := w.Village(c.OriginID); o != nil && o.OwnerID != Ref(botID) {
+				if o := commandOwner(w, c); o != "" && o != botID {
 					return true
 				}
 			}

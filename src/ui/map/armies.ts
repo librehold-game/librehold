@@ -4,7 +4,7 @@
  */
 import { humanVillageIds } from '../../engine/players';
 import { UNITS } from '../../data/units.data';
-import { UNIT_IDS, coordsOfVillageId, type Command, type GameState, type UnitId } from '../../engine/types';
+import { HUMAN_ID, UNIT_IDS, coordsOfVillageId, type Command, type GameState, type UnitId } from '../../engine/types';
 import { legEnds, positionAt } from '../../engine/fieldGeometry';
 import { BIOME, SUB_X, SUB_Y, biomeGrid } from './biomes';
 
@@ -47,10 +47,11 @@ function inSight(g: GameState, c: Command, mine: ReadonlySet<string>): boolean {
 }
 
 function kindOf(g: GameState, c: Command, mine: ReadonlySet<string>): ArmyKind | null {
-  if (c.type === 'trade') return mine.has(c.originId) ? 'trade' : null;
-  if (c.type === 'intercept') return mine.has(c.originId) ? 'ownIntercept' : 'threat';
+  const fromMine = c.cutLoose ? c.ownerId === HUMAN_ID : mine.has(c.originId);
+  if (c.type === 'trade') return fromMine ? 'trade' : null;
+  if (c.type === 'intercept') return fromMine ? 'ownIntercept' : 'threat';
   if (c.type === 'return' && mine.has(c.targetId)) return 'ownReturn';
-  if (c.type !== 'return' && mine.has(c.originId)) return c.type === 'attack' ? 'ownAttack' : 'ownSupport';
+  if (c.type !== 'return' && fromMine) return c.type === 'attack' ? 'ownAttack' : 'ownSupport';
   if (mine.has(c.targetId)) return c.type === 'attack' ? 'incomingAttack' : c.type === 'support' ? 'incomingSupport' : null;
   if (!inSight(g, c, mine)) return null;
   return c.type === 'attack' ? 'passingAttack' : c.type === 'support' ? 'passingSupport' : 'passingReturn';

@@ -37,8 +37,23 @@ describe('world settings form', () => {
     expect(value.sightRadius).toBe(5);
   });
 
+  it('build plans and auto-farming can be switched off', () => {
+    setLocale('en');
+    let value: WorldConfig = { ...DEFAULT_CONFIG };
+    render(<WorldForm idPrefix="w" value={value} onChange={(v) => { value = v; }} mode="create" />);
+    fireEvent.click(screen.getByLabelText('No build plans'));
+    expect(value.noBuildPlans).toBe(true);
+    fireEvent.click(screen.getByLabelText('No auto-farming'));
+    expect(value.noAutoFarm).toBe(true);
+  });
+
   it('switching field battles off is a live change, the sight radius is fixed at creation', () => {
     const before: WorldConfig = { ...DEFAULT_CONFIG };
     expect(liveChanges(before, { ...before, noFieldBattles: true, sightRadius: 3 })).toEqual({ noFieldBattles: true });
+  });
+
+  it('build plans and auto-farming are live changes', () => {
+    const before: WorldConfig = { ...DEFAULT_CONFIG };
+    expect(liveChanges(before, { ...before, noBuildPlans: true, noAutoFarm: true })).toEqual({ noBuildPlans: true, noAutoFarm: true });
   });
 });

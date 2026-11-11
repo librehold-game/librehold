@@ -288,6 +288,136 @@ func TestFarmAssistant(t *testing.T) {
 	})
 }
 
+func TestAutoFarmWorldToggle(t *testing.T) {
+	t.Run("the host switches it off mid-game: players' auto-farming is turned off, not just suspended", func(t *testing.T) {
+		w, v := farmSetup(t)
+		w.Human("h1").FarmAssistant.AutoFarmUnlocked = true
+		if err := game.SetAutoFarm(w, "h1", true, []string{v.ID}); err != nil {
+			t.Fatal(err)
+		}
+		key := "autofarm:" + v.ID
+		if !w.IsScheduled(key) {
+			t.Fatal("setup: the tick should be scheduled")
+		}
+		w.Config().NoAutoFarm = true
+		game.SyncFeatureToggles(w)
+		if w.IsScheduled(key) {
+			t.Fatal("tick still scheduled after the switch off")
+		}
+		if w.Human("h1").FarmAssistant.AutoFarmEnabled {
+			t.Fatal("the player's auto-farming should be turned off, not just suspended")
+		}
+		if n := game.AutoFarmTick(w, "h1", v.ID); n != 0 {
+			t.Fatalf("sent %d raids while the feature is off", n)
+		}
+		// Re-enabling the world switch alone does NOT turn players' auto-farming back on.
+		w.Config().NoAutoFarm = false
+		game.SyncFeatureToggles(w)
+		if w.IsScheduled(key) || w.Human("h1").FarmAssistant.AutoFarmEnabled {
+			t.Fatalf("auto-farming resumed without the player's choice: %+v", w.Human("h1").FarmAssistant)
+		}
+		// ...until the player switches it on themselves.
+		if err := game.SetAutoFarm(w, "h1", true, []string{v.ID}); err != nil {
+			t.Fatal(err)
+		}
+		if !w.IsScheduled(key) || !w.Human("h1").FarmAssistant.AutoFarmEnabled {
+			t.Fatalf("tick %v settings %+v", w.IsScheduled(key), w.Human("h1").FarmAssistant)
+		}
+	})
+
+	t.Run("setting it on is refused while the world's switch is off, off always works", func(t *testing.T) {
+		w, v := farmSetup(t)
+		w.Human("h1").FarmAssistant.AutoFarmUnlocked = true
+		if err := game.SetAutoFarm(w, "h1", false, []string{v.ID}); err != nil {
+			t.Fatal(err)
+		}
+		w.Config().NoAutoFarm = true
+		var re *game.RuleError
+		if err := game.SetAutoFarm(w, "h1", true, []string{v.ID}); !errors.As(err, &re) || re.Code != "autoFarmOff" {
+			t.Fatalf("err %v", err)
+		}
+		if w.Human("h1").FarmAssistant.AutoFarmEnabled || !slices.Contains(w.Human("h1").FarmAssistant.AutoFarmVillages, v.ID) {
+			t.Fatal("a refused change touched the settings")
+		}
+		if err := game.SetAutoFarm(w, "h1", false, []string{v.ID}); err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	t.Run("the switch covers humans only: an unlocked bot keeps raiding on its ticks", func(t *testing.T) {
+		w, v := oneBotWorld(t, 31, strongSkill)
+		farmingVillage(v)
+		b := w.Brain("bot_0")
+		b.Looted = game.Resources{Wood: 2500, Clay: 2500, Iron: 2500}
+		game.ScheduleBotAutoFarm(w, "bot_0")
+		if n := game.BotAutoFarmTick(w, "bot_0", v.ID); n == 0 {
+			t.Fatal("setup: the bot sends no raids at all")
+		}
+		w.Config().NoAutoFarm = true
+		game.SyncFeatureToggles(w)
+		if _, ok := w.ScheduledAt("botfarm:" + v.ID); !ok {
+			t.Fatal("the bot's auto-farm tick was cancelled by the world switch")
+		}
+		if n := game.BotAutoFarmTick(w, "bot_0", v.ID); n == 0 {
+			t.Fatal("the bot stopped raiding while the human switch is off")
+		}
+	})
+}
+
+func TestBuildPlanWorldToggle(t *testing.T) {
+	t.Run("the host switches plans off mid-game: human plans are dropped, not left waiting for the switch", func(t *testing.T) {
+		w, v := gametest.NewTestWorld(2)
+		v.Resources = game.Resources{Wood: 300, Clay: 300, Iron: 300}
+		if err := game.SetBuildPlan(w, "h1", v.ID, []game.BuildingID{game.BWood, game.BClay, game.BIron}); err != nil || len(v.BuildPlan) == 0 {
+			t.Fatalf("setup: the plan should keep steps while the switch is on (err %v plan %v)", err, v.BuildPlan)
+		}
+		if !w.IsScheduled("plan:" + v.ID) {
+			t.Fatal("setup: the feed tick should be scheduled")
+		}
+		w.Config().NoBuildPlans = true
+		game.SyncFeatureToggles(w)
+		if v.BuildPlan != nil {
+			t.Fatalf("the human's plan survived the switch off: %v", v.BuildPlan)
+		}
+		if w.IsScheduled("plan:" + v.ID) {
+			t.Fatal("the plan tick kept rescheduling after the switch off")
+		}
+		// Switching it back on starts nothing on its own; the player sets a plan again.
+		w.Config().NoBuildPlans = false
+		game.FeedBuildPlan(w, v.ID)
+		if v.BuildPlan != nil || w.IsScheduled("plan:"+v.ID) {
+			t.Fatalf("the dropped plan came back: %v", v.BuildPlan)
+		}
+	})
+
+	t.Run("a human cannot set a plan while the switch is off", func(t *testing.T) {
+		w, v := gametest.NewTestWorld(2)
+		w.Config().NoBuildPlans = true
+		var re *game.RuleError
+		if err := game.SetBuildPlan(w, "h1", v.ID, []game.BuildingID{game.BWood}); !errors.As(err, &re) || re.Code != "buildPlansOff" {
+			t.Fatalf("err %v", err)
+		}
+		if v.BuildPlan != nil {
+			t.Fatal("a refused plan was stored")
+		}
+	})
+
+	t.Run("the switch covers humans only: a bot keeps the plan it has", func(t *testing.T) {
+		w, v := gametest.NewTestWorld(2)
+		bv := gametest.MakeBotVillage(w, v)
+		bv.Resources = game.Resources{Wood: 300, Clay: 300, Iron: 300}
+		bv.BuildPlan = []game.BuildingID{game.BWood}
+		w.Config().NoBuildPlans = true
+		game.SyncFeatureToggles(w)
+		if len(bv.BuildPlan) != 1 {
+			t.Fatalf("the bot's plan was dropped: %v", bv.BuildPlan)
+		}
+		if n := game.FeedBuildPlan(w, bv.ID); n != 1 {
+			t.Fatalf("the bot's plan fed %d steps, want 1 while the switch is off", n)
+		}
+	})
+}
+
 func TestFarmTargetsHideOnlyOwnInbound(t *testing.T) {
 	w, v1 := farmSetup(t)
 	v2, err := game.JoinHuman(w, "h2", "Friend", 2, game.QuadrantRandom)
