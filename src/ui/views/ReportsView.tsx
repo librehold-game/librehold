@@ -222,7 +222,7 @@ export function ReportsView() {
             {rows.map((r) => (
               <tr key={r.id} className={`cursor-pointer ${r.read ? 'text-muted' : 'font-semibold'}`} onClick={() => { markRead(r.id); setSelected(r.id); }}>
                 <td className="text-center w-8 stack-inline"><PixelIcon name={r.icon} size={16} /></td>
-                <td className="stack-inline">{r.o} → {r.t}{r.autoFarm && <AutoFarmTag />}</td>
+                <td className="stack-inline"><button type="button" className="cursor-pointer text-left hover:underline focus:underline">{r.o} → {r.t}</button>{r.autoFarm && <AutoFarmTag />}</td>
                 <td className="tabular-nums" data-label={t('reports.colLoot')}>{r.haul !== null ? `${formatNumber(r.haul)}${r.cap ? ` / ${formatNumber(r.cap)}` : ''}` : '—'}</td>
                 <td className="tabular-nums whitespace-nowrap" data-label={t('reports.colTime')}>{clock.at(r.time)}</td>
               </tr>
