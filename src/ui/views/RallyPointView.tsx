@@ -111,6 +111,7 @@ function SendTab() {
   const parsed = check ? (JSON.parse(check) as { attack: SendCheck; support: SendCheck; now: number }) : null;
 
   const available = UNIT_IDS.filter((u) => have[u] > 0 || (counts[u] ?? 0) > 0);
+  const maxLoot = UNIT_IDS.reduce((sum, u) => sum + (counts[u] ?? 0) * UNITS[u].haul, 0);
   const setCount = (u: UnitId, n: number) => setCounts((c) => ({ ...c, [u]: Math.max(0, Math.min(have[u], Math.floor(n) || 0)) }));
 
   const at = mode === 'now' || !parsed ? null : parseLocalTime(origin, parsed.now, whenDate, whenTime);
@@ -180,6 +181,7 @@ function SendTab() {
             <div><RichText text={t('rally.distance', { n: parsed.attack.distance.toFixed(1) })} /></div>
             <div>{t('rally.travel')} <strong className="tabular-nums">{formatDuration(parsed.attack.travelMs)}</strong></div>
             <div>{t('rally.arrival')} <span className="tabular-nums">{clock.at(parsed.now + parsed.attack.travelMs)}</span></div>
+            {maxLoot > 0 && <div><RichText text={t('rally.maxLoot', { n: formatNumber(maxLoot) })} /></div>}
             {parsed.attack.isScoutMission && <div className="text-muted">{t('rally.scoutMission')}</div>}
             <div className="flex items-center gap-2 flex-wrap pt-1">
               <label htmlFor="rally-mode">{t('rally.when')}</label>
