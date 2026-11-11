@@ -213,7 +213,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			ObserveBattle(w, botAttacker, target, seen)
 		}
 		if result.AttackerSurvivors.Total() > 0 && origin != nil && !loose {
-			CreateReturn(w, target.ID, c.OriginID, result.AttackerSurvivors, nil)
+			markFarm(w, CreateReturn(w, target.ID, c.OriginID, result.AttackerSurvivors, nil), c.Farm)
 		}
 		RecordBattle(w, BattleRecord{AttackerID: attackerOwner, DefenderID: targetOwner, Shares: shares,
 			AttackerLost: result.AttackerLosses, DefenderLost: result.DefenderLosses})
@@ -389,9 +389,17 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 		if SumResources(haul) > 0 {
 			h = &haul
 		}
-		CreateReturn(w, target.ID, c.OriginID, survivors, h)
+		markFarm(w, CreateReturn(w, target.ID, c.OriginID, survivors, h), c.Farm)
 	}
 	return nil
+}
+
+// markFarm carries a farm raid's mark onto its way home.
+func markFarm(w World, ret *Command, farm bool) {
+	if farm {
+		ret.Farm = true
+		w.PutCommand(ret)
+	}
 }
 
 func intelCopy(in *Intel) *Intel {

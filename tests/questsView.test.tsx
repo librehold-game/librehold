@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import { setLocale } from '../src/i18n/i18n';
-import { questTitle } from '../src/i18n/names';
+import { questDescription, questTitle } from '../src/i18n/names';
 import { useGameStore } from '../src/state/gameStore';
 import { QuestsView } from '../src/ui/views/QuestsView';
 import { newTestGame } from './helpers';
@@ -20,5 +20,28 @@ describe('quest bars show the server\'s progress', () => {
     expect(panel('wood1').textContent).toContain('50%');
     expect(panel('first_attack').textContent).not.toMatch(/%/);
     expect(document.body.textContent).not.toContain('NaN');
+  });
+
+  it("hides the auto-farming reward when the world's host has it switched off", () => {
+    setLocale('en');
+    const g = newTestGame();
+    g.quests = { completed: ['first_battle'], active: [], claimed: [], progress: {} };
+    useGameStore.setState({ game: g, phase: 'ready' });
+    render(<QuestsView />);
+    expect(screen.getByText('auto-farming unlocked', { exact: false })).toBeTruthy();
+    cleanup();
+    g.config.noAutoFarm = true;
+    render(<QuestsView />);
+    expect(screen.queryByText('auto-farming unlocked', { exact: false })).toBeNull();
+  });
+
+  it('the Raider quest states its goal; the reward line carries what the reward is', () => {
+    // Worlds may have auto-farming switched off, so the goal never promises it.
+    setLocale('en');
+    expect(questDescription('loot5000')).toContain('5,000');
+    expect(questDescription('loot5000')).not.toMatch(/reward|unlock/i);
+    setLocale('pl');
+    expect(questDescription('loot5000')).toContain('5 000');
+    expect(questDescription('loot5000')).not.toMatch(/nagrod|odblokow/i);
   });
 });

@@ -54,6 +54,8 @@ type PublicSettings struct {
 	BeginnerProtectionDays float64 `json:"beginnerProtectionDays"`
 	LastVillage            string  `json:"lastVillage"`
 	FieldBattles           bool    `json:"fieldBattles"`
+	BuildPlans             bool    `json:"buildPlans"`
+	AutoFarm               bool    `json:"autoFarm"`
 	DurationMin            int     `json:"durationMin,omitempty"`
 
 	BarbarianDensity string             `json:"barbarianDensity"`
@@ -167,7 +169,7 @@ func (s *Service) publicWorldRow(ctx context.Context, worldID int64) (*WorldRow,
 func publicSettingsOf(cfg *game.WorldConfig) PublicSettings {
 	st := PublicSettings{WorldSpeed: cfg.WorldSpeed, UnitSpeed: cfg.UnitSpeed, MapSize: cfg.MapSize,
 		BeginnerProtectionDays: cfg.BeginnerProtectionDays, LastVillage: cfg.LastVillage, FieldBattles: game.FieldBattlesOn(cfg),
-		DurationMin: cfg.DurationMin, BarbarianDensity: string(cfg.BarbarianDensity), BattleLosses: string(cfg.BattleLosses),
+		BuildPlans: !cfg.NoBuildPlans, AutoFarm: !cfg.NoAutoFarm, DurationMin: cfg.DurationMin, BarbarianDensity: string(cfg.BarbarianDensity), BattleLosses: string(cfg.BattleLosses),
 		BotCount: cfg.BotCount, BotArrival: cfg.BotArrival, RampUpDays: cfg.RampUpDays, Difficulty: string(cfg.Difficulty),
 		BotStance: string(cfg.BotStance), HumanModifiers: cfg.HumanModifiers, BotModifiers: cfg.BotModifiers,
 		SightRadius: game.SightRadiusOf(cfg), NoSight: cfg.NoSight, NoCoins: cfg.NoCoins, OwnedNobleDropMin: cfg.OwnedNobleDropMin,

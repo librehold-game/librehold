@@ -110,6 +110,9 @@ type Command struct {
 	FieldHit bool `json:"fieldHit,omitempty"`
 	// AutoFarm marks an army the auto-farm sent; only its owner sees it.
 	AutoFarm bool `json:"autoFarm,omitempty"`
+	// Farm marks a raid the farm assistant sent (a template or the auto-farm) and its way home; only its owner
+	// sees it.
+	Farm bool `json:"farm,omitempty"`
 	// OwnerID and Research are set when a conquest cuts the army loose from its village: it belongs to this player
 	// from then on, fights with the research it left with, and has no home to come back to.
 	OwnerID  PlayerRef `json:"ownerId,omitempty"`
@@ -356,6 +359,8 @@ type FarmAssistantState struct {
 	AutoFarmEnabled  bool                    `json:"autoFarmEnabled"`
 	AutoFarmVillages []string                `json:"autoFarmVillages"`
 	Filters          FarmFilters             `json:"filters"`
+	// HideOnMap keeps the player's farm raids off their map.
+	HideOnMap bool `json:"hideOnMap,omitempty"`
 }
 
 type TraderOffer struct {

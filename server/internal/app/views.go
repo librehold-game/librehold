@@ -104,6 +104,7 @@ type CommandView struct {
 	Threats        []string             `json:"threats,omitempty"`
 	FieldHit       bool                 `json:"fieldHit,omitempty"`
 	AutoFarm       bool                 `json:"autoFarm,omitempty"`
+	Farm           bool                 `json:"farm,omitempty"`
 	CutLoose       bool                 `json:"cutLoose,omitempty"`
 	OwnerID        game.PlayerRef       `json:"ownerId,omitempty"`
 	Research       *game.Units          `json:"research,omitempty"` // never set: hides the snapshot from every view
@@ -111,7 +112,7 @@ type CommandView struct {
 
 func ownCommand(c *game.Command) CommandView {
 	return CommandView{Command: c, Units: &c.Units, CatapultTarget: c.CatapultTarget, Haul: c.Haul, Intercept: c.Intercept,
-		Threats: c.Threats, FieldHit: c.FieldHit, AutoFarm: c.AutoFarm, CutLoose: c.OwnerID != "", OwnerID: c.OwnerID}
+		Threats: c.Threats, FieldHit: c.FieldHit, AutoFarm: c.AutoFarm, Farm: c.Farm, CutLoose: c.OwnerID != "", OwnerID: c.OwnerID}
 }
 
 func foreignCommand(c *game.Command) CommandView {

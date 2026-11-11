@@ -180,7 +180,7 @@
     },
     "loot5000": {
       "title": "Łupieżca",
-      "description": "Zrabuj łącznie 5 000 surowców — nagroda odblokowuje auto-farmę."
+      "description": "Zrabuj łącznie 5 000 surowców."
     },
     "template_a": {
       "title": "Szablon farmy",
@@ -632,6 +632,8 @@
     "go": "Idź",
     "playerColors": "Kolory graczy",
     "hideOver": "Ukryj wioski >",
+    "showFarm": "Pokaż farmienie",
+    "showFarmHint": "Ataki wysłane z asystenta farmienia i auto-farmy oraz ich powroty",
     "ptsShort": "pkt",
     "help1": "Kliknij wioskę, by otworzyć jej menu (Esc zamyka). Mapę przeciągasz myszą lub palcem, przybliżasz kółkiem albo szczyptą dwoma palcami.",
     "help2": "Osada rośnie z punktami: chata (< 300) → osada z płotem (300) → palisada (1 000) → mur kamienny (3 000) → warownia (9 000) → zamek (11 000).",

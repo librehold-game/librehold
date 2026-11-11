@@ -96,6 +96,8 @@ export interface Command {
   fieldHit?: boolean;
   /** The auto-farm sent the army; only its owner sees this. */
   autoFarm?: boolean;
+  /** A raid the farm assistant sent (a template or the auto-farm), or its way home; only the owner sees it. */
+  farm?: boolean;
   /** Cut loose from its village by a conquest: it can't be recalled and has no home to bring anything back to. */
   cutLoose?: boolean;
   /** The army's owner when it was cut loose; only its owner sees this. */
@@ -354,8 +356,11 @@ export interface WorldConfig {
   rampUpDays: number;
   /** Beginner protection in days since joining the world; 0 = off. */
   beginnerProtectionDays: number;
-  /** Whether a player's last village can be conquered (then the human starts over, the bot drops out). */
-  lastVillage: 'protected' | 'canBeLost';
+  /**
+   * Whether a player's last village can be conquered (then the human starts over, the bot drops out).
+   * "protected" counts for players and bots; "playersOnly" leaves bots' last village conquerable.
+   */
+  lastVillage: 'protected' | 'playersOnly' | 'canBeLost';
   /** Minimum share of strong bots (`DIFFICULTY_FLOOR`). */
   difficulty: Difficulty;
   /** How bots treat the human: peaceful (retaliation / reputation), normal, or everyone against them. */
@@ -363,6 +368,10 @@ export interface WorldConfig {
   paused: boolean;
   /** Field battles are on unless switched off. */
   noFieldBattles?: boolean;
+  /** Build plans are off for the humans of this world (bots keep them). */
+  noBuildPlans?: boolean;
+  /** The auto-farm is off for the humans of this world (bots keep it). */
+  noAutoFarm?: boolean;
   /** Tiles from a village within which a passing army is seen; missing means 1. */
   sightRadius?: number;
   /** Nobody sees other players' armies pass. */
@@ -413,6 +422,8 @@ export interface FarmAssistantState {
   /** Villages with auto-farm enabled. */
   autoFarmVillages: string[];
   filters: FarmFilters;
+  /** The player keeps their farm raids off the map. */
+  hideOnMap?: boolean;
 }
 
 export interface TraderOffer {

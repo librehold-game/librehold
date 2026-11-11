@@ -107,7 +107,7 @@ func TestPublicWorldCardAndEvents(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if pw.Bots != 15 || pw.Ended || pw.Settings.MapSize == 0 || !pw.Settings.FieldBattles {
+	if pw.Bots != 15 || pw.Ended || pw.Settings.MapSize == 0 || !pw.Settings.FieldBattles || !pw.Settings.BuildPlans || !pw.Settings.AutoFarm {
 		t.Fatalf("world %+v", pw)
 	}
 	if len(pw.Events) != 2 || pw.Events[0].WorldID != id || pw.Events[1].WorldID != id {

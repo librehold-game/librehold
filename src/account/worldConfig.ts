@@ -15,10 +15,14 @@ export interface WorldConfig {
   botArrival: 'allAtOnce' | 'rampUp';
   rampUpDays: number;
   beginnerProtectionDays: number;
-  lastVillage: 'protected' | 'canBeLost';
+  lastVillage: 'protected' | 'playersOnly' | 'canBeLost';
   difficulty: 'easy' | 'normal' | 'hard' | 'brutal';
   botStance: 'peacefulRetaliate' | 'peacefulReputation' | 'normal' | 'allAgainstHumans';
   noFieldBattles?: boolean;
+  /** Build plans are off for the humans of this world. */
+  noBuildPlans?: boolean;
+  /** The auto-farm is off for the humans of this world. */
+  noAutoFarm?: boolean;
   sightRadius?: number;
 }
 
@@ -49,11 +53,13 @@ export const FIELDS: FieldSpec[] = [
   { key: 'botArrival', creationOnly: true, choices: ['allAtOnce', 'rampUp'] },
   { key: 'rampUpDays', creationOnly: true, min: L.rampUpDays.min, max: L.rampUpDays.max, step: 1 },
   { key: 'beginnerProtectionDays', creationOnly: false, min: L.beginnerProtectionDays.min, max: L.beginnerProtectionDays.max, step: 1 },
-  { key: 'lastVillage', creationOnly: false, choices: ['protected', 'canBeLost'] },
+  { key: 'lastVillage', creationOnly: false, choices: ['protected', 'playersOnly', 'canBeLost'] },
   { key: 'difficulty', creationOnly: false, choices: ['easy', 'normal', 'hard', 'brutal'] },
   { key: 'botStance', creationOnly: false, choices: ['peacefulRetaliate', 'peacefulReputation', 'normal', 'allAgainstHumans'] },
   { key: 'battleLosses', creationOnly: false, choices: ['normal', 'reduced'] },
   { key: 'noFieldBattles', creationOnly: false, flag: true },
+  { key: 'noBuildPlans', creationOnly: false, flag: true },
+  { key: 'noAutoFarm', creationOnly: false, flag: true },
   // 0 is "no sight", a separate switch in the hosted form.
   { key: 'sightRadius', creationOnly: true, min: 1, max: L.sightRadius.max, step: 1 },
   { key: 'humanModifiers', creationOnly: false, min: L.modifier.min, max: L.modifier.max, step: 0.05 },

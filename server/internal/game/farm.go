@@ -226,7 +226,7 @@ func SendFarmTemplate(w World, actor PlayerID, originID, key string, x, y int) (
 	if !ok || tpl.Units.Total() == 0 {
 		return nil, Rule("emptyTemplate", map[string]any{"key": key})
 	}
-	return SendCommand(w, actor, originID, x, y, tpl.Units, "attack", SendOpts{})
+	return SendCommand(w, actor, originID, x, y, tpl.Units, "attack", SendOpts{Farm: true})
 }
 
 func SendTemplateC(w World, actor PlayerID, originID string, x, y int) (*Command, error) {
@@ -245,7 +245,17 @@ func SendTemplateC(w World, actor PlayerID, originID string, x, y int) (*Command
 	if !ok {
 		return nil, Rule("emptyTemplate", map[string]any{"key": "c"})
 	}
-	return SendCommand(w, actor, originID, x, y, units, "attack", SendOpts{})
+	return SendCommand(w, actor, originID, x, y, units, "attack", SendOpts{Farm: true})
+}
+
+// HideFarmOnMap keeps the player's farm raids, and their ways home, off their map or brings them back.
+func HideFarmOnMap(w World, actor PlayerID, hide bool) error {
+	h := w.Human(actor)
+	if h == nil {
+		return NotOwner("hide-farm-on-map")
+	}
+	h.FarmAssistant.HideOnMap = hide
+	return nil
 }
 
 type FarmFiltersPatch struct {
@@ -291,6 +301,9 @@ func SetAutoFarm(w World, actor PlayerID, enabled bool, villageIDs []string) err
 	if h == nil {
 		return NotOwner("set-auto-farm")
 	}
+	if enabled && w.Config().NoAutoFarm {
+		return Rule("autoFarmOff", nil)
+	}
 	if villageIDs != nil {
 		for _, id := range villageIDs {
 			if v := w.Village(id); v == nil || v.OwnerID != Ref(actor) {
@@ -315,6 +328,9 @@ type autoFarmSend struct {
 
 // AutoFarmTick sends template A from a village to filtered targets, nearest first, while the troops last.
 func AutoFarmTick(w World, actor PlayerID, villageID string) int {
+	if w.Config().NoAutoFarm { // defense in depth: replays and stale schedules must not raid while off
+		return 0
+	}
 	v, h := w.Village(villageID), w.Human(actor)
 	if v == nil || h == nil || v.OwnerID != Ref(actor) {
 		return 0
@@ -343,7 +359,7 @@ func AutoFarmTick(w World, actor PlayerID, villageID string) int {
 			}
 			continue
 		}
-		if _, err := SendCommand(w, actor, villageID, t.X, t.Y, tpl, "attack", SendOpts{AutoFarm: true}); err == nil {
+		if _, err := SendCommand(w, actor, villageID, t.X, t.Y, tpl, "attack", SendOpts{AutoFarm: true, Farm: true}); err == nil {
 			sent++
 			w.LogAction(ActorOf(w.Player(actor)), false, "auto-farm-send", autoFarmSend{OriginID: villageID, X: t.X, Y: t.Y, Units: tpl})
 		}
@@ -353,8 +369,30 @@ func AutoFarmTick(w World, actor PlayerID, villageID string) int {
 
 func autoFarmActive(w World, actor PlayerID, villageID string) bool {
 	h, v := w.Human(actor), w.Village(villageID)
-	return h != nil && v != nil && v.OwnerID == Ref(actor) && h.FarmAssistant.AutoFarmEnabled && autoFarmUnlocked(w, actor) &&
-		slices.Contains(h.FarmAssistant.AutoFarmVillages, villageID)
+	return h != nil && v != nil && v.OwnerID == Ref(actor) && !w.Config().NoAutoFarm && h.FarmAssistant.AutoFarmEnabled &&
+		autoFarmUnlocked(w, actor) && slices.Contains(h.FarmAssistant.AutoFarmVillages, villageID)
+}
+
+// SyncFeatureToggles runs after the world's feature switches changed: with auto-farming switched off it turns it
+// off for every human, and with build plans off it drops the plans humans have waiting. Neither is suspended: the
+// player must set it up again once the host re-enables the feature, so nothing starts on its own when it comes back.
+func SyncFeatureToggles(w World) {
+	for _, p := range w.Players() {
+		if !p.IsHuman {
+			continue
+		}
+		if w.Config().NoBuildPlans {
+			clearBuildPlans(w, p.ID)
+		}
+		h := w.Human(p.ID)
+		if h == nil {
+			continue
+		}
+		if w.Config().NoAutoFarm && h.FarmAssistant.AutoFarmEnabled {
+			h.FarmAssistant.AutoFarmEnabled = false // cancel every tick; the setting is gone until the player re-enables it
+		}
+		SyncAutoFarm(w, p.ID)
+	}
 }
 
 func scheduleAutoFarm(w World, villageID string) { scheduleAutoFarmTick(w, "autofarm:", villageID) }

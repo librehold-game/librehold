@@ -115,6 +115,8 @@
       "humanModifiers": "Mnożniki ludzi",
       "botModifiers": "Mnożniki botów",
       "noFieldBattles": "Bez bitew w polu",
+      "noBuildPlans": "Bez planów budowy",
+      "noAutoFarm": "Bez auto-farmy",
       "sightRadius": "Zasięg wzroku (pola)"
     },
     "choice": {
@@ -128,7 +130,8 @@
         "rampUp": "stopniowo"
       },
       "lastVillage": {
-        "protected": "chroniona",
+        "protected": "chroniona dla graczy i botów",
+        "playersOnly": "chroniona dla graczy (nie dla botów)",
         "canBeLost": "można stracić"
       },
       "difficulty": {

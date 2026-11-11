@@ -40,9 +40,13 @@ func (w *MemWorld) Clone() *MemWorld {
 	c := *w
 	c.state = *cloneJSON(&w.state)
 	c.villages = cloneMap(w.villages)
-	c.grid = make(map[[2]int][]string, len(w.grid))
-	for cell, ids := range w.grid {
-		c.grid[cell] = slices.Clone(ids)
+	c.byID = make([]*game.Village, len(w.byID))
+	c.grid = make(map[[2]int][]*game.Village, len(w.grid))
+	for i, v := range w.byID {
+		cv := c.villages[v.ID]
+		c.byID[i] = cv
+		cell := gridCell(cv.X, cv.Y)
+		c.grid[cell] = append(c.grid[cell], cv)
 	}
 	c.players = cloneMap(w.players)
 	for id, p := range w.players {

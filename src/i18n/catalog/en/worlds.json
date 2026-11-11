@@ -24,6 +24,8 @@
         "protection": "Beginner protection",
         "lastVillage": "Last village",
         "fieldBattles": "Field battles",
+        "buildPlans": "Build plans",
+        "autoFarm": "Auto-farming",
         "duration": "Game length",
         "seats": "Player seats",
         "dominationShare": "Ends early at village share",
@@ -45,7 +47,8 @@
         "other": "# days"
       },
       "lastVillage": {
-        "protected": "cannot be lost",
+        "protected": "cannot be lost (players and bots)",
+        "playersOnly": "cannot be lost for players (bots' last village excepted)",
         "canBeLost": "can be lost"
       },
       "yes": "on",

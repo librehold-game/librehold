@@ -74,6 +74,12 @@ func ClampWorldConfig(cfg game.WorldConfig) game.WorldConfig {
 	cfg.RampUpDays = clamp(cfg.RampUpDays, l.RampUpDays)
 	cfg.BeginnerProtectionDays = clamp(cfg.BeginnerProtectionDays, l.BeginnerProtectionDays)
 	cfg.SightRadius = clamp(cfg.SightRadius, l.SightRadius)
+	// Fall back to "protected" if a request sends an unknown value; it is the safest default.
+	switch cfg.LastVillage {
+	case "protected", "playersOnly", "canBeLost":
+	default:
+		cfg.LastVillage = "protected"
+	}
 	return cfg
 }
 
@@ -132,7 +138,7 @@ func (s *Service) Worlds(ctx context.Context, actor *Account) ([]WorldSummary, e
 type WorldSettingsPatch map[string]json.RawMessage
 
 var changeableSettings = []string{"worldSpeed", "unitSpeed", "humanModifiers", "botModifiers", "battleLosses",
-	"beginnerProtectionDays", "lastVillage", "difficulty", "botStance", "noFieldBattles"}
+	"beginnerProtectionDays", "lastVillage", "difficulty", "botStance", "noFieldBattles", "noBuildPlans", "noAutoFarm"}
 
 // UpdateWorldSettings changes the settings that may change in a running world. Every stored village is
 // settled at the old pace first; timers already running keep their end times.
@@ -171,6 +177,7 @@ func applySettings(w WorldTx, now int64, patch WorldSettingsPatch) error {
 		game.Touch(w, w.Village(ref.ID))
 	}
 	w.Row().Config = cfg
+	game.SyncFeatureToggles(w) // cancel or re-schedule human auto-farm ticks for the toggles
 	w.LogAction(actorAdmin, false, "settings", patch)
 	return nil
 }

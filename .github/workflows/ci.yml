@@ -74,8 +74,8 @@ jobs:
       - name: gofmt
         run: test -z "$(gofmt -l .)" || { gofmt -l .; exit 1; }
       - run: go vet ./...
-      # The Postgres tests start their own container through testcontainers. The game package's bot simulations take
-      # 4 to 8 minutes on a runner, too close to go test's default limit of 10.
+      # The Postgres tests start their own container through testcontainers. The game package's bot simulations are
+      # the slowest part, and runners differ up to threefold in speed, so the limit stays above go test's default of 10.
       - run: go test -timeout 20m ./...
       - run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
 
