@@ -84,18 +84,30 @@ function awayByHome(state: GameState): AwayByHome {
   return commandIndex(state).byHome;
 }
 
-/** A village's units away from home: on the move + stationed as support elsewhere. */
-export function unitsAway(state: GameState, villageId: string): Record<UnitId, number> {
-  const out = {} as Record<UnitId, number>;
-  for (const u of UNIT_IDS) out[u] = 0;
-  const moving = awayByHome(state).get(villageId);
-  if (moving) for (const [u, n] of Object.entries(moving) as [UnitId, number][]) out[u] += n;
+/**
+ * A village's units away from home, in two parts: on the move (attacks, support on its way, armies coming back) and
+ * stationed as support in the owner's other villages. Support only goes to one's own villages, so this is all of them.
+ */
+export function unitsAwayParts(state: GameState, villageId: string): { moving: Record<UnitId, number>; supporting: Record<UnitId, number> } {
+  const moving = {} as Record<UnitId, number>;
+  const supporting = {} as Record<UnitId, number>;
+  for (const u of UNIT_IDS) moving[u] = supporting[u] = 0;
+  const onTheMove = awayByHome(state).get(villageId);
+  if (onTheMove) for (const [u, n] of Object.entries(onTheMove) as [UnitId, number][]) moving[u] += n;
   const ownerId = state.villages[villageId]?.ownerId;
   for (const id of ownerId ? state.players[ownerId]?.villageIds ?? [] : []) {
     const sup = state.villages[id]?.supportFrom[villageId];
     if (!sup) continue;
-    for (const u of UNIT_IDS) out[u] += sup[u] ?? 0;
+    for (const u of UNIT_IDS) supporting[u] += sup[u] ?? 0;
   }
+  return { moving, supporting };
+}
+
+/** A village's units away from home: on the move + stationed as support elsewhere. */
+export function unitsAway(state: GameState, villageId: string): Record<UnitId, number> {
+  const { moving, supporting } = unitsAwayParts(state, villageId);
+  const out = {} as Record<UnitId, number>;
+  for (const u of UNIT_IDS) out[u] = moving[u] + supporting[u];
   return out;
 }
 
