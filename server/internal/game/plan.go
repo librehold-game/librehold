@@ -68,6 +68,9 @@ func SetBuildPlan(w World, actor PlayerID, villageID string, steps []BuildingID)
 	if err != nil {
 		return err
 	}
+	if w.Config().NoBuildPlans {
+		return Rule("buildPlansOff", nil)
+	}
 	if len(v.BuildPlan)+len(steps) > maxPlanSteps {
 		return Rule("planTooLong", map[string]any{"max": maxPlanSteps})
 	}
@@ -87,6 +90,15 @@ func ClearBuildPlan(w World, actor PlayerID, villageID string) error {
 	v.BuildPlan = nil
 	w.Unschedule("plan:" + villageID)
 	return nil
+}
+
+// clearBuildPlans drops every plan a human has waiting and takes their feed ticks off the grid: while the host's
+// switch is off no plan may exist, or it would start building on its own the moment the feature comes back.
+func clearBuildPlans(w World, actor PlayerID) {
+	for _, v := range PlayerVillages(w, actor) {
+		v.BuildPlan = nil
+		w.Unschedule("plan:" + v.ID)
+	}
 }
 
 // schedulePlan: a plan tries to send its next step every PlanBalance.FeedIntervalMs (grid offset per village).

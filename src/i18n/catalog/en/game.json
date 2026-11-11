@@ -156,7 +156,7 @@
     },
     "loot5000": {
       "title": "Raider",
-      "description": "Loot 5,000 resources in total — the reward unlocks auto-farming."
+      "description": "Loot 5,000 resources in total."
     },
     "template_a": {
       "title": "Farm template",
@@ -685,6 +685,7 @@
     "inPlan": "In the plan: {n} steps · next: {next}",
     "clear": "Clear",
     "clickToRemove": "Click to remove",
+    "removeStep": "Remove step {n}: {building}",
     "addSteps": "Add steps with the buttons above.",
     "save": "Save template",
     "cancel": "Cancel"

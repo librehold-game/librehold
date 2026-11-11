@@ -64,6 +64,8 @@
     "questClaimed": "The reward was already collected",
     "templateKey": "Unknown template",
     "planTooLong": "A build plan holds at most {max} steps",
+    "buildPlansOff": "Build plans are switched off in this world",
+    "autoFarmOff": "Auto-farming is switched off in this world",
     "tooManyTemplates": "You can keep at most {max} templates",
     "tooManyGroups": "You can keep at most {max} groups",
     "tooManyScheduled": "You can have at most {max} sends scheduled",

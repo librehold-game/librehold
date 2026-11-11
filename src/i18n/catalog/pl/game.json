@@ -180,7 +180,7 @@
     },
     "loot5000": {
       "title": "Łupieżca",
-      "description": "Zrabuj łącznie 5 000 surowców — nagroda odblokowuje auto-farmę."
+      "description": "Zrabuj łącznie 5 000 surowców."
     },
     "template_a": {
       "title": "Szablon farmy",
@@ -717,6 +717,7 @@
     "inPlan": "W planie: {n} kroków · najbliższe: {next}",
     "clear": "Wyczyść",
     "clickToRemove": "Kliknij, aby usunąć",
+    "removeStep": "Usuń krok {n}: {building}",
     "addSteps": "Dodaj kroki przyciskami powyżej.",
     "save": "Zapisz szablon",
     "cancel": "Anuluj"
