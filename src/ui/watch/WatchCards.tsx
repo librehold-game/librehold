@@ -5,9 +5,12 @@ import type { CommandView, PlayerRow, PublicPlayer, SpectatorState, WatchedVilla
 import { BotTag } from '../components/BotTag';
 import { formatCoords, formatDuration, formatNumber } from '../format';
 
-/** Whose army it is: a return belongs to the village it goes home to, any other army to the one it left. */
+/**
+ * Whose army it is: a return belongs to the village it goes home to, any other army to the one it left; an army cut
+ * loose from its village belongs to its own owner.
+ */
 export function armyOwnerId(c: CommandView, villageOwner: (id: string) => string): string {
-  return villageOwner(c.type === 'return' ? c.targetId : c.originId);
+  return c.ownerId ?? villageOwner(c.type === 'return' ? c.targetId : c.originId);
 }
 
 /** A village or field point as the god view names it: its owner, or barbarians, with its coordinates. */

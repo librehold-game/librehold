@@ -18,7 +18,8 @@ const running = { id: 41, name: 'Game #41', gameNumber: 41, instant: true, statu
 const world = {
   ...long, ended: false,
   settings: { worldSpeed: 8, unitSpeed: 1, mapSize: 200, beginnerProtectionDays: 7, lastVillage: 'protected', fieldBattles: true,
-    barbarianDensity: 'normal', battleLosses: 'normal', botCount: 30, botArrival: 'allAtOnce', difficulty: 'normal', botStance: 'normal',
+    buildPlans: true, autoFarm: true, barbarianDensity: 'normal', battleLosses: 'normal', botCount: 30, botArrival: 'allAtOnce', difficulty: 'normal',
+    botStance: 'normal',
     humanModifiers: { resources: 1, recruitment: 1, building: 1 }, botModifiers: { resources: 1, recruitment: 1, building: 1 }, sightRadius: 1 },
   events: [{ at: now - 60_000 * 5, kind: 'conquest', worldId: 3, worldName: 'Kraina', instant: false, attacker: 'Ala', defender: 'Wolf',
     attackerBot: false, defenderBot: true, x: 1, y: 2 }],

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
 import { UNITS } from '../../data/units.data';
-import { canCancelCommand, commandHome, playerCommands, type SendBlocker, type SendCheck, type UnitCounts } from '../../engine/commands';
+import { canCancelCommand, commandHome, isOwnCommand, playerCommands, type SendBlocker, type SendCheck, type UnitCounts } from '../../engine/commands';
 import { checkSendClient } from './rallyCheck';
 import { HUMAN_ID, UNIT_IDS, type BuildingId, type Command, type UnitId } from '../../engine/types';
 import { selectActiveVillage, useGameStore } from '../../state/gameStore';
@@ -111,6 +111,7 @@ function SendTab() {
   const parsed = check ? (JSON.parse(check) as { attack: SendCheck; support: SendCheck; now: number }) : null;
 
   const available = UNIT_IDS.filter((u) => have[u] > 0 || (counts[u] ?? 0) > 0);
+  const maxLoot = UNIT_IDS.reduce((sum, u) => sum + (counts[u] ?? 0) * UNITS[u].haul, 0);
   const setCount = (u: UnitId, n: number) => setCounts((c) => ({ ...c, [u]: Math.max(0, Math.min(have[u], Math.floor(n) || 0)) }));
 
   const at = mode === 'now' || !parsed ? null : parseLocalTime(origin, parsed.now, whenDate, whenTime);
@@ -180,6 +181,7 @@ function SendTab() {
             <div><RichText text={t('rally.distance', { n: parsed.attack.distance.toFixed(1) })} /></div>
             <div>{t('rally.travel')} <strong className="tabular-nums">{formatDuration(parsed.attack.travelMs)}</strong></div>
             <div>{t('rally.arrival')} <span className="tabular-nums">{clock.at(parsed.now + parsed.attack.travelMs)}</span></div>
+            {maxLoot > 0 && <div><RichText text={t('rally.maxLoot', { n: formatNumber(maxLoot) })} /></div>}
             {parsed.attack.isScoutMission && <div className="text-muted">{t('rally.scoutMission')}</div>}
             <div className="flex items-center gap-2 flex-wrap pt-1">
               <label htmlFor="rally-mode">{t('rally.when')}</label>
@@ -231,7 +233,7 @@ function CommandRow({ cmd }: { cmd: Command }) {
       o: ends.from,
       t: ends.to,
       canCancel: canCancelCommand(g, cmd) && o !== undefined && isHumanVillage(o),
-      incoming: o !== undefined && !isHumanVillage(o) && to !== undefined && isHumanVillage(to),
+      incoming: !isOwnCommand(g, cmd) && to !== undefined && isHumanVillage(to),
     });
   });
   const { o, t: to, canCancel, incoming } = JSON.parse(names) as { o: string; t: string; canCancel: boolean; incoming: boolean };
@@ -246,7 +248,7 @@ function CommandRow({ cmd }: { cmd: Command }) {
       <td data-label={t('rally.col.units')}><UnitCountList units={cmd.units} /></td>
       <td className="tabular-nums" data-label={t('rally.col.arrives')}><Countdown until={cmd.arrivesAt} /><div className="text-[10px] text-muted">{clock.at(cmd.arrivesAt)}</div></td>
       <td className="stack-inline">
-        {cmd.type !== 'return' && cmd.type !== 'intercept' && !incoming && (
+        {cmd.type !== 'return' && cmd.type !== 'intercept' && !cmd.cutLoose && !incoming && (
           <button className="btn" disabled={!canCancel} title={canCancel ? t('rally.turnBack') : t('rally.cancelWindow')} onClick={() => cancel(cmd.id)}>{t('rally.recall')}</button>
         )}
       </td>
@@ -259,7 +261,7 @@ function CommandsTab() {
   const activeId = useGameStore((s) => selectActiveVillage(s).id);
   const json = useGameStore((s) => {
     const g = s.game!;
-    const list = playerCommands(g).filter((c) => !onlyActive || c.originId === activeId || c.targetId === activeId || commandHome(c) === activeId);
+    const list = playerCommands(g).filter((c) => !onlyActive || (c.cutLoose && c.ownerId === HUMAN_ID) || (c.originId === activeId && isOwnCommand(g, c)) || c.targetId === activeId || commandHome(c) === activeId);
     return JSON.stringify([...list].sort((a, b) => a.arrivesAt - b.arrivesAt));
   });
   const cmds = JSON.parse(json) as Command[];

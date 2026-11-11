@@ -13,13 +13,15 @@ import { formatNumber } from '../format';
 
 function RewardLabel({ reward }: { reward: QuestReward }) {
   const t = useT();
+  // The auto-farm unlock is only a real prize in worlds where the host left it on.
+  const autoFarmOff = useGameStore((s) => !!s.game!.config.noAutoFarm);
   return (
     <span className="inline-flex items-center gap-2 flex-wrap">
       {reward.resources && RESOURCES.filter((r) => reward.resources![r] > 0).map((r) => (
         <span key={r} className="inline-flex items-center gap-0.5 tabular-nums"><ResourceIcon r={r} size={14} />{formatNumber(reward.resources![r])}</span>
       ))}
       {reward.buildQueueSlot && <span className="text-ok font-semibold">{t('quests.slot')}</span>}
-      {reward.autoFarm && <span className="text-ok font-semibold">{t('quests.autoFarm')}</span>}
+      {reward.autoFarm && !autoFarmOff && <span className="text-ok font-semibold">{t('quests.autoFarm')}</span>}
     </span>
   );
 }

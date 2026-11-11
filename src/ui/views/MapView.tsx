@@ -22,7 +22,7 @@ import { UnitCountList } from '../components/UnitCountList';
 import { PopIcon, ResourceIcon } from '../components/ResourceIcon';
 import { Countdown } from '../components/Countdown';
 import type { VillageIntel, WorldConfig } from '../../engine/types';
-import { playerCommands } from '../../engine/commands';
+import { isOwnCommand, playerCommands } from '../../engine/commands';
 import { armiesOnMap, hiddenFarm, type MapArmy } from '../map/armies';
 import { gameArmyClock } from '../map/gameArmyClock';
 import { TileMap, ZOOM_MAX, type Dot, type TileMapView } from '../map/TileMap';
@@ -32,7 +32,7 @@ import { bonusLabel } from '../map/villageInfo';
 import { MapHoverCard, type MapHover } from '../map/MapHoverCard';
 import { VillageQuickActions } from '../map/VillageQuickActions';
 import { villageInfo, type VillageInfo } from '../map/villageInfo';
-import { isHumanVillage, humanVillageIds } from '../../engine/players';
+import { isHumanVillage } from '../../engine/players';
 import { NumberInput } from '../../shared/NumberInput';
 
 
@@ -89,7 +89,7 @@ const selectCommandDots = (s: GameStore): string => {
   const out: Record<string, Dot> = {};
   for (const c of playerCommands(g)) {
     if (hiddenFarm(g, c)) continue;
-    const kind: Dot = c.type === 'attack' ? (humanVillageIds(g).includes(c.originId) ? 'a' : 'i') : c.type === 'support' ? 's' : c.type === 'return' ? 'r' : 't';
+    const kind: Dot = c.type === 'attack' ? (isOwnCommand(g, c) ? 'a' : 'i') : c.type === 'support' ? 's' : c.type === 'return' ? 'r' : 't';
     const prev = out[c.targetId];
     if (!prev || DOT_PRIORITY[kind] > DOT_PRIORITY[prev]) out[c.targetId] = kind;
   }

@@ -21,7 +21,8 @@ func EndByHost(w World) {
 	endWorld(w, "host", topPlayer(w))
 }
 
-// KickPlayer sends an active human away: they quit, and their villages turn barbarian at once.
+// KickPlayer sends an active human away: they quit, their villages turn barbarian at once, and the armies cut
+// loose from their villages are lost.
 func KickPlayer(w World, id PlayerID) {
 	p := w.Player(id)
 	if p == nil || !p.IsHuman || p.Status != StatusActive {
@@ -31,5 +32,6 @@ func KickPlayer(w World, id PlayerID) {
 	for _, v := range PlayerVillages(w, id) {
 		TransferVillage(w, v, "", "")
 	}
+	dropLooseArmies(w, id)
 	w.Unschedule("abandon:" + id)
 }

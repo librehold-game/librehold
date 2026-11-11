@@ -17,6 +17,7 @@ func (u *uow) touchCommand(c *game.Command) {
 			u.touch(v.OwnerID)
 		}
 	}
+	u.touch(c.OwnerID)
 }
 
 // loadCommands tracks the stored commands matching where (on $2) that are not tracked yet.
@@ -126,7 +127,13 @@ func (u *uow) DeleteCommand(id string) {
 func (u *uow) flushCommands(b *pgx.Batch) {
 	wid := u.row.ID
 	owners := func(c *game.Command) {
-		for _, vid := range []string{c.OriginID, c.TargetID} {
+		villages := []string{c.OriginID, c.TargetID}
+		// An army cut loose from its village is its owner's, not the origin's.
+		if c.OwnerID != "" {
+			villages = []string{c.TargetID}
+			u.changed.CommandOwners = append(u.changed.CommandOwners, c.OwnerID)
+		}
+		for _, vid := range villages {
 			if v := u.Village(vid); v != nil {
 				u.changed.CommandOwners = append(u.changed.CommandOwners, v.OwnerID)
 			}

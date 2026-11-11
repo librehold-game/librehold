@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { travelTimeForUnits, type UnitCounts } from '../../engine/commands';
+import { isOwnCommand, travelTimeForUnits, type UnitCounts } from '../../engine/commands';
 import { incomingTrains, labelIncoming, type IncomingLabel } from '../../engine/incoming';
 import { useT } from '../../i18n/i18n';
 import { villageName } from '../../i18n/names';
 import { villageLabelOf } from '../villageName';
-import { humanVillages, isHumanVillage } from '../../engine/players';
+import { humanVillages } from '../../engine/players';
 import type { UnitId } from '../../engine/types';
 import { useGameStore } from '../../state/gameStore';
 import { formatCoords } from '../format';
@@ -23,7 +23,7 @@ export function IncomingList({ villageId }: { villageId: string }) {
     const g = s.game!;
     const trains = incomingTrains(g, villageId);
     const rows: Row[] = g.commands
-      .filter((c) => c.type === 'attack' && c.targetId === villageId && !(g.villages[c.originId] && isHumanVillage(g.villages[c.originId]!)))
+      .filter((c) => c.type === 'attack' && c.targetId === villageId && !isOwnCommand(g, c))
       .sort((a, b) => a.arrivesAt - b.arrivesAt)
       .map((c) => {
         const at = coordsOfVillageId(c.originId);

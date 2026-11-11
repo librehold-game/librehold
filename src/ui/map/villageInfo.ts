@@ -15,6 +15,7 @@ import type { Intel } from '../../net/types';
 import { distance } from '../../engine/world';
 import { tileAt } from './tiles';
 import { isHumanVillage, humanVillageIds } from '../../engine/players';
+import { isOwnCommand } from '../../engine/commands';
 
 export interface ReportBrief {
   id: string;
@@ -126,11 +127,11 @@ export function villageInfo(state: GameState, x: number, y: number, fromId: stri
   if (v && isHumanVillage(v)) {
     let incoming = 0, firstAt: number | null = null, outgoing = 0;
     for (const c of state.commands) {
-      if (c.targetId === id && c.type === 'attack' && !player.has(c.originId)) {
+      if (c.targetId === id && c.type === 'attack' && !isOwnCommand(state, c)) {
         incoming++;
         if (firstAt === null || c.arrivesAt < firstAt) firstAt = c.arrivesAt;
       }
-      if (c.originId === id && (c.type === 'attack' || c.type === 'support')) outgoing++;
+      if (c.originId === id && (c.type === 'attack' || c.type === 'support') && !c.cutLoose) outgoing++;
     }
     const job = v.buildQueue[0];
     return {
@@ -152,10 +153,10 @@ export function villageInfo(state: GameState, x: number, y: number, fromId: stri
   const ours: CommandBrief[] = [];
   let threat: ForeignVillageInfo['threat'] = null;
   for (const c of state.commands) {
-    if (c.targetId === id && player.has(c.originId) && (c.type === 'attack' || c.type === 'support' || c.type === 'trade')) {
+    if (c.targetId === id && isOwnCommand(state, c) && (c.type === 'attack' || c.type === 'support' || c.type === 'trade')) {
       ours.push({ id: c.id, kind: c.type, arrivesAt: c.arrivesAt, units: countUnits(c.units) });
     }
-    if (c.originId === id && c.type === 'attack' && player.has(c.targetId) && (!threat || c.arrivesAt < threat.arrivesAt)) {
+    if (c.originId === id && c.type === 'attack' && player.has(c.targetId) && !isOwnCommand(state, c) && (!threat || c.arrivesAt < threat.arrivesAt)) {
       threat = { arrivesAt: c.arrivesAt, targetId: c.targetId, targetName: state.villages[c.targetId]?.name ?? c.targetId, units: countUnits(c.units) };
     }
   }

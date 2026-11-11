@@ -38,3 +38,16 @@ func ReportVillageOf(w World, id string) ReportVillage {
 	}
 	return rv
 }
+
+// armyVillage is the village an army set out from or belongs to, named for the army's owner once it was cut loose
+// from its village.
+func armyVillage(w World, c *Command, villageID string) ReportVillage {
+	rv := ReportVillageOf(w, villageID)
+	if c.OwnerID != "" {
+		rv.OwnerID, rv.OwnerName, rv.OwnerIsBot = PlayerID(c.OwnerID), "", false
+		if p := w.Player(rv.OwnerID); p != nil {
+			rv.OwnerName, rv.OwnerIsBot = p.Name, !p.IsHuman
+		}
+	}
+	return rv
+}

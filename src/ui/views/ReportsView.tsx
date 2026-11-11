@@ -131,6 +131,7 @@ function ReportDetail({ id, onBack }: { id: string; onBack: () => void }) {
           <span className="text-muted">{formatNumber(haulSum)} / {formatNumber(r.haulCapacity ?? 0)} {r.haulCapacity && haulSum >= r.haulCapacity ? t('reports.fullLoad') : t('reports.partialLoot')}</span>
         </div>
       )}
+      {!r.haul && r.noHome && <div className="panel p-2">{t('reports.noHome')}</div>}
       {r.loyaltyBefore !== undefined && (
         <div className="panel p-2">{t('reports.loyalty')} {r.loyaltyBefore} → <strong>{r.loyaltyAfter}</strong>{r.conquered ? t('reports.villageTaken') : ''}</div>
       )}
@@ -221,7 +222,7 @@ export function ReportsView() {
             {rows.map((r) => (
               <tr key={r.id} className={`cursor-pointer ${r.read ? 'text-muted' : 'font-semibold'}`} onClick={() => { markRead(r.id); setSelected(r.id); }}>
                 <td className="text-center w-8 stack-inline"><PixelIcon name={r.icon} size={16} /></td>
-                <td className="stack-inline">{r.o} → {r.t}{r.autoFarm && <AutoFarmTag />}</td>
+                <td className="stack-inline"><button type="button" className="cursor-pointer text-left hover:underline focus:underline">{r.o} → {r.t}</button>{r.autoFarm && <AutoFarmTag />}</td>
                 <td className="tabular-nums" data-label={t('reports.colLoot')}>{r.haul !== null ? `${formatNumber(r.haul)}${r.cap ? ` / ${formatNumber(r.cap)}` : ''}` : '—'}</td>
                 <td className="tabular-nums whitespace-nowrap" data-label={t('reports.colTime')}>{clock.at(r.time)}</td>
               </tr>

@@ -62,11 +62,14 @@ describe('hosting from the lobby', () => {
     render(<LobbyPage me={ala} onClaimed={() => {}} />);
     fireEvent.click(await screen.findByRole('button', { name: 'Host a game' }));
     expect((screen.getByLabelText('Name') as HTMLInputElement).value).toBe("ala's game");
+    for (const label of ['Build plans are on', 'Auto-farming is on']) {
+      expect((screen.getByLabelText(label) as HTMLInputElement).checked).toBe(true);
+    }
     fireEvent.click(screen.getByRole('button', { name: 'Create the game' }));
     await waitFor(() => expect(posted('POST /api/v1/hosted')).toBeTruthy());
     expect(posted('POST /api/v1/hosted')!.body).toMatchObject({
       name: "ala's game", durationMin: 60, seats: 10, bots: 3, sightRadius: 5, dominationPct: 60, lateJoinMin: 10,
-      fieldBattles: true, startVillage: 'grown', barbarians: 'normal', registeredOnly: false,
+      fieldBattles: true, buildPlans: true, autoFarm: true, startVillage: 'grown', barbarians: 'normal', registeredOnly: false,
     });
     const link = await screen.findByLabelText('Invite link');
     expect((link as HTMLInputElement).value).toBe(`${location.origin}/join/abcdefghijklmnopqrst`);

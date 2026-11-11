@@ -156,7 +156,7 @@
     },
     "loot5000": {
       "title": "Raider",
-      "description": "Loot 5,000 resources in total — the reward unlocks auto-farming."
+      "description": "Loot 5,000 resources in total."
     },
     "template_a": {
       "title": "Farm template",
@@ -685,6 +685,7 @@
     "inPlan": "In the plan: {n} steps · next: {next}",
     "clear": "Clear",
     "clickToRemove": "Click to remove",
+    "removeStep": "Remove step {n}: {building}",
     "addSteps": "Add steps with the buttons above.",
     "save": "Save template",
     "cancel": "Cancel"
@@ -934,6 +935,7 @@
     "loot": "Loot:",
     "fullLoad": "— full load",
     "partialLoot": "— partial loot",
+    "noHome": "Nothing was taken: the village the attackers set out from was conquered, so they have no home to carry loot to.",
     "loyalty": "Loyalty:",
     "villageTaken": " — village taken",
     "resources": "Resources:",
@@ -1072,6 +1074,7 @@
     "distance": "Distance: <b>{n}</b> fields",
     "travel": "Travel time:",
     "arrival": "Arrival:",
+    "maxLoot": "Loot: up to <b>{n}</b> resources",
     "scoutMission": "A scouting mission (scouts only).",
     "when": "When:",
     "mode": {

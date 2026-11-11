@@ -17,8 +17,8 @@ export interface LobbyView {
 export interface HostForm {
   name: string; durationMin: number; seats: number; bots: number; worldSpeed: number; unitSpeed: number;
   startVillage: 'grown' | 'fresh'; barbarians: 'few' | 'normal' | 'many'; difficulty: string; botStance: string;
-  fieldBattles: boolean; sightRadius: number; protectionMin: number; dominationPct: number; lateJoinMin: number;
-  registeredOnly: boolean;
+  fieldBattles: boolean; buildPlans: boolean; autoFarm: boolean; sightRadius: number; protectionMin: number; dominationPct: number;
+  lateJoinMin: number; registeredOnly: boolean;
 }
 export interface HostLimits { canHost: boolean; maxSeats: number; maxBots: number; full: boolean }
 export interface HostSettings { maxSeats: number; maxBots: number }
@@ -58,7 +58,7 @@ export interface PublicWorldList { running: PublicWorldCard[]; long: PublicWorld
 export interface SideModifiers { resources: number; recruitment: number; building: number }
 export interface PublicSettings {
   worldSpeed: number; unitSpeed: number; mapSize: number; beginnerProtectionDays: number; lastVillage: string;
-  fieldBattles: boolean; durationMin?: number;
+  fieldBattles: boolean; buildPlans: boolean; autoFarm: boolean; durationMin?: number;
   barbarianDensity: string; battleLosses: string; botCount: number; botArrival: string; rampUpDays?: number;
   difficulty: string; botStance: string; humanModifiers: SideModifiers; botModifiers: SideModifiers;
   sightRadius: number; noSight?: boolean;

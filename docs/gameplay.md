@@ -101,8 +101,12 @@ and marches in progress finish at their own times.
 | Human / bot multipliers | ×1 (resources, recruitment, building) | 0.25–10 | editable |
 | Battle losses, difficulty, bots towards humans | normal, normal, normal | normal/reduced; easy–brutal; four stances | editable |
 | Field battles | on | on/off | editable |
+| Build plans, auto-farming | on | on/off | editable |
 | Sight range (passing armies) | 1 tile | 1–10 | at creation only |
 
+- Build plans and auto-farming are switches over the humans of a world; bots keep playing as they do. Switching one
+  off clears what the players have, it does not pause it: their build plans are dropped and stop feeding, and their
+  auto-farming is turned off. A player sets it up again once the switch is back on, so nothing starts on its own.
 - With "gradually", bots join at the edge of the occupied area with a basic village — a message goes to Rumours.
 - Protection: a protected player cannot be attacked or scouted; a protected player can only attack barbarians.
 - Last village "protected": nobles lower loyalty to 1 at most. "Can be lost": the player is out, and a human starts
@@ -142,9 +146,11 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
 - **War.** Moods (build-up → campaign → consolidation), targets from public data and report memory; operations:
   takeover with a full train from several villages (clear + up to 4 hetmans, every 100 ms for strong bots and with
   fakes), demolition, farming a weaker player, harassment. Strong bots land in the target's offline window and learn
-  its habits (e.g. its dodge rhythm). After a village is taken, the previous owner's troops outside it (marching,
-  returning, as support) are lost, and an attack that reaches a village that is already its own (e.g. the next hetman
-  of a train) stays there as support.
+  its habits (e.g. its dodge rhythm). After a village is taken, the previous owner's support from it and troops walking
+  home to it are lost; attacks and interceptions already on their way are cut loose: they still fight for their sender
+  with the research they left with, take no loot, and are lost after the battle. An attack that reaches a village that
+  is already its own (e.g. the next hetman of a train) stays there as support, unless it was cut loose: then it is
+  lost.
 - **Defence.** Stacking support when it arrives in time and will hold; otherwise a dodge; strong bots snipe noble
   trains. A weak bot "doesn't notice" some attacks.
 - **Quitting.** Being overwhelmed (village losses, attacks) fades over time; past a threshold a medium or strong

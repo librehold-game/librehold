@@ -346,28 +346,54 @@ func sameWorld(t *testing.T, a, b *gametest.MemWorld) bool {
 }
 
 func TestTakenVillageTroopsAwayVanish(t *testing.T) {
-	w, home := gametest.NewTestWorld(47)
-	x := gametest.MakeBotVillage(w, home)
-	y := gametest.MakeBotVillage(w, home)
-	x.Units[game.UAxe] = 100
-	bx, by := gametest.NearestBarbarianXY(w, home)
-	if _, err := game.SendCommand(w, "bot_test", x.ID, bx, by, game.UnitCounts{game.UAxe: 100}, "attack", game.SendOpts{}); err != nil {
-		t.Fatal(err)
+	// A village of bot_test with support on its way to its other village y, troops walking home, support stationed
+	// in y, merchants on the road and an attack on a barbarian.
+	setup := func(t *testing.T) (w *gametest.MemWorld, home, x, y *game.Village, gone []*game.Command, trade, attack *game.Command) {
+		t.Helper()
+		w, home = gametest.NewTestWorld(47)
+		x, y = gametest.MakeBotVillage(w, home), gametest.MakeBotVillage(w, home)
+		x.Units[game.UAxe], x.Units[game.USpear] = 100, 10
+		bx, by := gametest.NearestBarbarianXY(w, home)
+		attack = mustSend(t, w, x, bx, by, game.UnitCounts{game.UAxe: 100}, "attack")
+		gone = append(gone, mustSend(t, w, x, y.X, y.Y, game.UnitCounts{game.USpear: 10}, "support"))
+		gone = append(gone, game.CreateReturn(w, y.ID, x.ID, game.UnitCounts{game.USpear: 5}, nil))
+		y.SupportFrom[x.ID] = game.UnitCounts{game.USpear: 20}
+		load := game.Resources{Wood: 100}
+		trade = &game.Command{ID: w.NewID("c"), Type: "trade", OriginID: x.ID, TargetID: y.ID, Merchants: 1, Haul: &load,
+			DepartedAt: w.Now(), ArrivesAt: w.Now() + game.MsPerHour}
+		game.AddCommand(w, trade)
+		return w, home, x, y, gone, trade, attack
 	}
-	y.SupportFrom[x.ID] = game.UnitCounts{game.USpear: 20}
-	game.TransferVillage(w, x, "h1", home.ID)
-	advanceTouch(t, w, x, w.Now()+game.MsPerDay)
-	for _, c := range w.Commands() {
-		if c.OriginID == x.ID || c.TargetID == x.ID {
-			t.Fatalf("command %+v survived", c)
+	t.Run("on conquest, attacks on the way are cut loose and the rest is lost", func(t *testing.T) {
+		w, home, x, y, gone, trade, attack := setup(t)
+		game.TransferVillage(w, x, "h1", home.ID)
+		for _, c := range gone {
+			if w.Command(c.ID) != nil {
+				t.Fatalf("%s survived", c.Type)
+			}
 		}
-	}
-	if x.Units[game.UAxe] != 0 || slices.ContainsFunc(w.ReportsOf("h1"), func(r *game.Report) bool { return r.OriginID == x.ID }) {
-		t.Fatal("troops came back")
-	}
-	if _, ok := y.SupportFrom[x.ID]; ok {
-		t.Fatal("support kept")
-	}
+		if _, ok := y.SupportFrom[x.ID]; ok {
+			t.Fatal("support kept")
+		}
+		if w.Command(trade.ID) == nil {
+			t.Fatal("the merchants were lost")
+		}
+		if w.Command(attack.ID) == nil || attack.OwnerID != "bot_test" {
+			t.Fatalf("the attack %+v", attack)
+		}
+		units := x.Units
+		advanceTouch(t, w, x, w.Now()+game.MsPerDay)
+		if x.Units != units {
+			t.Fatal("troops came back")
+		}
+	})
+	t.Run("on abandon, the attack is lost too", func(t *testing.T) {
+		w, _, x, _, _, _, attack := setup(t)
+		game.TransferVillage(w, x, "", "")
+		if w.Command(attack.ID) != nil {
+			t.Fatal("the attack marches on")
+		}
+	})
 }
 
 func TestTransferBarbarianToHuman(t *testing.T) {
