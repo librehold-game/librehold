@@ -459,7 +459,7 @@ func TestReportsReturnsTheWholeInbox(t *testing.T) {
 	}
 }
 
-var unknownFarmFields =[]string{"lastAttackAt", "lastHaul", "lastHaulCapacity", "lastLosses", "wall", "defenders"}
+var unknownFarmFields = []string{"lastAttackAt", "lastHaul", "lastHaulCapacity", "lastLosses", "wall", "defenders"}
 
 func nullPaths(v any, path string) []string {
 	switch v := v.(type) {

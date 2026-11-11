@@ -198,6 +198,24 @@ function coalesced(load: () => Promise<void>): () => Promise<void> {
 /** The whole inbox: the server keeps a player's newest COMBAT_BALANCE.maxReports reports and sends that many at once. */
 const REPORTS_PATH = `/reports?limit=${COMBAT_BALANCE.maxReports}`;
 
+/** A new report only changes the top of the inbox, so the refresh after one reads just this many. */
+const NEWEST_REPORTS = 100;
+
+/**
+ * Merges the newest page of reports (newest first) into the ones already held. Held reports older than the page
+ * stay; newer ones missing from it were deleted. Null when the page is full and reaches none of the held reports:
+ * more may have arrived than one page holds, so the whole inbox has to be read again.
+ */
+export function mergeNewestReports(held: Report[], newest: Report[], pageSize: number): Report[] | null {
+  const oldest = newest.at(-1);
+  if (!oldest) return [];
+  const newestHeld = held[0];
+  if (newest.length >= pageSize && (!newestHeld || oldest.time > newestHeld.time)) return null;
+  const inPage = new Set(newest.map((r) => r.id));
+  const older = held.filter((r) => r.time <= oldest.time && !inPage.has(r.id));
+  return [...newest, ...older].slice(0, COMBAT_BALANCE.maxReports);
+}
+
 function worldPath(path: string): string {
   return `/api/v1/worlds/${server.state?.worldId ?? useGameStore.getState().worldId}${path}`;
 }
@@ -246,10 +264,25 @@ export const useGameStore = create<GameStore>()(
     };
 
     const fetchState = coalesced(async () => applyState(await api.get<PlayerState>(worldPath('/state'))));
-    const fetchReports = coalesced(async () => {
-      server.reports = await api.get<Report[]>(worldPath(REPORTS_PATH));
+    let wholeInbox = false;
+    const loadReports = coalesced(async () => {
+      const whole = wholeInbox;
+      wholeInbox = false;
+      try {
+        const newest = whole ? null : await api.get<Report[]>(worldPath(`/reports?limit=${NEWEST_REPORTS}`));
+        server.reports = (newest && mergeNewestReports(server.reports, newest, NEWEST_REPORTS))
+          ?? await api.get<Report[]>(worldPath(REPORTS_PATH));
+      } catch (e) {
+        if (whole) wholeInbox = true;
+        throw e;
+      }
       rebuild();
     });
+    /** Merges the newest page into the inbox, or reads the whole inbox again when `whole`. */
+    const fetchReports = (whole = false) => {
+      if (whole) wholeInbox = true;
+      return loadReports();
+    };
     const fetchNews = coalesced(async () => {
       const before = new Set(server.news.map((n) => n.id));
       server.news = await api.get<NewsEntry[]>(worldPath('/news?limit=50'));
@@ -265,7 +298,7 @@ export const useGameStore = create<GameStore>()(
         // missed updates.
         if (server.greeted) {
           quietly(fetchState());
-          quietly(fetchReports());
+          quietly(fetchReports(true));
           quietly(fetchNews());
         }
         server.greeted = true;
@@ -298,10 +331,15 @@ export const useGameStore = create<GameStore>()(
         return msg;
       }
     };
-    const runThenReports = async (name: string, body: object) => {
+    /** After a change to many reports the whole inbox is read again; a change to one is made in place. */
+    const runThenReports = async (name: string, body: object, change?: (reports: Report[]) => Report[]) => {
       const err = await run(name, body);
-      if (!err) quietly(fetchReports());
-      return err;
+      if (err) return err;
+      if (change) {
+        server.reports = change(server.reports);
+        rebuild();
+      } else quietly(fetchReports(true));
+      return null;
     };
     const active = () => get().game?.activeVillageId ?? '';
 
@@ -556,10 +594,11 @@ export const useGameStore = create<GameStore>()(
       mint: (villageId) => run('mint', { villageId }),
       renameVillage: (villageId, name) => run('rename-village', { villageId, name }),
       setLocale: (locale) => { void api.patch('/api/v1/me', { locale }).catch(() => undefined); },
-      markReportRead: (id, read = true) => runThenReports('mark-reports-read', { ids: [id], read }),
+      markReportRead: (id, read = true) => runThenReports('mark-reports-read', { ids: [id], read },
+        (reports) => reports.map((r) => (r.id === id ? { ...r, read } : r))),
       markAllReportsRead: (skipAutoFarm) => runThenReports('mark-all-reports-read', { skipAutoFarm }),
       deleteReadReports: (skipAutoFarm) => runThenReports('delete-read-reports', { skipAutoFarm }),
-      deleteReport: (id) => runThenReports('delete-report', { id }),
+      deleteReport: (id) => runThenReports('delete-report', { id }, (reports) => reports.filter((r) => r.id !== id)),
     };
   }),
 );

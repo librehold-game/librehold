@@ -2,8 +2,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { navigation } from '../src/net/api';
 import type { LiveMessage, PlayerState } from '../src/net/types';
-import { HUMAN_ID } from '../src/engine/types';
-import { useGameStore } from '../src/state/gameStore';
+import { HUMAN_ID, type Report } from '../src/engine/types';
+import { mergeNewestReports, useGameStore } from '../src/state/gameStore';
 import { newTestGame, stateFixture } from './helpers';
 
 class FakeSocket {
@@ -95,16 +95,40 @@ describe('game store backed by the server', () => {
     expect(useGameStore.getState().lastError).toBe('Nie można tego zrobić: za mało surowców, kolejka jest pełna');
   });
 
-  it('an update on the reports topic fetches only reports', async () => {
+  it('an update on the reports topic fetches only the newest reports', async () => {
     await useGameStore.getState().boot();
     FakeSocket.all[0]!.emit({ type: 'hello', serverTime: 0, worldNow: 0 });
+    routes['GET /api/v1/worlds/3/reports?limit=100'] = () => ({ status: 200, body: [] });
     calls = [];
     FakeSocket.all[0]!.emit({ type: 'update', topics: ['reports'], serverTime: 0, worldNow: 0 });
     await vi.waitFor(() => expect(calls).toHaveLength(1));
-    expect(calls[0]!.key).toBe('GET /api/v1/worlds/3/reports?limit=500');
+    expect(calls[0]!.key).toBe('GET /api/v1/worlds/3/reports?limit=100');
     const rev = useGameStore.getState().rankingRev;
     FakeSocket.all[0]!.emit({ type: 'update', topics: ['ranking'], serverTime: 0, worldNow: 0 });
     expect(useGameStore.getState().rankingRev).toBe(rev + 1);
+  });
+
+  it('a new report merges the newest page into the whole inbox loaded at boot', async () => {
+    routes['GET /api/v1/worlds/3/reports?limit=500'] = () => ({ status: 200, body: [report('r3', 3), report('r2', 2), report('r1', 1)] });
+    await useGameStore.getState().boot();
+    FakeSocket.all[0]!.emit({ type: 'hello', serverTime: 0, worldNow: 0 });
+    routes['GET /api/v1/worlds/3/reports?limit=100'] = () => ({ status: 200, body: [report('r4', 4), report('r2', 2)] });
+    FakeSocket.all[0]!.emit({ type: 'update', topics: ['reports'], serverTime: 0, worldNow: 0 });
+    await vi.waitFor(() => expect(inbox()).toEqual(['r4', 'r2', 'r1']));
+  });
+
+  it('marking one report read changes it in place; marking all reads the whole inbox again', async () => {
+    routes['GET /api/v1/worlds/3/reports?limit=500'] = () => ({ status: 200, body: [report('r2', 2), report('r1', 1)] });
+    routes['POST /api/v1/worlds/3/orders/mark-reports-read'] = () => ({ status: 200, body: fixture });
+    routes['POST /api/v1/worlds/3/orders/mark-all-reports-read'] = () => ({ status: 200, body: fixture });
+    await useGameStore.getState().boot();
+    calls = [];
+    expect(await useGameStore.getState().markReportRead('r1')).toBeNull();
+    expect(useGameStore.getState().game!.reports.find((r) => r.id === 'r1')!.read).toBe(true);
+    expect(calls.map((c) => c.key)).toEqual(['POST /api/v1/worlds/3/orders/mark-reports-read']);
+    calls = [];
+    await useGameStore.getState().markAllReportsRead(false);
+    await vi.waitFor(() => expect(calls.map((c) => c.key)).toContain('GET /api/v1/worlds/3/reports?limit=500'));
   });
 
   it('a burst of state updates fetches the state once more after the fetch in flight, not once per update', async () => {
@@ -153,5 +177,25 @@ describe('game store backed by the server', () => {
     const g = useGameStore.getState().game!;
     expect(g.now).toBe(fixture.now + 60 * 60_000);
     expect(g.villages[v.id]!.resources.wood).toBeGreaterThan(before);
+  });
+});
+
+const report = (id: string, time: number) => ({ id, time, read: false }) as unknown as Report;
+const inbox = () => [...useGameStore.getState().game!.reports].reverse().map((r) => r.id);
+
+describe('mergeNewestReports', () => {
+  const held = [report('r3', 3), report('r2', 2), report('r1', 1)];
+
+  it('keeps the held reports older than the page and drops newer ones the page no longer has', () => {
+    expect(mergeNewestReports(held, [report('r4', 4), report('r2', 2)], 100)!.map((r) => r.id)).toEqual(['r4', 'r2', 'r1']);
+  });
+
+  it('an empty page means an empty inbox', () => {
+    expect(mergeNewestReports(held, [], 100)).toEqual([]);
+  });
+
+  it('a full page that reaches none of the held reports asks for the whole inbox', () => {
+    expect(mergeNewestReports(held, [report('r6', 6), report('r5', 5)], 2)).toBeNull();
+    expect(mergeNewestReports(held, [report('r5', 5), report('r3', 3)], 2)!.map((r) => r.id)).toEqual(['r5', 'r3', 'r2', 'r1']);
   });
 });
