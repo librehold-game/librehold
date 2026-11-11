@@ -180,7 +180,8 @@ describe('game store backed by the server', () => {
   });
 });
 
-const report = (id: string, time: number) => ({ id, time, read: false }) as unknown as Report;
+const report = (id: string, time: number) =>
+  ({ id, time, read: false, origin: { ownerId: 'b1' }, target: { ownerId: 'b2' } }) as unknown as Report;
 const inbox = () => [...useGameStore.getState().game!.reports].reverse().map((r) => r.id);
 
 describe('mergeNewestReports', () => {
