@@ -20,7 +20,7 @@ import { BuildingScreen } from './BuildingScreen';
 import { BuildingsTable } from './BuildingsTable';
 import { UnitsPanel } from './UnitsPanel';
 import { IncomingList } from '../components/IncomingList';
-import { BuildPlanPanel } from './BuildPlanPanel';
+import { ActivePlanNote, BuildPlanPanel } from './BuildPlanPanel';
 import { humanPlayer, humanVillageIds } from '../../engine/players';
 
 
@@ -150,6 +150,7 @@ export function VillageView() {
         <ScenePanel />
         <IncomingList villageId={activeId} />
         <BuildQueuePanel />
+        {!showBuildPlan && <ActivePlanNote onOpenTownHall={() => open('main')} />}
         <BuildingsTable onOpen={open} focus={focus} showLocked={showLocked} />
         {showBuildPlan && <BuildPlanPanel />}
       </div>

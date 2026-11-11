@@ -5,6 +5,22 @@ import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
 import type { BuildingId } from '../../engine/types';
 import { selectActiveVillage, useGameStore } from '../../state/gameStore';
 
+/**
+ * While the build plan is hidden from the Village tab: a line saying a plan is still queuing buildings, with the way
+ * to the Town Hall, where the whole plan can be seen and cleared.
+ */
+export function ActivePlanNote({ onOpenTownHall }: { onOpenTownHall: () => void }) {
+  const steps = useGameStore((s) => (selectActiveVillage(s).buildPlan ?? []).length);
+  const plansOff = useGameStore((s) => !!s.game!.config.noBuildPlans);
+  const t = useT();
+  if (plansOff || steps === 0) return null;
+  return (
+    <p className="mt-2 text-[12px]">
+      {t('plan.active', { n: steps })} · <button className="font-bold text-ink hover:underline" onClick={onOpenTownHall}>{buildingName('main')}</button>
+    </p>
+  );
+}
+
 /** Build templates: loading a plan into a village + a simple editor. */
 export function BuildPlanPanel() {
   const villageId = useGameStore((s) => selectActiveVillage(s).id);

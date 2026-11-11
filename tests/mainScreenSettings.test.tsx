@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { BUILDING_IDS, type GameState } from '../src/engine/types';
 import { setLocale, t } from '../src/i18n/i18n';
 import { useGameStore } from '../src/state/gameStore';
@@ -51,6 +51,29 @@ describe('what the Village tab shows', () => {
     expect(hasLocked()).toBe(false);
   });
 
+  it('says a hidden build plan is still running and links to the Town Hall', () => {
+    activeVillage(g).buildPlan = ['wood', 'clay'];
+    useGameStore.setState({ game: structuredClone(g) });
+    useUiStore.getState().setPrefs({ showBuildPlan: false });
+    render(<VillageView />);
+    const note = screen.getByText(/Build plan active \(2\)/);
+    fireEvent.click(within(note).getByRole('button', { name: 'Town Hall' }));
+    expect(useUiStore.getState().buildingScreen?.building).toBe('main');
+  });
+
+  it('has no plan line when nothing is planned or the plan panel is shown', () => {
+    useUiStore.getState().setPrefs({ showBuildPlan: false });
+    const { unmount } = render(<VillageView />);
+    expect(screen.queryByText(/Build plan active/)).toBeNull();
+    unmount();
+
+    activeVillage(g).buildPlan = ['wood'];
+    useGameStore.setState({ game: structuredClone(g) });
+    useUiStore.getState().setPrefs({ showBuildPlan: true });
+    render(<VillageView />);
+    expect(screen.queryByText(/Build plan active/)).toBeNull();
+  });
+
   it('keeps both in the Town Hall when they are hidden from the Village tab', () => {
     useUiStore.getState().setPrefs({ showBuildPlan: false, showLockedBuildings: false });
     render(<BuildingScreen building="main" onBack={() => {}} />);
@@ -64,11 +87,11 @@ describe('interface settings', () => {
     render(<SettingsView />);
     fireEvent.click(screen.getByRole('button', { name: t('settings.interface') }));
 
-    fireEvent.click(screen.getByRole('checkbox', { name: /Build plan on Village tab/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /Build plan on the Village tab/ }));
     expect(prefs().showBuildPlan).toBe(false);
     expect(prefs().showLockedBuildings).toBe(true);
 
-    fireEvent.click(screen.getByRole('checkbox', { name: /Not yet available on Village tab/ }));
+    fireEvent.click(screen.getByRole('checkbox', { name: /Locked buildings on the Village tab/ }));
     expect(prefs().showLockedBuildings).toBe(false);
   });
 });

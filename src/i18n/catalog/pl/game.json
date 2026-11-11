@@ -715,6 +715,7 @@
     "newTemplate": "Nowy szablon",
     "delete": "Usuń szablon",
     "inPlan": "W planie: {n} kroków · najbliższe: {next}",
+    "active": "Plan rozbudowy aktywny ({n})",
     "clear": "Wyczyść",
     "clickToRemove": "Kliknij, aby usunąć",
     "removeStep": "Usuń krok {n}: {building}",
