@@ -966,6 +966,7 @@
     "loot": "Łup:",
     "fullLoad": "— pełne obciążenie",
     "partialLoot": "— częściowy łup",
+    "noHome": "Nic nie zabrano: wioska, z której wyruszyli atakujący, została podbita, więc nie mają domu, do którego mogliby zanieść łup.",
     "loyalty": "Lojalność:",
     "villageTaken": " — wioska przejęta",
     "resources": "Zasoby:",

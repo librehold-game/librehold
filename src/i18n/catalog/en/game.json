@@ -932,6 +932,7 @@
     "loot": "Loot:",
     "fullLoad": "— full load",
     "partialLoot": "— partial loot",
+    "noHome": "Nothing was taken: the village the attackers set out from was conquered, so they have no home to carry loot to.",
     "loyalty": "Loyalty:",
     "villageTaken": " — village taken",
     "resources": "Resources:",

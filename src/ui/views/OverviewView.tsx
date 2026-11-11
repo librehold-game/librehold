@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { BUILDINGS, BUILDING_ORDER } from '../../data/buildings.data';
 import { UNITS } from '../../data/units.data';
 import { villageFarmCapacity, villagePopulationUsed, villageProductionPerHour, villageStorageCapacity } from '../../engine/resources';
-import { RESOURCES, UNIT_IDS, type BuildingId, type Command, type Resource, type UnitId } from '../../engine/types';
+import { HUMAN_ID, RESOURCES, UNIT_IDS, type BuildingId, type Command, type Resource, type UnitId } from '../../engine/types';
 import { useGameStore } from '../../state/gameStore';
 import { Countdown } from '../components/Countdown';
 import { ResourceIcon } from '../components/ResourceIcon';
@@ -130,7 +130,7 @@ function ResourcesTab({ ids }: { ids: string[] }) {
 
 function CommandsTab({ ids }: { ids: string[] }) {
   const clock = useClock();
-  const json = useGameStore((s) => JSON.stringify([...s.game!.commands].filter((c) => ids.includes(c.originId) || ids.includes(c.targetId)).sort((a, b) => a.arrivesAt - b.arrivesAt)));
+  const json = useGameStore((s) => JSON.stringify([...s.game!.commands].filter((c) => c.cutLoose ? c.ownerId === HUMAN_ID || ids.includes(c.targetId) : ids.includes(c.originId) || ids.includes(c.targetId)).sort((a, b) => a.arrivesAt - b.arrivesAt)));
   const cmds = JSON.parse(json) as Command[];
   const game = useGameStore((s) => s.game!);
   const t = useT();

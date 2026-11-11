@@ -62,7 +62,12 @@ func changes(before *gametest.MemWorld, t *tx) app.Changes {
 	}
 	bc, ac := commandMap(before), commandMap(after)
 	touched := func(cmd *game.Command) {
-		c.CommandOwners = append(c.CommandOwners, ownerOf(cmd.OriginID), ownerOf(cmd.TargetID))
+		// An army cut loose from its village is its owner's, not the origin's.
+		home := ownerOf(cmd.OriginID)
+		if cmd.OwnerID != "" {
+			home = cmd.OwnerID
+		}
+		c.CommandOwners = append(c.CommandOwners, home, ownerOf(cmd.TargetID))
 	}
 	for id, cmd := range ac {
 		if old := bc[id]; old == nil || !bytes.Equal(jsonOf(old), jsonOf(cmd)) {

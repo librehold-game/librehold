@@ -59,9 +59,11 @@ type MemWorld struct {
 	brains   map[game.PlayerID]*game.BotBrain
 	humans   map[game.PlayerID]*game.HumanState
 	commands map[string]*game.Command
-	// byHome indexes commands by game.CommandHome, which never changes once a command is stored (turning back swaps
-	// origin and target), so CommandsHome need not scan the whole world.
-	byHome map[string]map[string]*game.Command
+	// byHome indexes commands by game.CommandHome, so CommandsHome need not scan the whole world. Turning back
+	// keeps the home (origin and target swap); only cutting an army loose from its village changes it, so
+	// homeOfCmd remembers the bucket and storing the command again moves it.
+	byHome    map[string]map[string]*game.Command
+	homeOfCmd map[string]string // the byHome bucket each command sits in
 	// byTarget indexes commands by their target when stored; the only later change of a target is turning back,
 	// which makes it the command's home, so byTarget with byHome covers CommandsTo.
 	byTarget    map[string]map[string]*game.Command
@@ -98,6 +100,7 @@ func NewMemWorld(seed uint32, cfg game.WorldConfig, clockOrigin int64) *MemWorld
 		humans:      map[game.PlayerID]*game.HumanState{},
 		commands:    map[string]*game.Command{},
 		byHome:      map[string]map[string]*game.Command{},
+		homeOfCmd:   map[string]string{},
 		byTarget:    map[string]map[string]*game.Command{},
 		targetOfCmd: map[string]string{},
 		reports:     map[game.PlayerID][]*game.Report{},
@@ -140,6 +143,9 @@ func (w *MemWorld) touchOwner(v *game.Village) {
 func (w *MemWorld) touchCommand(c *game.Command) {
 	w.touchOwner(w.villages[c.OriginID])
 	w.touchOwner(w.villages[c.TargetID])
+	if _, ok := w.humans[game.PlayerID(c.OwnerID)]; ok {
+		w.touched[game.PlayerID(c.OwnerID)] = true
+	}
 }
 
 // TouchedHumans returns, sorted, the humans whose villages, commands, human state or reports were accessed
@@ -417,6 +423,7 @@ func (w *MemWorld) indexCommand(c *game.Command) {
 		w.byHome[home] = map[string]*game.Command{}
 	}
 	w.byHome[home][c.ID] = c
+	w.homeOfCmd[c.ID] = home
 	if w.byTarget[c.TargetID] == nil {
 		w.byTarget[c.TargetID] = map[string]*game.Command{}
 	}
@@ -425,11 +432,12 @@ func (w *MemWorld) indexCommand(c *game.Command) {
 }
 
 func (w *MemWorld) unindexCommand(c *game.Command) {
-	home := game.CommandHome(c)
+	home := w.homeOfCmd[c.ID]
 	delete(w.byHome[home], c.ID)
 	if len(w.byHome[home]) == 0 {
 		delete(w.byHome, home)
 	}
+	delete(w.homeOfCmd, c.ID)
 	target := w.targetOfCmd[c.ID]
 	delete(w.byTarget[target], c.ID)
 	if len(w.byTarget[target]) == 0 {

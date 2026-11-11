@@ -220,10 +220,15 @@ func PaladinCountOf(w World, v *Village) int {
 	return UnitCountIncludingQueued(v, UPaladin) + UnitsAway(w, v.ID)[UPaladin]
 }
 
+// TotalNoblesOwned counts the player's nobles: those of their villages and those in their armies cut loose from
+// their villages.
 func TotalNoblesOwned(w World, id PlayerID) int {
 	n := 0
 	for _, v := range PlayerVillages(w, id) {
 		n += NobleCountOf(w, v)
+	}
+	for _, c := range LooseArmies(w, id) {
+		n += c.Units[UNoble]
 	}
 	return n
 }

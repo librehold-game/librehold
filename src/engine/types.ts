@@ -98,6 +98,10 @@ export interface Command {
   autoFarm?: boolean;
   /** A raid the farm assistant sent (a template or the auto-farm), or its way home; only the owner sees it. */
   farm?: boolean;
+  /** Cut loose from its village by a conquest: it can't be recalled and has no home to bring anything back to. */
+  cutLoose?: boolean;
+  /** The army's owner when it was cut loose; only its owner sees this. */
+  ownerId?: PlayerId;
 }
 
 export interface FieldPoint { x: number; y: number }
@@ -154,6 +158,8 @@ export interface Report {
   buildingDamage?: { building: BuildingId; from: number; to: number };
   haul?: ResourceSet;
   haulCapacity?: number;
+  /** A cut-loose army won but took nothing: it had no home to carry it to. */
+  noHome?: boolean;
   loyaltyBefore?: number;
   loyaltyAfter?: number;
   conquered?: boolean;
