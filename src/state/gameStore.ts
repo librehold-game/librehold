@@ -202,17 +202,26 @@ const REPORTS_PATH = `/reports?limit=${COMBAT_BALANCE.maxReports}`;
 const NEWEST_REPORTS = 100;
 
 /**
- * Merges the newest page of reports (newest first) into the ones already held. Held reports older than the page
- * stay; newer ones missing from it were deleted. Null when the page is full and reaches none of the held reports:
- * more may have arrived than one page holds, so the whole inbox has to be read again.
+ * The server's report order: a longer id is newer, and ids of one length compare as text. Times can't order
+ * reports, since many share one (an auto-farm burst lands in a single tick).
+ */
+function compareReportIds(a: string, b: string): number {
+  return a.length - b.length || (a < b ? -1 : a > b ? 1 : 0);
+}
+
+/**
+ * Merges the newest page of reports (newest first) into the ones already held. A page shorter than `pageSize` is the
+ * whole inbox. A full page keeps the held reports older than its last one and drops the newer ones it no longer has,
+ * as they were deleted. Null when a full page doesn't hold the newest held report: more may have arrived than one
+ * page holds, so the whole inbox has to be read again.
  */
 export function mergeNewestReports(held: Report[], newest: Report[], pageSize: number): Report[] | null {
-  const oldest = newest.at(-1);
-  if (!oldest) return [];
-  const newestHeld = held[0];
-  if (newest.length >= pageSize && (!newestHeld || oldest.time > newestHeld.time)) return null;
+  if (newest.length < pageSize) return newest;
   const inPage = new Set(newest.map((r) => r.id));
-  const older = held.filter((r) => r.time <= oldest.time && !inPage.has(r.id));
+  const newestHeld = held[0];
+  const oldest = newest.at(-1);
+  if (!oldest || !newestHeld || !inPage.has(newestHeld.id)) return null;
+  const older = held.filter((r) => compareReportIds(r.id, oldest.id) < 0);
   return [...newest, ...older].slice(0, COMBAT_BALANCE.maxReports);
 }
 

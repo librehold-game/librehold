@@ -109,12 +109,12 @@ describe('game store backed by the server', () => {
   });
 
   it('a new report merges the newest page into the whole inbox loaded at boot', async () => {
-    routes['GET /api/v1/worlds/3/reports?limit=500'] = () => ({ status: 200, body: [report('r3', 3), report('r2', 2), report('r1', 1)] });
+    routes['GET /api/v1/worlds/3/reports?limit=500'] = () => ({ status: 200, body: burst(150, 1) });
     await useGameStore.getState().boot();
     FakeSocket.all[0]!.emit({ type: 'hello', serverTime: 0, worldNow: 0 });
-    routes['GET /api/v1/worlds/3/reports?limit=100'] = () => ({ status: 200, body: [report('r4', 4), report('r2', 2)] });
+    routes['GET /api/v1/worlds/3/reports?limit=100'] = () => ({ status: 200, body: burst(151, 52) });
     FakeSocket.all[0]!.emit({ type: 'update', topics: ['reports'], serverTime: 0, worldNow: 0 });
-    await vi.waitFor(() => expect(inbox()).toEqual(['r4', 'r2', 'r1']));
+    await vi.waitFor(() => expect(inbox()).toEqual(burst(151, 1).map((r) => r.id)));
   });
 
   it('marking one report read changes it in place; marking all reads the whole inbox again', async () => {
@@ -182,21 +182,30 @@ describe('game store backed by the server', () => {
 
 const report = (id: string, time: number) =>
   ({ id, time, read: false, origin: { ownerId: 'b1' }, target: { ownerId: 'b2' } }) as unknown as Report;
+/** Reports rep{from} down to rep{to}, newest first, all in one tick like an auto-farm burst. */
+const burst = (from: number, to: number) => Array.from({ length: from - to + 1 }, (_, i) => report(`rep${from - i}`, 7));
 const inbox = () => [...useGameStore.getState().game!.reports].reverse().map((r) => r.id);
 
 describe('mergeNewestReports', () => {
   const held = [report('r3', 3), report('r2', 2), report('r1', 1)];
+  const ids = (reports: Report[] | null) => reports?.map((r) => r.id) ?? null;
 
-  it('keeps the held reports older than the page and drops newer ones the page no longer has', () => {
-    expect(mergeNewestReports(held, [report('r4', 4), report('r2', 2)], 100)!.map((r) => r.id)).toEqual(['r4', 'r2', 'r1']);
-  });
-
-  it('an empty page means an empty inbox', () => {
+  it('takes a page shorter than a full one as the whole inbox, so reports deleted elsewhere stay gone', () => {
+    expect(ids(mergeNewestReports(held, [report('r4', 4), report('r2', 2)], 100))).toEqual(['r4', 'r2']);
     expect(mergeNewestReports(held, [], 100)).toEqual([]);
   });
 
-  it('a full page that reaches none of the held reports asks for the whole inbox', () => {
-    expect(mergeNewestReports(held, [report('r6', 6), report('r5', 5)], 2)).toBeNull();
-    expect(mergeNewestReports(held, [report('r5', 5), report('r3', 3)], 2)!.map((r) => r.id)).toEqual(['r5', 'r3', 'r2', 'r1']);
+  it('keeps the held reports older than a full page that holds the newest held report', () => {
+    expect(ids(mergeNewestReports(held, [report('r5', 5), report('r4', 4), report('r3', 3)], 3))).toEqual(['r5', 'r4', 'r3', 'r2', 'r1']);
+  });
+
+  it('orders by id as the server does: a longer id is newer', () => {
+    const tens = [report('rep10', 1), report('rep9', 1), report('rep8', 1)];
+    expect(ids(mergeNewestReports(tens, [report('rep11', 1), report('rep10', 1)], 2))).toEqual(['rep11', 'rep10', 'rep9', 'rep8']);
+  });
+
+  it('reads the whole inbox again when a full page misses the newest held report, even at the same time', () => {
+    const sameTick = [report('r3', 5), report('r2', 5), report('r1', 5)];
+    expect(mergeNewestReports(sameTick, [report('r6', 5), report('r5', 5), report('r4', 5)], 3)).toBeNull();
   });
 });
