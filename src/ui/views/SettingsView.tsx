@@ -54,6 +54,12 @@ function InterfaceSettings() {
       <Field label={t('settings.scene')}>
         <input type="checkbox" checked={prefs.showScene} onChange={(e) => setPrefs({ showScene: e.target.checked })} />
       </Field>
+      <Field label={t('settings.showBuildPlan')} hint={t('settings.alwaysInTownHall')}>
+        <input type="checkbox" checked={prefs.showBuildPlan} onChange={(e) => setPrefs({ showBuildPlan: e.target.checked })} />
+      </Field>
+      <Field label={t('settings.showLockedBuildings')} hint={t('settings.alwaysInTownHall')}>
+        <input type="checkbox" checked={prefs.showLockedBuildings} onChange={(e) => setPrefs({ showLockedBuildings: e.target.checked })} />
+      </Field>
       <Field label={t('settings.sound')}>
         <input type="checkbox" checked={prefs.sound} onChange={(e) => setPrefs({ sound: e.target.checked })} />
         <button className="btn" onClick={playBuildDone}>{t('settings.testBuild')}</button>

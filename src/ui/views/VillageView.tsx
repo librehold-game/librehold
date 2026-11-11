@@ -20,7 +20,7 @@ import { BuildingScreen } from './BuildingScreen';
 import { BuildingsTable } from './BuildingsTable';
 import { UnitsPanel } from './UnitsPanel';
 import { IncomingList } from '../components/IncomingList';
-import { BuildPlanPanel } from './BuildPlanPanel';
+import { ActivePlanNote, BuildPlanPanel } from './BuildPlanPanel';
 import { humanPlayer, humanVillageIds } from '../../engine/players';
 
 
@@ -134,6 +134,8 @@ export function VillageView() {
   const screen = opened?.villageId === activeId ? opened.building : null;
   const focus = useUiStore((s) => s.focusBuilding);
   const setFocus = useUiStore((s) => s.setFocusBuilding);
+  const showBuildPlan = useUiStore((s) => s.prefs.showBuildPlan);
+  const showLocked = useUiStore((s) => s.prefs.showLockedBuildings);
   useEffect(() => {
     if (!focus) return;
     document.getElementById(`building-row-${focus}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
@@ -148,8 +150,9 @@ export function VillageView() {
         <ScenePanel />
         <IncomingList villageId={activeId} />
         <BuildQueuePanel />
-        <BuildingsTable onOpen={open} focus={focus} />
-        <BuildPlanPanel />
+        {!showBuildPlan && <ActivePlanNote onOpenTownHall={() => open('main')} />}
+        <BuildingsTable onOpen={open} focus={focus} showLocked={showLocked} />
+        {showBuildPlan && <BuildPlanPanel />}
       </div>
       <aside className="min-w-0 flex flex-col gap-3 lg:sticky lg:top-2">
         <ProductionPanel />
