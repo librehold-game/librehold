@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react';
-import { translate, useLocale, type Locale } from '../i18n/i18n';
-import { Link, usePathname } from './router';
-import { twinPath } from './routes';
+import { useEffect, useState } from "react";
+import { translate, useLocale, type Locale } from "../i18n/i18n";
+import { Link, usePathname } from "./router";
+import { twinPath } from "./routes";
 
-const CLOSED_KEY = 'languageNoteClosed';
+const CLOSED_KEY = "languageNoteClosed";
 
 function browserLocale(): Locale {
-  return navigator.language?.toLowerCase().startsWith('pl') ? 'pl' : 'en';
+  return navigator.language?.toLowerCase().startsWith("pl") ? "pl" : "en";
 }
 
 function closed(): boolean {
   try {
-    return localStorage.getItem(CLOSED_KEY) === '1';
+    return localStorage.getItem(CLOSED_KEY) === "1";
   } catch {
     return false;
   }
@@ -30,7 +30,7 @@ export function LanguageNote() {
   if (!reader) return null;
   const close = () => {
     try {
-      localStorage.setItem(CLOSED_KEY, '1');
+      localStorage.setItem(CLOSED_KEY, "1");
     } catch {
       /* private mode: closed for this page view only */
     }
@@ -38,8 +38,12 @@ export function LanguageNote() {
   };
   return (
     <aside className="language-note" lang={reader}>
-      <Link to={twinPath(pathname)} hrefLang={reader}>{translate(reader, 'languageNote.text')}</Link>
-      <button type="button" className="link" onClick={close}>{translate(reader, 'languageNote.close')}</button>
+      <Link to={twinPath(pathname)} hrefLang={reader}>
+        {translate(reader, "languageNote.text")}
+      </Link>
+      <button type="button" className="link" onClick={close}>
+        {translate(reader, "languageNote.close")}
+      </button>
     </aside>
   );
 }

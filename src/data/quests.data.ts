@@ -1,5 +1,5 @@
-import { QUESTS as quests } from './balance.json';
-import type { ResourceSet } from '../engine/types';
+import { QUESTS as quests } from "./balance.json";
+import type { ResourceSet } from "../engine/types";
 
 // The quests' conditions and progress bars are the server's; the browser lists them with their rewards.
 
@@ -20,4 +20,6 @@ export interface QuestDef {
 
 export const QUESTS: readonly QuestDef[] = quests;
 
-export const QUEST_BY_ID: Record<string, QuestDef> = Object.fromEntries(QUESTS.map((q) => [q.id, q]));
+export const QUEST_BY_ID: Record<string, QuestDef> = Object.fromEntries(
+  QUESTS.map((q) => [q.id, q]),
+);

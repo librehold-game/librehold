@@ -35,7 +35,7 @@ Good places to start:
    picks the section (`bug` → Fixed, `enhancement` or `idea` → Added).
 
 ```sh
-npm run typecheck && npm test                             # client
+npm run format:check && npm run typecheck && npm test     # client
 cd server && go vet ./... && go test -timeout 20m ./...   # server (the Postgres tests need Docker)
 npm run build:web && cd server && make e2e                # end-to-end tests (make perf: performance tests, local only)
 ```
@@ -48,7 +48,7 @@ Things that are easy to miss:
   `src/i18n/catalog/`. Code, comments and docs are in English.
 - **Phone layout.** A new column in a `table-stack` table needs a `data-label` (see
   [`docs/interface.md`](docs/interface.md#phone-mobile-layout)).
-- **Format before you commit:** `gofmt` for Go; the client has no formatter, so match the surrounding code.
+- **Format before you commit:** `gofmt` for Go, `npm run format` (Biome) for the client.
 
 Keep pull requests focused: one change per pull request is easier to review than several.
 

@@ -1,9 +1,9 @@
-import { t } from '../../../i18n/i18n';
-import type { BuildingId } from '../../../engine/types';
-import type { DayPhase } from '../sceneModel';
-import { LevelBadge } from './LevelBadge';
-import { GATE_Z, LAYOUT, pixelUrl, type Layer, type WallKind } from './layout';
-import { Strip } from './Strip';
+import { t } from "../../../i18n/i18n";
+import type { BuildingId } from "../../../engine/types";
+import type { DayPhase } from "../sceneModel";
+import { LevelBadge } from "./LevelBadge";
+import { GATE_Z, LAYOUT, pixelUrl, type Layer, type WallKind } from "./layout";
+import { Strip } from "./Strip";
 
 /**
  * Wall ring as 8 px columns: back halves sort behind the buildings inside, front halves in front of them. The gate is drawn
@@ -16,12 +16,22 @@ export function wallLayers(kind: WallKind, gateFrame: number): Layer[] {
   const layers: Layer[] = [];
   for (const { x0, zBack, zFront } of wall.strips) {
     const viewBox = `${x0 - wall.x} 0 8 ${wall.h}`;
-    for (const [z, href, half] of [[zBack, back, 'b'], [zFront, front, 'f']] as const) {
+    for (const [z, href, half] of [
+      [zBack, back, "b"],
+      [zFront, front, "f"],
+    ] as const) {
       layers.push({
         z,
         key: `wall-${half}${x0}`,
         node: (
-          <svg className="wall-strip" x={x0} y={wall.y} width="8" height={wall.h} viewBox={viewBox}>
+          <svg
+            className="wall-strip"
+            x={x0}
+            y={wall.y}
+            width="8"
+            height={wall.h}
+            viewBox={viewBox}
+          >
             <image href={href} width={wall.w} height={wall.h} />
           </svg>
         ),
@@ -31,18 +41,34 @@ export function wallLayers(kind: WallKind, gateFrame: number): Layer[] {
   const g = wall.gate;
   const x = Math.floor(g.x - g.w / 2);
   const y = Math.floor(g.y - g.foot);
-  const strip = { file: g.file, w: g.w, h: g.h, frames: g.frames, frame: gateFrame, x, y };
-  const box = (x0: number, y0: number, x1: number, y1: number) => `M${x + x0} ${y + y0}h${x1 - x0}v${y1 - y0}h${x0 - x1}z`;
+  const strip = {
+    file: g.file,
+    w: g.w,
+    h: g.h,
+    frames: g.frames,
+    frame: gateFrame,
+    x,
+    y,
+  };
+  const box = (x0: number, y0: number, x1: number, y1: number) =>
+    `M${x + x0} ${y + y0}h${x1 - x0}v${y1 - y0}h${x0 - x1}z`;
   const clip = `px-gate-front-${kind}`;
   layers.push(
-    { z: GATE_Z.gate, key: 'wall-gate', node: <Strip name={`${kind}-gate`} {...strip} /> },
+    {
+      z: GATE_Z.gate,
+      key: "wall-gate",
+      node: <Strip name={`${kind}-gate`} {...strip} />,
+    },
     {
       z: GATE_Z.front,
-      key: 'wall-gate-front',
+      key: "wall-gate-front",
       node: (
         <>
           <clipPath id={clip}>
-            <path d={box(0, 0, g.w, g.h) + g.doorway.map((d) => box(...d)).join('')} clipRule="evenodd" />
+            <path
+              d={box(0, 0, g.w, g.h) + g.doorway.map((d) => box(...d)).join("")}
+              clipRule="evenodd"
+            />
           </clipPath>
           <g clipPath={`url(#${clip})`}>
             <Strip name={`${kind}-gate-front`} {...strip} />
@@ -57,30 +83,66 @@ export function wallLayers(kind: WallKind, gateFrame: number): Layer[] {
 function ringBand(): string {
   const { cx, cy, rx, ry } = LAYOUT.ring;
   const y = cy - 18;
-  const ellipse = (a: number, b: number) => `M${cx - a} ${y} A${a} ${b} 0 1 0 ${cx + a} ${y} A${a} ${b} 0 1 0 ${cx - a} ${y} Z`;
+  const ellipse = (a: number, b: number) =>
+    `M${cx - a} ${y} A${a} ${b} 0 1 0 ${cx + a} ${y} A${a} ${b} 0 1 0 ${cx - a} ${y} Z`;
   return `${ellipse(rx + 14, ry + 14)} ${ellipse(rx - 14, ry - 14)}`;
 }
 
-export function WallHotspot({ level, onClick }: { level: number; onClick: () => void }) {
+export function WallHotspot({
+  level,
+  onClick,
+}: {
+  level: number;
+  onClick: () => void;
+}) {
   const [gx, gy] = LAYOUT.gates.s;
   return (
     <g className="hotspot" onClick={onClick}>
-      <title>{t('scene.wall', { level: level > 0 ? t('scene.level', { n: level }) : t('scene.notBuilt') })}</title>
-      <path className="hl" d={ringBand()} fillRule="evenodd" fill="#fff" style={{ pointerEvents: 'fill' }} />
+      <title>
+        {t("scene.wall", {
+          level:
+            level > 0 ? t("scene.level", { n: level }) : t("scene.notBuilt"),
+        })}
+      </title>
+      <path
+        className="hl"
+        d={ringBand()}
+        fillRule="evenodd"
+        fill="#fff"
+        style={{ pointerEvents: "fill" }}
+      />
       {level > 0 && <LevelBadge x={gx + 58} y={gy - 74} level={level} />}
     </g>
   );
 }
 
-const NIGHT: Record<DayPhase, number> = { dawn: 0.25, day: 0, dusk: 0.3, night: 0.55 };
+const NIGHT: Record<DayPhase, number> = {
+  dawn: 0.25,
+  day: 0,
+  dusk: 0.3,
+  night: 0.55,
+};
 
-export function NightOverlay({ phase, levels }: { phase: DayPhase; levels: Record<BuildingId, number> }) {
+export function NightOverlay({
+  phase,
+  levels,
+}: {
+  phase: DayPhase;
+  levels: Record<BuildingId, number>;
+}) {
   const opacity = NIGHT[phase];
   if (opacity === 0) return null;
   return (
-    <g style={{ pointerEvents: 'none' }}>
-      <rect data-night={phase} width={LAYOUT.w} height={LAYOUT.h} fill="#0b1030" opacity={opacity} style={{ mixBlendMode: 'multiply' }} />
-      {phase === 'night' && (
+    <g style={{ pointerEvents: "none" }}>
+      <rect
+        data-night={phase}
+        width={LAYOUT.w}
+        height={LAYOUT.h}
+        fill="#0b1030"
+        opacity={opacity}
+        style={{ mixBlendMode: "multiply" }}
+      />
+      {phase === "night" && (
         <>
           <defs>
             <radialGradient id="px-glow">
@@ -88,7 +150,19 @@ export function NightOverlay({ phase, levels }: { phase: DayPhase; levels: Recor
               <stop offset="1" stopColor="#ffb347" stopOpacity="0" />
             </radialGradient>
           </defs>
-          {LAYOUT.lights.filter((l) => l.at === 'rally' || levels[l.at] > 0).map((l, i) => <circle key={i} className="deco" cx={l.x} cy={l.y} r={l.r} fill="url(#px-glow)" style={{ mixBlendMode: 'screen' }} />)}
+          {LAYOUT.lights
+            .filter((l) => l.at === "rally" || levels[l.at] > 0)
+            .map((l, i) => (
+              <circle
+                key={i}
+                className="deco"
+                cx={l.x}
+                cy={l.y}
+                r={l.r}
+                fill="url(#px-glow)"
+                style={{ mixBlendMode: "screen" }}
+              />
+            ))}
         </>
       )}
     </g>

@@ -2,10 +2,18 @@
 export const LENGTHS = [30, 60, 120] as const;
 export type Length = (typeof LENGTHS)[number];
 
-export interface PlaybackState { playing: boolean; length: Length; t: number }
+export interface PlaybackState {
+  playing: boolean;
+  length: Length;
+  t: number;
+}
 
 /** Moves the replay on by realMs of wall time; it stops at the end. */
-export function advance(p: PlaybackState, realMs: number, endAt: number): PlaybackState {
+export function advance(
+  p: PlaybackState,
+  realMs: number,
+  endAt: number,
+): PlaybackState {
   const t = Math.min(endAt, p.t + (realMs * endAt) / (p.length * 1000));
   return { ...p, t, playing: p.playing && t < endAt };
 }

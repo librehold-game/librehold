@@ -1,30 +1,50 @@
-import type { Locale } from '../i18n/i18n';
-import { setLocale as applyLocale, getLocale, t } from '../i18n/i18n';
-import { pathFor } from '../account/routes';
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import { errorMessage, newsText } from '../i18n/names';
-import type { UnitCounts } from '../engine/commands';
-import type { FarmTargetList } from '../engine/farm';
-import { humanVillageIds } from '../engine/players';
-import { accrue } from '../engine/resources';
-import { COMBAT_BALANCE } from '../data/units.data';
-import { settleRecruitQueues } from '../engine/units';
+import type { Locale } from "../i18n/i18n";
+import { setLocale as applyLocale, getLocale, t } from "../i18n/i18n";
+import { pathFor } from "../account/routes";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+import { errorMessage, newsText } from "../i18n/names";
+import type { UnitCounts } from "../engine/commands";
+import type { FarmTargetList } from "../engine/farm";
+import { humanVillageIds } from "../engine/players";
+import { accrue } from "../engine/resources";
+import { COMBAT_BALANCE } from "../data/units.data";
+import { settleRecruitQueues } from "../engine/units";
 import type {
-  BuildingId, BuildTemplate, FarmFilters, GameState, Report, Resource, ResourceSet, UnitId, Village, VillageGroup,
-} from '../engine/types';
-import { ApiError, api, navigation, order } from '../net/api';
-import { toClientId, toClientRef, toServerId } from '../net/ids';
-import { connectLive } from '../net/live';
-import { MapCache } from '../net/mapCache';
-import { toGameState } from '../net/toGameState';
+  BuildingId,
+  BuildTemplate,
+  FarmFilters,
+  GameState,
+  Report,
+  Resource,
+  ResourceSet,
+  UnitId,
+  Village,
+  VillageGroup,
+} from "../engine/types";
+import { ApiError, api, navigation, order } from "../net/api";
+import { toClientId, toClientRef, toServerId } from "../net/ids";
+import { connectLive } from "../net/live";
+import { MapCache } from "../net/mapCache";
+import { toGameState } from "../net/toGameState";
 import type {
-  ConquestRow, DailyRow, HostedView, InstantView, Intel, LiveMessage, MapTile, MeView, NewsEntry, PlayerRow, PlayerState, Profile,
-} from '../net/types';
-import { recallActiveVillage, rememberActiveVillage } from './uiStore';
+  ConquestRow,
+  DailyRow,
+  HostedView,
+  InstantView,
+  Intel,
+  LiveMessage,
+  MapTile,
+  MeView,
+  NewsEntry,
+  PlayerRow,
+  PlayerState,
+  Profile,
+} from "../net/types";
+import { recallActiveVillage, rememberActiveVillage } from "./uiStore";
 
-export type LoadPhase = 'booting' | 'ready';
-export type RankingTab = 'points' | 'villages' | 'od' | 'daily' | 'conquests';
+export type LoadPhase = "booting" | "ready";
+export type RankingTab = "points" | "villages" | "od" | "daily" | "conquests";
 export type RankingRows = PlayerRow[] | DailyRow[] | ConquestRow[];
 
 export interface GameStore {
@@ -61,7 +81,11 @@ export interface GameStore {
   openClaim: () => void;
   closeClaim: () => void;
   /** Turns the guest into a player with a name and a password; returns the error or null. */
-  claimAccount: (username: string, password: string, passwordConfirm: string) => Promise<string | null>;
+  claimAccount: (
+    username: string,
+    password: string,
+    passwordConfirm: string,
+  ) => Promise<string | null>;
   /** A new nickname for the guest, in the account and this world; returns the error or null. */
   renameGuest: (username: string) => Promise<string | null>;
   finishTutorial: () => void;
@@ -83,49 +107,112 @@ export interface GameStore {
 
   setActiveVillage: (id: string) => void;
   switchVillage: (delta: number) => void;
-  claimQuestReward: (questId: string, villageId?: string) => Promise<string | null>;
+  claimQuestReward: (
+    questId: string,
+    villageId?: string,
+  ) => Promise<string | null>;
   build: (villageId: string, building: BuildingId) => Promise<string | null>;
   demolish: (villageId: string, building: BuildingId) => Promise<string | null>;
   cancelBuildJob: (villageId: string, jobId: string) => Promise<string | null>;
-  recruit: (villageId: string, unit: UnitId, count: number) => Promise<string | null>;
-  cancelRecruitJob: (villageId: string, jobId: string) => Promise<string | null>;
+  recruit: (
+    villageId: string,
+    unit: UnitId,
+    count: number,
+  ) => Promise<string | null>;
+  cancelRecruitJob: (
+    villageId: string,
+    jobId: string,
+  ) => Promise<string | null>;
   research: (villageId: string, unit: UnitId) => Promise<string | null>;
-  cancelResearchJob: (villageId: string, jobId: string) => Promise<string | null>;
-  send: (originId: string, x: number, y: number, units: UnitCounts, type: 'attack' | 'support', catapultTarget?: BuildingId) => Promise<string | null>;
+  cancelResearchJob: (
+    villageId: string,
+    jobId: string,
+  ) => Promise<string | null>;
+  send: (
+    originId: string,
+    x: number,
+    y: number,
+    units: UnitCounts,
+    type: "attack" | "support",
+    catapultTarget?: BuildingId,
+  ) => Promise<string | null>;
   /** A send scheduled to the world millisecond (`mode`: send at / arrive at); returns an error or null. */
-  scheduleSend: (originId: string, x: number, y: number, units: UnitCounts, type: 'attack' | 'support', mode: 'sendAt' | 'arriveAt', at: number, catapultTarget?: BuildingId) => Promise<string | null>;
+  scheduleSend: (
+    originId: string,
+    x: number,
+    y: number,
+    units: UnitCounts,
+    type: "attack" | "support",
+    mode: "sendAt" | "arriveAt",
+    at: number,
+    catapultTarget?: BuildingId,
+  ) => Promise<string | null>;
   cancelScheduled: (id: string) => Promise<string | null>;
   /** Dodge an attack (move the troops out and back just after the hit); returns an error or null. */
   dodge: (commandId: string) => Promise<string | null>;
   /** Snipe a hetman train: support between the 1st and 2nd noble; returns an error or null. */
-  snipe: (trainCommandIds: string[], fromVillageId: string, units: UnitCounts) => Promise<string | null>;
+  snipe: (
+    trainCommandIds: string[],
+    fromVillageId: string,
+    units: UnitCounts,
+  ) => Promise<string | null>;
   cancelCmd: (commandId: string) => Promise<string | null>;
   /** Sends troops to meet another player's army on the road; returns an error or null. */
-  intercept: (originId: string, commandId: string, units: UnitCounts, scout: boolean) => Promise<string | null>;
-  withdraw: (hostId: string, homeId: string, units?: UnitCounts) => Promise<string | null>;
-  setTemplate: (key: 'A' | 'B' | 'C' | 'D', units: UnitCounts) => Promise<string | null>;
-  sendTemplate: (key: 'A' | 'B' | 'C' | 'D', x: number, y: number) => Promise<string | null>;
+  intercept: (
+    originId: string,
+    commandId: string,
+    units: UnitCounts,
+    scout: boolean,
+  ) => Promise<string | null>;
+  withdraw: (
+    hostId: string,
+    homeId: string,
+    units?: UnitCounts,
+  ) => Promise<string | null>;
+  setTemplate: (
+    key: "A" | "B" | "C" | "D",
+    units: UnitCounts,
+  ) => Promise<string | null>;
+  sendTemplate: (
+    key: "A" | "B" | "C" | "D",
+    x: number,
+    y: number,
+  ) => Promise<string | null>;
   lastError: string | null;
   clearError: () => void;
   notice: string | null;
   pushNotice: (text: string) => void;
   clearNotice: () => void;
-  trade: (originId: string, targetId: string, amount: ResourceSet) => Promise<string | null>;
+  trade: (
+    originId: string,
+    targetId: string,
+    amount: ResourceSet,
+  ) => Promise<string | null>;
   acceptTraderOffer: (villageId: string) => Promise<string | null>;
-  applyBuildTemplate: (villageId: string, templateId: string) => Promise<string | null>;
+  applyBuildTemplate: (
+    villageId: string,
+    templateId: string,
+  ) => Promise<string | null>;
   clearPlan: (villageId: string) => Promise<string | null>;
   saveBuildTemplate: (tpl: BuildTemplate) => Promise<string | null>;
   deleteBuildTemplate: (id: string) => Promise<string | null>;
   setFarmFilters: (patch: Partial<FarmFilters>) => Promise<string | null>;
   hideFarmOnMap: (hide: boolean) => Promise<string | null>;
-  setAutoFarm: (enabled: boolean, villageIds?: string[]) => Promise<string | null>;
+  setAutoFarm: (
+    enabled: boolean,
+    villageIds?: string[],
+  ) => Promise<string | null>;
   sendTemplateC: (x: number, y: number) => Promise<string | null>;
   saveGroup: (group: VillageGroup) => Promise<string | null>;
   deleteGroup: (id: string) => Promise<string | null>;
   /** Number of villages where a build was queued. */
   massBuild: (villageIds: string[], building: BuildingId) => Promise<number>;
   /** Number of units ordered. */
-  massRecruit: (villageIds: string[], unit: UnitId, upTo: number) => Promise<number>;
+  massRecruit: (
+    villageIds: string[],
+    unit: UnitId,
+    upTo: number,
+  ) => Promise<number>;
   mint: (villageId: string) => Promise<string | null>;
   renameVillage: (villageId: string, name: string) => Promise<string | null>;
   /** Stores the player's language on the account; the switch itself already changed it locally. */
@@ -156,7 +243,7 @@ function offerClaimOnce(worldId: number): boolean {
   const key = `claimOffered:${worldId}`;
   try {
     if (localStorage.getItem(key)) return false;
-    localStorage.setItem(key, '1');
+    localStorage.setItem(key, "1");
   } catch {
     if (claimOffered.has(key)) return false;
   }
@@ -184,13 +271,20 @@ function coalesced(load: () => Promise<void>): () => Promise<void> {
   let running: Promise<void> | null = null;
   let queued: Promise<void> | null = null;
   const start = () => {
-    const p = load().finally(() => { if (running === p) running = null; });
+    const p = load().finally(() => {
+      if (running === p) running = null;
+    });
     running = p;
     return p;
   };
   return () => {
     if (!running) return start();
-    queued ??= running.catch(() => undefined).then(() => { queued = null; return start(); });
+    queued ??= running
+      .catch(() => undefined)
+      .then(() => {
+        queued = null;
+        return start();
+      });
     return queued;
   };
 }
@@ -215,7 +309,11 @@ function compareReportIds(a: string, b: string): number {
  * as they were deleted. Null when a full page doesn't hold the newest held report: more may have arrived than one
  * page holds, so the whole inbox has to be read again.
  */
-export function mergeNewestReports(held: Report[], newest: Report[], pageSize: number): Report[] | null {
+export function mergeNewestReports(
+  held: Report[],
+  newest: Report[],
+  pageSize: number,
+): Report[] | null {
   if (newest.length < pageSize) return newest;
   const inPage = new Set(newest.map((r) => r.id));
   const newestHeld = held[0];
@@ -229,10 +327,15 @@ function worldPath(path: string): string {
   return `/api/v1/worlds/${server.state?.worldId ?? useGameStore.getState().worldId}${path}`;
 }
 
-function recruitedUnits(g: GameState | null, ids: string[], unit: UnitId): number {
+function recruitedUnits(
+  g: GameState | null,
+  ids: string[],
+  unit: UnitId,
+): number {
   let n = 0;
   for (const id of ids) {
-    for (const q of Object.values(g?.villages[id]?.recruitQueues ?? {})) for (const j of q) if (j.unit === unit) n += j.total - j.done;
+    for (const q of Object.values(g?.villages[id]?.recruitQueues ?? {}))
+      for (const j of q) if (j.unit === unit) n += j.total - j.done;
   }
   return n;
 }
@@ -246,8 +349,10 @@ export const useGameStore = create<GameStore>()(
       set((s) => {
         const prev = s.game;
         const game = toGameState(st, server.reports, server.news);
-        const remembered = prev?.activeVillageId ?? recallActiveVillage(st.worldId);
-        if (remembered && game.villages[remembered]) game.activeVillageId = remembered;
+        const remembered =
+          prev?.activeVillageId ?? recallActiveVillage(st.worldId);
+        if (remembered && game.villages[remembered])
+          game.activeVillageId = remembered;
         s.game = game;
         s.intel = st.intel;
         s.worldName = st.worldName;
@@ -257,10 +362,18 @@ export const useGameStore = create<GameStore>()(
         s.lastSyncSpanMs = prev ? Math.max(0, game.now - prev.now) : 0;
         s.instant = st.instant ?? null;
         s.hosted = st.hosted ?? null;
-        if (prev && game.stats.villagesConquered > prev.stats.villagesConquered) {
-          s.notice = t('notice.conquered');
-          if (s.account?.isGuest && s.instant && offerClaimOnce(st.worldId)) s.claimOpen = true;
-        } else if (prev && game.quests.completed.length > prev.quests.completed.length) s.notice = t('notice.questDone');
+        if (
+          prev &&
+          game.stats.villagesConquered > prev.stats.villagesConquered
+        ) {
+          s.notice = t("notice.conquered");
+          if (s.account?.isGuest && s.instant && offerClaimOnce(st.worldId))
+            s.claimOpen = true;
+        } else if (
+          prev &&
+          game.quests.completed.length > prev.quests.completed.length
+        )
+          s.notice = t("notice.questDone");
       });
       get().tick();
     };
@@ -272,15 +385,23 @@ export const useGameStore = create<GameStore>()(
       rebuild();
     };
 
-    const fetchState = coalesced(async () => applyState(await api.get<PlayerState>(worldPath('/state'))));
+    const fetchState = coalesced(async () =>
+      applyState(await api.get<PlayerState>(worldPath("/state"))),
+    );
     let wholeInbox = false;
     const loadReports = coalesced(async () => {
       const whole = wholeInbox;
       wholeInbox = false;
       try {
-        const newest = whole ? null : await api.get<Report[]>(worldPath(`/reports?limit=${NEWEST_REPORTS}`));
-        server.reports = (newest && mergeNewestReports(server.reports, newest, NEWEST_REPORTS))
-          ?? await api.get<Report[]>(worldPath(REPORTS_PATH));
+        const newest = whole
+          ? null
+          : await api.get<Report[]>(
+              worldPath(`/reports?limit=${NEWEST_REPORTS}`),
+            );
+        server.reports =
+          (newest &&
+            mergeNewestReports(server.reports, newest, NEWEST_REPORTS)) ??
+          (await api.get<Report[]>(worldPath(REPORTS_PATH)));
       } catch (e) {
         if (whole) wholeInbox = true;
         throw e;
@@ -294,15 +415,20 @@ export const useGameStore = create<GameStore>()(
     };
     const fetchNews = coalesced(async () => {
       const before = new Set(server.news.map((n) => n.id));
-      server.news = await api.get<NewsEntry[]>(worldPath('/news?limit=50'));
+      server.news = await api.get<NewsEntry[]>(worldPath("/news?limit=50"));
       const alert = server.news.find((n) => n.alert && !before.has(n.id));
-      if (alert && before.size > 0) set((s) => { s.notice = `[icon:nav-news] ${newsText(alert)}`; });
+      if (alert && before.size > 0)
+        set((s) => {
+          s.notice = `[icon:nav-news] ${newsText(alert)}`;
+        });
       rebuild();
     });
-    const quietly = (p: Promise<unknown>) => { p.catch(() => undefined); };
+    const quietly = (p: Promise<unknown>) => {
+      p.catch(() => undefined);
+    };
 
     const onLive = (m: LiveMessage) => {
-      if (m.type === 'hello') {
+      if (m.type === "hello") {
         // The first hello follows the boot's own fetches; later ones come after a reconnect that may have
         // missed updates.
         if (server.greeted) {
@@ -313,35 +439,53 @@ export const useGameStore = create<GameStore>()(
         server.greeted = true;
         return;
       }
-      if (m.type !== 'update') return;
+      if (m.type !== "update") return;
       for (const topic of m.topics) {
-        if (topic === 'state') quietly(fetchState());
-        if (topic === 'reports') quietly(fetchReports());
-        if (topic === 'news') quietly(fetchNews());
-        if (topic === 'map') {
-          server.map?.invalidate(m.villageIds ?? ['*']);
-          set((s) => { s.mapRev += 1; });
+        if (topic === "state") quietly(fetchState());
+        if (topic === "reports") quietly(fetchReports());
+        if (topic === "news") quietly(fetchNews());
+        if (topic === "map") {
+          server.map?.invalidate(m.villageIds ?? ["*"]);
+          set((s) => {
+            s.mapRev += 1;
+          });
         }
-        if (topic === 'ranking') set((s) => { s.rankingRev += 1; });
+        if (topic === "ranking")
+          set((s) => {
+            s.rankingRev += 1;
+          });
       }
     };
 
     /** Sends an order and takes the state it returns; on refusal sets and returns the error text. */
-    const run = async (name: string, body: object, notice?: string): Promise<string | null> => {
+    const run = async (
+      name: string,
+      body: object,
+      notice?: string,
+    ): Promise<string | null> => {
       const worldId = get().worldId;
-      if (worldId === null) return t('notice.notLoaded');
+      if (worldId === null) return t("notice.notLoaded");
       try {
         applyState(await order(worldId, name, body));
-        if (notice) set((s) => { s.notice = notice; });
+        if (notice)
+          set((s) => {
+            s.notice = notice;
+          });
         return null;
       } catch (e) {
         const msg = errorText(e);
-        set((s) => { s.lastError = msg; });
+        set((s) => {
+          s.lastError = msg;
+        });
         return msg;
       }
     };
     /** After a change to many reports the whole inbox is read again; a change to one is made in place. */
-    const runThenReports = async (name: string, body: object, change?: (reports: Report[]) => Report[]) => {
+    const runThenReports = async (
+      name: string,
+      body: object,
+      change?: (reports: Report[]) => Report[],
+    ) => {
       const err = await run(name, body);
       if (err) return err;
       if (change) {
@@ -350,17 +494,19 @@ export const useGameStore = create<GameStore>()(
       } else quietly(fetchReports(true));
       return null;
     };
-    const active = () => get().game?.activeVillageId ?? '';
+    const active = () => get().game?.activeVillageId ?? "";
 
     return {
       game: null,
-      phase: 'booting',
+      phase: "booting",
       worldId: null,
-      worldName: '',
+      worldName: "",
       gameNumber: null,
       stateRev: 0,
       intel: {},
-      devMode: typeof location !== 'undefined' && new URLSearchParams(location.search).get('dev') === '1',
+      devMode:
+        typeof location !== "undefined" &&
+        new URLSearchParams(location.search).get("dev") === "1",
       lastSyncSpanMs: 0,
       syncCounter: 0,
       rankingRev: 0,
@@ -374,32 +520,58 @@ export const useGameStore = create<GameStore>()(
       boot: () => {
         // StrictMode runs effects twice — one boot per app.
         bootPromise ??= (async () => {
-          const worldId = Number(new URLSearchParams(window.location.search).get('world'));
+          const worldId = Number(
+            new URLSearchParams(window.location.search).get("world"),
+          );
           if (!Number.isInteger(worldId) || worldId <= 0) {
-            navigation.assign(pathFor('lobby', getLocale()));
+            navigation.assign(pathFor("lobby", getLocale()));
             return;
           }
-          set((s) => { s.worldId = worldId; });
-          quietly(api.get<MeView>('/api/v1/me').then((me) => {
-            applyLocale(me.locale);
-            set((s) => { s.account = me; });
-          }));
+          set((s) => {
+            s.worldId = worldId;
+          });
+          quietly(
+            api.get<MeView>("/api/v1/me").then((me) => {
+              applyLocale(me.locale);
+              set((s) => {
+                s.account = me;
+              });
+            }),
+          );
           try {
             const [st, reports, news] = await Promise.all([
-              api.get<PlayerState>(worldPath('/state')),
+              api.get<PlayerState>(worldPath("/state")),
               api.get<Report[]>(worldPath(REPORTS_PATH)),
-              api.get<NewsEntry[]>(worldPath('/news?limit=50')),
+              api.get<NewsEntry[]>(worldPath("/news?limit=50")),
             ]);
             server.reports = reports;
             server.news = news;
-            server.map = new MapCache(worldId, st.config.mapSize, (x0, y0, x1, y1) =>
-              api.get<MapTile[]>(worldPath(`/map?x0=${x0}&y0=${y0}&x1=${x1}&y1=${y1}`))
-                .then((tiles) => tiles.map((t) => ({ ...t, ownerId: toClientRef(t.ownerId, st.me) }))));
+            server.map = new MapCache(
+              worldId,
+              st.config.mapSize,
+              (x0, y0, x1, y1) =>
+                api
+                  .get<MapTile[]>(
+                    worldPath(`/map?x0=${x0}&y0=${y0}&x1=${x1}&y1=${y1}`),
+                  )
+                  .then((tiles) =>
+                    tiles.map((t) => ({
+                      ...t,
+                      ownerId: toClientRef(t.ownerId, st.me),
+                    })),
+                  ),
+            );
             applyState(st);
-            set((s) => { s.phase = 'ready'; });
+            set((s) => {
+              s.phase = "ready";
+            });
           } catch (e) {
-            if (e instanceof ApiError && e.status === 403) navigation.assign(pathFor('lobby', getLocale()));
-            else if (!(e instanceof ApiError && e.status === 401)) set((s) => { s.lastError = errorText(e); });
+            if (e instanceof ApiError && e.status === 403)
+              navigation.assign(pathFor("lobby", getLocale()));
+            else if (!(e instanceof ApiError && e.status === 401))
+              set((s) => {
+                s.lastError = errorText(e);
+              });
             return;
           }
           server.disconnect = connectLive(worldId, onLive);
@@ -411,11 +583,20 @@ export const useGameStore = create<GameStore>()(
       shutdown: () => {
         server.disconnect?.();
         if (server.ticker) clearInterval(server.ticker);
-        Object.assign(server, { state: null, receivedAt: 0, reports: [], news: [], disconnect: null, ticker: null, greeted: false, map: null });
+        Object.assign(server, {
+          state: null,
+          receivedAt: 0,
+          reports: [],
+          news: [],
+          disconnect: null,
+          ticker: null,
+          greeted: false,
+          map: null,
+        });
         bootPromise = null;
         set((s) => {
           s.game = null;
-          s.phase = 'booting';
+          s.phase = "booting";
           s.worldId = null;
           s.intel = {};
           s.instant = null;
@@ -431,7 +612,9 @@ export const useGameStore = create<GameStore>()(
       tick: () => {
         const st = server.state;
         if (!st || !get().game) return;
-        const now = st.paused ? st.now : st.now + Math.max(0, Date.now() - server.receivedAt);
+        const now = st.paused
+          ? st.now
+          : st.now + Math.max(0, Date.now() - server.receivedAt);
         set((s) => {
           const g = s.game!;
           s.lastSyncSpanMs = Math.max(0, now - g.now);
@@ -448,10 +631,19 @@ export const useGameStore = create<GameStore>()(
         const me = server.state?.me;
         if (!me) return null;
         try {
-          const p = await api.get<Profile>(worldPath(`/players/${encodeURIComponent(toServerId(playerId, me))}`));
-          return { ...p, player: { ...p.player, id: toClientId(p.player.id, me) } };
+          const p = await api.get<Profile>(
+            worldPath(
+              `/players/${encodeURIComponent(toServerId(playerId, me))}`,
+            ),
+          );
+          return {
+            ...p,
+            player: { ...p.player, id: toClientId(p.player.id, me) },
+          };
         } catch (e) {
-          set((s) => { s.lastError = errorText(e); });
+          set((s) => {
+            s.lastError = errorText(e);
+          });
           return null;
         }
       },
@@ -460,35 +652,67 @@ export const useGameStore = create<GameStore>()(
         const me = server.state?.me;
         if (!me) return null;
         try {
-          const rows = await api.get<RankingRows>(worldPath(`/ranking?tab=${tab}`));
-          if (tab === 'conquests') {
-            return (rows as ConquestRow[]).map((r) => ({ ...r, toId: toClientId(r.toId, me), fromId: toClientRef(r.fromId, me) }));
+          const rows = await api.get<RankingRows>(
+            worldPath(`/ranking?tab=${tab}`),
+          );
+          if (tab === "conquests") {
+            return (rows as ConquestRow[]).map((r) => ({
+              ...r,
+              toId: toClientId(r.toId, me),
+              fromId: toClientRef(r.fromId, me),
+            }));
           }
-          return (rows as (PlayerRow | DailyRow)[]).map((r) => ({ ...r, id: toClientId(r.id, me) })) as RankingRows;
+          return (rows as (PlayerRow | DailyRow)[]).map((r) => ({
+            ...r,
+            id: toClientId(r.id, me),
+          })) as RankingRows;
         } catch (e) {
-          set((s) => { s.lastError = errorText(e); });
+          set((s) => {
+            s.lastError = errorText(e);
+          });
           return null;
         }
       },
 
-      mapLoaded: () => set((s) => { s.mapRev += 1; }),
+      mapLoaded: () =>
+        set((s) => {
+          s.mapRev += 1;
+        }),
 
       loadFarmTargets: async (villageId) => {
         if (!server.state) return null;
         try {
-          return await api.get<FarmTargetList>(worldPath(`/farm-targets?village=${encodeURIComponent(villageId)}`));
+          return await api.get<FarmTargetList>(
+            worldPath(`/farm-targets?village=${encodeURIComponent(villageId)}`),
+          );
         } catch {
           return null;
         }
       },
 
-      openClaim: () => set((s) => { s.claimOpen = true; }),
-      setResultsHidden: (hidden) => set((s) => { s.resultsHidden = hidden; }),
-      closeClaim: () => set((s) => { s.claimOpen = false; }),
+      openClaim: () =>
+        set((s) => {
+          s.claimOpen = true;
+        }),
+      setResultsHidden: (hidden) =>
+        set((s) => {
+          s.resultsHidden = hidden;
+        }),
+      closeClaim: () =>
+        set((s) => {
+          s.claimOpen = false;
+        }),
       claimAccount: async (username, password, passwordConfirm) => {
         try {
-          const me = await api.post<MeView>('/api/v1/auth/claim', { username, password, passwordConfirm });
-          set((s) => { s.account = me; s.claimOpen = false; });
+          const me = await api.post<MeView>("/api/v1/auth/claim", {
+            username,
+            password,
+            passwordConfirm,
+          });
+          set((s) => {
+            s.account = me;
+            s.claimOpen = false;
+          });
           quietly(fetchState());
           return null;
         } catch (e) {
@@ -497,8 +721,10 @@ export const useGameStore = create<GameStore>()(
       },
       renameGuest: async (username) => {
         try {
-          const me = await api.patch<MeView>('/api/v1/me', { username });
-          set((s) => { s.account = me; });
+          const me = await api.patch<MeView>("/api/v1/me", { username });
+          set((s) => {
+            s.account = me;
+          });
           quietly(fetchState());
           return null;
         } catch (e) {
@@ -506,32 +732,36 @@ export const useGameStore = create<GameStore>()(
         }
       },
       finishTutorial: () => {
-        set((s) => { if (s.account) s.account.tutorialDone = true; });
-        quietly(api.patch('/api/v1/me', { tutorialDone: true }));
+        set((s) => {
+          if (s.account) s.account.tutorialDone = true;
+        });
+        quietly(api.patch("/api/v1/me", { tutorialDone: true }));
       },
       leaveWorld: async () => {
         const worldId = get().worldId;
-        if (worldId === null) return t('notice.notLoaded');
+        if (worldId === null) return t("notice.notLoaded");
         try {
           await api.post(`/api/v1/worlds/${worldId}/leave`);
         } catch (e) {
           return errorText(e);
         }
         get().shutdown();
-        navigation.assign(pathFor('home', getLocale()));
+        navigation.assign(pathFor("home", getLocale()));
         return null;
       },
 
       logout: async () => {
-        await api.post('/api/v1/auth/logout').catch(() => undefined);
+        await api.post("/api/v1/auth/logout").catch(() => undefined);
         get().shutdown();
-        navigation.assign(pathFor('home', getLocale()));
+        navigation.assign(pathFor("home", getLocale()));
       },
 
       setActiveVillage: (id) => {
         const g = get().game;
         if (!g?.villages[id] || !humanVillageIds(g).includes(id)) return;
-        set((s) => { s.game!.activeVillageId = id; });
+        set((s) => {
+          s.game!.activeVillageId = id;
+        });
         if (g && server.state) rememberActiveVillage(server.state.worldId, id);
       },
 
@@ -540,74 +770,149 @@ export const useGameStore = create<GameStore>()(
         if (!g) return;
         const ids = humanVillageIds(g);
         const i = ids.indexOf(g.activeVillageId);
-        const next = ids[((i < 0 ? 0 : i) + delta + ids.length * 1000) % ids.length];
+        const next =
+          ids[((i < 0 ? 0 : i) + delta + ids.length * 1000) % ids.length];
         if (next) get().setActiveVillage(next);
       },
 
       claimQuestReward: (questId, villageId) =>
-        run('claim-quest', { questId, villageId: villageId ?? active() }, t('notice.rewardClaimed')),
-      build: (villageId, building) => run('build', { villageId, building }),
-      demolish: (villageId, building) => run('demolish', { villageId, building }),
-      cancelBuildJob: (villageId, jobId) => run('cancel-build', { villageId, jobId }),
-      recruit: (villageId, unit, count) => run('recruit', { villageId, unit, count }),
-      cancelRecruitJob: (villageId, jobId) => run('cancel-recruit', { villageId, jobId }),
-      research: (villageId, unit) => run('research', { villageId, unit }),
-      cancelResearchJob: (villageId, jobId) => run('cancel-research', { villageId, jobId }),
+        run(
+          "claim-quest",
+          { questId, villageId: villageId ?? active() },
+          t("notice.rewardClaimed"),
+        ),
+      build: (villageId, building) => run("build", { villageId, building }),
+      demolish: (villageId, building) =>
+        run("demolish", { villageId, building }),
+      cancelBuildJob: (villageId, jobId) =>
+        run("cancel-build", { villageId, jobId }),
+      recruit: (villageId, unit, count) =>
+        run("recruit", { villageId, unit, count }),
+      cancelRecruitJob: (villageId, jobId) =>
+        run("cancel-recruit", { villageId, jobId }),
+      research: (villageId, unit) => run("research", { villageId, unit }),
+      cancelResearchJob: (villageId, jobId) =>
+        run("cancel-research", { villageId, jobId }),
 
       lastError: null,
-      clearError: () => set((s) => { s.lastError = null; }),
+      clearError: () =>
+        set((s) => {
+          s.lastError = null;
+        }),
       notice: null,
-      pushNotice: (text) => set((s) => { s.notice = text; }),
-      clearNotice: () => set((s) => { s.notice = null; }),
+      pushNotice: (text) =>
+        set((s) => {
+          s.notice = text;
+        }),
+      clearNotice: () =>
+        set((s) => {
+          s.notice = null;
+        }),
 
       send: (originId, x, y, units, type, catapultTarget) =>
-        run('send', { originId, x, y, units, type, ...(catapultTarget ? { catapultTarget } : {}) }),
+        run("send", {
+          originId,
+          x,
+          y,
+          units,
+          type,
+          ...(catapultTarget ? { catapultTarget } : {}),
+        }),
       scheduleSend: (originId, x, y, units, type, mode, at, catapultTarget) =>
-        run('schedule-send', { originId, x, y, units, type, mode, at, ...(catapultTarget ? { catapultTarget } : {}) }),
-      cancelScheduled: (id) => run('cancel-scheduled', { id }),
-      dodge: (commandId) => run('dodge', { commandId }, t('notice.dodge')),
+        run("schedule-send", {
+          originId,
+          x,
+          y,
+          units,
+          type,
+          mode,
+          at,
+          ...(catapultTarget ? { catapultTarget } : {}),
+        }),
+      cancelScheduled: (id) => run("cancel-scheduled", { id }),
+      dodge: (commandId) => run("dodge", { commandId }, t("notice.dodge")),
       snipe: (trainCommandIds, fromVillageId, units) =>
-        run('snipe', { commandIds: trainCommandIds, fromVillageId, units }, t('notice.snipe')),
-      cancelCmd: (commandId) => run('cancel-command', { commandId }),
-      intercept: (originId, commandId, units, scout) => run('intercept', { originId, commandId, units, ...(scout ? { scout } : {}) }),
-      withdraw: (hostId, homeId, units) => run('withdraw-support', { hostId, homeId, ...(units ? { units } : {}) }),
-      setTemplate: (key, units) => run('set-farm-template', { key, units }),
-      sendTemplate: (key, x, y) => run('send-farm-template', { originId: active(), key, x, y }),
+        run(
+          "snipe",
+          { commandIds: trainCommandIds, fromVillageId, units },
+          t("notice.snipe"),
+        ),
+      cancelCmd: (commandId) => run("cancel-command", { commandId }),
+      intercept: (originId, commandId, units, scout) =>
+        run("intercept", {
+          originId,
+          commandId,
+          units,
+          ...(scout ? { scout } : {}),
+        }),
+      withdraw: (hostId, homeId, units) =>
+        run("withdraw-support", {
+          hostId,
+          homeId,
+          ...(units ? { units } : {}),
+        }),
+      setTemplate: (key, units) => run("set-farm-template", { key, units }),
+      sendTemplate: (key, x, y) =>
+        run("send-farm-template", { originId: active(), key, x, y }),
 
-      trade: (originId, targetId, amount) => run('trade', { originId, targetId, amount }),
-      acceptTraderOffer: (villageId) => run('accept-trader', { villageId }),
-      applyBuildTemplate: (villageId, templateId) => run('apply-build-template', { villageId, templateId }),
-      clearPlan: (villageId) => run('clear-build-plan', { villageId }),
-      saveBuildTemplate: (tpl) => run('save-build-template', tpl),
-      deleteBuildTemplate: (id) => run('delete-build-template', { id }),
-      setFarmFilters: (patch) => run('set-farm-filters', patch),
-      hideFarmOnMap: (hide) => run('hide-farm-on-map', { hide }),
+      trade: (originId, targetId, amount) =>
+        run("trade", { originId, targetId, amount }),
+      acceptTraderOffer: (villageId) => run("accept-trader", { villageId }),
+      applyBuildTemplate: (villageId, templateId) =>
+        run("apply-build-template", { villageId, templateId }),
+      clearPlan: (villageId) => run("clear-build-plan", { villageId }),
+      saveBuildTemplate: (tpl) => run("save-build-template", tpl),
+      deleteBuildTemplate: (id) => run("delete-build-template", { id }),
+      setFarmFilters: (patch) => run("set-farm-filters", patch),
+      hideFarmOnMap: (hide) => run("hide-farm-on-map", { hide }),
       setAutoFarm: (enabled, villageIds) =>
-        run('set-auto-farm', { enabled, villageIds: villageIds ?? get().game?.farmAssistant.autoFarmVillages ?? [] }),
-      sendTemplateC: (x, y) => run('send-template-c', { originId: active(), x, y }),
-      saveGroup: (group) => run('save-group', group),
-      deleteGroup: (id) => run('delete-group', { id }),
+        run("set-auto-farm", {
+          enabled,
+          villageIds:
+            villageIds ?? get().game?.farmAssistant.autoFarmVillages ?? [],
+        }),
+      sendTemplateC: (x, y) =>
+        run("send-template-c", { originId: active(), x, y }),
+      saveGroup: (group) => run("save-group", group),
+      deleteGroup: (id) => run("delete-group", { id }),
 
       massBuild: async (villageIds, building) => {
-        const queued = (g: GameState | null) => villageIds.reduce((n, id) => n + (g?.villages[id]?.buildQueue.length ?? 0), 0);
+        const queued = (g: GameState | null) =>
+          villageIds.reduce(
+            (n, id) => n + (g?.villages[id]?.buildQueue.length ?? 0),
+            0,
+          );
         const before = queued(get().game);
-        await run('mass-build', { villageIds, building });
+        await run("mass-build", { villageIds, building });
         return Math.max(0, queued(get().game) - before);
       },
       massRecruit: async (villageIds, unit, upTo) => {
         const before = recruitedUnits(get().game, villageIds, unit);
-        await run('mass-recruit', { villageIds, unit, upTo });
-        return Math.max(0, recruitedUnits(get().game, villageIds, unit) - before);
+        await run("mass-recruit", { villageIds, unit, upTo });
+        return Math.max(
+          0,
+          recruitedUnits(get().game, villageIds, unit) - before,
+        );
       },
 
-      mint: (villageId) => run('mint', { villageId }),
-      renameVillage: (villageId, name) => run('rename-village', { villageId, name }),
-      setLocale: (locale) => { void api.patch('/api/v1/me', { locale }).catch(() => undefined); },
-      markReportRead: (id, read = true) => runThenReports('mark-reports-read', { ids: [id], read },
-        (reports) => reports.map((r) => (r.id === id ? { ...r, read } : r))),
-      markAllReportsRead: (skipAutoFarm) => runThenReports('mark-all-reports-read', { skipAutoFarm }),
-      deleteReadReports: (skipAutoFarm) => runThenReports('delete-read-reports', { skipAutoFarm }),
-      deleteReport: (id) => runThenReports('delete-report', { id }, (reports) => reports.filter((r) => r.id !== id)),
+      mint: (villageId) => run("mint", { villageId }),
+      renameVillage: (villageId, name) =>
+        run("rename-village", { villageId, name }),
+      setLocale: (locale) => {
+        void api.patch("/api/v1/me", { locale }).catch(() => undefined);
+      },
+      markReportRead: (id, read = true) =>
+        runThenReports("mark-reports-read", { ids: [id], read }, (reports) =>
+          reports.map((r) => (r.id === id ? { ...r, read } : r)),
+        ),
+      markAllReportsRead: (skipAutoFarm) =>
+        runThenReports("mark-all-reports-read", { skipAutoFarm }),
+      deleteReadReports: (skipAutoFarm) =>
+        runThenReports("delete-read-reports", { skipAutoFarm }),
+      deleteReport: (id) =>
+        runThenReports("delete-report", { id }, (reports) =>
+          reports.filter((r) => r.id !== id),
+        ),
     };
   }),
 );
@@ -615,16 +920,18 @@ export const useGameStore = create<GameStore>()(
 // ---- Helper selectors ----
 
 export const selectGame = (s: GameStore): GameState => {
-  if (!s.game) throw new Error('the game is not loaded');
+  if (!s.game) throw new Error("the game is not loaded");
   return s.game;
 };
 
 export const selectActiveVillage = (s: GameStore): Village => {
   const g = selectGame(s);
   const v = g.villages[g.activeVillageId];
-  if (!v) throw new Error('no active village');
+  if (!v) throw new Error("no active village");
   return v;
 };
 
-export const selectResource = (r: Resource) => (s: GameStore): number => selectActiveVillage(s).resources[r];
-
+export const selectResource =
+  (r: Resource) =>
+  (s: GameStore): number =>
+    selectActiveVillage(s).resources[r];

@@ -1,10 +1,15 @@
-import { FARM_BALANCE } from '../data/world.config';
-import type { GameState } from './types';
-import { humanVillageIds } from './players';
+import { FARM_BALANCE } from "../data/world.config";
+import type { GameState } from "./types";
+import { humanVillageIds } from "./players";
 
 // The farm assistant's targets come from the server (GET …/farm-targets); the browser only lists them.
 
-export type FarmStatus = 'untouched' | 'full' | 'partial' | 'losses' | 'inbound';
+export type FarmStatus =
+  | "untouched"
+  | "full"
+  | "partial"
+  | "losses"
+  | "inbound";
 
 export interface FarmTarget {
   id: string;
@@ -25,7 +30,7 @@ export interface FarmTarget {
   estimatedLoot: number;
 }
 
-export type FarmHideReason = 'inbound' | 'losses' | 'wall' | 'recent';
+export type FarmHideReason = "inbound" | "losses" | "wall" | "recent";
 
 /** GET …/farm-targets: the targets the filters let through and how many each filter hid. */
 export interface FarmTargetList {
@@ -34,5 +39,8 @@ export interface FarmTargetList {
 }
 
 export function autoFarmUnlocked(state: GameState): boolean {
-  return state.farmAssistant.autoFarmUnlocked || humanVillageIds(state).length >= FARM_BALANCE.autoFarmUnlockVillages;
+  return (
+    state.farmAssistant.autoFarmUnlocked ||
+    humanVillageIds(state).length >= FARM_BALANCE.autoFarmUnlockVillages
+  );
 }

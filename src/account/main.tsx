@@ -1,5 +1,5 @@
-import { startAccountSite } from './boot';
-import './pagesLazy';
-import './account.css';
+import { startAccountSite } from "./boot";
+import "./pagesLazy";
+import "./account.css";
 
-void startAccountSite(document.getElementById('root')!);
+void startAccountSite(document.getElementById("root")!);

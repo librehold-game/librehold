@@ -18,7 +18,7 @@ export function mulberry32(seed: number): () => number {
 export function hashSeed(...parts: (string | number)[]): number {
   let h = 0x811c9dc5;
   for (const part of parts) {
-    const s = typeof part === 'number' ? `n${part}` : `s${part}`;
+    const s = typeof part === "number" ? `n${part}` : `s${part}`;
     for (let i = 0; i < s.length; i++) {
       h ^= s.charCodeAt(i);
       h = Math.imul(h, 0x01000193);

@@ -5,13 +5,19 @@
 let ctx: AudioContext | null = null;
 
 function audio(): AudioContext | null {
-  if (typeof AudioContext === 'undefined') return null;
+  if (typeof AudioContext === "undefined") return null;
   ctx ??= new AudioContext();
-  if (ctx.state === 'suspended') void ctx.resume();
+  if (ctx.state === "suspended") void ctx.resume();
   return ctx;
 }
 
-function tone(freq: number, startMs: number, durMs: number, type: OscillatorType = 'triangle', gain = 0.08): void {
+function tone(
+  freq: number,
+  startMs: number,
+  durMs: number,
+  type: OscillatorType = "triangle",
+  gain = 0.08,
+): void {
   const c = audio();
   if (!c) return;
   const osc = c.createOscillator();
@@ -36,19 +42,21 @@ export function playBuildDone(): void {
 /** Przybycie ataku: dzwon alarmowy (trzy uderzenia). */
 export function playAlarm(): void {
   for (let i = 0; i < 3; i++) {
-    tone(440, i * 260, 220, 'square', 0.05);
-    tone(554, i * 260 + 20, 200, 'sine', 0.04);
+    tone(440, i * 260, 220, "square", 0.05);
+    tone(554, i * 260 + 20, 200, "sine", 0.04);
   }
 }
 
 /** Hetman ceremony: a short fanfare. */
 export function playFanfare(): void {
   const seq = [523, 659, 784, 1047];
-  seq.forEach((f, i) => tone(f, i * 150, i === seq.length - 1 ? 600 : 180, 'sawtooth', 0.05));
+  seq.forEach((f, i) =>
+    tone(f, i * 150, i === seq.length - 1 ? 600 : 180, "sawtooth", 0.05),
+  );
 }
 
 /** Quest completed: a single high note. */
 export function playQuest(): void {
-  tone(988, 0, 120, 'sine', 0.05);
-  tone(1319, 110, 240, 'sine', 0.05);
+  tone(988, 0, 120, "sine", 0.05);
+  tone(1319, 110, 240, "sine", 0.05);
 }

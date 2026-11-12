@@ -1,4 +1,4 @@
-import { MS_PER_DAY, MS_PER_MINUTE, type GameState } from './types';
+import { MS_PER_DAY, MS_PER_MINUTE, type GameState } from "./types";
 
 /**
  * The player's local wall clock. World time runs 1:1 with real time, so world moment `t` is
@@ -25,6 +25,12 @@ export function isWeekendDay(dayIndex: number): boolean {
 }
 
 /** World moment for minute `min` of local day `dayIndex` (`min` may exceed 1440). */
-export function worldTimeOf(state: GameState, dayIndex: number, min: number): number {
-  return dayIndex * MS_PER_DAY + min * MS_PER_MINUTE - state.clock.originLocalMs;
+export function worldTimeOf(
+  state: GameState,
+  dayIndex: number,
+  min: number,
+): number {
+  return (
+    dayIndex * MS_PER_DAY + min * MS_PER_MINUTE - state.clock.originLocalMs
+  );
 }

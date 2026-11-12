@@ -1,8 +1,11 @@
 import {
-  BONUS_BALANCE as bonusBalance, BUILDINGS as buildings, BUILDING_BALANCE as buildingBalance, BUILDING_ORDER as buildingOrder,
+  BONUS_BALANCE as bonusBalance,
+  BUILDINGS as buildings,
+  BUILDING_BALANCE as buildingBalance,
+  BUILDING_ORDER as buildingOrder,
   RESOURCE_BALANCE as resourceBalance,
-} from './balance.json';
-import { BUILDING_IDS, type BuildingId } from '../engine/types';
+} from "./balance.json";
+import { BUILDING_IDS, type BuildingId } from "../engine/types";
 
 // The buildings' tables come from the server (src/data/balance.json, written by `npm run gen`); the formulas
 // that use them live in server/internal/game.
@@ -27,7 +30,9 @@ export interface BuildingDef {
   requirements: BuildingRequirement[];
 }
 
-export const BUILDINGS = Object.fromEntries(BUILDING_IDS.map((id) => [id, buildings[id]])) as Record<BuildingId, BuildingDef>;
+export const BUILDINGS = Object.fromEntries(
+  BUILDING_IDS.map((id) => [id, buildings[id]]),
+) as Record<BuildingId, BuildingDef>;
 
 /** Display order in the buildings table. */
 export const BUILDING_ORDER = buildingOrder as readonly BuildingId[];

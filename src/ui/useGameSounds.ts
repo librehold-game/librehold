@@ -1,16 +1,22 @@
-import { useEffect } from 'react';
-import { useGameStore } from '../state/gameStore';
-import { useUiStore } from '../state/uiStore';
-import { SCENE_BALANCE } from './scene/sceneModel';
-import { playAlarm, playBuildDone, playFanfare, playQuest } from './sound';
-import { humanVillageIds } from '../engine/players';
+import { useEffect } from "react";
+import { useGameStore } from "../state/gameStore";
+import { useUiStore } from "../state/uiStore";
+import { SCENE_BALANCE } from "./scene/sceneModel";
+import { playAlarm, playBuildDone, playFanfare, playQuest } from "./sound";
+import { humanVillageIds } from "../engine/players";
 
-interface Snap { levels: number; attackReports: number; nobles: number; quests: number }
+interface Snap {
+  levels: number;
+  attackReports: number;
+  nobles: number;
+  quests: number;
+}
 
 function snap(): Snap | null {
   const g = useGameStore.getState().game;
   if (!g) return null;
-  let levels = 0, nobles = 0;
+  let levels = 0,
+    nobles = 0;
   for (const id of humanVillageIds(g)) {
     const v = g.villages[id];
     if (!v) continue;
@@ -18,7 +24,9 @@ function snap(): Snap | null {
     nobles += v.units.noble;
   }
   let attackReports = 0;
-  for (const r of g.reports) if (r.type === 'attack' && humanVillageIds(g).includes(r.targetId)) attackReports++;
+  for (const r of g.reports)
+    if (r.type === "attack" && humanVillageIds(g).includes(r.targetId))
+      attackReports++;
   return { levels, attackReports, nobles, quests: g.quests.completed.length };
 }
 
@@ -27,7 +35,8 @@ export function useGameSounds(): void {
   useEffect(() => {
     let prev = snap();
     return useGameStore.subscribe((s, before) => {
-      if (s.syncCounter === before.syncCounter && s.game === before.game) return;
+      if (s.syncCounter === before.syncCounter && s.game === before.game)
+        return;
       const cur = snap();
       const old = prev;
       prev = cur;

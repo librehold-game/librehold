@@ -1,15 +1,25 @@
-import { create } from 'zustand';
-import type { BuildingId, UnitId } from '../engine/types';
-import type { EntryRef } from '../shared/encyclopedia/EntryLink';
+import { create } from "zustand";
+import type { BuildingId, UnitId } from "../engine/types";
+import type { EntryRef } from "../shared/encyclopedia/EntryLink";
 
-export type ViewId = 'village' | 'map' | 'rally' | 'farm' | 'reports' | 'overview' | 'news' | 'quests' | 'ranking' | 'settings';
-export type AnimationMode = 'full' | 'limited' | 'off';
+export type ViewId =
+  | "village"
+  | "map"
+  | "rally"
+  | "farm"
+  | "reports"
+  | "overview"
+  | "news"
+  | "quests"
+  | "ranking"
+  | "settings";
+export type AnimationMode = "full" | "limited" | "off";
 
 export interface RallyPrefill {
   x: number;
   y: number;
   units?: Partial<Record<UnitId, number>>;
-  mode?: 'attack' | 'support';
+  mode?: "attack" | "support";
 }
 
 export interface UiPrefs {
@@ -25,11 +35,20 @@ export interface UiPrefs {
   showLockedBuildings: boolean;
 }
 
-const PREFS_KEY = 'lh-ui-prefs';
+const PREFS_KEY = "lh-ui-prefs";
 
 function defaultPrefs(): UiPrefs {
-  const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return { animations: reduced ? 'limited' : 'full', sound: false, showScene: true, lockedOpen: true, showBuildPlan: true, showLockedBuildings: true };
+  const reduced =
+    typeof matchMedia === "function" &&
+    matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return {
+    animations: reduced ? "limited" : "full",
+    sound: false,
+    showScene: true,
+    lockedOpen: true,
+    showBuildPlan: true,
+    showLockedBuildings: true,
+  };
 }
 
 function loadPrefs(): UiPrefs {
@@ -45,18 +64,33 @@ function loadPrefs(): UiPrefs {
 }
 
 function persistPrefs(p: UiPrefs): void {
-  try { localStorage.setItem(PREFS_KEY, JSON.stringify(p)); } catch { /* no localStorage */ }
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify(p));
+  } catch {
+    /* no localStorage */
+  }
 }
 
 /** The active village is a screen choice, not world state — remembered in the browser, separately per world. */
 const activeVillageKey = (worldId: number) => `lh-active-village-${worldId}`;
 
-export function rememberActiveVillage(worldId: number, villageId: string): void {
-  try { localStorage.setItem(activeVillageKey(worldId), villageId); } catch { /* no localStorage */ }
+export function rememberActiveVillage(
+  worldId: number,
+  villageId: string,
+): void {
+  try {
+    localStorage.setItem(activeVillageKey(worldId), villageId);
+  } catch {
+    /* no localStorage */
+  }
 }
 
 export function recallActiveVillage(worldId: number): string | null {
-  try { return localStorage.getItem(activeVillageKey(worldId)); } catch { return null; }
+  try {
+    return localStorage.getItem(activeVillageKey(worldId));
+  } catch {
+    return null;
+  }
 }
 
 interface UiStore {
@@ -104,40 +138,46 @@ interface UiStore {
 }
 
 export const useUiStore = create<UiStore>()((set, get) => ({
-  view: 'village',
+  view: "village",
   setView: (view) => set({ view }),
   info: [],
-  openInfo: (ref) => set((s) => {
-    const top = s.info[s.info.length - 1];
-    return top && top.kind === ref.kind && top.id === ref.id ? s : { info: [...s.info, ref] };
-  }),
+  openInfo: (ref) =>
+    set((s) => {
+      const top = s.info[s.info.length - 1];
+      return top && top.kind === ref.kind && top.id === ref.id
+        ? s
+        : { info: [...s.info, ref] };
+    }),
   infoBack: () => set((s) => ({ info: s.info.slice(0, -1) })),
   closeInfo: () => set({ info: [] }),
   reportOpen: false,
   setReportOpen: (reportOpen) => set({ reportOpen }),
   navigate: (view) => set({ view, buildingScreen: null }),
   buildingScreen: null,
-  openBuilding: (building, villageId) => set({ view: 'village', buildingScreen: { building, villageId } }),
+  openBuilding: (building, villageId) =>
+    set({ view: "village", buildingScreen: { building, villageId } }),
   closeBuilding: () => set({ buildingScreen: null }),
   rallyPrefill: null,
-  openRally: (rallyPrefill) => set({ rallyPrefill, view: 'rally' }),
+  openRally: (rallyPrefill) => set({ rallyPrefill, view: "rally" }),
   consumeRallyPrefill: () => {
     const p = get().rallyPrefill;
     if (p) set({ rallyPrefill: null });
     return p;
   },
   mapCenter: null,
-  goToMap: (x, y) => set({ mapCenter: { x, y }, view: 'map' }),
+  goToMap: (x, y) => set({ mapCenter: { x, y }, view: "map" }),
   profilePlayerId: null,
   openProfile: (profilePlayerId) => set({ profilePlayerId }),
   closeProfile: () => set({ profilePlayerId: null }),
   reportsVillageFilter: null,
-  setReportsVillageFilter: (reportsVillageFilter) => set({ reportsVillageFilter }),
-  openReportsFor: (reportsVillageFilter) => set({ reportsVillageFilter, view: 'reports' }),
+  setReportsVillageFilter: (reportsVillageFilter) =>
+    set({ reportsVillageFilter }),
+  openReportsFor: (reportsVillageFilter) =>
+    set({ reportsVillageFilter, view: "reports" }),
   reportsHideAutoFarm: false,
   setReportsHideAutoFarm: (reportsHideAutoFarm) => set({ reportsHideAutoFarm }),
   reportToOpen: null,
-  openReport: (reportToOpen) => set({ reportToOpen, view: 'reports' }),
+  openReport: (reportToOpen) => set({ reportToOpen, view: "reports" }),
   consumeReportToOpen: () => {
     const id = get().reportToOpen;
     if (id) set({ reportToOpen: null });

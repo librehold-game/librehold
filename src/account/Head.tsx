@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect } from 'react';
-import { applyHead } from './headTags';
-import { usePathname } from './router';
+import { createContext, useContext, useEffect } from "react";
+import { applyHead } from "./headTags";
+import { usePathname } from "./router";
 
 export interface HeadData {
   title: string;

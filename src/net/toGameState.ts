@@ -1,21 +1,41 @@
-import { HUMAN_ID, type GameState, type NewsItem, type Player, type Report, type ReportVillage, type WorldConfig } from '../engine/types';
-import { toClientId, toClientRef } from './ids';
-import { ONLINE_TERRAIN_SEED } from '../shared/terrain/seed';
-import type { NewsEntry, PlayerState } from './types';
+import {
+  HUMAN_ID,
+  type GameState,
+  type NewsItem,
+  type Player,
+  type Report,
+  type ReportVillage,
+  type WorldConfig,
+} from "../engine/types";
+import { toClientId, toClientRef } from "./ids";
+import { ONLINE_TERRAIN_SEED } from "../shared/terrain/seed";
+import type { NewsEntry, PlayerState } from "./types";
 
 let commandsRev = 0;
 
-function publicAsPlayer(p: PlayerState['players'][string], id: string): Player {
+function publicAsPlayer(p: PlayerState["players"][string], id: string): Player {
   return {
-    id, name: p.name, isHuman: !p.isBot, color: p.color, villageIds: [...p.villageIds], coins: 0, noblesTrained: 0,
-    buildQueueSlots: 2, protectedUntil: 0, joinAt: 0, status: p.status, points: p.points, history: { hourly: [], daily: [] },
+    id,
+    name: p.name,
+    isHuman: !p.isBot,
+    color: p.color,
+    villageIds: [...p.villageIds],
+    coins: 0,
+    noblesTrained: 0,
+    buildQueueSlots: 2,
+    protectedUntil: 0,
+    joinAt: 0,
+    status: p.status,
+    points: p.points,
+    history: { hourly: [], daily: [] },
   };
 }
 
 /** A report as the engine kept it: the player's own id in its villages' owners is HUMAN_ID. */
 function clientReport(r: Report, me: string): Report {
   if (r.origin.ownerId !== me && r.target.ownerId !== me) return r;
-  const v = (x: ReportVillage) => (x.ownerId === me ? { ...x, ownerId: HUMAN_ID } : x);
+  const v = (x: ReportVillage) =>
+    x.ownerId === me ? { ...x, ownerId: HUMAN_ID } : x;
   return { ...r, origin: v(r.origin), target: v(r.target) };
 }
 
@@ -24,19 +44,40 @@ function clientReport(r: Report, me: string): Report {
  * keep working: own villages, the public face of every player (the own one in full), own commands and the
  * ones coming in (those without troops), reports and news oldest first, as the engine kept them.
  */
-export function toGameState(s: PlayerState, reports: Report[], news: (NewsItem | NewsEntry)[]): GameState {
+export function toGameState(
+  s: PlayerState,
+  reports: Report[],
+  news: (NewsItem | NewsEntry)[],
+): GameState {
   const me = s.me;
-  const villages: GameState['villages'] = {};
-  for (const [id, v] of Object.entries(s.villages)) villages[id] = { ...v, ownerId: toClientRef(v.ownerId, me) };
-  const players: GameState['players'] = {};
+  const villages: GameState["villages"] = {};
+  for (const [id, v] of Object.entries(s.villages))
+    villages[id] = { ...v, ownerId: toClientRef(v.ownerId, me) };
+  const players: GameState["players"] = {};
   for (const p of Object.values(s.players)) {
     const id = toClientId(p.id, me);
     players[id] = publicAsPlayer(p, id);
   }
-  players[HUMAN_ID] = { ...players[HUMAN_ID], ...s.player, id: HUMAN_ID, isHuman: true } as Player;
-  const stance = (s.config.botStance as string) === 'allAgainstHumans' ? 'allAgainstMe' : s.config.botStance;
-  const config = { ...s.config, botStance: stance, paused: s.paused } as WorldConfig;
-  const own = Object.keys(villages).sort((a, b) => villages[a]!.name.localeCompare(villages[b]!.name, 'pl') || a.localeCompare(b));
+  players[HUMAN_ID] = {
+    ...players[HUMAN_ID],
+    ...s.player,
+    id: HUMAN_ID,
+    isHuman: true,
+  } as Player;
+  const stance =
+    (s.config.botStance as string) === "allAgainstHumans"
+      ? "allAgainstMe"
+      : s.config.botStance;
+  const config = {
+    ...s.config,
+    botStance: stance,
+    paused: s.paused,
+  } as WorldConfig;
+  const own = Object.keys(villages).sort(
+    (a, b) =>
+      villages[a]!.name.localeCompare(villages[b]!.name, "pl") ||
+      a.localeCompare(b),
+  );
   return {
     worldSeed: ONLINE_TERRAIN_SEED,
     now: s.now,
@@ -44,19 +85,28 @@ export function toGameState(s: PlayerState, reports: Report[], news: (NewsItem |
     config,
     villages,
     players,
-    activeVillageId: own[0] ?? '',
-    commands: s.commands.map((c) => ({ ...c, units: c.units ?? {}, ...(c.ownerId ? { ownerId: toClientId(c.ownerId, me) } : {}) })),
+    activeVillageId: own[0] ?? "",
+    commands: s.commands.map((c) => ({
+      ...c,
+      units: c.units ?? {},
+      ...(c.ownerId ? { ownerId: toClientId(c.ownerId, me) } : {}),
+    })),
     commandsRev: ++commandsRev,
     reports: [...reports].reverse().map((r) => clientReport(r, me)),
     quests: s.human.quests,
     farmAssistant: s.human.farmAssistant,
     trader: s.human.trader,
-    news: [...news].reverse().map(({ for: _for, ...n }: NewsEntry) => n as NewsItem),
+    news: [...news]
+      .reverse()
+      .map(({ for: _for, ...n }: NewsEntry) => n as NewsItem),
     villageGroups: s.human.villageGroups,
     buildTemplates: s.human.buildTemplates,
     stats: s.human.stats,
     clock: { originLocalMs: s.clockOriginLocalMs },
-    scheduled: s.scheduled.map((x) => ({ ...x, ownerId: toClientId(x.ownerId, me) })),
+    scheduled: s.scheduled.map((x) => ({
+      ...x,
+      ownerId: toClientId(x.ownerId, me),
+    })),
     humanAggressorUntil: s.human.aggressorUntil,
     supportAbroad: s.supportAbroad ?? {},
   };

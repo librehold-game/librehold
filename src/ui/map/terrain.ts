@@ -1,1 +1,1 @@
-export * from '../../shared/terrain/noise';
+export * from "../../shared/terrain/noise";

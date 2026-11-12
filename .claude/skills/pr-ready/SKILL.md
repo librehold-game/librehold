@@ -5,7 +5,7 @@ description: Use before opening a pull request on LibreHold, before pushing new 
 
 # Ready for a pull request
 
-Pull requests keep coming back for the same things: CI red on `gofmt`, a local dev helper left in, guides that no
+Pull requests keep coming back for the same things: CI red on formatting, a local dev helper left in, guides that no
 longer match the game, a description that claims something the code doesn't do. Go through all four steps.
 
 ## 1. Run the checks CI runs
@@ -55,7 +55,7 @@ such as "(not needed here)".
 
 ## Common mistakes
 
-- CI stops at `gofmt`, so none of the server tests run.
+- CI stops at formatting (`gofmt`, `npm run format:check`), so none of the tests after it run.
 - A `server/cmd/...` helper with a hard-coded connection string or world id ends up in the PR.
 - The in-game guide says one thing and the game does another.
 - The description states a rule the code doesn't have ("support only goes to your own villages").

@@ -1,5 +1,5 @@
-import type { Resource } from '../../engine/types';
-import { PixelIcon } from '../pixelIcons';
+import type { Resource } from "../../engine/types";
+import { PixelIcon } from "../pixelIcons";
 
 export function ResourceIcon({ r, size = 18 }: { r: Resource; size?: number }) {
   return <PixelIcon name={r} size={size} />;
