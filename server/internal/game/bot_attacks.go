@@ -101,8 +101,9 @@ func botSchedule(w World, botID PlayerID, in ScheduleSendInput) {
 	actSoft(w, botID, "schedule-send", in, func() error { _, err := ScheduleSend(w, botID, in); return err })
 }
 
-// LaunchHarass: 4 fakes (1 ram, else 1 axe) from different villages landing within a second; every fourth at the
-// target's night.
+// LaunchHarass: 4 probes from different villages landing within a second, to see what is standing at home and to
+// spoil a defender's day; every fourth lands at the target's night. A probe is a scouting party, not a token force:
+// the fog of war means a probe that dies reports nothing, so one spear would tell the bot nothing at all.
 func LaunchHarass(w World, botID PlayerID, k *KnownVillage) {
 	rng := rngFor(w, botID, "harass", k.ID)
 	sources := villagesByDistance(w, botID, k.X, k.Y)
@@ -114,19 +115,18 @@ func LaunchHarass(w World, botID PlayerID, k *KnownVillage) {
 		units UnitCounts
 	}
 	var picks []pick
+	used := map[*Village]int{}
 	for i := range 4 {
 		v := sources[i%len(sources)]
-		rams := 0
-		for _, p := range picks {
-			if p.v == v && p.units[URam] > 0 {
-				rams++
-			}
+		left := v.Units[UScout] - used[v]
+		if left < ScoutParty {
+			continue
 		}
-		units := UnitCounts{UAxe: 1}
-		if v.Units[URam] > rams {
-			units = UnitCounts{URam: 1}
-		}
-		picks = append(picks, pick{v, units})
+		used[v] += ScoutParty
+		picks = append(picks, pick{v, UnitCounts{UScout: ScoutParty}})
+	}
+	if len(picks) == 0 {
+		return
 	}
 	latest := int64(0)
 	for _, p := range picks {

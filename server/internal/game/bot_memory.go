@@ -182,7 +182,7 @@ func ObserveBattle(w World, observerID PlayerID, target *Village, seen BattleSee
 	}
 	if seen.Units != nil {
 		u := *seen.Units
-		k.Units = &u
+		k.Units, k.UnitsSeenAt = &u, ptrTo(w.Now())
 	}
 	if seen.Wall != nil {
 		k.Wall = ptrTo(*seen.Wall)

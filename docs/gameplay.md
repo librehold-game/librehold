@@ -174,6 +174,12 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
   with the research they left with, take no loot, and are lost after the battle. An attack that reaches a village that
   is already its own (e.g. the next hetman of a train) stays there as support, unless it was cut loose: then it is
   lost.
+- **How bots learn what is in a village.** Only by a real scouting party (`ScoutParty`, 100 scouts) or by an attack
+  that came home. Since a scouting mission that is caught reports nothing, a band of a few scouts would tell a bot
+  nothing but that it lost them; harassment probes are the same full party for the same reason. A bot opens up an
+  unknown *barbarian* with a small group, because nobody is defending it, but never probes a player's village that way.
+  What a bot learnt is dated (`KnownVillage.UnitsSeenAt`) and re-scouted after `BotConfig.IntelStaleHours` (24), so an
+  owner who rebuilds is looked at again rather than assumed unchanged.
 - **Defence.** Stacking support when it arrives in time and will hold; otherwise a dodge; strong bots snipe noble
   trains. A weak bot "doesn't notice" some attacks.
 - **Quitting.** Being overwhelmed (village losses, attacks) fades over time; past a threshold a medium or strong

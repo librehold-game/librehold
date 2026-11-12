@@ -25,6 +25,16 @@ func KnownDefence(k *KnownVillage) (float64, bool) {
 	return d * (1 + 0.04*float64(wall)), true
 }
 
+// intelStale says whether the bot's knowledge of a garrison is too old to plan on. An owner rebuilds, troops come home
+// and support arrives, so a garrison seen once is a guess: it is worth re-scouting, not trusting. SeenAt cannot answer
+// this, because the daily map rediscovery moves it without anyone looking inside the village.
+func intelStale(w World, k *KnownVillage) bool {
+	if k.Units == nil || k.UnitsSeenAt == nil {
+		return true
+	}
+	return w.Now()-*k.UnitsSeenAt > BotDur(w, int64(BotConfig.IntelStaleHours*float64(MsPerHour)))
+}
+
 // OwnOffence is the attack strength at home in the bot's strongest village.
 func OwnOffence(w World, botID PlayerID) float64 {
 	best := 0.0

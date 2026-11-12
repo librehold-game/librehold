@@ -276,12 +276,15 @@ type PartialBuildings map[BuildingID]int
 
 // KnownVillage is what a bot knows of a village, only from its own observations and the map.
 type KnownVillage struct {
-	ID           string           `json:"id"`
-	X            int              `json:"x"`
-	Y            int              `json:"y"`
-	OwnerID      PlayerRef        `json:"ownerId"`
-	Points       int              `json:"points"`
-	SeenAt       int64            `json:"seenAt"`
+	ID      string    `json:"id"`
+	X       int       `json:"x"`
+	Y       int       `json:"y"`
+	OwnerID PlayerRef `json:"ownerId"`
+	Points  int       `json:"points"`
+	SeenAt  int64     `json:"seenAt"`
+	// UnitsSeenAt is when the bot last saw the garrison, as opposed to SeenAt, which moves every time the map is
+	// rediscovered. Without it a garrison looked at once would be trusted for ever.
+	UnitsSeenAt  *int64           `json:"unitsSeenAt,omitempty"`
 	Units        *UnitCounts      `json:"units,omitempty"`
 	Wall         *int             `json:"wall,omitempty"`
 	Hide         *float64         `json:"hide,omitempty"`

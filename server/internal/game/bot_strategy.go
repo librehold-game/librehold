@@ -50,7 +50,15 @@ func UpdateMood(w World, botID PlayerID) {
 	}
 }
 
-// campaignScout sends scouts first at a target of unknown defence.
+// ScoutParty is how many scouts a bot sends to look into a village. A scouting mission only gets through when it beats
+// the defending scouts, each of which counts ScoutDefenseFactor times, so a band of a few scouts is caught by any
+// village that keeps some at home — and a caught mission reports nothing at all. This is what a bot's own playbook
+// keeps per village (TroopTargets), so it clears a village holding its share and needs a second visit for one that
+// guards itself with twice as many.
+const ScoutParty = 100
+
+// campaignScout sends a real scouting party at a target whose defence it does not know. Scouts only: mixed into a
+// real attack they are ordinary light troops, and an attack only teaches what it survives.
 func campaignScout(w World, botID PlayerID, x, y int) bool {
 	var best *Village
 	for _, v := range PlayerVillages(w, botID) {
@@ -61,7 +69,7 @@ func campaignScout(w World, botID PlayerID, x, y int) bool {
 	if best == nil {
 		return false
 	}
-	units := UnitCounts{UScout: min(best.Units[UScout], 5)}
+	units := UnitCounts{UScout: min(best.Units[UScout], ScoutParty)}
 	if len(CheckSend(w, botID, best.ID, x, y, units, "attack").Blockers) > 0 {
 		return false
 	}
@@ -97,8 +105,9 @@ func PlanCampaign(w World, botID PlayerID) {
 	if b.Mood.OpAt != nil && float64(w.Now()-*b.Mood.OpAt) < gap {
 		return
 	}
-	// Unknown defence — scout first (a player does not send nobles blind).
-	if target.Units == nil && campaignScout(w, botID, target.X, target.Y) {
+	// Unknown or out-of-date defence — scout first (a player does not send nobles blind). Intel ages: the owner
+	// rebuilds, troops come home and support arrives, so what was seen yesterday is a guess today.
+	if intelStale(w, target) && campaignScout(w, botID, target.X, target.Y) {
 		b.Mood.OpAt = ptrTo(w.Now())
 		return
 	}

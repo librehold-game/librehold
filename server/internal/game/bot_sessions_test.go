@@ -219,7 +219,8 @@ func warWorld(t *testing.T, skill float64, lastVillage string) (*gametest.MemWor
 	w.Player(d).Status = game.StatusQuit
 	v := game.PlayerVillages(w, a)[0]
 	v.Units[game.UAxe], v.Units[game.ULightCav], v.Units[game.URam] = 6000, 500, 100
-	v.Units[game.UCatapult], v.Units[game.UNoble], v.Units[game.UScout] = 100, 5, 20
+	// Four probes of a full scouting party each, since a token force reports nothing under the fog of war.
+	v.Units[game.UCatapult], v.Units[game.UNoble], v.Units[game.UScout] = 100, 5, 4*game.ScoutParty
 	b := &v.Buildings
 	b[game.BAcademy], b[game.BFarm], b[game.BWorkshop], b[game.BStable], b[game.BBarracks] = 3, 30, 10, 10, 20
 	b[game.BSmithy], b[game.BMain], b[game.BMarket] = 20, 20, 10
@@ -228,8 +229,11 @@ func warWorld(t *testing.T, skill float64, lastVillage string) (*gametest.MemWor
 }
 
 func knownOf(w *gametest.MemWorld, bot game.PlayerID, v *game.Village) *game.KnownVillage {
-	k := &game.KnownVillage{ID: v.ID, X: v.X, Y: v.Y, OwnerID: v.OwnerID, Points: v.Points, SeenAt: w.Now(), Hauls: []float64{},
-		Units: &game.UnitCounts{}, Wall: ptr(0)}
+	now := w.Now()
+	// knownOf is "the bot has looked inside this village": the garrison carries the time it was seen, or the bot would
+	// treat its own knowledge as out of date.
+	k := &game.KnownVillage{ID: v.ID, X: v.X, Y: v.Y, OwnerID: v.OwnerID, Points: v.Points, SeenAt: now, Hauls: []float64{},
+		UnitsSeenAt: &now, Units: &game.UnitCounts{}, Wall: ptr(0)}
 	w.Brain(bot).Memory.Known[v.ID] = k
 	return k
 }
@@ -257,7 +261,7 @@ func TestBotAttacks(t *testing.T) {
 		}
 	})
 
-	t.Run("fakes: four within a second", func(t *testing.T) {
+	t.Run("probes: four scouting parties within a second", func(t *testing.T) {
 		w, a, target := warWorld(t, 0.95, "canBeLost")
 		game.LaunchHarass(w, a, knownOf(w, a, target))
 		ats := scheduledAts(w, a)
@@ -265,8 +269,10 @@ func TestBotAttacks(t *testing.T) {
 			t.Fatalf("ats %v", ats)
 		}
 		for _, s := range w.ScheduledSendsOf(a) {
-			if s.Units.Total() != 1 {
-				t.Fatalf("fake %+v", s.Units)
+			// A token force tells a bot nothing under the fog of war: a probe that dies reports nothing, so it has to
+			// be a real scouting party.
+			if s.Units[game.UScout] != game.ScoutParty || s.Units.Total() != s.Units[game.UScout] {
+				t.Fatalf("probe %+v", s.Units)
 			}
 		}
 	})
@@ -780,7 +786,9 @@ func TestBotAdaptationSessions(t *testing.T) {
 		for seed := uint32(103); seed < 140; seed++ {
 			w, home := botWorld(t, seed, monday, func(c *game.WorldConfig) { c.BotCount, c.WorldSpeed, c.BeginnerProtectionDays = 1, 1, 0 })
 			w.Brain("bot_0").Skill = 0.95
+			// A probe is a scouting party now, so the bot needs scouts for one to go out at all.
 			game.PlayerVillages(w, "bot_0")[0].Units[game.UAxe] = 100
+			game.PlayerVillages(w, "bot_0")[0].Units[game.UScout] = 4 * game.ScoutParty
 			for _, dm := range [][2]int64{{0, 6*60 + 50}, {1, 7 * 60}, {2, 7*60 + 10}} {
 				game.RecordHabit(w, "bot_0", "h1", game.HabitObservation{DodgeReturnAt: ptr(dm[0]*game.MsPerDay + dm[1]*game.MsPerMinute)})
 			}
