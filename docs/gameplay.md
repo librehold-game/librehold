@@ -113,6 +113,16 @@ and marches in progress finish at their own times.
   over at the edge of the world (without coins).
 - The admin can pause a world: world time stands still and players see the banner "The world is paused by the
   administrator".
+- **Battle reports only say what a side could know.** A force that lost every man has nobody left to ride home and
+  count the enemy, so the side that was wiped out reads only what its own lord already knew: the troops sent and that
+  they were all lost, with the enemy's numbers withheld — they are not in the stored report at all, so they cannot be
+  read off the network either. The survivor reads the whole battle, since he walked the field. Where a side dies on a
+  village wall the rule bends for one reader only: the village's owner stood behind that wall and watched the attack
+  break on it, so he reads the whole battle even with nobody left. A supporter whose troops died on somebody else's
+  wall has no wall of his own and is blinded like anyone else. Both roles can be blinded: an interception wiped out by
+  the army it met is the "attacker" of its own report, and an attack that never returned leaves the defender just as
+  unseen. A false report is never enough to learn a garrison: an attack that died teaches its sender nothing about
+  the defender, and a bot's memory is no fuller than a player's.
 
 ## Bot players
 

@@ -28,16 +28,23 @@ type Filter = "all" | ReportType | "unread";
 function UnitsTable({
   title,
   side,
+  hidden,
 }: {
   title: string;
   side: Report["attacker"];
+  hidden?: boolean;
 }) {
   const units = UNIT_IDS.filter((u) => (side.units[u] ?? 0) > 0);
   const t = useT();
   return (
     <div>
       <h4 className="text-[13px] font-semibold mb-1">{title}</h4>
-      {units.length === 0 ? (
+      {hidden ? (
+        // A wiped-out force has nobody left to describe what beat it, so the report carries no army for this side.
+        <p className="text-muted text-[12px] italic">
+          {t("reports.armyUnknown")}
+        </p>
+      ) : units.length === 0 ? (
         <p className="text-muted text-[12px] italic">{t("reports.noUnits")}</p>
       ) : (
         <div className="overflow-x-auto">
@@ -229,9 +236,17 @@ function ReportDetail({ id, onBack }: { id: string; onBack: () => void }) {
         )}
       </div>
       <div className="grid md:grid-cols-2 gap-3">
-        <UnitsTable title={t("reports.attacker")} side={r.attacker} />
+        <UnitsTable
+          title={t("reports.attacker")}
+          side={r.attacker}
+          hidden={r.attackerHidden}
+        />
         {!r.field?.missed && (
-          <UnitsTable title={t("reports.defender")} side={r.defender} />
+          <UnitsTable
+            title={t("reports.defender")}
+            side={r.defender}
+            hidden={r.defenderHidden}
+          />
         )}
       </div>
       {(r.wallBefore !== r.wallAfter || r.buildingDamage) && (

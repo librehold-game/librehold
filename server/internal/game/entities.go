@@ -168,15 +168,19 @@ type BuildingDamage struct {
 }
 
 type Report struct {
-	ID             string          `json:"id"`
-	Time           int64           `json:"time"`
-	Type           string          `json:"type"` // attack | support | scout | conquest | field | fieldScout
-	OriginID       string          `json:"originId"`
-	TargetID       string          `json:"targetId"`
-	Origin         ReportVillage   `json:"origin"`
-	Target         ReportVillage   `json:"target"`
-	Attacker       ReportSide      `json:"attacker"`
-	Defender       ReportSide      `json:"defender"`
+	ID       string        `json:"id"`
+	Time     int64         `json:"time"`
+	Type     string        `json:"type"` // attack | support | scout | conquest | field | fieldScout
+	OriginID string        `json:"originId"`
+	TargetID string        `json:"targetId"`
+	Origin   ReportVillage `json:"origin"`
+	Target   ReportVillage `json:"target"`
+	Attacker ReportSide    `json:"attacker"`
+	Defender ReportSide    `json:"defender"`
+	// AttackerHidden/DefenderHidden withhold one side's army from this reader: in a field battle a side that was
+	// wiped out has nobody left to count the enemy, so the survivor's numbers are not in the report it receives.
+	AttackerHidden bool            `json:"attackerHidden,omitempty"`
+	DefenderHidden bool            `json:"defenderHidden,omitempty"`
 	Scout          *ScoutIntel     `json:"scout,omitempty"`
 	Luck           float64         `json:"luck"`
 	Morale         float64         `json:"morale"`
