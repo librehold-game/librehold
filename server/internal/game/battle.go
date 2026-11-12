@@ -191,10 +191,21 @@ func blindSide(side *ReportSide) {
 // scratch, and only the enemy's side is cleared from it.
 func blindedFor(r Report, reader PlayerID, defenders map[PlayerID]bool) Report {
 	switch r.Type {
-	case "attack", "conquest", "field", "fieldScout":
+	case "attack", "conquest", "field":
+	case "scout", "fieldScout":
+		// A scouting mission reports by whether it got through, not by who happened to survive: a scout that
+		// slipped past its counterparts came back able to draw the garrison, so his lord reads it in full, and one
+		// caught short brings nothing home at all. That is also why this reads the outcome rather than the losses —
+		// the scouts can all die on a mission that still got its look at the village.
+		//
+		// The village's own lord is never blinded here: what he was not told is inside his own walls.
+		if r.Outcome != "attackerWon" && r.Origin.OwnerID == reader {
+			blindSide(&r.Defender)
+			r.DefenderHidden = true
+		}
+		return r
 	default:
-		// Scouting works by another rule (seeing is the point of a scout), and support and market reports carry no
-		// battle.
+		// Support and market reports carry no battle.
 		return r
 	}
 	readAttacker := r.Origin.OwnerID == reader
@@ -337,17 +348,17 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			Time: w.Now(), Type: "scout", OriginID: c.OriginID, TargetID: target.ID,
 			Origin: armyVillage(w, c, c.OriginID), Target: ReportVillageOf(w, target.ID),
 			Attacker: ReportSide{Units: c.Units, Losses: result.AttackerLosses},
+			Defender: ReportSide{Units: defenderUnits, Losses: result.DefenderLosses},
 			Morale:   result.Morale, WallBefore: target.Buildings[BWall], WallAfter: target.Buildings[BWall],
 			Outcome: result.Outcome, AutoFarm: c.AutoFarm,
 		}
 		if scoutOK {
-			r.Defender.Units = defenderUnits
 			r.Scout = &ScoutIntel{
 				Resources: Resources{math.Floor(target.Resources.Wood), math.Floor(target.Resources.Clay), math.Floor(target.Resources.Iron)},
 				Buildings: target.Buildings, Units: defenderUnits, Loyalty: target.Loyalty,
 			}
 		}
-		sendReports(w, recipients, r)
+		sendBattleReports(w, recipients, r, defenders)
 		return nil
 	}
 

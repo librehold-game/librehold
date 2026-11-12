@@ -156,4 +156,46 @@ describe("field battle reports", () => {
     expect(document.body.textContent).not.toContain("777");
     expect(document.body.textContent).toContain("50");
   });
+
+  it("caught scouts are told nothing of the garrison, in words that fit scouting", async () => {
+    // A scouting mission that was caught is not an army wiped out on a battlefield, so it must not talk about one.
+    await open(
+      fieldReport({
+        type: "scout",
+        outcome: "defenderWon",
+        defenderHidden: true,
+        attacker: { units: { scout: 3 }, losses: { scout: 3 } },
+        defender: { units: {}, losses: {} },
+        scout: undefined,
+        field: undefined,
+      }),
+    );
+    expect(screen.getByText(/Your scouts were caught/)).toBeTruthy();
+    expect(document.body.textContent).not.toContain(
+      "nobody came back to count the enemy",
+    );
+    // The sender still reads what he lost.
+    expect(document.body.textContent).toContain("Scouting failed");
+  });
+
+  it("a scouting mission that got through shows the garrison", async () => {
+    await open(
+      fieldReport({
+        type: "scout",
+        outcome: "attackerWon",
+        attacker: { units: { scout: 400 }, losses: {} },
+        defender: { units: { spear: 120 }, losses: {} },
+        scout: {
+          units: { spear: 120 },
+          resources: { wood: 100, clay: 100, iron: 100 },
+          buildings: {},
+          loyalty: 100,
+        } as Report["scout"],
+        field: undefined,
+      }),
+    );
+    expect(screen.getByText(/Scouting succeeded/)).toBeTruthy();
+    expect(document.body.textContent).toContain("120");
+    expect(screen.queryByText(/Your scouts were caught/)).toBeNull();
+  });
 });

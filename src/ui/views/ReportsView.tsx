@@ -29,10 +29,12 @@ function UnitsTable({
   title,
   side,
   hidden,
+  hiddenText,
 }: {
   title: string;
   side: Report["attacker"];
   hidden?: boolean;
+  hiddenText?: string;
 }) {
   const units = UNIT_IDS.filter((u) => (side.units[u] ?? 0) > 0);
   const t = useT();
@@ -40,9 +42,10 @@ function UnitsTable({
     <div>
       <h4 className="text-[13px] font-semibold mb-1">{title}</h4>
       {hidden ? (
-        // A wiped-out force has nobody left to describe what beat it, so the report carries no army for this side.
+        // The report carries no army for a side whose player was not told it: a wiped-out force has nobody left to
+        // describe what beat it, and a caught scouting party brought nothing back to describe.
         <p className="text-muted text-[12px] italic">
-          {t("reports.armyUnknown")}
+          {hiddenText ?? t("reports.armyUnknown")}
         </p>
       ) : units.length === 0 ? (
         <p className="text-muted text-[12px] italic">{t("reports.noUnits")}</p>
@@ -246,6 +249,11 @@ function ReportDetail({ id, onBack }: { id: string; onBack: () => void }) {
             title={t("reports.defender")}
             side={r.defender}
             hidden={r.defenderHidden}
+            hiddenText={
+              r.type === "scout" || r.type === "fieldScout"
+                ? t("reports.scoutUnknown")
+                : undefined
+            }
           />
         )}
       </div>

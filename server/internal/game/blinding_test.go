@@ -63,12 +63,43 @@ func TestBlindedForClearsTheWire(t *testing.T) {
 
 func TestBlindedForLeavesOtherReportsAlone(t *testing.T) {
 	gone := ReportSide{Units: UnitCounts{UAxe: 1}, Losses: UnitCounts{UAxe: 1}}
-	for _, typ := range []string{"support", "scout", "market"} {
+	for _, typ := range []string{"support", "market"} {
 		r := reportWith(gone, gone)
 		r.Type = typ
 		if out := blindedFor(r, "h1", nil); out.AttackerHidden || out.DefenderHidden {
 			t.Fatalf("%s must not be blinded", typ)
 		}
+	}
+}
+
+func TestBlindedForScouts(t *testing.T) {
+	// Seeing is the point of a scout, so a mission that got through reports the garrison in full: the army table and
+	// the intel panel have to agree, for both sides.
+	seen := Report{Type: "scout", Origin: ReportVillage{OwnerID: "h1"}, Target: ReportVillage{OwnerID: "h2"},
+		Attacker: ReportSide{Units: UnitCounts{UScout: 10}, Losses: UnitCounts{UScout: 1}},
+		Defender: ReportSide{Units: UnitCounts{USpear: 40}},
+		Scout:    &ScoutIntel{Units: UnitCounts{USpear: 40}}, Outcome: "attackerWon"}
+	for _, id := range []PlayerID{"h1", "h2"} {
+		if out := blindedFor(seen, id, map[PlayerID]bool{"h2": true}); out.AttackerHidden || out.DefenderHidden ||
+			out.Defender.Units.Total() == 0 {
+			t.Fatalf("%s: a scout that got through must read the garrison: %+v", id, out)
+		}
+	}
+
+	// Caught scouts bring nothing home, so the player who sent them learns nothing of what they were looking at.
+	caught := Report{Type: "scout", Origin: ReportVillage{OwnerID: "h1"}, Target: ReportVillage{OwnerID: "h2"},
+		Attacker: ReportSide{Units: UnitCounts{UScout: 3}, Losses: UnitCounts{UScout: 3}},
+		Defender: ReportSide{Units: UnitCounts{USpear: 40}}, Outcome: "defenderWon"}
+	mine := blindedFor(caught, "h1", map[PlayerID]bool{"h2": true})
+	if !mine.DefenderHidden || mine.Defender.Units.Total() != 0 || mine.Defender.Losses.Total() != 0 {
+		t.Fatalf("a caught scout still reports the garrison: %+v", mine)
+	}
+	if mine.Attacker.Units.Total() != 3 || mine.Attacker.Losses.Total() != 3 {
+		t.Fatalf("the sender must still see his own scouts: %+v", mine.Attacker)
+	}
+	// The defender knows his own village and sees the scouts that died at it.
+	if theirs := blindedFor(caught, "h2", map[PlayerID]bool{"h2": true}); theirs.DefenderHidden || theirs.AttackerHidden {
+		t.Fatalf("the defender was blinded to his own village: %+v", theirs)
 	}
 }
 

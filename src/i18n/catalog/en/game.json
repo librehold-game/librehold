@@ -919,6 +919,7 @@
   },
   "reports": {
     "armyUnknown": "Your army was wiped out, and nobody came back to count the enemy. Their troops are unknown.",
+    "scoutUnknown": "Your scouts were caught before they could look. What stood against them is unknown.",
     "noUnits": "no units",
     "count": "Count",
     "losses": "Losses",

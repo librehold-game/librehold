@@ -535,3 +535,93 @@ func TestVillageBattleFogOfWar(t *testing.T) {
 		}
 	})
 }
+
+// A scouting mission is a battle report too, so it follows the same rule, with its own way of telling whether it
+// brought anything home: what matters is whether the scouts got through, not how many of them died.
+func TestVillageScoutFogOfWar(t *testing.T) {
+	newScoutWorld := func(scouts, defenderScouts int) (*gametest.MemWorld, *game.Command) {
+		t.Helper()
+		w, home := gametest.NewTestWorld(79)
+		w.Player("h1").ProtectedUntil = 0
+		gametest.NewHumanPlayer(w, "h2")
+		den := gametest.AddStartVillage(w, "h2", home.X+2, home.Y)
+		den.Units = game.Units{}
+		// Each defending scout counts double, so pair up the numbers to make the outcome clear either way.
+		den.Units[game.UScout] = defenderScouts
+		den.Units[game.USpear] = 120
+		home.Units[game.UScout] = scouts
+		c, err := game.SendCommand(w, "h1", home.ID, den.X, den.Y, game.UnitCounts{game.UScout: scouts}, "attack", game.SendOpts{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := gametest.Advance(w, c.ArrivesAt); err != nil {
+			t.Fatal(err)
+		}
+		return w, c
+	}
+	scoutReport := func(w *gametest.MemWorld, id game.PlayerID) *game.Report {
+		for _, r := range w.ReportsOf(id) {
+			if r.Type == "scout" {
+				return r
+			}
+		}
+		return nil
+	}
+
+	t.Run("caught scouts report no garrison to their sender", func(t *testing.T) {
+		// Three scouts against fifty defending scouts: nowhere near enough, so every one of them dies unlooked.
+		w, _ := newScoutWorld(3, 50)
+		mine := scoutReport(w, "h1")
+		if mine == nil {
+			t.Fatal("a scouting mission reports to its sender")
+		}
+		if mine.Outcome != "defenderWon" {
+			t.Fatalf("the scouts were supposed to be caught: %q", mine.Outcome)
+		}
+		if !mine.DefenderHidden {
+			t.Fatal("the sender of caught scouts was told the garrison")
+		}
+		if mine.Defender.Units.Total() != 0 || mine.Defender.Losses.Total() != 0 {
+			t.Fatalf("the garrison is still on the wire: %+v", mine.Defender)
+		}
+		if mine.Scout != nil {
+			t.Fatal("a caught scouting mission must not carry scout intel")
+		}
+		if mine.Attacker.Units.Total() != 3 || mine.Attacker.Losses.Total() != 3 {
+			t.Fatalf("the sender must still see the scouts he lost: %+v", mine.Attacker)
+		}
+	})
+
+	t.Run("a scouting mission that got through reports the garrison in full", func(t *testing.T) {
+		w, _ := newScoutWorld(400, 5)
+		mine := scoutReport(w, "h1")
+		if mine == nil || mine.Outcome != "attackerWon" {
+			t.Fatalf("the scouts were supposed to get through: %+v", mine)
+		}
+		if mine.DefenderHidden || mine.AttackerHidden {
+			t.Fatal("a scout that got through must report what it saw")
+		}
+		if mine.Defender.Units.Total() == 0 {
+			t.Fatal("the whole point of a scout is the garrison")
+		}
+		if mine.Scout == nil || mine.Scout.Units.Total() == 0 {
+			t.Fatalf("the scout intel is missing: %+v", mine.Scout)
+		}
+	})
+
+	t.Run("the village owner always knows his own garrison", func(t *testing.T) {
+		// Being scouted tells the owner nothing he did not already know, and a report that hid his own troops would
+		// be nonsense.
+		w, _ := newScoutWorld(3, 50)
+		if theirs := scoutReport(w, "h2"); theirs != nil && theirs.DefenderHidden {
+			t.Fatalf("the owner was blinded to his own village: %+v", theirs)
+		}
+	})
+
+	t.Run("a caught scout leaves no garrison in the attacker's intel", func(t *testing.T) {
+		w, c := newScoutWorld(3, 50)
+		if in := w.Intel("h1", c.TargetID); in != nil && in.Intel != nil && in.Intel.Units.Total() > 0 {
+			t.Fatalf("caught scouts still filled the intel: %+v", in.Intel.Units)
+		}
+	})
+}

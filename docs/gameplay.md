@@ -123,6 +123,12 @@ and marches in progress finish at their own times.
   the army it met is the "attacker" of its own report, and an attack that never returned leaves the defender just as
   unseen. A false report is never enough to learn a garrison: an attack that died teaches its sender nothing about
   the defender, and a bot's memory is no fuller than a player's.
+- **A scouting mission follows the same rule, decided by whether it got through.** Scouts that slipped past the
+  defending scouts report the garrison, and the army table and the scouting panel agree. Scouts that were caught bring
+  nothing home, so their sender is told only that the scouting failed, with the garrison withheld from the report just
+  like any other blinded side; the intel stays empty too. This reads the outcome rather than the losses, because a
+  mission can lose every scout and still have taken its look at the village. The owner of the scouted village is never
+  blinded by it: what the report would hide is inside his own walls.
 
 ## Bot players
 
