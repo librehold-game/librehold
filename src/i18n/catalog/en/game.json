@@ -920,6 +920,8 @@
   "reports": {
     "armyUnknown": "Your army was wiped out, and nobody came back to count the enemy. Their troops are unknown.",
     "scoutUnknown": "Your scouts were caught before they could look. What stood against them is unknown.",
+    "troopsSeen": "Your troops were counted by the attacker. He knows what he fought.",
+    "troopsUnknown": "The attacker learned nothing of your troops: none of his came home to say.",
     "noUnits": "no units",
     "count": "Count",
     "losses": "Losses",

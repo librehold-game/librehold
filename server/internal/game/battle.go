@@ -210,6 +210,14 @@ func blindedFor(r Report, reader PlayerID, defenders map[PlayerID]bool) Report {
 	}
 	readAttacker := r.Origin.OwnerID == reader
 	onDefendingSide := r.Target.OwnerID == reader || defenders[reader]
+	// A defender cannot see the attacker, so the report has to say whether the attacker saw him. Nothing came home
+	// from this fight, so if every attacker died nobody rode away to describe the garrison either. A field battle is
+	// fought on the road with no wall to stand behind, so this only speaks for an attack on a village. It is set
+	// before the wall exception below, which returns early for the village's own lord.
+	if onDefendingSide && (r.Type == "attack" || r.Type == "conquest") {
+		seen := !wipedOut(r.Attacker) && r.Attacker.Units.Total() > 0
+		r.DefenderTroopsSeen = &seen
+	}
 	// The owner of the village sees the attack even if his garrison died: he was behind the wall it broke on.
 	if r.Target.OwnerID == reader && (r.Type == "attack" || r.Type == "conquest") {
 		return r

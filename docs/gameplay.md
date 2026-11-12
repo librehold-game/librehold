@@ -128,7 +128,14 @@ and marches in progress finish at their own times.
   nothing home, so their sender is told only that the scouting failed, with the garrison withheld from the report just
   like any other blinded side; the intel stays empty too. This reads the outcome rather than the losses, because a
   mission can lose every scout and still have taken its look at the village. The owner of the scouted village is never
-  blinded by it: what the report would hide is inside his own walls.
+  blinded by it: what the report would hide is inside his own walls. Scouts marched along with a real army are not a
+  scouting mission at all (`IsScoutMission` needs nothing but scouts), so whether they live or die makes no difference
+  to what a surviving attack learned.
+- **The defender is told whether the attacker counted his troops.** A defender cannot look at the attacker, so the
+  report states it: the attacker's survivors walked the field and described the garrison, or every attacker died and
+  nobody rode away to describe it. It goes to the village's owner and to human supporters, whose troops were part of
+  what was counted, and never to the attacker, who sees the garrison anyway. It is only set for an attack on a
+  village: a field battle has no wall to stand behind, so a survivor there is not evidence of anything.
 
 ## Bot players
 

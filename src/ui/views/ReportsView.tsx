@@ -237,6 +237,14 @@ function ReportDetail({ id, onBack }: { id: string; onBack: () => void }) {
         {r.morale !== 1 && (
           <div>{t("reports.morale", { n: Math.round(r.morale * 100) })}</div>
         )}
+        {/* Whether the enemy came away knowing your troops. A defender cannot look at the attacker, so the server
+            says it outright rather than leaving him to read it off the attacker's table. */}
+        {r.defenderTroopsSeen === true && (
+          <div className="mt-1">{t("reports.troopsSeen")}</div>
+        )}
+        {r.defenderTroopsSeen === false && (
+          <div className="mt-1 text-ok">{t("reports.troopsUnknown")}</div>
+        )}
       </div>
       <div className="grid md:grid-cols-2 gap-3">
         <UnitsTable

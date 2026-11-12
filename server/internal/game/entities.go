@@ -179,24 +179,28 @@ type Report struct {
 	Defender ReportSide    `json:"defender"`
 	// AttackerHidden/DefenderHidden withhold one side's army from this reader: in a field battle a side that was
 	// wiped out has nobody left to count the enemy, so the survivor's numbers are not in the report it receives.
-	AttackerHidden bool            `json:"attackerHidden,omitempty"`
-	DefenderHidden bool            `json:"defenderHidden,omitempty"`
-	Scout          *ScoutIntel     `json:"scout,omitempty"`
-	Luck           float64         `json:"luck"`
-	Morale         float64         `json:"morale"`
-	WallBefore     int             `json:"wallBefore"`
-	WallAfter      int             `json:"wallAfter"`
-	BuildingDamage *BuildingDamage `json:"buildingDamage,omitempty"`
-	Haul           *Resources      `json:"haul,omitempty"`
-	HaulCapacity   *float64        `json:"haulCapacity,omitempty"`
-	NoHome         bool            `json:"noHome,omitempty"` // the army was cut loose from its village and took nothing, having no home to carry it to
-	LoyaltyBefore  *float64        `json:"loyaltyBefore,omitempty"`
-	LoyaltyAfter   *float64        `json:"loyaltyAfter,omitempty"`
-	Conquered      bool            `json:"conquered,omitempty"`
-	Outcome        string          `json:"outcome"` // attackerWon | defenderWon
-	Read           bool            `json:"read"`
-	AutoFarm       bool            `json:"autoFarm,omitempty"`
-	Field          *FieldReport    `json:"field,omitempty"`
+	AttackerHidden bool `json:"attackerHidden,omitempty"`
+	DefenderHidden bool `json:"defenderHidden,omitempty"`
+	// DefenderTroopsSeen tells a reader on the defending side whether the attacker got to look at his troops. Only
+	// the attacker's survivors ride away from the wall, so the report is the one place a defender can learn it. Unset
+	// for every other reader, and for reports that are not an attack on a village.
+	DefenderTroopsSeen *bool           `json:"defenderTroopsSeen,omitempty"`
+	Scout              *ScoutIntel     `json:"scout,omitempty"`
+	Luck               float64         `json:"luck"`
+	Morale             float64         `json:"morale"`
+	WallBefore         int             `json:"wallBefore"`
+	WallAfter          int             `json:"wallAfter"`
+	BuildingDamage     *BuildingDamage `json:"buildingDamage,omitempty"`
+	Haul               *Resources      `json:"haul,omitempty"`
+	HaulCapacity       *float64        `json:"haulCapacity,omitempty"`
+	NoHome             bool            `json:"noHome,omitempty"` // the army was cut loose from its village and took nothing, having no home to carry it to
+	LoyaltyBefore      *float64        `json:"loyaltyBefore,omitempty"`
+	LoyaltyAfter       *float64        `json:"loyaltyAfter,omitempty"`
+	Conquered          bool            `json:"conquered,omitempty"`
+	Outcome            string          `json:"outcome"` // attackerWon | defenderWon
+	Read               bool            `json:"read"`
+	AutoFarm           bool            `json:"autoFarm,omitempty"`
+	Field              *FieldReport    `json:"field,omitempty"`
 }
 
 type PlayerStatus string

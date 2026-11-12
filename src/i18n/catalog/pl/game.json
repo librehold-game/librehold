@@ -954,6 +954,8 @@
   "reports": {
     "armyUnknown": "Twoje wojsko zostało zniszczone i nikt nie wrócił, by policzyć wroga. Jego siły są nieznane.",
     "scoutUnknown": "Twoi zwiadowcy zostali schwytani, zanim zdążyli się rozejrzeć. Nie wiadomo, co im się postawiło.",
+    "troopsSeen": "Napastnik policzył twoje wojsko. Wie, z czym walczył.",
+    "troopsUnknown": "Napastnik nie dowiedział się nic o twoim wojsku: nikt z jego ludzi nie wrócił, by o tym donieść.",
     "noUnits": "brak jednostek",
     "count": "Liczba",
     "losses": "Straty",

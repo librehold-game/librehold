@@ -198,4 +198,53 @@ describe("field battle reports", () => {
     expect(document.body.textContent).toContain("120");
     expect(screen.queryByText(/Your scouts were caught/)).toBeNull();
   });
+
+  it("tells the defender his troops are unknown to the attacker", async () => {
+    // The defender cannot look at the attacker, so the report says it outright instead of leaving him to read the
+    // blind side as good news.
+    await open(
+      fieldReport({
+        type: "attack",
+        outcome: "defenderWon",
+        attackerHidden: true,
+        attacker: { units: { axe: 90 }, losses: { axe: 90 } },
+        defender: { units: { spear: 1410 }, losses: {} },
+        defenderTroopsSeen: false,
+        field: undefined,
+      }),
+    );
+    expect(
+      screen.getByText(/The attacker learned nothing of your troops/),
+    ).toBeTruthy();
+    expect(screen.queryByText(/were counted by the attacker/)).toBeNull();
+  });
+
+  it("tells the defender his troops were seen", async () => {
+    await open(
+      fieldReport({
+        type: "attack",
+        outcome: "attackerWon",
+        attacker: { units: { axe: 2000 }, losses: {} },
+        defender: { units: { spear: 5 }, losses: { spear: 5 } },
+        defenderTroopsSeen: true,
+        field: undefined,
+      }),
+    );
+    expect(screen.getByText(/were counted by the attacker/)).toBeTruthy();
+    expect(screen.queryByText(/learned nothing of your troops/)).toBeNull();
+  });
+
+  it("says nothing about it to the attacker", async () => {
+    // The attacker sees the garrison anyway; the fact belongs to the defending side.
+    await open(
+      fieldReport({
+        type: "attack",
+        outcome: "attackerWon",
+        defenderTroopsSeen: undefined,
+        field: undefined,
+      }),
+    );
+    expect(screen.queryByText(/were counted by the attacker/)).toBeNull();
+    expect(screen.queryByText(/learned nothing of your troops/)).toBeNull();
+  });
 });
