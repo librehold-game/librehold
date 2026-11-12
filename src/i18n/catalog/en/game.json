@@ -340,7 +340,6 @@
     "production": "Production",
     "perHour": "per hour",
     "levelTitle": "{building} level {n}",
-    "boostProduction": "» Increase production",
     "params": "Current parameters",
     "worldSpeed": "World speed",
     "unitsSpeed": " · units ×{n}",
@@ -698,7 +697,6 @@
     "queued": "in the recruitment queue",
     "away": "away from the village (on the move / as support)",
     "awayCount": "[{n} away]",
-    "recruit": "» recruit",
     "support": "Support",
     "arriving": "+{n} arriving",
     "supportComing": "Support is on its way"
