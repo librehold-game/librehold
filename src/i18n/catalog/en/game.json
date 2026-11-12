@@ -918,6 +918,7 @@
     "allVillages": "all villages"
   },
   "reports": {
+    "armyUnknown": "Your army was wiped out, and nobody came back to count the enemy. Their troops are unknown.",
     "noUnits": "no units",
     "count": "Count",
     "losses": "Losses",

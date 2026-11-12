@@ -81,4 +81,13 @@ describe('field battle reports', () => {
     expect(screen.getByText(/army was gone/)).toBeTruthy();
     expect(document.body.textContent).not.toContain('(0|0)');
   });
+
+  it('a wiped-out side is not shown what killed it', async () => {
+    // The server withholds the hidden side entirely, so the report carries no army there: the view has to say so
+    // instead of drawing an empty table. The defender's 50 is still readable — only the hidden side is gone.
+    await open(fieldReport({ attackerHidden: true, attacker: { units: { axe: 777 }, losses: { axe: 777 } } }));
+    expect(screen.getByText(/nobody came back to count the enemy/)).toBeTruthy();
+    expect(document.body.textContent).not.toContain('777');
+    expect(document.body.textContent).toContain('50');
+  });
 });

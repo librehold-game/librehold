@@ -149,6 +149,10 @@ export interface Report {
   target: ReportVillage;
   attacker: ReportSide;
   defender: ReportSide;
+  /** A side whose army was wiped out in a field battle has nobody left to count the enemy, so the other side's
+   * numbers are withheld from that reader. */
+  attackerHidden?: boolean;
+  defenderHidden?: boolean;
   /** Result of a successful scouting. */
   scout?: ScoutIntel;
   luck: number;
