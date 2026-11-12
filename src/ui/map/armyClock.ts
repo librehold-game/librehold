@@ -10,16 +10,22 @@ export interface ArmyClock {
 }
 
 /** A clock over a source of world time: its last value moved on by the wall time since it changed. */
-export function armyClock(read: () => number | null, subscribe: (onTick: () => void) => () => void): ArmyClock {
+export function armyClock(
+  read: () => number | null,
+  subscribe: (onTick: () => void) => () => void,
+): ArmyClock {
   const s = { now: Number.NaN, wall: 0, rate: 1 };
   return {
     now() {
       const now = read();
       if (now === null) return 0;
-      const wall = typeof performance === 'undefined' ? Date.now() : performance.now();
+      const wall =
+        typeof performance === "undefined" ? Date.now() : performance.now();
       if (now !== s.now) {
-        const dw = wall - s.wall, dn = now - s.now;
-        if (!Number.isNaN(s.now) && dw >= MIN_RATE_SAMPLE_MS) s.rate = dn > 0 ? Math.min(20, dn / dw) : 1;
+        const dw = wall - s.wall,
+          dn = now - s.now;
+        if (!Number.isNaN(s.now) && dw >= MIN_RATE_SAMPLE_MS)
+          s.rate = dn > 0 ? Math.min(20, dn / dw) : 1;
         s.now = now;
         s.wall = wall;
       }

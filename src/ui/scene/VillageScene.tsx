@@ -1,7 +1,7 @@
-import './scene.css';
-import { useGameStore } from '../../state/gameStore';
-import { useUiStore } from '../../state/uiStore';
-import { PixelVillageScene } from './pixel/PixelVillageScene';
+import "./scene.css";
+import { useGameStore } from "../../state/gameStore";
+import { useUiStore } from "../../state/uiStore";
+import { PixelVillageScene } from "./pixel/PixelVillageScene";
 
 /** Village illustration — remounted on village change so no timers or frame loops leak across villages. */
 export function VillageScene() {

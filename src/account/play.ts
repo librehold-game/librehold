@@ -1,6 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useT } from '../i18n/i18n';
-import { api, ApiError, errorText, type InstantList, type PlayResult } from './api';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useT } from "../i18n/i18n";
+import {
+  api,
+  ApiError,
+  errorText,
+  type InstantList,
+  type PlayResult,
+} from "./api";
 
 /** Where Play sends the browser; a seam for tests. */
 export const playNavigation = {
@@ -23,7 +29,7 @@ export function usePlay(signedIn: boolean) {
   const [busy, setBusy] = useState(false);
   const [retryAt, setRetryAt] = useState<number | null>(null);
   const [now, setNow] = useState(() => Date.now());
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [list, setList] = useState<InstantList | null>(null);
 
   const wait = useCallback((ms: number) => {
@@ -32,14 +38,17 @@ export function usePlay(signedIn: boolean) {
   }, []);
 
   /** Opens the game, or starts the countdown when nothing has a seat; true when the browser is on its way. */
-  const settle = useCallback((r: PlayResult): boolean => {
-    if (r.worldId) {
-      playNavigation.assign(`/game/?world=${r.worldId}`);
-      return true;
-    }
-    wait(r.waitMs ?? 1000);
-    return false;
-  }, [wait]);
+  const settle = useCallback(
+    (r: PlayResult): boolean => {
+      if (r.worldId) {
+        playNavigation.assign(`/game/?world=${r.worldId}`);
+        return true;
+      }
+      wait(r.waitMs ?? 1000);
+      return false;
+    },
+    [wait],
+  );
 
   const refresh = useCallback(async () => {
     try {
@@ -53,7 +62,7 @@ export function usePlay(signedIn: boolean) {
 
   const start = useCallback(async () => {
     setBusy(true);
-    setError('');
+    setError("");
     try {
       if (!signed.current) {
         await api.guest();
@@ -72,18 +81,25 @@ export function usePlay(signedIn: boolean) {
     setBusy(false);
   }, [settle, wait]);
 
-  const act = useCallback(async (what: () => Promise<PlayResult | void>) => {
-    setBusy(true);
-    setError('');
-    try {
-      const r = await what();
-      if (r && settle(r)) return;
-    } catch (err) {
-      setError(err instanceof ApiError && err.code === 'worldClosed' ? t('play.gone') : errorText(err));
-    }
-    await refresh();
-    setBusy(false);
-  }, [refresh, settle, t]);
+  const act = useCallback(
+    async (what: () => Promise<PlayResult | void>) => {
+      setBusy(true);
+      setError("");
+      try {
+        const r = await what();
+        if (r && settle(r)) return;
+      } catch (err) {
+        setError(
+          err instanceof ApiError && err.code === "worldClosed"
+            ? t("play.gone")
+            : errorText(err),
+        );
+      }
+      await refresh();
+      setBusy(false);
+    },
+    [refresh, settle, t],
+  );
 
   const join = useCallback((id: number) => act(() => api.play(id)), [act]);
   const startNew = useCallback(() => act(() => api.play()), [act]);
@@ -110,7 +126,14 @@ export function usePlay(signedIn: boolean) {
   }, [showing, refresh]);
 
   return {
-    start, join, startNew, leave, list, error,
-    busy, counting: retryAt !== null, waitMs: retryAt === null ? null : Math.max(0, retryAt - now),
+    start,
+    join,
+    startNew,
+    leave,
+    list,
+    error,
+    busy,
+    counting: retryAt !== null,
+    waitMs: retryAt === null ? null : Math.max(0, retryAt - now),
   };
 }

@@ -1,21 +1,32 @@
-import { buildingName } from '../../i18n/names';
-import { useT } from '../../i18n/i18n';
-import type { BuildingId, RecruitBuilding } from '../../engine/types';
-import { selectActiveVillage, useGameStore } from '../../state/gameStore';
-import { RecruitScreen } from './RecruitScreen';
-import { ResearchScreen } from './ResearchScreen';
-import { AcademyScreen } from './AcademyScreen';
-import { MarketScreen } from './MarketScreen';
-import { BuildingInfo } from './BuildingInfo';
-import { BuildingsTable } from './BuildingsTable';
-import { BuildPlanPanel } from './BuildPlanPanel';
-import { BuildQueuePanel } from './BuildQueuePanel';
-import { useUiStore } from '../../state/uiStore';
+import { buildingName } from "../../i18n/names";
+import { useT } from "../../i18n/i18n";
+import type { BuildingId, RecruitBuilding } from "../../engine/types";
+import { selectActiveVillage, useGameStore } from "../../state/gameStore";
+import { RecruitScreen } from "./RecruitScreen";
+import { ResearchScreen } from "./ResearchScreen";
+import { AcademyScreen } from "./AcademyScreen";
+import { MarketScreen } from "./MarketScreen";
+import { BuildingInfo } from "./BuildingInfo";
+import { BuildingsTable } from "./BuildingsTable";
+import { BuildPlanPanel } from "./BuildPlanPanel";
+import { BuildQueuePanel } from "./BuildQueuePanel";
+import { useUiStore } from "../../state/uiStore";
 
-const RECRUIT: readonly BuildingId[] = ['barracks', 'stable', 'workshop', 'statue'];
+const RECRUIT: readonly BuildingId[] = [
+  "barracks",
+  "stable",
+  "workshop",
+  "statue",
+];
 
 /** Building page: Headquarters handles village upgrades, military buildings recruitment, the rest show their stats. */
-export function BuildingScreen({ building, onBack }: { building: BuildingId; onBack: () => void }) {
+export function BuildingScreen({
+  building,
+  onBack,
+}: {
+  building: BuildingId;
+  onBack: () => void;
+}) {
   const level = useGameStore((s) => selectActiveVillage(s).buildings[building]);
   const villageId = useGameStore((s) => selectActiveVillage(s).id);
   const openBuilding = useUiStore((s) => s.openBuilding);
@@ -23,16 +34,16 @@ export function BuildingScreen({ building, onBack }: { building: BuildingId; onB
   const t = useT();
   let body: React.ReactNode;
   if (level === 0) {
-    body = <p className="text-muted italic">{t('buildingScreen.notBuilt')}</p>;
+    body = <p className="text-muted italic">{t("buildingScreen.notBuilt")}</p>;
   } else if (RECRUIT.includes(building)) {
     body = <RecruitScreen building={building as RecruitBuilding} />;
-  } else if (building === 'smithy') {
+  } else if (building === "smithy") {
     body = <ResearchScreen />;
-  } else if (building === 'academy') {
+  } else if (building === "academy") {
     body = <AcademyScreen />;
-  } else if (building === 'market') {
+  } else if (building === "market") {
     body = <MarketScreen />;
-  } else if (building === 'main') {
+  } else if (building === "main") {
     body = (
       <>
         <BuildQueuePanel />
@@ -46,11 +57,25 @@ export function BuildingScreen({ building, onBack }: { building: BuildingId; onB
   return (
     <div>
       <div className="flex items-center gap-3 mb-3">
-        <button className="btn" onClick={onBack}>{t('buildingScreen.back')}</button>
-        <h2 className="text-lg">{buildingName(building)} <span className="text-muted font-body text-[13px]">{t('buildingScreen.level', { n: level })}</span></h2>
-        <button className="btn" onClick={() => openInfo({ kind: 'building', id: building })}>{t('info.details')}</button>
+        <button className="btn" onClick={onBack}>
+          {t("buildingScreen.back")}
+        </button>
+        <h2 className="text-lg">
+          {buildingName(building)}{" "}
+          <span className="text-muted font-body text-[13px]">
+            {t("buildingScreen.level", { n: level })}
+          </span>
+        </h2>
+        <button
+          className="btn"
+          onClick={() => openInfo({ kind: "building", id: building })}
+        >
+          {t("info.details")}
+        </button>
       </div>
-      <p className="text-[12px] mb-3 max-w-[640px]">{t(`encyclopedia.building.${building}.text`)}</p>
+      <p className="text-[12px] mb-3 max-w-[640px]">
+        {t(`encyclopedia.building.${building}.text`)}
+      </p>
       {body}
     </div>
   );

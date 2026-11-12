@@ -15,6 +15,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "format": "biome format --write",
+    "format:check": "biome ci",
     "coverage": "vitest run --coverage.enabled --coverage.provider=v8 --coverage.reporter=text --coverage.include='src/**'",
     "server:test": "cd server && go test -timeout 20m ./...",
     "gen": "cd server && go run ./cmd/gen",
@@ -34,6 +36,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.6.6",
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",

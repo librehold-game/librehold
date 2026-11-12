@@ -9,7 +9,8 @@ they are what changes keep getting sent back for.
 ```sh
 npm install && (cd server && make db)        # Postgres on :5433 and Valkey on :6380, in Docker
 npm run dev:all                              # API :8080, account site :5173 (admin / adminadmin), game :5174
-npm run typecheck && npm run build:web && npm test           # client, as CI runs it
+npm run format                               # format the client (Biome)
+npm run format:check && npm run typecheck && npm run build:web && npm test   # client, as CI runs it
 npx vitest run tests/i18n.test.ts                            # one client test file
 cd server && test -z "$(gofmt -l .)" && go vet ./... && go test -timeout 20m ./...   # server (needs Docker)
 cd server && go test ./internal/game -run TestSupport        # server tests matching a name
@@ -168,7 +169,7 @@ numbers over adjectives. LibreHold stands on its own and never refers to other g
 - Every claim in the description and in code comments is one you checked in the code.
 - Leave out local leftovers: dev commands, hard-coded ids, debug logging, stray files.
 - Touch only what the change needs: don't reformat or re-indent other code, and keep the comments that are there.
-- Format Go with `gofmt`. The client has no formatter yet, so match the surrounding code.
+- Format Go with `gofmt` and the client with `npm run format`.
 - When `main` moves on, merge or rebase it and run the checks again. A pull request is squashed into one commit on
   merge.
 

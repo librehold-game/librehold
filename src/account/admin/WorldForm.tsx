@@ -1,8 +1,24 @@
-import { useT } from '../../i18n/i18n';
-import { FIELDS, MODIFIERS, type FieldSpec, type SideModifiers, type WorldConfig } from '../worldConfig';
-import { NumberInput } from '../../shared/NumberInput';
+import { useT } from "../../i18n/i18n";
+import {
+  FIELDS,
+  MODIFIERS,
+  type FieldSpec,
+  type SideModifiers,
+  type WorldConfig,
+} from "../worldConfig";
+import { NumberInput } from "../../shared/NumberInput";
 
-function Modifiers({ id, spec, value, onChange }: { id: string; spec: FieldSpec; value: SideModifiers; onChange: (v: SideModifiers) => void }) {
+function Modifiers({
+  id,
+  spec,
+  value,
+  onChange,
+}: {
+  id: string;
+  spec: FieldSpec;
+  value: SideModifiers;
+  onChange: (v: SideModifiers) => void;
+}) {
   const t = useT();
   return (
     <fieldset className="field">
@@ -11,8 +27,14 @@ function Modifiers({ id, spec, value, onChange }: { id: string; spec: FieldSpec;
         {MODIFIERS.map((k) => (
           <span key={k} className="row">
             <label htmlFor={`${id}-${k}`}>{t(`admin.modifier.${k}`)}</label>
-            <NumberInput id={`${id}-${k}`} min={spec.min} max={spec.max} step={spec.step} value={value[k]}
-              onValue={(n) => onChange({ ...value, [k]: n })} />
+            <NumberInput
+              id={`${id}-${k}`}
+              min={spec.min}
+              max={spec.max}
+              step={spec.step}
+              value={value[k]}
+              onValue={(n) => onChange({ ...value, [k]: n })}
+            />
           </span>
         ))}
       </div>
@@ -24,26 +46,49 @@ function Modifiers({ id, spec, value, onChange }: { id: string; spec: FieldSpec;
  * The settings of a world. Creating, every field is editable and the creation-only ones are marked; editing
  * a running world, those are shown but locked.
  */
-export function WorldForm({ idPrefix, value, onChange, mode }: {
-  idPrefix: string; value: WorldConfig; onChange: (v: WorldConfig) => void; mode: 'create' | 'edit';
+export function WorldForm({
+  idPrefix,
+  value,
+  onChange,
+  mode,
+}: {
+  idPrefix: string;
+  value: WorldConfig;
+  onChange: (v: WorldConfig) => void;
+  mode: "create" | "edit";
 }) {
   const t = useT();
-  const choiceLabel = (spec: FieldSpec, v: string) => (spec.key === 'mapSize' ? `${v} × ${v}` : t(`admin.choice.${spec.key}.${v}`));
+  const choiceLabel = (spec: FieldSpec, v: string) =>
+    spec.key === "mapSize" ? `${v} × ${v}` : t(`admin.choice.${spec.key}.${v}`);
   return (
     <div className="grid">
       {FIELDS.map((spec) => {
         const id = `${idPrefix}-${spec.key}`;
-        const locked = mode === 'edit' && spec.creationOnly;
+        const locked = mode === "edit" && spec.creationOnly;
         const set = (v: unknown) => onChange({ ...value, [spec.key]: v });
-        if (spec.key === 'humanModifiers' || spec.key === 'botModifiers') {
-          return <Modifiers key={spec.key} id={id} spec={spec} value={value[spec.key]} onChange={set} />;
+        if (spec.key === "humanModifiers" || spec.key === "botModifiers") {
+          return (
+            <Modifiers
+              key={spec.key}
+              id={id}
+              spec={spec}
+              value={value[spec.key]}
+              onChange={set}
+            />
+          );
         }
         if (spec.flag) {
           return (
             <div key={spec.key} className="field">
               <label htmlFor={id}>
-                <input id={id} type="checkbox" checked={!!value[spec.key]} disabled={locked} onChange={(e) => set(e.target.checked)} />
-                {' '}{t(`admin.field.${spec.key}`)}
+                <input
+                  id={id}
+                  type="checkbox"
+                  checked={!!value[spec.key]}
+                  disabled={locked}
+                  onChange={(e) => set(e.target.checked)}
+                />{" "}
+                {t(`admin.field.${spec.key}`)}
               </label>
             </div>
           );
@@ -53,16 +98,39 @@ export function WorldForm({ idPrefix, value, onChange, mode }: {
           <div key={spec.key} className="field">
             <label htmlFor={id}>
               {t(`admin.field.${spec.key}`)}
-              {spec.creationOnly && <small className="muted"> — {t('admin.creationOnly')}</small>}
+              {spec.creationOnly && (
+                <small className="muted"> — {t("admin.creationOnly")}</small>
+              )}
             </label>
             {spec.choices ? (
-              <select id={id} value={String(current)} disabled={locked}
-                onChange={(e) => set(typeof current === 'number' ? Number(e.target.value) : e.target.value)}>
-                {spec.choices.map((v) => <option key={v} value={v}>{choiceLabel(spec, v)}</option>)}
+              <select
+                id={id}
+                value={String(current)}
+                disabled={locked}
+                onChange={(e) =>
+                  set(
+                    typeof current === "number"
+                      ? Number(e.target.value)
+                      : e.target.value,
+                  )
+                }
+              >
+                {spec.choices.map((v) => (
+                  <option key={v} value={v}>
+                    {choiceLabel(spec, v)}
+                  </option>
+                ))}
               </select>
             ) : (
-              <NumberInput id={id} min={spec.min} max={spec.max} step={spec.step} value={Number(current)} disabled={locked}
-                onValue={set} />
+              <NumberInput
+                id={id}
+                min={spec.min}
+                max={spec.max}
+                step={spec.step}
+                value={Number(current)}
+                disabled={locked}
+                onValue={set}
+              />
             )}
           </div>
         );
@@ -72,10 +140,17 @@ export function WorldForm({ idPrefix, value, onChange, mode }: {
 }
 
 /** The live settings that differ between two configs, as a PATCH body. */
-export function liveChanges(before: WorldConfig, after: WorldConfig): Partial<WorldConfig> {
+export function liveChanges(
+  before: WorldConfig,
+  after: WorldConfig,
+): Partial<WorldConfig> {
   const out: Record<string, unknown> = {};
   for (const spec of FIELDS) {
-    if (!spec.creationOnly && JSON.stringify(before[spec.key]) !== JSON.stringify(after[spec.key])) out[spec.key] = after[spec.key];
+    if (
+      !spec.creationOnly &&
+      JSON.stringify(before[spec.key]) !== JSON.stringify(after[spec.key])
+    )
+      out[spec.key] = after[spec.key];
   }
   return out as Partial<WorldConfig>;
 }

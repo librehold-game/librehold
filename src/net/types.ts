@@ -1,10 +1,27 @@
-import type { HostedCard } from '../account/api';
-import type { Locale } from '../i18n/i18n';
+import type { HostedCard } from "../account/api";
+import type { Locale } from "../i18n/i18n";
 import type {
-  BuildTemplate, BuildingId, Command, FarmAssistantState, NewsItem, Player, PlayerId, PlayerStats, PlayerStatus, QuestState, Report,
-  ScheduledSend, TraderState, UnitId, Village, VillageBonus, VillageGroup, VillageIntel, WorldConfig,
-} from '../engine/types';
-import type { PlayerRow } from '../shared/ranking/types';
+  BuildTemplate,
+  BuildingId,
+  Command,
+  FarmAssistantState,
+  NewsItem,
+  Player,
+  PlayerId,
+  PlayerStats,
+  PlayerStatus,
+  QuestState,
+  Report,
+  ScheduledSend,
+  TraderState,
+  UnitId,
+  Village,
+  VillageBonus,
+  VillageGroup,
+  VillageIntel,
+  WorldConfig,
+} from "../engine/types";
+import type { PlayerRow } from "../shared/ranking/types";
 
 /** One player's knowledge of one village (the engine's Village.intel, farmTargetFlags and lastFarmedAt). */
 export interface Intel {
@@ -36,26 +53,49 @@ export interface PublicPlayer {
 }
 
 /** A command as this player sees it: someone else's command coming at them has no `units`. */
-export type CommandView = Omit<Command, 'units'> & { units?: Command['units'] };
+export type CommandView = Omit<Command, "units"> & { units?: Command["units"] };
 
 /** The signed-in account, as GET /api/v1/me gives it. */
 export interface MeView {
-  id: number; username: string; isAdmin: boolean; isGuest: boolean; locale: Locale; tutorialDone: boolean;
+  id: number;
+  username: string;
+  isAdmin: boolean;
+  isGuest: boolean;
+  locale: Locale;
+  tutorialDone: boolean;
 }
 
 export interface EndedView {
-  reason: 'time' | 'domination' | 'host' | 'abandoned'; at: number; winnerId: string; winnerName: string; winnerIsBot: boolean;
+  reason: "time" | "domination" | "host" | "abandoned";
+  at: number;
+  winnerId: string;
+  winnerName: string;
+  winnerIsBot: boolean;
   /** What the results page is reached by: the world id, or a player world's results code. */
   resultsRef?: string;
 }
 
 /** A village on the god view's map: stored or still generated. ownerId '' is a barbarian village. */
-export interface WatchVillage { id: string; x: number; y: number; ownerId: PlayerId | ''; points: number }
+export interface WatchVillage {
+  id: string;
+  x: number;
+  y: number;
+  ownerId: PlayerId | "";
+  points: number;
+}
 
 /** One village in full for the host, settled to now. */
 export interface WatchedVillage {
-  id: string; name: string; x: number; y: number; ownerId: PlayerId | ''; ownerName?: string; ownerIsBot?: boolean; points: number;
-  buildings: Partial<Record<BuildingId, number>>; unitsHome: Partial<Record<UnitId, number>>;
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+  ownerId: PlayerId | "";
+  ownerName?: string;
+  ownerIsBot?: boolean;
+  points: number;
+  buildings: Partial<Record<BuildingId, number>>;
+  unitsHome: Partial<Record<UnitId, number>>;
 }
 
 /** The whole player world as its host watches it: every village, every army on the road with its units. */
@@ -75,10 +115,21 @@ export interface SpectatorState {
 }
 
 /** A player world's host and waiting room; resumesAt is wall ms. */
-export interface HostedView { hostName: string; waiting: boolean; humans: number; seats: number; pausedByHost: boolean; resumesAt?: number }
+export interface HostedView {
+  hostName: string;
+  waiting: boolean;
+  humans: number;
+  seats: number;
+  pausedByHost: boolean;
+  resumesAt?: number;
+}
 
 /** An instant world's end and join window in world time, and how it ended once it has. */
-export interface InstantView { endsAt: number; joinUntil: number; ended?: EndedView }
+export interface InstantView {
+  endsAt: number;
+  joinUntil: number;
+  ended?: EndedView;
+}
 
 export interface PlayerState {
   me: PlayerId;
@@ -92,7 +143,7 @@ export interface PlayerState {
   config: WorldConfig;
   villages: Record<string, Village>;
   /** The player's own full record. */
-  player: Omit<Player, 'brain' | 'isHuman'>;
+  player: Omit<Player, "brain" | "isHuman">;
   players: Record<PlayerId, PublicPlayer>;
   commands: CommandView[];
   intel: Record<string, Intel>;
@@ -119,11 +170,22 @@ export interface MapTile {
 export type NewsEntry = NewsItem & { for?: PlayerId };
 export type { Report };
 
-export type { ConquestRow, DailyRow, PlayerRow, Profile } from '../shared/ranking/types';
+export type {
+  ConquestRow,
+  DailyRow,
+  PlayerRow,
+  Profile,
+} from "../shared/ranking/types";
 
-export type Topic = 'state' | 'reports' | 'map' | 'ranking' | 'news';
+export type Topic = "state" | "reports" | "map" | "ranking" | "news";
 
 export type LiveMessage =
-  | { type: 'hello'; serverTime: number; worldNow: number }
-  | { type: 'update'; topics: Topic[]; villageIds?: string[]; serverTime: number; worldNow: number }
-  | { type: 'ping' };
+  | { type: "hello"; serverTime: number; worldNow: number }
+  | {
+      type: "update";
+      topics: Topic[];
+      villageIds?: string[];
+      serverTime: number;
+      worldNow: number;
+    }
+  | { type: "ping" };

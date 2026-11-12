@@ -1,24 +1,45 @@
-import { RESOURCE_BALANCE, BONUS_BALANCE } from '../data/buildings.data';
-import { UNITS } from '../data/units.data';
-import { productionPerHour, storageCapacity, farmCapacity, buildingsPopulation } from './buildings';
+import { RESOURCE_BALANCE, BONUS_BALANCE } from "../data/buildings.data";
+import { UNITS } from "../data/units.data";
 import {
-  MS_PER_HOUR, RESOURCES, UNIT_IDS,
-  type GameState, type Resource, type ResourceSet, type Village, type VillageBonus, type WorldConfig,
-} from './types';
-import { unitsAway } from './commands';
-import { modifiersFor } from './modifiers';
+  productionPerHour,
+  storageCapacity,
+  farmCapacity,
+  buildingsPopulation,
+} from "./buildings";
+import {
+  MS_PER_HOUR,
+  RESOURCES,
+  UNIT_IDS,
+  type GameState,
+  type Resource,
+  type ResourceSet,
+  type Village,
+  type VillageBonus,
+  type WorldConfig,
+} from "./types";
+import { unitsAway } from "./commands";
+import { modifiersFor } from "./modifiers";
 
-export function bonusProductionMultiplier(bonus: VillageBonus | undefined, r: Resource): number {
+export function bonusProductionMultiplier(
+  bonus: VillageBonus | undefined,
+  r: Resource,
+): number {
   if (!bonus) return 1;
   if (bonus.kind === r) return BONUS_BALANCE.singleResource;
-  if (bonus.kind === 'allResources') return BONUS_BALANCE.allResources;
+  if (bonus.kind === "allResources") return BONUS_BALANCE.allResources;
   return 1;
 }
 
 /** Hourly production of a resource in a village (with the 5/h base, bonus, world speed and side multiplier). */
-export function villageProductionPerHour(v: Village, r: Resource, cfg: WorldConfig): number {
+export function villageProductionPerHour(
+  v: Village,
+  r: Resource,
+  cfg: WorldConfig,
+): number {
   const fromBuilding = productionPerHour(v.buildings[r]);
-  const rate = (RESOURCE_BALANCE.baseProductionPerHour + fromBuilding) * bonusProductionMultiplier(v.bonus, r);
+  const rate =
+    (RESOURCE_BALANCE.baseProductionPerHour + fromBuilding) *
+    bonusProductionMultiplier(v.bonus, r);
   return rate * cfg.worldSpeed * modifiersFor(cfg, v).resources;
 }
 
@@ -36,11 +57,13 @@ export function villageFarmCapacity(v: Village): number {
  */
 export function villagePopulationUsed(v: Village, state?: GameState): number {
   const levels = { ...v.buildings };
-  for (const job of v.buildQueue) levels[job.building] = Math.max(levels[job.building], job.targetLevel);
+  for (const job of v.buildQueue)
+    levels[job.building] = Math.max(levels[job.building], job.targetLevel);
   let pop = buildingsPopulation(levels);
   for (const u of UNIT_IDS) pop += v.units[u] * UNITS[u].pop;
   for (const queue of Object.values(v.recruitQueues)) {
-    for (const job of queue) pop += (job.total - job.done) * UNITS[job.unit].pop;
+    for (const job of queue)
+      pop += (job.total - job.done) * UNITS[job.unit].pop;
   }
   // Barbarian villages have no troops away from home — skip the costly iteration over commands.
   if (state && v.ownerId !== null) {
@@ -63,7 +86,8 @@ export function accrue(v: Village, now: number, cfg: WorldConfig): void {
     const current = v.resources[r];
     // Resources above capacity (e.g. from loot) don't grow, but aren't cut down here
     // below the current amount either — the surplus is cut when it arrives (loot/trade).
-    v.resources[r] = current >= cap ? current : Math.min(cap, current + rate * hours);
+    v.resources[r] =
+      current >= cap ? current : Math.min(cap, current + rate * hours);
   }
   v.resourcesUpdatedAt = now;
 }
@@ -78,7 +102,12 @@ export function msUntilFull(v: Village, r: Resource, cfg: WorldConfig): number {
 }
 
 /** World-time ms until `amount` of a resource is available (0 if already there). */
-export function msUntilAmount(v: Village, r: Resource, amount: number, cfg: WorldConfig): number {
+export function msUntilAmount(
+  v: Village,
+  r: Resource,
+  amount: number,
+  cfg: WorldConfig,
+): number {
   if (v.resources[r] >= amount) return 0;
   const cap = villageStorageCapacity(v);
   if (amount > cap) return Infinity;
@@ -88,6 +117,7 @@ export function msUntilAmount(v: Village, r: Resource, amount: number, cfg: Worl
 }
 
 export function hasResources(have: ResourceSet, cost: ResourceSet): boolean {
-  return have.wood >= cost.wood && have.clay >= cost.clay && have.iron >= cost.iron;
+  return (
+    have.wood >= cost.wood && have.clay >= cost.clay && have.iron >= cost.iron
+  );
 }
-

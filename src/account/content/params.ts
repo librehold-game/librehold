@@ -1,10 +1,11 @@
-import { BUILDINGS } from '../../data/buildings.data';
-import { CONQUEST_BALANCE } from '../../data/conquest.data';
-import { COMBAT_BALANCE, UNITS } from '../../data/units.data';
-import { formatNumber } from '../../i18n/format';
-import facts from './facts.json';
+import { BUILDINGS } from "../../data/buildings.data";
+import { CONQUEST_BALANCE } from "../../data/conquest.data";
+import { COMBAT_BALANCE, UNITS } from "../../data/units.data";
+import { formatNumber } from "../../i18n/format";
+import facts from "./facts.json";
 
-const academyNeeds = (b: string) => BUILDINGS.academy.requirements.find((r) => r.building === b)!.level;
+const academyNeeds = (b: string) =>
+  BUILDINGS.academy.requirements.find((r) => r.building === b)!.level;
 
 /** The numbers the guides quote: the server's (facts.json, pinned by a Go test) and the game data's. */
 export function guideParams(): Record<string, string | number> {
@@ -28,9 +29,11 @@ export function guideParams(): Record<string, string | number> {
     coinWood: C.coinBaseCost.wood,
     coinClay: C.coinBaseCost.clay,
     coinIron: C.coinBaseCost.iron,
-    academyMain: academyNeeds('main'),
-    academyMarket: academyNeeds('market'),
-    academySmithy: academyNeeds('smithy'),
+    academyMain: academyNeeds("main"),
+    academyMarket: academyNeeds("market"),
+    academySmithy: academyNeeds("smithy"),
   };
-  return Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, formatNumber(v)]));
+  return Object.fromEntries(
+    Object.entries(raw).map(([k, v]) => [k, formatNumber(v)]),
+  );
 }

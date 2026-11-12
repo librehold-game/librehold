@@ -6,6 +6,8 @@ cd "$(git rev-parse --show-toplevel)"
 
 step() { printf '\n== %s\n' "$1"; }
 
+step "client: format"
+npm run --silent format:check || { printf '\nNot formatted. Run: npm run format\n'; exit 1; }
 step "client: typecheck"
 npm run --silent typecheck
 step "client: build (some tests check the built site)"

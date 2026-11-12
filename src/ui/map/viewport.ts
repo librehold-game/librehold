@@ -1,4 +1,4 @@
-import { MAP } from '../../data/world.config';
+import { MAP } from "../../data/world.config";
 
 /**
  * Map window fitted to the available space. On desktop it comes out at the default 15 × 13 tiles,
@@ -29,13 +29,24 @@ function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v));
 }
 
-export function mapViewport(availW: number, availH: number, zoomIdx: number): MapViewport {
+export function mapViewport(
+  availW: number,
+  availH: number,
+  zoomIdx: number,
+): MapViewport {
   const zoom = MAP.zoomLevels[zoomIdx] ?? 1;
   const tw = Math.round(MAP.tileW * zoom);
   const th = Math.round(MAP.tileH * zoom);
   const width = Math.round(clamp(availW - FRAME_W, MIN_W, MAX_W));
   const height = Math.round(clamp(availH - FRAME_H, MIN_H, MAX_H));
-  return { tw, th, width, height, cols: Math.ceil(width / tw) + 1, rows: Math.ceil(height / th) + 1 };
+  return {
+    tw,
+    th,
+    width,
+    height,
+    cols: Math.ceil(width / tw) + 1,
+    rows: Math.ceil(height / th) + 1,
+  };
 }
 
 /** Spreading fingers zooms in (lower zoom index), pinching zooms out. The threshold is set so it doesn't jitter while held. */
@@ -49,9 +60,19 @@ export function pinchZoomDelta(startDist: number, dist: number): number {
   return 0;
 }
 
-export function touchDistance(a: { x: number; y: number }, b: { x: number; y: number }): number {
+export function touchDistance(
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+): number {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
 /** The field under the mouse and where its tile sits on the map surface. */
-export interface MapHover { x: number; y: number; left: number; top: number; tw: number; th: number }
+export interface MapHover {
+  x: number;
+  y: number;
+  left: number;
+  top: number;
+  tw: number;
+  th: number;
+}

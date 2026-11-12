@@ -1,1 +1,1 @@
-export * from '../i18n/format';
+export * from "../i18n/format";

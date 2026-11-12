@@ -1,4 +1,9 @@
-import { HUMAN_ID, type SideModifiers, type Village, type WorldConfig } from './types';
+import {
+  HUMAN_ID,
+  type SideModifiers,
+  type Village,
+  type WorldConfig,
+} from "./types";
 
 const NEUTRAL: SideModifiers = { resources: 1, recruitment: 1, building: 1 };
 

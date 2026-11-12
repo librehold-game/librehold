@@ -1,5 +1,9 @@
 /** A finished game's timeline as the server packs it (Go game.TimelineFile). */
-export interface TimelineOwner { playerId: string; color: string; bot?: boolean }
+export interface TimelineOwner {
+  playerId: string;
+  color: string;
+  bot?: boolean;
+}
 
 export interface TimelineFile {
   v: 1;

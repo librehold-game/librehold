@@ -1,6 +1,6 @@
-import { registerCatalog } from './i18n';
-import enHead from './catalog/en/head.json';
-import plHead from './catalog/pl/head.json';
+import { registerCatalog } from "./i18n";
+import enHead from "./catalog/en/head.json";
+import plHead from "./catalog/pl/head.json";
 
 let loaded = false;
 
@@ -8,6 +8,6 @@ let loaded = false;
 export function loadHeadCatalog(): void {
   if (loaded) return;
   loaded = true;
-  registerCatalog('en', enHead);
-  registerCatalog('pl', plHead);
+  registerCatalog("en", enHead);
+  registerCatalog("pl", plHead);
 }

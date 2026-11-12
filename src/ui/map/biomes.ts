@@ -1,1 +1,1 @@
-export * from '../../shared/terrain/biomes';
+export * from "../../shared/terrain/biomes";

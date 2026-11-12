@@ -1,6 +1,9 @@
-import { useState, type InputHTMLAttributes } from 'react';
+import { useState, type InputHTMLAttributes } from "react";
 
-type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value' | 'onChange' | 'min' | 'max' | 'step'> & {
+type Props = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "type" | "value" | "onChange" | "min" | "max" | "step"
+> & {
   value: number;
   onValue: (n: number) => void;
   min?: number;
@@ -13,24 +16,39 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'value' | 'onC
  * keystroke would turn an emptied field back into its minimum at once, so only a complete number is passed on,
  * clamped, and the text is tidied when the field is left.
  */
-export function NumberInput({ value, onValue, min, max, step, onFocus, onBlur, ...rest }: Props) {
+export function NumberInput({
+  value,
+  onValue,
+  min,
+  max,
+  step,
+  onFocus,
+  onBlur,
+  ...rest
+}: Props) {
   const [draft, setDraft] = useState<string | null>(null);
   const whole = step === undefined || Number.isInteger(step);
   return (
     <input
       {...rest}
       type="number"
-      inputMode={whole ? 'numeric' : 'decimal'}
+      inputMode={whole ? "numeric" : "decimal"}
       min={min}
       max={max}
       step={step}
       value={draft ?? value}
-      onFocus={(e) => { setDraft(String(value)); onFocus?.(e); }}
-      onBlur={(e) => { setDraft(null); onBlur?.(e); }}
+      onFocus={(e) => {
+        setDraft(String(value));
+        onFocus?.(e);
+      }}
+      onBlur={(e) => {
+        setDraft(null);
+        onBlur?.(e);
+      }}
       onChange={(e) => {
         const text = e.target.value;
         if (draft !== null) setDraft(text);
-        if (text.trim() === '') return;
+        if (text.trim() === "") return;
         let n = Number(text);
         if (!Number.isFinite(n)) return;
         if (whole) n = Math.floor(n);

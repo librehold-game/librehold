@@ -1,5 +1,5 @@
-# Typecheck, unit tests, end-to-end tests and the Docker build on every push to main and every pull request that
-# changes more than docs.
+# Formatting, typecheck, unit tests, end-to-end tests and the Docker build on every push to main and every pull request
+# that changes more than docs.
 name: CI
 
 on:
@@ -47,6 +47,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm run format:check
       - run: npm run typecheck
       # Built first: some tests check the built site and skip without it.
       - run: npm run build:web

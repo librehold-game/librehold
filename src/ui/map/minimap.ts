@@ -1,1 +1,1 @@
-export * from '../../shared/terrain/minimap';
+export * from "../../shared/terrain/minimap";

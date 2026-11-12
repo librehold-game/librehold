@@ -1,1 +1,1 @@
-export * from '../shared/terrain/rng';
+export * from "../shared/terrain/rng";

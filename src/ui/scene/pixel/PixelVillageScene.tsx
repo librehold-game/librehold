@@ -1,41 +1,85 @@
-import { t } from '../../../i18n/i18n';
-import { pixelIcon } from '../../pixelIcons';
-import { buildingName } from '../../../i18n/names';
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { BUILDINGS } from '../../../data/buildings.data';
-import { BUILDING_IDS, type BuildingId } from '../../../engine/types';
-import { useGameStore } from '../../../state/gameStore';
-import { useUiStore, type AnimationMode } from '../../../state/uiStore';
-import { formatDuration } from '../../format';
-import { animationBudget, sceneModel, type SceneModel } from '../sceneModel';
-import { useDocumentHidden } from '../useBeats';
-import { LevelBadge } from './LevelBadge';
-import { Strip } from './Strip';
-import { LAYOUT, pixelUrl, roadKeys, stageFile, wallKind, type Drill, type Layer } from './layout';
-import { NightOverlay, WallHotspot, wallLayers } from './WallRing';
-import { buildRoutes } from './routes';
-import { troopLayers, useWalkerLoop, walkerLayers, workerLayers, type Worker } from './Walkers';
+import { t } from "../../../i18n/i18n";
+import { pixelIcon } from "../../pixelIcons";
+import { buildingName } from "../../../i18n/names";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
+import { BUILDINGS } from "../../../data/buildings.data";
+import { BUILDING_IDS, type BuildingId } from "../../../engine/types";
+import { useGameStore } from "../../../state/gameStore";
+import { useUiStore, type AnimationMode } from "../../../state/uiStore";
+import { formatDuration } from "../../format";
+import { animationBudget, sceneModel, type SceneModel } from "../sceneModel";
+import { useDocumentHidden } from "../useBeats";
+import { LevelBadge } from "./LevelBadge";
+import { Strip } from "./Strip";
+import {
+  LAYOUT,
+  pixelUrl,
+  roadKeys,
+  stageFile,
+  wallKind,
+  type Drill,
+  type Layer,
+} from "./layout";
+import { NightOverlay, WallHotspot, wallLayers } from "./WallRing";
+import { buildRoutes } from "./routes";
+import {
+  troopLayers,
+  useWalkerLoop,
+  walkerLayers,
+  workerLayers,
+  type Worker,
+} from "./Walkers";
 
-const GOLD = '#d4af37';
-const BLUE = '#2f5fa8';
-const RED = '#a33a2a';
+const GOLD = "#d4af37";
+const BLUE = "#2f5fa8";
+const RED = "#a33a2a";
 const GATE_FRAMES = LAYOUT.walls.stone.gate.frames;
 const GATE_STEP_MS = 90;
 const CHOPPER: [number, number] = [692, 508];
 
-type SlotId = Exclude<BuildingId, 'wall'>;
+type SlotId = Exclude<BuildingId, "wall">;
 
-const BONUS_AT: Partial<Record<NonNullable<SceneModel['bonus']>, SlotId>> = {
-  wood: 'wood', clay: 'clay', iron: 'iron', farm: 'farm', storage: 'storage', infantry: 'barracks', cavalry: 'stable', allResources: 'market',
+const BONUS_AT: Partial<Record<NonNullable<SceneModel["bonus"]>, SlotId>> = {
+  wood: "wood",
+  clay: "clay",
+  iron: "iron",
+  farm: "farm",
+  storage: "storage",
+  infantry: "barracks",
+  cavalry: "stable",
+  allResources: "market",
 };
 
 /** Top-left of a sprite anchored at its bottom-centre, rounded the same way as the export script. */
-export function spriteOrigin(file: string, x: number, y: number): { left: number; top: number; w: number; h: number } {
+export function spriteOrigin(
+  file: string,
+  x: number,
+  y: number,
+): { left: number; top: number; w: number; h: number } {
   const [w, h] = LAYOUT.files[file]!;
   return { left: Math.floor(x - w / 2), top: Math.floor(y - h), w, h };
 }
 
-export function Img({ file, x, y, flip }: { file: string; x: number; y: number; flip?: boolean }) {
+export function Img({
+  file,
+  x,
+  y,
+  flip,
+}: {
+  file: string;
+  x: number;
+  y: number;
+  flip?: boolean;
+}) {
   const { left, top, w, h } = spriteOrigin(file, x, y);
   return (
     <image
@@ -44,7 +88,9 @@ export function Img({ file, x, y, flip }: { file: string; x: number; y: number; 
       y={top}
       width={w}
       height={h}
-      transform={flip ? `translate(${2 * left + w}, 0) scale(-1, 1)` : undefined}
+      transform={
+        flip ? `translate(${2 * left + w}, 0) scale(-1, 1)` : undefined
+      }
     />
   );
 }
@@ -53,7 +99,11 @@ function HitImg({ file, x, y }: { file: string; x: number; y: number }) {
   const { left, top } = spriteOrigin(file, x, y);
   return (
     <>
-      <path className="hit" d={LAYOUT.hits[file]} transform={`translate(${left}, ${top})`} />
+      <path
+        className="hit"
+        d={LAYOUT.hits[file]}
+        transform={`translate(${left}, ${top})`}
+      />
       <Img file={file} x={x} y={y} />
     </>
   );
@@ -63,23 +113,36 @@ function buildingTitle(m: SceneModel, id: BuildingId): string {
   const level = m.levels[id];
   const job = m.construction.find((c) => c.building === id && c.started);
   const queued = !job && m.construction.some((c) => c.building === id);
-  return `${buildingName(id)} ${level > 0 ? t('scene.level', { n: level }) : t('scene.notBuilt')}${job ? t('scene.building', { pct: Math.round(job.ratio * 100) }) : queued ? t('scene.queued') : ''}`;
+  return `${buildingName(id)} ${level > 0 ? t("scene.level", { n: level }) : t("scene.notBuilt")}${job ? t("scene.building", { pct: Math.round(job.ratio * 100) }) : queued ? t("scene.queued") : ""}`;
 }
 
 /** Units in training drill by their building, where the art of its current stage has room for them. */
 function activeDrills(m: SceneModel): Drill[] {
   const out: Drill[] = [];
   for (const q of [m.barracks, m.stable]) {
-    const drill = q.active && q.unit ? LAYOUT.drills[q.unit]?.find((d) => m.variants[d.building] === d.stage) : undefined;
+    const drill =
+      q.active && q.unit
+        ? LAYOUT.drills[q.unit]?.find((d) => m.variants[d.building] === d.stage)
+        : undefined;
     if (drill && m.levels[drill.building] > 0) out.push(drill);
   }
   return out;
 }
 
 /** The siege engine the workshop is building, half-built in its yard, and the stage it stands on. */
-function workshopEngine(m: SceneModel): { file: string; at: [number, number] } | null {
-  const file = m.workshop.unit ? LAYOUT.workers.siege[m.workshop.unit] : undefined;
-  if (!m.workshop.active || !file || m.levels.workshop === 0 || m.variants.workshop === 0) return null;
+function workshopEngine(
+  m: SceneModel,
+): { file: string; at: [number, number] } | null {
+  const file = m.workshop.unit
+    ? LAYOUT.workers.siege[m.workshop.unit]
+    : undefined;
+  if (
+    !m.workshop.active ||
+    !file ||
+    m.levels.workshop === 0 ||
+    m.variants.workshop === 0
+  )
+    return null;
   return { file, at: LAYOUT.workers.carpenter[m.variants.workshop].engine };
 }
 
@@ -89,137 +152,367 @@ function drillZ(id: SlotId): number {
 }
 
 function sortLayers(layers: Layer[]): Layer[] {
-  return layers.map((l, i) => [l, i] as const).sort((a, b) => a[0].z - b[0].z || a[1] - b[1]).map(([l]) => l);
+  return layers
+    .map((l, i) => [l, i] as const)
+    .sort((a, b) => a[0].z - b[0].z || a[1] - b[1])
+    .map(([l]) => l);
 }
 
-export function PixelVillageScene({ villageId, mode }: { villageId: string; mode: AnimationMode }) {
-  const json = useGameStore((s) => JSON.stringify(sceneModel(s.game!, villageId)));
+export function PixelVillageScene({
+  villageId,
+  mode,
+}: {
+  villageId: string;
+  mode: AnimationMode;
+}) {
+  const json = useGameStore((s) =>
+    JSON.stringify(sceneModel(s.game!, villageId)),
+  );
   const m = useMemo(() => JSON.parse(json) as SceneModel | null, [json]);
   const hidden = useDocumentHidden();
   const openBuilding = useUiStore((s) => s.openBuilding);
   const setView = useUiStore((s) => s.setView);
-  const full = mode === 'full';
+  const full = mode === "full";
 
   const life = useMemo(() => {
     if (!m || !full) return { routes: [], workers: [] as Worker[], troops: 0 };
     const budget = animationBudget(m, mode);
     const workers: Worker[] = [];
-    if (m.levels.wood > 0) workers.push({ key: 'chop', sprite: m.full.wood ? 'chop_rest' : 'chop', x: CHOPPER[0], y: CHOPPER[1] });
+    if (m.levels.wood > 0)
+      workers.push({
+        key: "chop",
+        sprite: m.full.wood ? "chop_rest" : "chop",
+        x: CHOPPER[0],
+        y: CHOPPER[1],
+      });
     if (m.smithy.active && m.levels.smithy > 0 && m.variants.smithy !== 0) {
       const smith = LAYOUT.workers.smith[m.variants.smithy];
-      workers.push({ key: 'smith', sprite: 'forge', x: smith.at[0], y: smith.at[1], z: drillZ('smithy') + 0.01, sparks: smith.sparks });
+      workers.push({
+        key: "smith",
+        sprite: "forge",
+        x: smith.at[0],
+        y: smith.at[1],
+        z: drillZ("smithy") + 0.01,
+        sparks: smith.sparks,
+      });
     }
-    if (m.academy.nobleProgress !== null && m.levels.academy > 0 && m.variants.academy !== 0) {
+    if (
+      m.academy.nobleProgress !== null &&
+      m.levels.academy > 0 &&
+      m.variants.academy !== 0
+    ) {
       const [x, y] = LAYOUT.workers.hetman[m.variants.academy];
-      workers.push({ key: 'hetman', sprite: 'command', dir: 'south', x, y, z: drillZ('academy') + 0.01 });
+      workers.push({
+        key: "hetman",
+        sprite: "command",
+        dir: "south",
+        x,
+        y,
+        z: drillZ("academy") + 0.01,
+      });
     }
-    if (m.workshop.active && m.levels.workshop > 0 && m.variants.workshop !== 0) {
+    if (
+      m.workshop.active &&
+      m.levels.workshop > 0 &&
+      m.variants.workshop !== 0
+    ) {
       const [x, y] = LAYOUT.workers.carpenter[m.variants.workshop].at;
-      workers.push({ key: 'carpenter', sprite: 'hammer', x, y, z: drillZ('workshop') + 0.01 });
+      workers.push({
+        key: "carpenter",
+        sprite: "hammer",
+        x,
+        y,
+        z: drillZ("workshop") + 0.01,
+      });
     }
     if (m.levels.clay > 0) {
       const [x, y] = LAYOUT.workers.clay;
-      workers.push({ key: 'clay', sprite: m.full.clay ? 'dig_rest' : 'dig', x, y, z: LAYOUT.slots.clay[1] + 12.01 });
+      workers.push({
+        key: "clay",
+        sprite: m.full.clay ? "dig_rest" : "dig",
+        x,
+        y,
+        z: LAYOUT.slots.clay[1] + 12.01,
+      });
     }
-    if (m.levels.farm > 0) workers.push({ key: 'mow', sprite: 'mow', x: LAYOUT.mow[0][0], y: LAYOUT.mow[0][1], to: LAYOUT.mow[1] });
+    if (m.levels.farm > 0)
+      workers.push({
+        key: "mow",
+        sprite: "mow",
+        x: LAYOUT.mow[0][0],
+        y: LAYOUT.mow[0][1],
+        to: LAYOUT.mow[1],
+      });
     for (const d of activeDrills(m)) {
-      workers.push({ key: `drill-${d.building}`, sprite: d.sprite, x: d.at[0], y: d.at[1], z: drillZ(d.building) + 0.01, arrow: d.arrow, ride: d.to });
+      workers.push({
+        key: `drill-${d.building}`,
+        sprite: d.sprite,
+        x: d.at[0],
+        y: d.at[1],
+        z: drillZ(d.building) + 0.01,
+        arrow: d.arrow,
+        ride: d.to,
+      });
     }
     const site = m.construction.find((c) => c.started)?.building;
-    if (site && site !== 'wall') {
+    if (site && site !== "wall") {
       const [x, y] = LAYOUT.slots[site];
-      workers.push({ key: 'hammer', sprite: 'hammer', x: x - 46, y: y + 22 });
+      workers.push({ key: "hammer", sprite: "hammer", x: x - 46, y: y + 22 });
     }
     return { routes: buildRoutes(m, budget), workers, troops: budget.troops };
   }, [m, full, mode]);
 
   const [gateFrame, setGateFrame] = useState(0);
   const gateWanted = useRef(false);
-  const onGate = useCallback((open: boolean) => { gateWanted.current = open; }, []);
+  const onGate = useCallback((open: boolean) => {
+    gateWanted.current = open;
+  }, []);
   useEffect(() => {
     if (!full || hidden) return;
-    const id = setInterval(() => setGateFrame((f) => (gateWanted.current ? Math.min(GATE_FRAMES - 1, f + 1) : Math.max(0, f - 1))), GATE_STEP_MS);
+    const id = setInterval(
+      () =>
+        setGateFrame((f) =>
+          gateWanted.current
+            ? Math.min(GATE_FRAMES - 1, f + 1)
+            : Math.max(0, f - 1),
+        ),
+      GATE_STEP_MS,
+    );
     return () => clearInterval(id);
   }, [full, hidden]);
-  const bind = useWalkerLoop(life.routes, life.workers, hidden || !full, onGate);
+  const bind = useWalkerLoop(
+    life.routes,
+    life.workers,
+    hidden || !full,
+    onGate,
+  );
 
   if (!m) return null;
-  const limited = mode !== 'full';
+  const limited = mode !== "full";
   const layers: Layer[] = [];
   // Badges and progress sit above every layer, so a wall tower in front of a building cannot hide them.
   const marks: ReactNode[] = [];
 
-  for (const key of roadKeys(m.levels, m.construction.map((c) => c.building))) {
+  for (const key of roadKeys(
+    m.levels,
+    m.construction.map((c) => c.building),
+  )) {
     const road = LAYOUT.roads[key];
     if (!road) continue;
     const [w, h] = LAYOUT.files[road.file]!;
-    layers.push({ z: -1e6, key: `road-${key}`, node: <image href={pixelUrl(road.file)} x={road.x} y={road.y} width={w} height={h} /> });
+    layers.push({
+      z: -1e6,
+      key: `road-${key}`,
+      node: (
+        <image
+          href={pixelUrl(road.file)}
+          x={road.x}
+          y={road.y}
+          width={w}
+          height={h}
+        />
+      ),
+    });
   }
 
-  LAYOUT.scenery.forEach((s, i) => layers.push({ z: s.z, key: `sc-${i}`, node: <Img file={s.file} x={s.x} y={s.y} flip={s.flip} /> }));
+  LAYOUT.scenery.forEach((s, i) =>
+    layers.push({
+      z: s.z,
+      key: `sc-${i}`,
+      node: <Img file={s.file} x={s.x} y={s.y} flip={s.flip} />,
+    }),
+  );
 
   const wall = wallKind(m.variants.wall);
-  if (m.levels.wall > 0 && wall) layers.push(...wallLayers(wall, full ? gateFrame : 0));
-  layers.push(...walkerLayers(life.routes, bind), ...workerLayers(life.workers, bind), ...troopLayers(life.troops));
+  if (m.levels.wall > 0 && wall)
+    layers.push(...wallLayers(wall, full ? gateFrame : 0));
+  layers.push(
+    ...walkerLayers(life.routes, bind),
+    ...workerLayers(life.workers, bind),
+    ...troopLayers(life.troops),
+  );
   if (full) {
     for (const d of activeDrills(m)) {
-      d.props.forEach((p, i) => layers.push({
-        z: drillZ(d.building) + 0.001 * (i + 1),
-        key: `prop-${d.building}-${i}`,
-        node: <g ref={i === d.struck ? bind(`drill-${d.building}-struck`) : undefined} data-prop={p.name}><Img file={p.file} x={p.at[0]} y={p.at[1]} /></g>,
-      }));
+      d.props.forEach((p, i) =>
+        layers.push({
+          z: drillZ(d.building) + 0.001 * (i + 1),
+          key: `prop-${d.building}-${i}`,
+          node: (
+            <g
+              ref={
+                i === d.struck ? bind(`drill-${d.building}-struck`) : undefined
+              }
+              data-prop={p.name}
+            >
+              <Img file={p.file} x={p.at[0]} y={p.at[1]} />
+            </g>
+          ),
+        }),
+      );
     }
-    const anvil = m.smithy.active && m.levels.smithy > 0 && m.variants.smithy !== 0 ? LAYOUT.workers.smith[m.variants.smithy].anvil : undefined;
-    if (anvil) layers.push({ z: drillZ('smithy') + 0.001, key: 'prop-anvil', node: <g data-prop="anvil"><Img file={anvil.file} x={anvil.at[0]} y={anvil.at[1]} /></g> });
+    const anvil =
+      m.smithy.active && m.levels.smithy > 0 && m.variants.smithy !== 0
+        ? LAYOUT.workers.smith[m.variants.smithy].anvil
+        : undefined;
+    if (anvil)
+      layers.push({
+        z: drillZ("smithy") + 0.001,
+        key: "prop-anvil",
+        node: (
+          <g data-prop="anvil">
+            <Img file={anvil.file} x={anvil.at[0]} y={anvil.at[1]} />
+          </g>
+        ),
+      });
     const engine = workshopEngine(m);
-    if (engine) layers.push({ z: drillZ('workshop') + 0.001, key: 'prop-engine', node: <g data-prop="engine"><Img file={engine.file} x={engine.at[0]} y={engine.at[1]} /></g> });
+    if (engine)
+      layers.push({
+        z: drillZ("workshop") + 0.001,
+        key: "prop-engine",
+        node: (
+          <g data-prop="engine">
+            <Img file={engine.file} x={engine.at[0]} y={engine.at[1]} />
+          </g>
+        ),
+      });
   }
-  layers.push({ z: -1e5, key: 'wall-hotspot', node: <WallHotspot level={m.levels.wall} onClick={() => openBuilding('wall', villageId)} /> });
+  layers.push({
+    z: -1e5,
+    key: "wall-hotspot",
+    node: (
+      <WallHotspot
+        level={m.levels.wall}
+        onClick={() => openBuilding("wall", villageId)}
+      />
+    ),
+  });
 
   for (const id of BUILDING_IDS) {
-    if (id === 'wall') continue;
+    if (id === "wall") continue;
     const [sx, sy] = LAYOUT.slots[id];
     const ay = sy + 12;
     const level = m.levels[id];
     const building = m.construction.some((c) => c.building === id);
     const job = m.construction.find((c) => c.building === id && c.started);
     const variant = m.variants[id];
-    const file = level > 0 && variant !== 0 ? stageFile(id, variant) : building ? LAYOUT.construction : null;
+    const file =
+      level > 0 && variant !== 0
+        ? stageFile(id, variant)
+        : building
+          ? LAYOUT.construction
+          : null;
     const top = file ? spriteOrigin(file, sx, ay) : null;
     const bonus = m.bonus !== null && BONUS_AT[m.bonus] === id;
     const animated = !limited && level > 0 && variant === 2;
-    const loop = animated && (id === 'iron' || id === 'farm') ? LAYOUT.anim[id] : null;
-    const wheel = animated && id === 'wood' ? LAYOUT.anim.wood : null;
+    const loop =
+      animated && (id === "iron" || id === "farm") ? LAYOUT.anim[id] : null;
+    const wheel = animated && id === "wood" ? LAYOUT.anim.wood : null;
     // A mine or a mill whose warehouse is full stops on its first frame.
-    const idle = (id === 'iron' && m.full.iron) || (id === 'wood' && m.full.wood);
+    const idle =
+      (id === "iron" && m.full.iron) || (id === "wood" && m.full.wood);
     layers.push({
       z: ay,
       key: `b-${id}`,
       node: (
-        <g className="hotspot" data-building={id} onClick={() => openBuilding(id, villageId)}>
+        <g
+          className="hotspot"
+          data-building={id}
+          onClick={() => openBuilding(id, villageId)}
+        >
           <title>{buildingTitle(m, id)}</title>
-          <ellipse className="hl" cx={sx} cy={sy + 4} rx="46" ry="17" fill="#fff" />
-          {file && top && <path className="hit" d={LAYOUT.hits[file]} transform={`translate(${top.left}, ${top.top})`} />}
-          {loop
-            ? <Strip name={id} {...loop} x={Math.floor(sx - loop.w / 2)} y={Math.floor(ay - loop.h)} frame={idle ? 0 : undefined} className="deco" />
-            : file && <Img file={file} x={sx} y={ay} />}
-          {wheel && <Strip name="wood" {...wheel} frame={idle ? 0 : undefined} className="deco" />}
+          <ellipse
+            className="hl"
+            cx={sx}
+            cy={sy + 4}
+            rx="46"
+            ry="17"
+            fill="#fff"
+          />
+          {file && top && (
+            <path
+              className="hit"
+              d={LAYOUT.hits[file]}
+              transform={`translate(${top.left}, ${top.top})`}
+            />
+          )}
+          {loop ? (
+            <Strip
+              name={id}
+              {...loop}
+              x={Math.floor(sx - loop.w / 2)}
+              y={Math.floor(ay - loop.h)}
+              frame={idle ? 0 : undefined}
+              className="deco"
+            />
+          ) : (
+            file && <Img file={file} x={sx} y={ay} />
+          )}
+          {wheel && (
+            <Strip
+              name="wood"
+              {...wheel}
+              frame={idle ? 0 : undefined}
+              className="deco"
+            />
+          )}
         </g>
       ),
     });
     if (top && (level > 0 || bonus)) {
       const bx = sx + Math.min(40, top.w / 2 - 8);
       marks.push(
-        <g key={id} data-marks={id} className="marks" onClick={() => openBuilding(id, villageId)}>
+        <g
+          key={id}
+          data-marks={id}
+          className="marks"
+          onClick={() => openBuilding(id, villageId)}
+        >
           {level > 0 && <LevelBadge x={bx} y={top.top + 12} level={level} />}
           {level > 0 && job && (
-            <g data-progress={job.ratio} transform={`translate(${bx - 13}, ${top.top + 23})`}>
-              <rect width="26" height="7" rx="2" fill="#f4efe0" stroke="#2e1a05" strokeWidth="1" />
-              <rect x="1.5" y="1.5" width={Math.max(2, 23 * job.ratio)} height="4" rx="1" fill="#2f7d32" />
+            <g
+              data-progress={job.ratio}
+              transform={`translate(${bx - 13}, ${top.top + 23})`}
+            >
+              <rect
+                width="26"
+                height="7"
+                rx="2"
+                fill="#f4efe0"
+                stroke="#2e1a05"
+                strokeWidth="1"
+              />
+              <rect
+                x="1.5"
+                y="1.5"
+                width={Math.max(2, 23 * job.ratio)}
+                height="4"
+                rx="1"
+                fill="#2f7d32"
+              />
             </g>
           )}
-          {level > 0 && building && !job && <image data-icon="hourglass" href={pixelIcon('hourglass')} x={bx - 26} y={top.top + 5} width={12} height={12} />}
-          {bonus && <text x={sx - Math.min(40, top.w / 2 - 8)} y={top.top + 16} fontSize="14" fill={GOLD} stroke="#2e1a05" strokeWidth="0.6">★</text>}
+          {level > 0 && building && !job && (
+            <image
+              data-icon="hourglass"
+              href={pixelIcon("hourglass")}
+              x={bx - 26}
+              y={top.top + 5}
+              width={12}
+              height={12}
+            />
+          )}
+          {bonus && (
+            <text
+              x={sx - Math.min(40, top.w / 2 - 8)}
+              y={top.top + 16}
+              fontSize="14"
+              fill={GOLD}
+              stroke="#2e1a05"
+              strokeWidth="0.6"
+            >
+              ★
+            </text>
+          )}
         </g>,
       );
     }
@@ -228,19 +521,42 @@ export function PixelVillageScene({ villageId, mode }: { villageId: string; mode
   const [rx, ry] = LAYOUT.rally;
   layers.push({
     z: ry + 22,
-    key: 'rally',
+    key: "rally",
     node: (
-      <g className="hotspot" onClick={() => setView('rally')}>
-        <title>{t('scene.rallyPoint')}</title>
-        <ellipse className="hl" cx={rx + 4} cy={ry + 14} rx="40" ry="15" fill="#fff" />
+      <g className="hotspot" onClick={() => setView("rally")}>
+        <title>{t("scene.rallyPoint")}</title>
+        <ellipse
+          className="hl"
+          cx={rx + 4}
+          cy={ry + 14}
+          rx="40"
+          ry="15"
+          fill="#fff"
+        />
         <HitImg file={LAYOUT.place} x={rx + 4} y={ry + 22} />
         {m.conqueredFlag && (
           <g transform={`translate(${rx - 24}, ${ry + 16})`}>
-            <line x1="0" y1="0" x2="0" y2="-40" stroke="#2e1a05" strokeWidth="1.6" />
-            <path d="M0 -40 L18 -34 L0 -28 Z" fill={BLUE} style={{ transformOrigin: '0 -34px', animation: 'sc-flag 1.6s infinite' }} />
+            <line
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="-40"
+              stroke="#2e1a05"
+              strokeWidth="1.6"
+            />
+            <path
+              d="M0 -40 L18 -34 L0 -28 Z"
+              fill={BLUE}
+              style={{
+                transformOrigin: "0 -34px",
+                animation: "sc-flag 1.6s infinite",
+              }}
+            />
           </g>
         )}
-        {m.storageFull && <Img file="scenery/woodpile.png" x={rx - 6} y={ry + 52} />}
+        {m.storageFull && (
+          <Img file="scenery/woodpile.png" x={rx - 6} y={ry + 52} />
+        )}
       </g>
     ),
   });
@@ -248,34 +564,102 @@ export function PixelVillageScene({ villageId, mode }: { villageId: string; mode
   if (m.caravan && !limited) {
     layers.push({
       z: LAYOUT.h - 1,
-      key: 'caravan',
+      key: "caravan",
       node: (
-        <g className="deco" style={{ '--dx': '-420px', animation: 'sc-wagon 11s linear infinite' } as CSSProperties}>
-          <Img file="scenery/cart.png" x={LAYOUT.ring.cx + 120} y={LAYOUT.h - 18} />
+        <g
+          className="deco"
+          style={
+            {
+              "--dx": "-420px",
+              animation: "sc-wagon 11s linear infinite",
+            } as CSSProperties
+          }
+        >
+          <Img
+            file="scenery/cart.png"
+            x={LAYOUT.ring.cx + 120}
+            y={LAYOUT.h - 18}
+          />
         </g>
       ),
     });
   }
 
   const [mx, my] = LAYOUT.slots.main;
-  const mainTop = m.levels.main > 0 && m.variants.main !== 0 ? spriteOrigin(stageFile('main', m.variants.main), mx, my + 12).top : my - 40;
+  const mainTop =
+    m.levels.main > 0 && m.variants.main !== 0
+      ? spriteOrigin(stageFile("main", m.variants.main), mx, my + 12).top
+      : my - 40;
   return (
-    <svg viewBox={`0 0 ${LAYOUT.w} ${LAYOUT.h}`} className={`scene pixel scene-${mode} ${hidden ? 'scene-paused' : ''}`} role="img" aria-label={t('scene.label')}>
-      <image href={pixelUrl('ground.png')} x="0" y="0" width={LAYOUT.w} height={LAYOUT.h} />
-      {sortLayers(layers).map((l) => <Fragment key={l.key}>{l.node}</Fragment>)}
+    <svg
+      viewBox={`0 0 ${LAYOUT.w} ${LAYOUT.h}`}
+      className={`scene pixel scene-${mode} ${hidden ? "scene-paused" : ""}`}
+      role="img"
+      aria-label={t("scene.label")}
+    >
+      <image
+        href={pixelUrl("ground.png")}
+        x="0"
+        y="0"
+        width={LAYOUT.w}
+        height={LAYOUT.h}
+      />
+      {sortLayers(layers).map((l) => (
+        <Fragment key={l.key}>{l.node}</Fragment>
+      ))}
       {marks}
       <NightOverlay phase={m.dayPhase} levels={m.levels} />
       {m.defeated && (
         <g transform={`translate(${mx - 20}, ${mainTop + 10})`}>
-          {[0, 1, 2].map((i) => <circle key={i} cx={i * 14} cy="0" r={5 + i} fill="#4a4540" style={{ pointerEvents: 'none', '--sx': `${(i - 1) * 10}px`, animation: `sc-smoke ${3 + i * 0.5}s linear ${i * 0.9}s infinite` } as CSSProperties} />)}
+          {[0, 1, 2].map((i) => (
+            <circle
+              key={i}
+              cx={i * 14}
+              cy="0"
+              r={5 + i}
+              fill="#4a4540"
+              style={
+                {
+                  pointerEvents: "none",
+                  "--sx": `${(i - 1) * 10}px`,
+                  animation: `sc-smoke ${3 + i * 0.5}s linear ${i * 0.9}s infinite`,
+                } as CSSProperties
+              }
+            />
+          ))}
         </g>
       )}
       {m.alarm && (
-        <g style={{ pointerEvents: 'none' }}>
-          <rect width={LAYOUT.w} height={LAYOUT.h} fill={RED} style={{ animation: 'sc-alarm 0.8s infinite alternate' }} />
+        <g style={{ pointerEvents: "none" }}>
+          <rect
+            width={LAYOUT.w}
+            height={LAYOUT.h}
+            fill={RED}
+            style={{ animation: "sc-alarm 0.8s infinite alternate" }}
+          />
           <g transform={`translate(${mx}, ${mainTop - 4})`}>
-            <path d="M-7 0 Q-7 -12 0 -12 Q7 -12 7 0 Z" fill={GOLD} stroke="#2e1a05" strokeWidth="1" style={{ transformOrigin: '0 -12px', animation: 'sc-bell 0.4s ease-in-out infinite alternate' }} />
-            <text y="-18" textAnchor="middle" fontSize="13" fontWeight="700" fill={RED} stroke="#fff" strokeWidth="0.4" style={{ animation: 'sc-pulse 0.6s infinite alternate' }}>ATAK za {formatDuration(m.alarmEtaMs ?? 0)}</text>
+            <path
+              d="M-7 0 Q-7 -12 0 -12 Q7 -12 7 0 Z"
+              fill={GOLD}
+              stroke="#2e1a05"
+              strokeWidth="1"
+              style={{
+                transformOrigin: "0 -12px",
+                animation: "sc-bell 0.4s ease-in-out infinite alternate",
+              }}
+            />
+            <text
+              y="-18"
+              textAnchor="middle"
+              fontSize="13"
+              fontWeight="700"
+              fill={RED}
+              stroke="#fff"
+              strokeWidth="0.4"
+              style={{ animation: "sc-pulse 0.6s infinite alternate" }}
+            >
+              ATAK za {formatDuration(m.alarmEtaMs ?? 0)}
+            </text>
           </g>
         </g>
       )}

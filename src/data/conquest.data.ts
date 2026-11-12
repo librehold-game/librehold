@@ -1,3 +1,3 @@
-import { CONQUEST_BALANCE as conquestBalance } from './balance.json';
+import { CONQUEST_BALANCE as conquestBalance } from "./balance.json";
 
 export const CONQUEST_BALANCE = conquestBalance;

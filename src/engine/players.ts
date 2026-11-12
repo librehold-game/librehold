@@ -1,4 +1,10 @@
-import { HUMAN_ID, type GameState, type Player, type PlayerId, type Village } from './types';
+import {
+  HUMAN_ID,
+  type GameState,
+  type Player,
+  type PlayerId,
+  type Village,
+} from "./types";
 
 /** The only place that knows how village ownership is stored — the rest of the game asks here. */
 
@@ -12,12 +18,12 @@ export function isBarbarianVillage(v: Village): boolean {
 
 export function humanPlayer(state: GameState): Player {
   const h = state.players[HUMAN_ID];
-  if (!h) throw new Error('the game state has no human player');
+  if (!h) throw new Error("the game state has no human player");
   return h;
 }
 
 export function ownerOf(state: GameState, v: Village): Player | null {
-  return v.ownerId === null ? null : state.players[v.ownerId] ?? null;
+  return v.ownerId === null ? null : (state.players[v.ownerId] ?? null);
 }
 
 export function playerVillages(state: GameState, id: PlayerId): Village[] {
