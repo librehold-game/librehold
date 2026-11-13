@@ -12,6 +12,9 @@ var CampaignScout = campaignScout
 // IntelStale is intelStale for the external test package.
 var IntelStale = intelStale
 
+// ScoutPartyFor is scoutPartyFor for the external test package.
+var ScoutPartyFor = scoutPartyFor
+
 // RegisterTestHandler registers a handler for a test-only event kind and returns a func that removes it.
 func RegisterTestHandler(kind string, h EventHandler) (restore func()) {
 	prev, had := handlers[kind]

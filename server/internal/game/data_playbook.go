@@ -69,10 +69,16 @@ var RoleTargets = map[VillageRole]map[BuildingID]int{
 		BIron: 25, BWall: 15, BHide: 10},
 }
 
+// TroopTargets: the scouts a village keeps. Information is what lets a bot plan at all, and a scouting mission that is
+// caught reports nothing, so a village holds several full parties (ScoutParty) rather than a token handful: losing a
+// party to a defended village must not end its reconnaissance, and the next party is recruited from here.
+//
+// A military village keeps enough for two parties. That makes it hard to look into, which is deliberate: each defending
+// scout counts ScoutDefenseFactor times, so seeing a village that guards itself means out-investing it in scouts.
 var TroopTargets = map[VillageRole]map[UnitID]int{
-	RoleOff:   {UAxe: 6000, ULightCav: 3000, URam: 250, UCatapult: 50, UScout: 100},
-	RoleDef:   {USpear: 8000, UHeavyCav: 2000, UScout: 100},
-	RoleMixed: {USpear: 300, USword: 100, ULightCav: 600, UScout: 50},
+	RoleOff:   {UAxe: 6000, ULightCav: 3000, URam: 250, UCatapult: 50, UScout: 1200},
+	RoleDef:   {USpear: 8000, UHeavyCav: 2000, UScout: 1200},
+	RoleMixed: {USpear: 300, USword: 100, ULightCav: 600, UScout: 250},
 }
 
 // Mistakes are the chances that a bot makes a given mistake (strong / weak; linear in skill between).

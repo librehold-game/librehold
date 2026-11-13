@@ -35,6 +35,14 @@ func intelStale(w World, k *KnownVillage) bool {
 	return w.Now()-*k.UnitsSeenAt > BotDur(w, int64(BotConfig.IntelStaleHours*float64(MsPerHour)))
 }
 
+// intelHopeless: the bot has been trying to look inside this village and failing to learn anything for long enough that
+// waiting for scouts any longer means never acting. A cautious bot waits for real numbers, but a village whose scouts
+// are always caught must still be attacked on the strength of its public data — otherwise a defender who keeps scouts
+// at home is never attacked at all.
+func intelHopeless(w World, k *KnownVillage) bool {
+	return intelStale(w, k) && w.Now()-k.SeenAt > BotDur(w, int64(3*BotConfig.IntelStaleHours*float64(MsPerHour)))
+}
+
 // OwnOffence is the attack strength at home in the bot's strongest village.
 func OwnOffence(w World, botID PlayerID) float64 {
 	best := 0.0

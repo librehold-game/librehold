@@ -25,14 +25,41 @@ func scoutBotWorld(t *testing.T, seed uint32, scouts int) (*gametest.MemWorld, *
 }
 
 func TestScoutPartyIsBigEnoughToSeeAVillage(t *testing.T) {
-	// A scouting mission only gets through when it beats ScoutDefenseFactor per defending scout. The party has to clear
-	// a village keeping the deciding share of its playbook's scouts, or the bot sends scouts to be caught — and a
-	// caught mission reports nothing.
+	// A scouting mission gets through only when it beats ScoutDefenseFactor per defending scout, and a caught mission
+	// reports nothing. The party therefore has to clear a village that does not make scouts its business.
 	kept := float64(game.TroopTargets[game.RoleMixed][game.UScout])
 	need := kept * game.CombatBalance.ScoutDefenseFactor
-	if float64(game.ScoutParty) < need {
-		t.Fatalf("a party of %d scouts cannot be expected to see a village keeping %.0f (needs %.0f)",
+	if float64(game.ScoutParty) <= need {
+		t.Fatalf("a party of %d scouts cannot see a village keeping %.0f (needs more than %.0f)",
 			game.ScoutParty, kept, need)
+	}
+}
+
+func TestMilitaryVillagesKeepTwoScoutParties(t *testing.T) {
+	// Arriving at a defended village is normal and often fatal, so a military village must be able to look twice: it
+	// keeps enough for a full party and another one behind it.
+	for _, role := range []game.VillageRole{game.RoleOff, game.RoleDef} {
+		kept := game.TroopTargets[role][game.UScout]
+		party := game.ScoutPartyFor(kept)
+		if party != game.ScoutParty {
+			t.Fatalf("%s keeps %d scouts but sends only %d, less than a full party of %d", role, kept, party, game.ScoutParty)
+		}
+		if kept-party < party/2 {
+			t.Fatalf("%s keeps %d scouts and sends %d, leaving too few for another look", role, kept, party)
+		}
+	}
+}
+
+func TestScoutPartyScalesWithTheVillage(t *testing.T) {
+	// A small village can only send what it has; a big one commits a full party and keeps a reserve.
+	if got := game.ScoutPartyFor(50); got != 50 {
+		t.Fatalf("a village with 50 scouts sends all 50, got %d", got)
+	}
+	if got := game.ScoutPartyFor(4 * game.ScoutParty); got >= 4*game.ScoutParty {
+		t.Fatalf("a village with %d scouts sent everything (%d)", 4*game.ScoutParty, got)
+	}
+	if got := game.ScoutPartyFor(4 * game.ScoutParty); got < game.ScoutParty {
+		t.Fatalf("a village with %d scouts sent only %d, less than a full party", 4*game.ScoutParty, got)
 	}
 }
 
