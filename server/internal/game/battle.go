@@ -324,6 +324,10 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 				seen.Hide = ptrTo(HideCapacity(target.Buildings[BHide]))
 				seen.Storage = ptrTo(VillageStorageCapacity(target))
 			}
+			// A caught party brought nothing home, so the bot learns no garrison from it — but it does know what it
+			// sent and that none of it came back, which is enough to try a bigger party next time.
+			seen.Won = &scoutOK
+			seen.ScoutParty = c.Units[UScout]
 			ObserveBattle(w, botAttacker, target, seen)
 		}
 		if result.AttackerSurvivors.Total() > 0 && origin != nil && !loose {

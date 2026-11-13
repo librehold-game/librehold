@@ -50,15 +50,49 @@ func UpdateMood(w World, botID PlayerID) {
 	}
 }
 
-// ScoutParty is how many scouts one scouting send carries. It follows from the scouting rule: a party gets through only
-// when it beats ScoutDefenseFactor per defending scout, so seeing a defence village's home guard (400) takes more than
-// 800. A village keeps its role's scout line (TroopTargets), so an offence village can field this and still have scouts
-// left for the next look, and recruitment refills what it spent.
+// ScoutParty is the scouts a scouting send starts from when the bot knows nothing about the target. A scouting mission
+// gets through only when it beats ScoutDefenseFactor per defending scout, so this is the baseline that clears an
+// ordinary home guard.
 const ScoutParty = 900
 
-// scoutPartyFor is the scouts to commit from a village: a full party, or everything it has if that is less.
-func scoutPartyFor(have int) int {
-	return min(have, ScoutParty)
+// scoutBands are the sizes a bot escalates through: what it sends is tried, and a party that comes home teaches it what
+// it was up against. Without this a bot's party and a village's guard are fixed constants, which makes "who can see
+// whom" a lookup table decided once by the playbook instead of something a player can influence.
+var scoutBands = [...]int{300, 600, 900, 1400, 2000, 3000}
+
+// scoutPartyFor is the scouts to commit from a village against a particular target.
+func scoutPartyFor(have int, k *KnownVillage) int {
+	if have <= 0 {
+		return 0
+	}
+	// Follow the last attempt: a party that was caught grows a band, one that got through keeps its size. With no
+	// history there is nothing to learn from yet, so open with the baseline party. There is deliberately no "size it to
+	// the garrison" branch: a caught party learns nothing about what beat it, so the only feedback a bot has is whether
+	// its own scouts came home.
+	want := ScoutParty
+	if k != nil && k.LastScoutParty > 0 {
+		want = k.LastScoutParty
+		if k.ScoutLoss != nil && *k.ScoutLoss {
+			want = nextScoutBand(k.LastScoutParty)
+		}
+	}
+	return min(have, max(want, minScoutParty))
+}
+
+// minScoutParty floors a party so a bot does not dribble scouts away a handful at a time.
+const minScoutParty = 300
+
+// scoutMargin is headroom over the bare minimum, so a party does not land exactly on the threshold.
+const scoutMargin = 1.1
+
+// nextScoutBand is the band above have, or the top band once it runs out.
+func nextScoutBand(have int) int {
+	for _, b := range scoutBands {
+		if b > have {
+			return b
+		}
+	}
+	return scoutBands[len(scoutBands)-1]
 }
 
 // campaignScout sends a real scouting party at a target whose defence it does not know. Scouts only: mixed into a
@@ -73,7 +107,7 @@ func campaignScout(w World, botID PlayerID, x, y int) bool {
 	if best == nil {
 		return false
 	}
-	units := UnitCounts{UScout: scoutPartyFor(best.Units[UScout])}
+	units := UnitCounts{UScout: scoutPartyFor(best.Units[UScout], w.Brain(botID).Memory.Known[VillageIDFor(x, y)])}
 	if len(CheckSend(w, botID, best.ID, x, y, units, "attack").Blockers) > 0 {
 		return false
 	}

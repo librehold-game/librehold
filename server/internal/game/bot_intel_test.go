@@ -39,7 +39,7 @@ func TestMilitaryVillagesKeepTwoScoutParties(t *testing.T) {
 	// Arriving at a defended village is normal and often fatal, so an offence village must be able to look twice: it
 	// keeps a full party and has another one behind it.
 	kept := game.TroopTargets[game.RoleOff][game.UScout]
-	party := game.ScoutPartyFor(kept)
+	party := game.ScoutPartyFor(kept, &game.KnownVillage{})
 	if party < game.ScoutParty {
 		t.Fatalf("off keeps %d scouts but sends only %d, less than a full party of %d", kept, party, game.ScoutParty)
 	}
@@ -48,16 +48,70 @@ func TestMilitaryVillagesKeepTwoScoutParties(t *testing.T) {
 	}
 }
 
-func TestScoutPartyScalesWithTheVillage(t *testing.T) {
-	// A small village can only send what it has; a big one commits a full party and keeps a reserve.
-	if got := game.ScoutPartyFor(50); got != 50 {
+func TestScoutPartyEscalatesAfterAFailedLook(t *testing.T) {
+	// A party and a guard are not constants: the bot tries, and a party that came home changes what it sends next. If
+	// the two were fixed numbers, "who can see whom" would be settled by the playbook instead of by play.
+	lost, won := ptr(true), ptr(false)
+	first := game.ScoutPartyFor(5000, &game.KnownVillage{ScoutLoss: lost, LastScoutParty: game.ScoutParty})
+	second := game.ScoutPartyFor(5000, &game.KnownVillage{ScoutLoss: lost, LastScoutParty: first})
+	if second <= first {
+		t.Fatalf("a caught party of %d was followed by %d, which is not an escalation", first, second)
+	}
+	// Once it gets through, the size holds rather than climbing for ever.
+	held := game.ScoutPartyFor(5000, &game.KnownVillage{ScoutLoss: won, LastScoutParty: first})
+	if held != first {
+		t.Fatalf("a party that got through changed from %d to %d", first, held)
+	}
+	// And it never asks for more than the village has.
+	if got := game.ScoutPartyFor(650, &game.KnownVillage{ScoutLoss: lost, LastScoutParty: game.ScoutParty}); got != 650 {
+		t.Fatalf("sent %d of 650", got)
+	}
+}
+
+func TestCaughtScoutsTeachNoGarrison(t *testing.T) {
+	// A caught party must not tell the bot what beat it — that is the fog of war. All it learns is that its scouts did
+	// not come home, which is enough to try again bigger.
+	w, home, den := scoutBotWorld(t, 95, 0)
+	target := w.Village(den.ID)
+	target.Units[game.USpear] = 5000
+	game.ObserveBattle(w, "bot_0", target, game.BattleSeen{Won: ptr(false), ScoutParty: game.ScoutParty})
+
+	k := w.Brain("bot_0").Memory.Known[den.ID]
+	if k == nil {
+		t.Fatal("the attempt should be remembered")
+	}
+	if k.Units != nil && k.Units.Total() > 0 {
+		t.Fatalf("a caught party reported the garrison: %+v", k.Units)
+	}
+	if k.ScoutLoss == nil || !*k.ScoutLoss || k.LastScoutParty != game.ScoutParty {
+		t.Fatalf("the failed attempt was not recorded: loss=%v party=%d", k.ScoutLoss, k.LastScoutParty)
+	}
+	_ = home
+}
+
+func TestScoutsThatGotThroughDoRecordTheGarrison(t *testing.T) {
+	w, _, den := scoutBotWorld(t, 96, 0)
+	target := w.Village(den.ID)
+	target.Units[game.USpear] = 40
+	units := game.UnitCounts{game.USpear: 40}
+	game.ObserveBattle(w, "bot_0", target, game.BattleSeen{Units: &units, Won: ptr(true), ScoutParty: game.ScoutParty})
+
+	k := w.Brain("bot_0").Memory.Known[den.ID]
+	if k == nil || k.Units == nil || k.Units.Total() == 0 {
+		t.Fatalf("a party that got through must record the garrison: %+v", k)
+	}
+	if k.ScoutLoss == nil || *k.ScoutLoss {
+		t.Fatalf("a party that got through is not a loss: %v", k.ScoutLoss)
+	}
+}
+
+func TestScoutPartyNeverDribbles(t *testing.T) {
+	// A handful at a time is a handful lost at a time.
+	if got := game.ScoutPartyFor(50, &game.KnownVillage{}); got != 50 {
 		t.Fatalf("a village with 50 scouts sends all 50, got %d", got)
 	}
-	if got := game.ScoutPartyFor(4 * game.ScoutParty); got >= 4*game.ScoutParty {
-		t.Fatalf("a village with %d scouts sent everything (%d)", 4*game.ScoutParty, got)
-	}
-	if got := game.ScoutPartyFor(4 * game.ScoutParty); got < game.ScoutParty {
-		t.Fatalf("a village with %d scouts sent only %d, less than a full party", 4*game.ScoutParty, got)
+	if got := game.ScoutPartyFor(5000, &game.KnownVillage{}); got != game.ScoutParty {
+		t.Fatalf("an unknown target opens with the baseline party of %d, got %d", game.ScoutParty, got)
 	}
 }
 

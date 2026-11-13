@@ -175,18 +175,18 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
   is already its own (e.g. the next hetman of a train) stays there as support, unless it was cut loose: then it is
   lost.
 - **How bots learn what is in a village.** Only by a real scouting party or by an attack that came home. A scouting
-  mission that is caught reports nothing, so a party is a serious force — `ScoutParty` (900) scouts, sized down for a
-  village that has fewer — not a band of five. The sizes follow from the scouting rule itself: a party only gets
-  through when it beats `ScoutDefenseFactor` (2) per defending scout, so seeing a defence village's home guard takes
-  more than 800. Troop plans (`TroopTargets`) are set from that: an offence village keeps 1,400 scouts so it can send a
-  party and still look again after a caught one, a defence village keeps 400 (a scout defends as little as it attacks,
-  so a fleet there is wasted farm), and a single mixed village keeps 250. Harassment probes are the same full party, and
-  a bot only harasses when it has parties to spare, so a bot that cannot see spends its troops on building instead of
-  poking. A bot opens up an unknown *barbarian* with a small group, because nobody is defending it, but never probes a
-  player's village that way: it sends scouts first and plans what to do once the numbers are in. What it learnt is dated
-  (`KnownVillage.UnitsSeenAt`) and re-scouted after `BotConfig.IntelStaleHours` (24), so an owner who rebuilds is looked
-  at again rather than assumed unchanged. A bot whose scouts keep being caught eventually attacks on public data
-  instead of waiting for a look it may never get.
+  mission that is caught reports nothing, so a party is a serious force — starting at `ScoutParty` (900) — not a band of
+  five. A party that comes home is followed by the same size; one that is caught grows a band (300 → 600 → 900 → 1,400 →
+  2,000 → 3,000, capped by what the village has), which is the only feedback a bot has, since a caught party learns
+  nothing about what beat it. Troop plans (`TroopTargets`) give an offence village 1,400 scouts so it can climb that
+  ladder and still look again, a defence village 400 (a scout defends as little as it attacks, so a fleet there is
+  wasted farm), and a single mixed village 250. Harassment probes are full parties, and a bot only harasses when it has
+  parties to spare, so a bot that cannot see spends its troops on building instead of poking. A bot opens up an unknown
+  *barbarian* with a small group, because nobody is defending it, but never probes a player's village that way: it sends
+  scouts first and plans what to do once the numbers are in. What it learnt is dated (`KnownVillage.UnitsSeenAt`) and
+  re-scouted after `BotConfig.IntelStaleHours` (24), so an owner who rebuilds is looked at again rather than assumed
+  unchanged. A bot whose scouts keep being caught eventually attacks on public data instead of waiting for a look it may
+  never get.
 - **Defence.** Stacking support when it arrives in time and will hold; otherwise a dodge; strong bots snipe noble
   trains. A weak bot "doesn't notice" some attacks.
 - **Quitting.** Being overwhelmed (village losses, attacks) fades over time; past a threshold a medium or strong

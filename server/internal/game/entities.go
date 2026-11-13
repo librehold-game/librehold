@@ -284,16 +284,20 @@ type KnownVillage struct {
 	SeenAt  int64     `json:"seenAt"`
 	// UnitsSeenAt is when the bot last saw the garrison, as opposed to SeenAt, which moves every time the map is
 	// rediscovered. Without it a garrison looked at once would be trusted for ever.
-	UnitsSeenAt  *int64           `json:"unitsSeenAt,omitempty"`
-	Units        *UnitCounts      `json:"units,omitempty"`
-	Wall         *int             `json:"wall,omitempty"`
-	Hide         *float64         `json:"hide,omitempty"`
-	Storage      *float64         `json:"storage,omitempty"`
-	Buildings    PartialBuildings `json:"buildings,omitempty"`
-	Hauls        []float64        `json:"hauls"`
-	LastAttackAt *int64           `json:"lastAttackAt,omitempty"`
-	Losses       *bool            `json:"losses,omitempty"`
-	DeadSince    *int64           `json:"deadSince,omitempty"`
+	UnitsSeenAt *int64      `json:"unitsSeenAt,omitempty"`
+	Units       *UnitCounts `json:"units,omitempty"`
+	Wall        *int        `json:"wall,omitempty"`
+	// ScoutLoss records whether the bot's last scouting party came through, and LastScoutParty how big it was. A party
+	// that was caught is followed by a bigger one; the bot is never told the garrison it never saw.
+	ScoutLoss      *bool            `json:"scoutLoss,omitempty"`
+	LastScoutParty int              `json:"lastScoutParty,omitempty"`
+	Hide           *float64         `json:"hide,omitempty"`
+	Storage        *float64         `json:"storage,omitempty"`
+	Buildings      PartialBuildings `json:"buildings,omitempty"`
+	Hauls          []float64        `json:"hauls"`
+	LastAttackAt   *int64           `json:"lastAttackAt,omitempty"`
+	Losses         *bool            `json:"losses,omitempty"`
+	DeadSince      *int64           `json:"deadSince,omitempty"`
 }
 
 type BotMemory struct {
