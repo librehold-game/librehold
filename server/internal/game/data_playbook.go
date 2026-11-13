@@ -69,16 +69,37 @@ var RoleTargets = map[VillageRole]map[BuildingID]int{
 		BIron: 25, BWall: 15, BHide: 10},
 }
 
-// TroopTargets: the scouts a village keeps. Information is what lets a bot plan at all, and a scouting mission that is
-// caught reports nothing, so a village holds several full parties (ScoutParty) rather than a token handful: losing a
-// party to a defended village must not end its reconnaissance, and the next party is recruited from here.
+// TroopTargets is the army each role builds towards, and the only place those numbers live. PlanRecruitment trains
+// towards them and stops when they are met, so a target is a cap, not a floor: it has to be the army the village is
+// supposed to have.
 //
-// A military village keeps enough for two parties. That makes it hard to look into, which is deliberate: each defending
-// scout counts ScoutDefenseFactor times, so seeing a village that guards itself means out-investing it in scouts.
+// Scouts sit in every plan because information is what lets a bot act at all, and a scouting mission that is caught
+// reports nothing. The sizes follow from the scouting rule itself: a party gets through only when it beats
+// ScoutDefenseFactor per defending scout, so an offence village's scout line has to clear twice a defence village's
+// home guard, with something left over for the reserve that lets it look twice.
+//
+//   - off keeps 1400: it sends a 900 party and still holds more than half a party, so a caught mission is replaced
+//     rather than ending its reconnaissance. With 900 committed it sees a village holding under 450.
+//   - def keeps 400: its job is holding a wall, where a scout defends as little as it attacks, so a home guard.
+//   - mixed keeps 250: a single village that has to do everything at once.
 var TroopTargets = map[VillageRole]map[UnitID]int{
-	RoleOff:   {UAxe: 6000, ULightCav: 3000, URam: 250, UCatapult: 50, UScout: 1200},
-	RoleDef:   {USpear: 8000, UHeavyCav: 2000, UScout: 1200},
+	RoleOff:   {UAxe: 6000, ULightCav: 3000, URam: 250, UCatapult: 50, UScout: 1400},
+	RoleDef:   {USpear: 8000, UHeavyCav: 2000, UScout: 400},
 	RoleMixed: {USpear: 300, USword: 100, ULightCav: 600, UScout: 250},
+}
+
+// scoutShare is the most of an army's population a role may put into scouts. It is not a separate design goal but the
+// arithmetic of the scouting rule: a party must be bigger than twice the guard it means to beat, and the village has to
+// keep more than half a party back to look again, so an offence village's line is about 12% of its plan and no less. A
+// defence village needs no fleet at all, only a home guard.
+func scoutShare(role VillageRole) float64 {
+	switch role {
+	case RoleOff:
+		return 0.13
+	case RoleDef:
+		return 0.05
+	}
+	return 0.05
 }
 
 // Mistakes are the chances that a bot makes a given mistake (strong / weak; linear in skill between).

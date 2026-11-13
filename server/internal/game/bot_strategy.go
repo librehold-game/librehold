@@ -50,20 +50,15 @@ func UpdateMood(w World, botID PlayerID) {
 	}
 }
 
-// ScoutParty is the most scouts one scouting send carries, and the share of a village's scouts it commits. A scouting
-// mission gets through only when it beats the defending scouts, each of which counts ScoutDefenseFactor times, so a
-// party that is too small is caught and reports nothing at all. The party is therefore sized from what the village can
-// spare (scoutPartyFor) rather than fixed: sending everything at once leaves nothing for the next look.
-const ScoutParty = 600
+// ScoutParty is how many scouts one scouting send carries. It follows from the scouting rule: a party gets through only
+// when it beats ScoutDefenseFactor per defending scout, so seeing a defence village's home guard (400) takes more than
+// 800. A village keeps its role's scout line (TroopTargets), so an offence village can field this and still have scouts
+// left for the next look, and recruitment refills what it spent.
+const ScoutParty = 900
 
-// scoutPartyFor is the scouts to commit from a village: a full party, or as many as it has, and never so many that the
-// village cannot send another.
+// scoutPartyFor is the scouts to commit from a village: a full party, or everything it has if that is less.
 func scoutPartyFor(have int) int {
-	n := min(have, ScoutParty)
-	if have > n {
-		n = max(n, have/2)
-	}
-	return n
+	return min(have, ScoutParty)
 }
 
 // campaignScout sends a real scouting party at a target whose defence it does not know. Scouts only: mixed into a

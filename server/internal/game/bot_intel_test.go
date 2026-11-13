@@ -36,17 +36,15 @@ func TestScoutPartyIsBigEnoughToSeeAVillage(t *testing.T) {
 }
 
 func TestMilitaryVillagesKeepTwoScoutParties(t *testing.T) {
-	// Arriving at a defended village is normal and often fatal, so a military village must be able to look twice: it
-	// keeps enough for a full party and another one behind it.
-	for _, role := range []game.VillageRole{game.RoleOff, game.RoleDef} {
-		kept := game.TroopTargets[role][game.UScout]
-		party := game.ScoutPartyFor(kept)
-		if party != game.ScoutParty {
-			t.Fatalf("%s keeps %d scouts but sends only %d, less than a full party of %d", role, kept, party, game.ScoutParty)
-		}
-		if kept-party < party/2 {
-			t.Fatalf("%s keeps %d scouts and sends %d, leaving too few for another look", role, kept, party)
-		}
+	// Arriving at a defended village is normal and often fatal, so an offence village must be able to look twice: it
+	// keeps a full party and has another one behind it.
+	kept := game.TroopTargets[game.RoleOff][game.UScout]
+	party := game.ScoutPartyFor(kept)
+	if party < game.ScoutParty {
+		t.Fatalf("off keeps %d scouts but sends only %d, less than a full party of %d", kept, party, game.ScoutParty)
+	}
+	if kept-party < game.ScoutParty/2 {
+		t.Fatalf("off keeps %d scouts and sends %d, leaving too few for another look", kept, party)
 	}
 }
 
@@ -60,6 +58,32 @@ func TestScoutPartyScalesWithTheVillage(t *testing.T) {
 	}
 	if got := game.ScoutPartyFor(4 * game.ScoutParty); got < game.ScoutParty {
 		t.Fatalf("a village with %d scouts sent only %d, less than a full party", 4*game.ScoutParty, got)
+	}
+}
+
+func TestScoutsDoNotCrowdOutTheArmy(t *testing.T) {
+	// A military role's troop plan is a cap, and the plan fills its farm: what it spends on scouts is army the village
+	// never gets. A scout defends as little as it attacks, so a scouting fleet in a defence village is the worst case.
+	// (A mixed village's plan is deliberately small and it over-recruits past it, so the share there says little.)
+	for _, role := range []game.VillageRole{game.RoleOff, game.RoleDef} {
+		plan := 0
+		for u, n := range game.TroopTargets[role] {
+			plan += n * game.UnitDefs[u].Pop
+		}
+		scoutPop := game.TroopTargets[role][game.UScout] * game.UnitDefs[game.UScout].Pop
+		if share := float64(scoutPop) / float64(plan); share > game.ScoutShare(role) {
+			t.Fatalf("%s spends %.0f%% of its troop plan on scouts, over its %.0f%% allowance",
+				role, 100*share, 100*game.ScoutShare(role))
+		}
+	}
+}
+
+func TestMilitaryVillagesCanStillSeeAHomeGuardVillage(t *testing.T) {
+	// A defence village holds a home guard rather than a fleet, so an offence village's full party must be able to look
+	// into it: reconnaissance has to work in the direction a bot actually needs it.
+	guard := float64(game.TroopTargets[game.RoleDef][game.UScout])
+	if float64(game.ScoutParty) <= guard*game.CombatBalance.ScoutDefenseFactor {
+		t.Fatalf("a party of %d scouts cannot see a defence village keeping %.0f", game.ScoutParty, guard)
 	}
 }
 
