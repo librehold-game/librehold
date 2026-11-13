@@ -36,6 +36,8 @@ func ChoosePurpose(w World, botID PlayerID, k *KnownVillage) Purpose {
 	b := brainOf(w, botID)
 	v := w.Village(k.ID)
 	def, knownDef := KnownDefence(k)
+	// "Can this army take the place?" A bot only sends a train at a defence it has actually counted, and only if its
+	// army is comfortably bigger. Not knowing is a reason to look first, not a reason to give up on the idea for ever.
 	clearable := knownDef && def < 0.8*OwnOffence(w, botID)
 	payback := 1.0
 	if k.OwnerID != "" && PlayerID(k.OwnerID) == HardFarmer(w, botID) {
@@ -45,9 +47,17 @@ func ChoosePurpose(w World, botID PlayerID, k *KnownVillage) Purpose {
 	if b.Style == StyleAggressor {
 		harass = 2
 	}
-	options := []Option[Purpose]{{"harass", harass * payback}}
-	// A player is taken only with a full train; a ready train on a clear road is the best option.
-	if noblesReady(w, botID) >= NoblesNeededFor(w.Config(), true, ConquestBalance.MaxLoyalty) && clearable && v != nil && CanBeConquered(w, v) {
+	// Harassment is what a bot does with a band of scouts to spend. A bot that cannot field one is not ready to poke a
+	// player and should be building instead — without this gate harass is always on the table and swallows every draw.
+	var options []Option[Purpose]
+	if harassReady(w, botID) {
+		options = append(options, Option[Purpose]{"harass", harass * payback})
+	}
+	// A player is taken only with a full train; a ready train on a clear road is the best option. Without a look inside
+	// the village there is no "clear road" to judge, so the train waits for the scouts — but a bot whose scouts keep
+	// being caught must still go eventually, or it never attacks at all.
+	if noblesReady(w, botID) >= NoblesNeededFor(w.Config(), true, ConquestBalance.MaxLoyalty) && v != nil &&
+		CanBeConquered(w, v) && (clearable || intelHopeless(w, k)) {
 		score := 3.0
 		if b.Style == StyleAggressor {
 			score = 4
@@ -68,7 +78,22 @@ func ChoosePurpose(w World, botID PlayerID, k *KnownVillage) Purpose {
 		}
 		options = append(options, Option[Purpose]{"farmPlayer", score * payback})
 	}
+	// Nothing worth doing here yet: the bot is not ready to poke this player. The caller acts on the purpose, so an
+	// empty-handed answer has to be a real one rather than a panic in the weighted draw.
+	if len(options) == 0 {
+		return "hold"
+	}
 	return WeightedPick(rngFor(w, botID, "purpose", k.ID), options, b.Skill)
+}
+
+// harassReady: the bot has scouts to spare for a set of probes. Four parties is the most LaunchHarass can send, so a bot
+// holding less than that keeps them for looking into a target it actually means to attack.
+func harassReady(w World, botID PlayerID) bool {
+	have := 0
+	for _, v := range PlayerVillages(w, botID) {
+		have += v.Units[UScout]
+	}
+	return have >= 4*ScoutParty
 }
 
 // nightLanding is the first instant ≥ earliest in the target's local night (00:00–06:00) or offline window.
@@ -101,8 +126,9 @@ func botSchedule(w World, botID PlayerID, in ScheduleSendInput) {
 	actSoft(w, botID, "schedule-send", in, func() error { _, err := ScheduleSend(w, botID, in); return err })
 }
 
-// LaunchHarass: 4 fakes (1 ram, else 1 axe) from different villages landing within a second; every fourth at the
-// target's night.
+// LaunchHarass: 4 probes from different villages landing within a second, to see what is standing at home and to
+// spoil a defender's day; every fourth lands at the target's night. A probe is a scouting party, not a token force:
+// the fog of war means a probe that dies reports nothing, so one spear would tell the bot nothing at all.
 func LaunchHarass(w World, botID PlayerID, k *KnownVillage) {
 	rng := rngFor(w, botID, "harass", k.ID)
 	sources := villagesByDistance(w, botID, k.X, k.Y)
@@ -114,19 +140,18 @@ func LaunchHarass(w World, botID PlayerID, k *KnownVillage) {
 		units UnitCounts
 	}
 	var picks []pick
+	used := map[*Village]int{}
 	for i := range 4 {
 		v := sources[i%len(sources)]
-		rams := 0
-		for _, p := range picks {
-			if p.v == v && p.units[URam] > 0 {
-				rams++
-			}
+		left := v.Units[UScout] - used[v]
+		if left < ScoutParty {
+			continue
 		}
-		units := UnitCounts{UAxe: 1}
-		if v.Units[URam] > rams {
-			units = UnitCounts{URam: 1}
-		}
-		picks = append(picks, pick{v, units})
+		used[v] += ScoutParty
+		picks = append(picks, pick{v, UnitCounts{UScout: ScoutParty}})
+	}
+	if len(picks) == 0 {
+		return
 	}
 	latest := int64(0)
 	for _, p := range picks {
@@ -321,6 +346,8 @@ func LaunchOperation(w World, botID PlayerID, k *KnownVillage) Purpose {
 		LaunchDemolish(w, botID, k, b)
 	case "farmPlayer":
 		LaunchFarmPlayer(w, botID, k)
+	case "hold":
+		// Nothing worth sending: the bot waits and builds instead of spending troops it cannot spare.
 	default:
 		LaunchHarass(w, botID, k)
 	}

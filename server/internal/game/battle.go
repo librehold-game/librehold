@@ -126,9 +126,120 @@ func reportRecipients(w World, attacker, defender PlayerID, target *Village) []P
 	return out
 }
 
+// defendingHumans are the human players whose troops stood in the target: its owner and everyone with support
+// there. They fight the battle together, so each of them sees his own side of it.
+func defendingHumans(w World, target *Village) map[PlayerID]bool {
+	out := map[PlayerID]bool{}
+	add := func(id PlayerID) {
+		if id != "" && w.Human(id) != nil {
+			out[id] = true
+		}
+	}
+	if target.OwnerID != "" {
+		add(PlayerID(target.OwnerID))
+	}
+	for _, h := range sortedSupportHomes(target) {
+		if home := w.Village(h); home != nil {
+			add(PlayerID(home.OwnerID))
+		}
+	}
+	return out
+}
+
 func sendReports(w World, to []PlayerID, r Report) {
 	for _, id := range to {
 		copy := r
+		// Only the sender learns the auto-farm sent the troops.
+		copy.AutoFarm = r.AutoFarm && id == r.Origin.OwnerID
+		w.AddReport(id, &copy)
+	}
+}
+
+// wipedOut says whether one side of a battle came home with nobody at all.
+func wipedOut(side ReportSide) bool {
+	total := side.Units.Total()
+	return total > 0 && side.Losses.Total() >= total
+}
+
+// blindSide clears the numbers of one side, keeping only the flag that says it is unknown. A reader who cannot
+// know the enemy's army must not be able to read it off the wire either, so the troop counts leave the report
+// rather than only being flagged for the view to skip.
+func blindSide(side *ReportSide) {
+	*side = ReportSide{}
+}
+
+// blindedFor is the report one reader gets, which depends on whether *that reader* was wiped out.
+//
+// Nobody comes home to count the enemy: whoever died cannot tell his lord what killed him. So a side that lost every
+// man reads only what its own lord already knew — the troops he sent and that they were all lost — with the enemy's
+// numbers withheld. The surviving side saw the fight and reads it in full.
+//
+// A village is the exception, for one side: the wall it was fought over is still standing, and the defender who lost
+// his army there is standing on it. He watched the attack come in and break, so he reads the whole battle even when
+// nothing of his survived. What he cannot learn that way is an attack that never reached the wall at all — and that
+// is a field battle, not this one.
+//
+// Supporters fight on the defending side, so they are blinded no more and no less than the garrison: a supporter
+// whose troops died on somebody else's wall reads his own side, his own losses included, but does not learn the
+// attacker's army. The wall is the village owner's alone, which is why the exception above does not reach a supporter.
+//
+// The decision reads the losses, not who was nominally attacking, because both roles can be wiped out: an interceptor
+// is the attacker in his own report, and a noble train dying on the wall leaves the attacker just as blind as one
+// destroyed on the road.
+//
+// Every reader always sees his own side, even when both armies are gone: each copy of the report is blinded from
+// scratch, and only the enemy's side is cleared from it.
+func blindedFor(r Report, reader PlayerID, defenders map[PlayerID]bool) Report {
+	switch r.Type {
+	case "attack", "conquest", "field":
+	case "scout", "fieldScout":
+		// A scouting mission reports by whether it got through, not by who happened to survive: a scout that
+		// slipped past its counterparts came back able to draw the garrison, so his lord reads it in full, and one
+		// caught short brings nothing home at all. That is also why this reads the outcome rather than the losses —
+		// the scouts can all die on a mission that still got its look at the village.
+		//
+		// The village's own lord is never blinded here: what he was not told is inside his own walls.
+		if r.Outcome != "attackerWon" && r.Origin.OwnerID == reader {
+			blindSide(&r.Defender)
+			r.DefenderHidden = true
+		}
+		return r
+	default:
+		// Support and market reports carry no battle.
+		return r
+	}
+	readAttacker := r.Origin.OwnerID == reader
+	onDefendingSide := r.Target.OwnerID == reader || defenders[reader]
+	// A defender cannot see the attacker, so the report has to say whether the attacker saw him. Nothing came home
+	// from this fight, so if every attacker died nobody rode away to describe the garrison either. A field battle is
+	// fought on the road with no wall to stand behind, so this only speaks for an attack on a village. It is set
+	// before the wall exception below, which returns early for the village's own lord.
+	if onDefendingSide && (r.Type == "attack" || r.Type == "conquest") {
+		seen := !wipedOut(r.Attacker) && r.Attacker.Units.Total() > 0
+		r.DefenderTroopsSeen = &seen
+	}
+	// The owner of the village sees the attack even if his garrison died: he was behind the wall it broke on.
+	if r.Target.OwnerID == reader && (r.Type == "attack" || r.Type == "conquest") {
+		return r
+	}
+	// A wiped-out attacker learns nothing of what beat it; likewise a wiped-out defence learns nothing of what
+	// broke it. Only the enemy's side is ever cleared, so the reader keeps his own troops either way.
+	if wipedOut(r.Attacker) && readAttacker {
+		blindSide(&r.Defender)
+		r.DefenderHidden = true
+	}
+	if wipedOut(r.Defender) && onDefendingSide {
+		blindSide(&r.Attacker)
+		r.AttackerHidden = true
+	}
+	return r
+}
+
+// sendBattleReports delivers a battle to every side, each seeing only what it could know. defenders are the human
+// players fighting on the defending side, so a supporter is never blinded against his own troops.
+func sendBattleReports(w World, to []PlayerID, r Report, defenders map[PlayerID]bool) {
+	for _, id := range to {
+		copy := blindedFor(r, id, defenders)
 		// Only the sender learns the auto-farm sent the troops.
 		copy.AutoFarm = r.AutoFarm && id == r.Origin.OwnerID
 		w.AddReport(id, &copy)
@@ -195,6 +306,9 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 		RecordHabit(w, PlayerID(targetOwner), PlayerID(attackerOwner), HabitObservation{FarmedAt: &now})
 	}
 	recipients := reportRecipients(w, A, D, target)
+	// Read the defending side now, while everybody's troops are still standing in the village: a supporter wiped
+	// out to the last man loses his slot with the losses, and he must still be recognized as one of the defenders.
+	defenders := defendingHumans(w, target)
 
 	if result.Kind == "scout" {
 		scoutOK := result.Outcome == "attackerWon"
@@ -210,6 +324,10 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 				seen.Hide = ptrTo(HideCapacity(target.Buildings[BHide]))
 				seen.Storage = ptrTo(VillageStorageCapacity(target))
 			}
+			// A caught party brought nothing home, so the bot learns no garrison from it — but it does know what it
+			// sent and that none of it came back, which is enough to try a bigger party next time.
+			seen.Won = &scoutOK
+			seen.ScoutParty = c.Units[UScout]
 			ObserveBattle(w, botAttacker, target, seen)
 		}
 		if result.AttackerSurvivors.Total() > 0 && origin != nil && !loose {
@@ -242,17 +360,17 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 			Time: w.Now(), Type: "scout", OriginID: c.OriginID, TargetID: target.ID,
 			Origin: armyVillage(w, c, c.OriginID), Target: ReportVillageOf(w, target.ID),
 			Attacker: ReportSide{Units: c.Units, Losses: result.AttackerLosses},
+			Defender: ReportSide{Units: defenderUnits, Losses: result.DefenderLosses},
 			Morale:   result.Morale, WallBefore: target.Buildings[BWall], WallAfter: target.Buildings[BWall],
 			Outcome: result.Outcome, AutoFarm: c.AutoFarm,
 		}
 		if scoutOK {
-			r.Defender.Units = defenderUnits
 			r.Scout = &ScoutIntel{
 				Resources: Resources{math.Floor(target.Resources.Wood), math.Floor(target.Resources.Clay), math.Floor(target.Resources.Iron)},
 				Buildings: target.Buildings, Units: defenderUnits, Loyalty: target.Loyalty,
 			}
 		}
-		sendReports(w, recipients, r)
+		sendBattleReports(w, recipients, r, defenders)
 		return nil
 	}
 
@@ -316,10 +434,17 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 		battle.FromX, battle.FromY = origin.X, origin.Y
 	}
 	recordTimeline(w, battle)
+	// A force that lost every man has nobody to ride home and count the enemy, so this is the one thing an attack
+	// cannot teach: what stood against it. Nothing of the garrison goes into the attacker's intel or a bot's memory
+	// — otherwise a single spear would still buy the whole army.
+	attackerWiped := result.AttackerSurvivors.Total() == 0
 	if botAttacker != "" {
-		u := defenderUnits
 		won := result.Outcome == "attackerWon"
-		seen := BattleSeen{Units: &u, Wall: ptrTo(result.WallAfter), Losses: attackerLost > 0, AttackerLost: &attackerLost, Won: &won}
+		seen := BattleSeen{Wall: ptrTo(result.WallAfter), Losses: attackerLost > 0, AttackerLost: &attackerLost, Won: &won}
+		if !attackerWiped {
+			u := defenderUnits
+			seen.Units = &u
+		}
 		if won && !conquered && !loose && result.HaulCapacity > 0 {
 			seen.HaulRatio = ptrTo(SumResources(haul) / result.HaulCapacity)
 		}
@@ -331,15 +456,21 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 		var scouted *Scouted
 		var lastHaul *Resources
 		var lastHaulCapacity *float64
+		known := UnitCounts{}
 		if in.Intel != nil {
 			scouted, lastHaul, lastHaulCapacity = in.Intel.Scouted, in.Intel.LastHaul, in.Intel.LastHaulCapacity
+			// Without a survivor the garrison stays whatever the last witness reported, not what died today.
+			known = in.Intel.Units
+		}
+		if !attackerWiped {
+			known = defenderUnits
 		}
 		// An army cut loose from its village took nothing, so the last haul stays the one before it.
 		if !loose {
 			h := haul
 			lastHaul, lastHaulCapacity = &h, ptrTo(result.HaulCapacity)
 		}
-		in.Intel = &VillageIntel{At: w.Now(), Units: defenderUnits, Wall: result.WallAfter, Loyalty: loyaltyAfter,
+		in.Intel = &VillageIntel{At: w.Now(), Units: known, Wall: result.WallAfter, Loyalty: loyaltyAfter,
 			LastHaul: lastHaul, LastHaulCapacity: lastHaulCapacity, LastLosses: ptrTo(attackerLost), LastOutcome: result.Outcome,
 			Scouted: scouted}
 		var scoutedAt *int64
@@ -375,7 +506,7 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 		if c.Units[UNoble] > 0 {
 			r.LoyaltyBefore, r.LoyaltyAfter = ptrTo(loyaltyBefore), ptrTo(loyaltyAfter)
 		}
-		sendReports(w, recipients, r)
+		sendBattleReports(w, recipients, r, defenders)
 	}
 
 	if D != "" && D != A && result.Outcome == "defenderWon" {

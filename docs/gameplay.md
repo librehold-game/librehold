@@ -113,6 +113,29 @@ and marches in progress finish at their own times.
   over at the edge of the world (without coins).
 - The admin can pause a world: world time stands still and players see the banner "The world is paused by the
   administrator".
+- **Battle reports only say what a side could know.** A force that lost every man has nobody left to ride home and
+  count the enemy, so the side that was wiped out reads only what its own lord already knew: the troops sent and that
+  they were all lost, with the enemy's numbers withheld — they are not in the stored report at all, so they cannot be
+  read off the network either. The survivor reads the whole battle, since he walked the field. Where a side dies on a
+  village wall the rule bends for one reader only: the village's owner stood behind that wall and watched the attack
+  break on it, so he reads the whole battle even with nobody left. A supporter whose troops died on somebody else's
+  wall has no wall of his own and is blinded like anyone else. Both roles can be blinded: an interception wiped out by
+  the army it met is the "attacker" of its own report, and an attack that never returned leaves the defender just as
+  unseen. A false report is never enough to learn a garrison: an attack that died teaches its sender nothing about
+  the defender, and a bot's memory is no fuller than a player's.
+- **A scouting mission follows the same rule, decided by whether it got through.** Scouts that slipped past the
+  defending scouts report the garrison, and the army table and the scouting panel agree. Scouts that were caught bring
+  nothing home, so their sender is told only that the scouting failed, with the garrison withheld from the report just
+  like any other blinded side; the intel stays empty too. This reads the outcome rather than the losses, because a
+  mission can lose every scout and still have taken its look at the village. The owner of the scouted village is never
+  blinded by it: what the report would hide is inside his own walls. Scouts marched along with a real army are not a
+  scouting mission at all (`IsScoutMission` needs nothing but scouts), so whether they live or die makes no difference
+  to what a surviving attack learned.
+- **The defender is told whether the attacker counted his troops.** A defender cannot look at the attacker, so the
+  report states it: the attacker's survivors walked the field and described the garrison, or every attacker died and
+  nobody rode away to describe it. It goes to the village's owner and to human supporters, whose troops were part of
+  what was counted, and never to the attacker, who sees the garrison anyway. It is only set for an attack on a
+  village: a field battle has no wall to stand behind, so a survivor there is not evidence of anything.
 
 ## Bot players
 
@@ -151,6 +174,19 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
   with the research they left with, take no loot, and are lost after the battle. An attack that reaches a village that
   is already its own (e.g. the next hetman of a train) stays there as support, unless it was cut loose: then it is
   lost.
+- **How bots learn what is in a village.** Only by a real scouting party or by an attack that came home. A scouting
+  mission that is caught reports nothing, so a party is a serious force — starting at `ScoutParty` (900) — not a band of
+  five. A party that comes home is followed by the same size; one that is caught grows a band (300 → 600 → 900 → 1,400 →
+  2,000 → 3,000, capped by what the village has), which is the only feedback a bot has, since a caught party learns
+  nothing about what beat it. Troop plans (`TroopTargets`) give an offence village 1,400 scouts so it can climb that
+  ladder and still look again, a defence village 400 (a scout defends as little as it attacks, so a fleet there is
+  wasted farm), and a single mixed village 250. Harassment probes are full parties, and a bot only harasses when it has
+  parties to spare, so a bot that cannot see spends its troops on building instead of poking. A bot opens up an unknown
+  *barbarian* with a small group, because nobody is defending it, but never probes a player's village that way: it sends
+  scouts first and plans what to do once the numbers are in. What it learnt is dated (`KnownVillage.UnitsSeenAt`) and
+  re-scouted after `BotConfig.IntelStaleHours` (24), so an owner who rebuilds is looked at again rather than assumed
+  unchanged. A bot whose scouts keep being caught eventually attacks on public data instead of waiting for a look it may
+  never get.
 - **Defence.** Stacking support when it arrives in time and will hold; otherwise a dodge; strong bots snipe noble
   trains. A weak bot "doesn't notice" some attacks.
 - **Quitting.** Being overwhelmed (village losses, attacks) fades over time; past a threshold a medium or strong

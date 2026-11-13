@@ -109,12 +109,18 @@ func winsSafely(from *Village, k *KnownVillage, units UnitCounts) bool {
 }
 
 // SizeRaid is the smallest group that wins without losses: light cavalry (spears and swords before a stable).
-// Unknown wall → a 4-LC scouting group (+ scout); wall 1–2 without defenders → 2 rams per level + 20 axes
-// (strong bots only); otherwise none.
+// Wall 1–2 without defenders → 2 rams per level + 20 axes (strong bots only); otherwise none.
+//
+// An unknown wall is opened up with a small group, which is how a bot finds out what a barbarian is made of — but only
+// against a village nobody is standing in. A player's village may hold an army, and under the fog of war a group that
+// dies reports nothing: learning what stands there is a scouting mission's job (campaignScout), not a raid's.
 func SizeRaid(w World, from *Village, k *KnownVillage, skill float64) (UnitCounts, bool) {
 	home := from.Units
 	cavalry := home[ULightCav] > 0
 	if k.Wall == nil {
+		if IsHumanID(PlayerID(k.OwnerID)) {
+			return UnitCounts{}, false
+		}
 		if cavalry && home[ULightCav] >= 4 {
 			if home[UScout] > 0 {
 				return UnitCounts{ULightCav: 4, UScout: 1}, true
@@ -228,7 +234,32 @@ func PlanFarming(w World, botID PlayerID) {
 		return
 	}
 	for _, v := range PlayerVillages(w, botID) {
+		scoutStaleBeforeFarming(w, botID, v)
 		farmFrom(w, botID, v, BotConfig.MaxRaidsPerThink, true)
+	}
+}
+
+// scoutStaleBeforeFarming sends a proper scouting party at a target whose garrison it no longer trusts, instead of
+// discovering the change with a raid that dies on it. One per village per session keeps the scouts at home mostly.
+func scoutStaleBeforeFarming(w World, botID PlayerID, v *Village) {
+	if v.Units[UScout] < ScoutParty {
+		return
+	}
+	var best *KnownVillage
+	var bestD float64
+	for _, k := range sortedKnown(brainOf(w, botID)) {
+		if k.OwnerID == "" || k.OwnerID == Ref(botID) || !MayTarget(w, botID, k.OwnerID) {
+			continue
+		}
+		if !isAvailable(w, k) || !intelStale(w, k) {
+			continue
+		}
+		if d := Distance(v.X, v.Y, k.X, k.Y); best == nil || d < bestD {
+			best, bestD = k, d
+		}
+	}
+	if best != nil {
+		campaignScout(w, botID, best.X, best.Y)
 	}
 }
 

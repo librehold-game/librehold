@@ -140,4 +140,111 @@ describe("field battle reports", () => {
     expect(screen.getByText(/army was gone/)).toBeTruthy();
     expect(document.body.textContent).not.toContain("(0|0)");
   });
+
+  it("a wiped-out side is not shown what killed it", async () => {
+    // The server withholds the hidden side entirely, so the report carries no army there: the view has to say so
+    // instead of drawing an empty table. The defender's 50 is still readable — only the hidden side is gone.
+    await open(
+      fieldReport({
+        attackerHidden: true,
+        attacker: { units: { axe: 777 }, losses: { axe: 777 } },
+      }),
+    );
+    expect(
+      screen.getByText(/nobody came back to count the enemy/),
+    ).toBeTruthy();
+    expect(document.body.textContent).not.toContain("777");
+    expect(document.body.textContent).toContain("50");
+  });
+
+  it("caught scouts are told nothing of the garrison, in words that fit scouting", async () => {
+    // A scouting mission that was caught is not an army wiped out on a battlefield, so it must not talk about one.
+    await open(
+      fieldReport({
+        type: "scout",
+        outcome: "defenderWon",
+        defenderHidden: true,
+        attacker: { units: { scout: 3 }, losses: { scout: 3 } },
+        defender: { units: {}, losses: {} },
+        scout: undefined,
+        field: undefined,
+      }),
+    );
+    expect(screen.getByText(/Your scouts were caught/)).toBeTruthy();
+    expect(document.body.textContent).not.toContain(
+      "nobody came back to count the enemy",
+    );
+    // The sender still reads what he lost.
+    expect(document.body.textContent).toContain("Scouting failed");
+  });
+
+  it("a scouting mission that got through shows the garrison", async () => {
+    await open(
+      fieldReport({
+        type: "scout",
+        outcome: "attackerWon",
+        attacker: { units: { scout: 400 }, losses: {} },
+        defender: { units: { spear: 120 }, losses: {} },
+        scout: {
+          units: { spear: 120 },
+          resources: { wood: 100, clay: 100, iron: 100 },
+          buildings: {},
+          loyalty: 100,
+        } as Report["scout"],
+        field: undefined,
+      }),
+    );
+    expect(screen.getByText(/Scouting succeeded/)).toBeTruthy();
+    expect(document.body.textContent).toContain("120");
+    expect(screen.queryByText(/Your scouts were caught/)).toBeNull();
+  });
+
+  it("tells the defender his troops are unknown to the attacker", async () => {
+    // The defender cannot look at the attacker, so the report says it outright instead of leaving him to read the
+    // blind side as good news.
+    await open(
+      fieldReport({
+        type: "attack",
+        outcome: "defenderWon",
+        attackerHidden: true,
+        attacker: { units: { axe: 90 }, losses: { axe: 90 } },
+        defender: { units: { spear: 1410 }, losses: {} },
+        defenderTroopsSeen: false,
+        field: undefined,
+      }),
+    );
+    expect(
+      screen.getByText(/The attacker learned nothing of your troops/),
+    ).toBeTruthy();
+    expect(screen.queryByText(/were counted by the attacker/)).toBeNull();
+  });
+
+  it("tells the defender his troops were seen", async () => {
+    await open(
+      fieldReport({
+        type: "attack",
+        outcome: "attackerWon",
+        attacker: { units: { axe: 2000 }, losses: {} },
+        defender: { units: { spear: 5 }, losses: { spear: 5 } },
+        defenderTroopsSeen: true,
+        field: undefined,
+      }),
+    );
+    expect(screen.getByText(/were counted by the attacker/)).toBeTruthy();
+    expect(screen.queryByText(/learned nothing of your troops/)).toBeNull();
+  });
+
+  it("says nothing about it to the attacker", async () => {
+    // The attacker sees the garrison anyway; the fact belongs to the defending side.
+    await open(
+      fieldReport({
+        type: "attack",
+        outcome: "attackerWon",
+        defenderTroopsSeen: undefined,
+        field: undefined,
+      }),
+    );
+    expect(screen.queryByText(/were counted by the attacker/)).toBeNull();
+    expect(screen.queryByText(/learned nothing of your troops/)).toBeNull();
+  });
 });

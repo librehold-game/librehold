@@ -800,10 +800,25 @@ func TestReportsToEveryHumanInvolved(t *testing.T) {
 	if len(r1) != 1 || len(r2) != 1 || len(r3) != 1 {
 		t.Fatalf("reports %d %d %d", len(r1), len(r2), len(r3))
 	}
+	// Everybody learns when and how the battle ended, whoever they were.
 	for _, r := range []*game.Report{r2[0], r3[0]} {
-		if r.Time != r1[0].Time || r.Outcome != r1[0].Outcome || r.Attacker.Losses != r1[0].Attacker.Losses || r.Defender.Losses != r1[0].Defender.Losses {
+		if r.Time != r1[0].Time || r.Outcome != r1[0].Outcome {
 			t.Fatalf("report differs: %+v vs %+v", r, r1[0])
 		}
+	}
+	// The attacker came home, and the owner stood behind his wall: both read the whole battle.
+	for _, r := range []*game.Report{r1[0], r2[0]} {
+		if r.AttackerHidden || r.DefenderHidden || r.Attacker.Losses != r1[0].Attacker.Losses ||
+			r.Defender.Losses != r1[0].Defender.Losses {
+			t.Fatalf("a side that can see the battle was blinded: %+v", r)
+		}
+	}
+	// The supporter's troops died on somebody else's wall: he keeps his own side, not the attacker's army.
+	if !r3[0].AttackerHidden || r3[0].Attacker.Units.Total() != 0 {
+		t.Fatalf("the wiped-out supporter learned the attacker's army: %+v", r3[0].Attacker)
+	}
+	if r3[0].Defender.Losses != r1[0].Defender.Losses {
+		t.Fatalf("the supporter cannot see the losses on his own side: %+v", r3[0].Defender)
 	}
 	if r3[0].Defender.Units[game.USpear] < 7 {
 		t.Fatalf("h3 does not see its support: %+v", r3[0].Defender.Units)

@@ -238,6 +238,13 @@ export interface Report {
   target: ReportVillage;
   attacker: ReportSide;
   defender: ReportSide;
+  /** A side whose army was wiped out in a field battle has nobody left to count the enemy, so the other side's
+   * numbers are withheld from that reader. */
+  attackerHidden?: boolean;
+  defenderHidden?: boolean;
+  /** For a reader on the defending side of an attack on a village: whether the attacker's survivors counted his
+   * troops. A defender cannot see the attacker, so this is the only way to know. Absent for every other reader. */
+  defenderTroopsSeen?: boolean;
   /** Result of a successful scouting. */
   scout?: ScoutIntel;
   luck: number;

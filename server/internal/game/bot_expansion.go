@@ -294,7 +294,7 @@ func takeOwned(w World, botID PlayerID) bool {
 			continue
 		}
 		def, known := KnownDefence(k)
-		if !known || w.Now()-k.SeenAt > BotDur(w, MsPerDay) {
+		if !known || intelStale(w, k) {
 			if d < unscoutedD {
 				unscouted, unscoutedD = k, d
 			}

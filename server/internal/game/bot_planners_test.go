@@ -155,13 +155,20 @@ func TestBotEconomyPlanners(t *testing.T) {
 }
 
 func TestBotFarmingPlanners(t *testing.T) {
-	t.Run("unknown wall: scout with 4 LC + a scout; wall without rams: skipped", func(t *testing.T) {
+	t.Run("unknown wall: barbarians are opened up, a player's village is not", func(t *testing.T) {
 		w, v := oneBotWorld(t, 41, 0.95)
 		farmingVillage(v)
 		k := &game.KnownVillage{ID: "v:1:1", X: 1, Y: 1, Hauls: []float64{}}
 		if u, ok := game.SizeRaid(w, v, k, 0.95); !ok || u != (game.UnitCounts{game.ULightCav: 4, game.UScout: 1}) {
-			t.Fatalf("unknown wall %v %v", u, ok)
+			t.Fatalf("unknown wall barbarian %v %v", u, ok)
 		}
+		// A player's village may hold an army, and under the fog of war a group that dies reports nothing, so this is
+		// not how a bot finds out what is standing there.
+		k.OwnerID = "h1"
+		if u, ok := game.SizeRaid(w, v, k, 0.95); ok {
+			t.Fatalf("a player's village was probed with %v", u)
+		}
+		k.OwnerID = ""
 		k.Wall = ptr(3)
 		if _, ok := game.SizeRaid(w, v, k, 0.95); ok {
 			t.Fatal("walled target raided")

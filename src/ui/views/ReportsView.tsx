@@ -28,16 +28,26 @@ type Filter = "all" | ReportType | "unread";
 function UnitsTable({
   title,
   side,
+  hidden,
+  hiddenText,
 }: {
   title: string;
   side: Report["attacker"];
+  hidden?: boolean;
+  hiddenText?: string;
 }) {
   const units = UNIT_IDS.filter((u) => (side.units[u] ?? 0) > 0);
   const t = useT();
   return (
     <div>
       <h4 className="text-[13px] font-semibold mb-1">{title}</h4>
-      {units.length === 0 ? (
+      {hidden ? (
+        // The report carries no army for a side whose player was not told it: a wiped-out force has nobody left to
+        // describe what beat it, and a caught scouting party brought nothing back to describe.
+        <p className="text-muted text-[12px] italic">
+          {hiddenText ?? t("reports.armyUnknown")}
+        </p>
+      ) : units.length === 0 ? (
         <p className="text-muted text-[12px] italic">{t("reports.noUnits")}</p>
       ) : (
         <div className="overflow-x-auto">
@@ -227,11 +237,32 @@ function ReportDetail({ id, onBack }: { id: string; onBack: () => void }) {
         {r.morale !== 1 && (
           <div>{t("reports.morale", { n: Math.round(r.morale * 100) })}</div>
         )}
+        {/* Whether the enemy came away knowing your troops. A defender cannot look at the attacker, so the server
+            says it outright rather than leaving him to read it off the attacker's table. */}
+        {r.defenderTroopsSeen === true && (
+          <div className="mt-1">{t("reports.troopsSeen")}</div>
+        )}
+        {r.defenderTroopsSeen === false && (
+          <div className="mt-1 text-ok">{t("reports.troopsUnknown")}</div>
+        )}
       </div>
       <div className="grid md:grid-cols-2 gap-3">
-        <UnitsTable title={t("reports.attacker")} side={r.attacker} />
+        <UnitsTable
+          title={t("reports.attacker")}
+          side={r.attacker}
+          hidden={r.attackerHidden}
+        />
         {!r.field?.missed && (
-          <UnitsTable title={t("reports.defender")} side={r.defender} />
+          <UnitsTable
+            title={t("reports.defender")}
+            side={r.defender}
+            hidden={r.defenderHidden}
+            hiddenText={
+              r.type === "scout" || r.type === "fieldScout"
+                ? t("reports.scoutUnknown")
+                : undefined
+            }
+          />
         )}
       </div>
       {(r.wallBefore !== r.wallAfter || r.buildingDamage) && (
