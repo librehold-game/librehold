@@ -364,7 +364,6 @@
     "production": "Produkcja",
     "perHour": "na godzinę",
     "levelTitle": "{building} poz. {n}",
-    "boostProduction": "» Powiększenie wydobycia",
     "params": "Bieżące parametry",
     "worldSpeed": "Prędkość świata",
     "unitsSpeed": " · jednostki ×{n}",
@@ -730,7 +729,6 @@
     "queued": "w kolejce rekrutacji",
     "away": "poza wioską (w drodze / wsparcie)",
     "awayCount": "[{n} poza]",
-    "recruit": "» rekrutuj",
     "support": "Wsparcie",
     "arriving": "+{n} w drodze",
     "supportComing": "Wsparcie jest w drodze"

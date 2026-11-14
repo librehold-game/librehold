@@ -11,7 +11,7 @@ import { villageLabelById } from "../villageName";
 import { formatNumber } from "../format";
 
 /** The "Units" panel: troops present in the village (queued and away from the village — separately, greyed out). */
-export function UnitsPanel({ onRecruit }: { onRecruit?: () => void }) {
+export function UnitsPanel() {
   const json = useGameStore((s) => {
     const v = selectActiveVillage(s);
     const queued: Partial<Record<UnitId, number>> = {};
@@ -138,14 +138,6 @@ export function UnitsPanel({ onRecruit }: { onRecruit?: () => void }) {
         <p className="text-muted italic text-[11px] mt-1">
           {t("unitsPanel.supportComing")}
         </p>
-      )}
-      {barracks > 0 && onRecruit && (
-        <button
-          className="mt-1 font-bold text-ink hover:underline"
-          onClick={onRecruit}
-        >
-          {t("unitsPanel.recruit")}
-        </button>
       )}
     </div>
   );
