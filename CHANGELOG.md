@@ -5,6 +5,34 @@ here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/
 [Semantic Versioning](https://semver.org/). This file is written from the git history by `scripts/release.sh`; do not
 edit it by hand.
 
+## [0.11.0](https://github.com/librehold-game/librehold/releases/tag/v0.11.0) — 2026-11-16 (alpha)
+
+### Added
+
+- Hosts can switch build plans and auto-farming off per world ([#34](https://github.com/librehold-game/librehold/pull/34)) by @StanBoeter
+- The Rally Point shows how much loot an attack can carry ([#49](https://github.com/librehold-game/librehold/pull/49)) by @Dx-Alz-xD
+- Players can hide the build plan and locked buildings from the Village Tab ([#50](https://github.com/librehold-game/librehold/pull/50)) by @Dx-Alz-xD
+- Recruit screens show the village's troops in total, not only those at home ([#57](https://github.com/librehold-game/librehold/pull/57)) by @Dx-Alz-xD
+- Removed language switch from the header, and removed useless links from sidebar panels ([#53](https://github.com/librehold-game/librehold/pull/53)) by @StanBoeter
+
+### Changed
+
+- The server container reports its health through /healthz ([#35](https://github.com/librehold-game/librehold/pull/35)) by @ciefa
+- Hosts can exempt bots from the "last village protection" rule. ([#40](https://github.com/librehold-game/librehold/pull/40)) by @StanBoeter
+- Reports, build plans, production rows and messages now work with the keyboard ([#48](https://github.com/librehold-game/librehold/pull/48)) by @Dx-Alz-xD
+
+### Fixed
+
+- Build with Go 1.27.4 for the net/http body limit crash (GO-2026-6859) ([93187de](https://github.com/librehold-game/librehold/commit/93187de5c1f55f1f4157efdfa80512f8eb82730a)) by @SKocur
+- Attacks already on their way still arrive after their village is conquered ([#36](https://github.com/librehold-game/librehold/pull/36)) by @ciefa
+- The reports inbox shows every report the world keeps ([#54](https://github.com/librehold-game/librehold/pull/54)) by @Dx-Alz-xD
+
+### Contributors
+
+@Dx-Alz-xD, @SKocur, @StanBoeter, @ciefa
+
+- @StanBoeter made their first contribution in [#53](https://github.com/librehold-game/librehold/pull/53)
+- @Dx-Alz-xD made their first contribution in [#57](https://github.com/librehold-game/librehold/pull/57)
 ## [0.10.0](https://github.com/librehold-game/librehold/releases/tag/v0.10.0) — 2026-11-03 (alpha)
 
 ### Added
