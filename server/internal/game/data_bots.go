@@ -12,6 +12,9 @@ type StrongWeak struct {
 	Weak   float64 `json:"weak"`
 }
 
+// BotCoordRadius and friends are the tables the client reads as numbers; ScoutParty and the rest of the recon
+// settings are the server's own.
+
 // BotConfig holds the bot tuning: skill, temperament, styles and pacing.
 var BotConfig = struct {
 	StrongSkill     float64 `json:"strongSkill"`
@@ -44,6 +47,7 @@ var BotConfig = struct {
 	GrudgeFadeDays        float64              `json:"grudgeFadeDays"`
 	NukeAttack            float64              `json:"nukeAttack"`
 	WeakExpandDailyChance float64              `json:"weakExpandDailyChance"`
+	IntelStaleHours       float64              `json:"intelStaleHours"`
 	OffShare              map[BotStyle]float64 `json:"offShare"`
 	StyleWeights          map[BotStyle]float64 `json:"styleWeights"`
 }{
@@ -77,6 +81,7 @@ var BotConfig = struct {
 	GrudgeFadeDays:        5,
 	NukeAttack:            150_000,
 	WeakExpandDailyChance: 0.3,
+	IntelStaleHours:       24,
 	OffShare: map[BotStyle]float64{StyleAggressor: 0.75, StyleFarmer: 0.6, StyleOpportunist: 0.6,
 		StylePointBuilder: 0.5, StyleTurtle: 0.3},
 	StyleWeights: map[BotStyle]float64{StyleFarmer: 1, StyleTurtle: 1, StyleAggressor: 1, StylePointBuilder: 1,

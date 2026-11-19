@@ -250,7 +250,8 @@ func twoNobleBot(t *testing.T) (*gametest.MemWorld, *game.Village, *game.Village
 		t.Fatal(err)
 	}
 	home := game.PlayerVillages(w, "bot_0")[0]
-	home.Units[game.UNoble], home.Units[game.UAxe], home.Units[game.UScout] = 2, 2000, 10
+	// Enough for a full scouting party: a party below ScoutParty tells the bot nothing under the fog of war.
+	home.Units[game.UNoble], home.Units[game.UAxe], home.Units[game.UScout] = 2, 2000, game.ScoutParty
 	var near *game.Village
 	for _, p := range botsOf(w) {
 		if p.ID == "bot_0" {

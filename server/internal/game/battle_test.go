@@ -800,10 +800,25 @@ func TestReportsToEveryHumanInvolved(t *testing.T) {
 	if len(r1) != 1 || len(r2) != 1 || len(r3) != 1 {
 		t.Fatalf("reports %d %d %d", len(r1), len(r2), len(r3))
 	}
+	// Everybody learns when and how the battle ended, whoever they were.
 	for _, r := range []*game.Report{r2[0], r3[0]} {
-		if r.Time != r1[0].Time || r.Outcome != r1[0].Outcome || r.Attacker.Losses != r1[0].Attacker.Losses || r.Defender.Losses != r1[0].Defender.Losses {
+		if r.Time != r1[0].Time || r.Outcome != r1[0].Outcome {
 			t.Fatalf("report differs: %+v vs %+v", r, r1[0])
 		}
+	}
+	// The attacker came home, and the owner stood behind his wall: both read the whole battle.
+	for _, r := range []*game.Report{r1[0], r2[0]} {
+		if r.AttackerHidden || r.DefenderHidden || r.Attacker.Losses != r1[0].Attacker.Losses ||
+			r.Defender.Losses != r1[0].Defender.Losses {
+			t.Fatalf("a side that can see the battle was blinded: %+v", r)
+		}
+	}
+	// The supporter's troops died on somebody else's wall: he keeps his own side, not the attacker's army.
+	if !r3[0].AttackerHidden || r3[0].Attacker.Units.Total() != 0 {
+		t.Fatalf("the wiped-out supporter learned the attacker's army: %+v", r3[0].Attacker)
+	}
+	if r3[0].Defender.Losses != r1[0].Defender.Losses {
+		t.Fatalf("the supporter cannot see the losses on his own side: %+v", r3[0].Defender)
 	}
 	if r3[0].Defender.Units[game.USpear] < 7 {
 		t.Fatalf("h3 does not see its support: %+v", r3[0].Defender.Units)
@@ -839,5 +854,43 @@ func TestIntelIsPerAttacker(t *testing.T) {
 	advance(t, w, c.ArrivesAt)
 	if w.Intel("h1", c.TargetID) == nil || w.Intel("h2", c.TargetID) != nil {
 		t.Fatal("intel not per attacker")
+	}
+}
+
+func TestWipedOutAttackLeavesTheIntelAlone(t *testing.T) {
+	// A force that lost every man has nobody to ride home and count the enemy. What the attacker knew before the
+	// attack is all he will ever know, so a failed raid must not overwrite it with a village that looks empty.
+	w, v := gametest.NewTestWorld(101)
+	v.Units[game.UAxe] = 50
+	tx, ty := nearestBarbarianTile(w, v)
+	target := game.EnsureVillage(w, tx, ty)
+
+	// First look: a real scouting party counts the garrison and the wall.
+	v.Units[game.UScout] = 400
+	target.Units[game.USpear], target.Buildings[game.BWall] = 400, 7
+	scout := mustSend(t, w, v, tx, ty, game.UnitCounts{game.UScout: 400}, "attack")
+	advance(t, w, scout.ArrivesAt)
+	before := w.Intel("h1", target.ID)
+	if before == nil || before.Intel == nil || before.Intel.Units.Total() == 0 {
+		t.Fatalf("the scouts brought nothing home: %+v", before)
+	}
+	seenAt, seenUnits, seenWall := before.Intel.At, before.Intel.Units, before.Intel.Wall
+
+	// A raid that dies on the wall. Nobody comes home, so nothing was learned.
+	target.Units[game.USpear] = 400
+	target.Buildings[game.BWall] = 7
+	v.Units[game.UAxe] = 10
+	raid := mustSend(t, w, v, tx, ty, game.UnitCounts{game.UAxe: 10}, "attack")
+	advance(t, w, raid.ArrivesAt)
+	if lastReport(w, "h1").Outcome != "defenderWon" {
+		t.Fatalf("the raid was supposed to lose: %+v", lastReport(w, "h1"))
+	}
+	after := w.Intel("h1", target.ID)
+	if after == nil || after.Intel == nil {
+		t.Fatal("the failed raid threw away what the scouts had found")
+	}
+	if after.Intel.Units.Total() != seenUnits.Total() || after.Intel.Wall != seenWall || after.Intel.At != seenAt {
+		t.Fatalf("a wiped-out attack rewrote the intel: was %+v (units %d, wall %d), now %+v (units %d, wall %d)",
+			before.Intel, seenUnits.Total(), seenWall, after.Intel, after.Intel.Units.Total(), after.Intel.Wall)
 	}
 }

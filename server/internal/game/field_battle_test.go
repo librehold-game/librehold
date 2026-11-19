@@ -338,3 +338,407 @@ func TestFieldBattleDeterministic(t *testing.T) {
 		t.Fatalf("same world, same orders, different battles:\n%s\n%s", a, b)
 	}
 }
+
+// A wiped-out side has nobody left to count the enemy: it must not be told what killed it, wherever the fighting
+// happened. The survivor reports the battle in full.
+func TestFieldBattleFogOfWar(t *testing.T) {
+	t.Run("an interceptor wiped out does not learn the marching army", func(t *testing.T) {
+		f := newFieldWorld(t)
+		// A handful of spearmen on the road meet 100 axes. In a field report the interceptor is the attacker, and his
+		// report is the one that must go blind.
+		f.a.Units[game.USpear] = 10
+		meet(t, f, game.UnitCounts{game.USpear: 10}, false)
+		mine, theirs := fieldReports(f.w, "h1"), fieldReports(f.w, "h2")
+		if len(mine) != 1 || len(theirs) != 1 {
+			t.Fatalf("a field battle must reach both players: h1 %d, h2 %d", len(mine), len(theirs))
+		}
+		if mine[0].Attacker.Losses.Total() < mine[0].Attacker.Units.Total() {
+			t.Fatalf("the interceptor was supposed to be wiped out: %d of %d",
+				mine[0].Attacker.Losses.Total(), mine[0].Attacker.Units.Total())
+		}
+		if !mine[0].DefenderHidden {
+			t.Fatal("the wiped-out interceptor still sees the marching army")
+		}
+		if mine[0].AttackerHidden {
+			t.Fatal("the interceptor must still see his own troops")
+		}
+		if theirs[0].AttackerHidden || theirs[0].DefenderHidden {
+			t.Fatal("the surviving army's report must stay complete")
+		}
+	})
+
+	t.Run("a marching army destroyed does not learn the interceptor", func(t *testing.T) {
+		f := newFieldWorld(t)
+		// 50 light cavalry wipe the marching axes out entirely.
+		meet(t, f, game.UnitCounts{game.ULightCav: 50}, false)
+		mine, theirs := fieldReports(f.w, "h1"), fieldReports(f.w, "h2")
+		if len(mine) != 1 || len(theirs) != 1 {
+			t.Fatalf("a field battle must reach both players: h1 %d, h2 %d", len(mine), len(theirs))
+		}
+		if theirs[0].Defender.Losses.Total() < theirs[0].Defender.Units.Total() {
+			t.Fatalf("the marching army was supposed to be destroyed: %d of %d",
+				theirs[0].Defender.Losses.Total(), theirs[0].Defender.Units.Total())
+		}
+		if !theirs[0].AttackerHidden {
+			t.Fatal("the destroyed army's owner still sees what killed it")
+		}
+		if mine[0].AttackerHidden || mine[0].DefenderHidden {
+			t.Fatal("the surviving interceptor's report must stay complete")
+		}
+	})
+}
+
+// The same rule holds against a village wall: an attack that never came home is not a report, so the attacker must
+// not read the defender's army off it. The defender, who held the walls, sees everything.
+func TestVillageBattleFogOfWar(t *testing.T) {
+	newVillageWorld := func(attackerAxe, defenderSpear int) (*gametest.MemWorld, *game.Command) {
+		t.Helper()
+		w, home := gametest.NewTestWorld(77)
+		w.Player("h1").ProtectedUntil = 0
+		gametest.NewHumanPlayer(w, "h2")
+		den := gametest.AddStartVillage(w, "h2", home.X+2, home.Y)
+		den.Units = game.Units{}
+		den.Buildings[game.BWall] = 5
+		den.Units[game.USpear] = defenderSpear
+		home.Units[game.UAxe] = attackerAxe
+		c, err := game.SendCommand(w, "h1", home.ID, den.X, den.Y, game.UnitCounts{game.UAxe: attackerAxe}, "attack", game.SendOpts{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := gametest.Advance(w, c.ArrivesAt); err != nil {
+			t.Fatal(err)
+		}
+		return w, c
+	}
+	attackReport := func(w *gametest.MemWorld, id game.PlayerID) *game.Report {
+		for _, r := range w.ReportsOf(id) {
+			if r.Type == "attack" {
+				return r
+			}
+		}
+		return nil
+	}
+
+	t.Run("an attacker wiped out does not learn the defender's army", func(t *testing.T) {
+		w, _ := newVillageWorld(5, 300)
+		mine, theirs := attackReport(w, "h1"), attackReport(w, "h2")
+		if mine == nil || theirs == nil {
+			t.Fatal("both sides must get the attack report")
+		}
+		if mine.Attacker.Losses.Total() < mine.Attacker.Units.Total() {
+			t.Fatalf("the attack was supposed to be wiped out: %d of %d",
+				mine.Attacker.Losses.Total(), mine.Attacker.Units.Total())
+		}
+		if !mine.DefenderHidden {
+			t.Fatal("the wiped-out attacker still sees the defender's army")
+		}
+	})
+
+	t.Run("a defender wiped out still sees the attack that broke on his wall", func(t *testing.T) {
+		// The defender lost his garrison, but the wall was his and he stood behind it: he watched the attack break,
+		// so he reads the whole battle even with nobody left.
+		w, _ := newVillageWorld(3000, 1)
+		mine, theirs := attackReport(w, "h1"), attackReport(w, "h2")
+		if mine == nil || theirs == nil {
+			t.Fatal("both sides must get the attack report")
+		}
+		if theirs.Defender.Losses.Total() < theirs.Defender.Units.Total() {
+			t.Fatalf("the garrison was supposed to be wiped out: %d of %d",
+				theirs.Defender.Losses.Total(), theirs.Defender.Units.Total())
+		}
+		if theirs.AttackerHidden || theirs.DefenderHidden {
+			t.Fatal("the defender stood behind the wall and must read the whole attack")
+		}
+		if theirs.Attacker.Units.Total() == 0 {
+			t.Fatal("the defender must see what was thrown at him")
+		}
+	})
+
+	t.Run("a successful attack sees the defender's army", func(t *testing.T) {
+		w, _ := newVillageWorld(2000, 1)
+		mine := attackReport(w, "h1")
+		if mine == nil {
+			t.Fatal("no attack report")
+		}
+		if mine.AttackerHidden || mine.DefenderHidden {
+			t.Fatal("an attacker who survived must read the whole battle")
+		}
+		if mine.Defender.Units.Total() == 0 {
+			t.Fatal("an attacker who survived must see what he killed")
+		}
+	})
+
+	t.Run("the hidden side leaves the report, not only the view", func(t *testing.T) {
+		// The counts must not be readable from the player state either.
+		w, _ := newVillageWorld(5, 300)
+		mine := attackReport(w, "h1")
+		if mine == nil || !mine.DefenderHidden {
+			t.Fatal("the attack was supposed to be blinded")
+		}
+		if mine.Defender.Units.Total() != 0 || mine.Defender.Losses.Total() != 0 {
+			t.Fatalf("the hidden side is still on the wire: %+v", mine.Defender)
+		}
+		if mine.Attacker.Units.Total() == 0 {
+			t.Fatal("the wiped-out attacker must still see his own troops")
+		}
+	})
+
+	t.Run("a wiped-out probe leaves no garrison in the attacker's intel", func(t *testing.T) {
+		// Blinding the report is pointless if the map's intel still lists the garrison.
+		w, c := newVillageWorld(5, 300)
+		if in := w.Intel("h1", c.TargetID); in != nil && in.Intel != nil && in.Intel.Units.Total() > 0 {
+			t.Fatalf("the wiped-out attack still learned the garrison: %+v", in.Intel.Units)
+		}
+	})
+
+	// A defender cannot look at the attacker, so the report is the only place he can learn whether his garrison was
+	// counted. It is a fact about the other side's knowledge, told only to the defending side.
+	seenByAttacker := func(r *game.Report) bool {
+		t.Helper()
+		if r == nil || r.DefenderTroopsSeen == nil {
+			t.Fatalf("the defender was not told whether his troops were seen: %+v", r)
+		}
+		return *r.DefenderTroopsSeen
+	}
+
+	t.Run("the defender is told his troops were seen when the attack came home", func(t *testing.T) {
+		w, _ := newVillageWorld(2000, 1)
+		if !seenByAttacker(attackReport(w, "h2")) {
+			t.Fatal("an attack that came home must be reported as having seen the garrison")
+		}
+	})
+
+	t.Run("the defender is told his troops are unknown when the attack was wiped out", func(t *testing.T) {
+		w, _ := newVillageWorld(5, 300)
+		if seenByAttacker(attackReport(w, "h2")) {
+			t.Fatal("an attack with no survivors cannot have described the garrison")
+		}
+	})
+
+	t.Run("a defender whose garrison died still learns whether it was seen", func(t *testing.T) {
+		// The wall holder reads the whole attack, so his own side is no measure of what the attacker learned.
+		w, _ := newVillageWorld(3000, 1)
+		if !seenByAttacker(attackReport(w, "h2")) {
+			t.Fatal("the attacker survived and counted the garrison")
+		}
+	})
+
+	t.Run("the attacker is not told what the defender knows", func(t *testing.T) {
+		// It is the defending side's fact: the attacker sees the garrison anyway, so there is nothing to tell him.
+		w, _ := newVillageWorld(2000, 1)
+		if mine := attackReport(w, "h1"); mine != nil && mine.DefenderTroopsSeen != nil {
+			t.Fatalf("the attacker was told the defender's fact: %+v", *mine.DefenderTroopsSeen)
+		}
+	})
+
+	t.Run("a supporter is told too, because his troops stood there", func(t *testing.T) {
+		// A supporter's spears are part of the garrison the attacker counted, so the same answer is his business.
+		sw, home := gametest.NewTestWorld(82)
+		sw.Player("h1").ProtectedUntil = 0
+		gametest.NewHumanPlayer(sw, "h2")
+		gametest.NewHumanPlayer(sw, "h3")
+		den := gametest.AddStartVillage(sw, "h2", home.X+2, home.Y)
+		sup := gametest.AddStartVillage(sw, "h3", home.X+4, home.Y)
+		den.Units = game.Units{}
+		den.Buildings[game.BWall] = 5
+		den.SupportFrom[sup.ID] = game.UnitCounts{game.USpear: 10}
+		home.Units[game.UAxe] = 3000
+		c, err := game.SendCommand(sw, "h1", home.ID, den.X, den.Y, game.UnitCounts{game.UAxe: 3000}, "attack", game.SendOpts{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := gametest.Advance(sw, c.ArrivesAt); err != nil {
+			t.Fatal(err)
+		}
+		var supported *game.Report
+		for _, r := range sw.ReportsOf("h3") {
+			if r.Type == "attack" {
+				supported = r
+			}
+		}
+		if supported == nil {
+			t.Fatal("a supporter gets the report of the battle his troops died in")
+		}
+		if supported.DefenderTroopsSeen == nil || !*supported.DefenderTroopsSeen {
+			t.Fatalf("the attacker walked the field and counted the support: %+v", supported.DefenderTroopsSeen)
+		}
+	})
+
+	t.Run("a surviving attack does record the garrison it saw", func(t *testing.T) {
+		w, c := newVillageWorld(2000, 1)
+		if in := w.Intel("h1", c.TargetID); in == nil || in.Intel == nil || in.Intel.Units.Total() == 0 {
+			t.Fatalf("an attack that came home must report what it met: %+v", in)
+		}
+	})
+
+	t.Run("scouts marching with a surviving heavy attack do not matter either way", func(t *testing.T) {
+		// Scouts are only a scouting mission when the army is nothing but scouts. Mixed into a real attack they are
+		// ordinary light troops, and the garrison is revealed by the attack surviving at all — not by the scouts
+		// living or dying. Two cases, so nobody "improves" the rule into keying off scouts that came home.
+		for _, name := range []string{"scouts live", "scouts die"} {
+			t.Run(name, func(t *testing.T) {
+				w, home := gametest.NewTestWorld(81)
+				w.Player("h1").ProtectedUntil = 0
+				gametest.NewHumanPlayer(w, "h2")
+				den := gametest.AddStartVillage(w, "h2", home.X+2, home.Y)
+				den.Units = game.Units{}
+				den.Units[game.USpear] = 5
+				den.Units[game.UScout] = 400 // enough defending scouts to eat any scouts sent along
+				home.Units[game.UAxe] = 3000
+				home.Units[game.UScout] = 1
+				units := game.UnitCounts{game.UAxe: 3000, game.UScout: 1}
+				c, err := game.SendCommand(w, "h1", home.ID, den.X, den.Y, units, "attack", game.SendOpts{})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if err := gametest.Advance(w, c.ArrivesAt); err != nil {
+					t.Fatal(err)
+				}
+				mine := attackReport(w, "h1")
+				if mine == nil {
+					t.Fatal("the attacker gets a report")
+				}
+				if mine.Type != "attack" {
+					t.Fatalf("scouts in a real army do not make a scouting mission: %q", mine.Type)
+				}
+				if mine.DefenderHidden || mine.AttackerHidden {
+					t.Fatalf("%s: the attack survived and must read the garrison: %+v", name, mine)
+				}
+				if mine.Defender.Units.Total() == 0 {
+					t.Fatalf("%s: a surviving attack must see what it met", name)
+				}
+				// The intel has to agree with the report: the map is not allowed to know more.
+				if in := w.Intel("h1", c.TargetID); in == nil || in.Intel == nil || in.Intel.Units.Total() == 0 {
+					t.Fatalf("%s: a surviving attack records the garrison it saw: %+v", name, in)
+				}
+			})
+		}
+	})
+
+	t.Run("a supporter wiped out on somebody else's wall does not learn the attacker", func(t *testing.T) {
+		// h3's spears stand in h2's village and die there. He is not the owner, so there is no wall of his to watch
+		// from: he learns nothing of the army that killed his troops, but still reads his own losses.
+		w, home := gametest.NewTestWorld(78)
+		w.Player("h1").ProtectedUntil = 0
+		gametest.NewHumanPlayer(w, "h2")
+		gametest.NewHumanPlayer(w, "h3")
+		den := gametest.AddStartVillage(w, "h2", home.X+2, home.Y)
+		sup := gametest.AddStartVillage(w, "h3", home.X+4, home.Y)
+		den.Units = game.Units{}
+		den.Buildings[game.BWall] = 5
+		den.SupportFrom[sup.ID] = game.UnitCounts{game.USpear: 10}
+		home.Units[game.UAxe] = 3000
+		c, err := game.SendCommand(w, "h1", home.ID, den.X, den.Y, game.UnitCounts{game.UAxe: 3000}, "attack", game.SendOpts{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := gametest.Advance(w, c.ArrivesAt); err != nil {
+			t.Fatal(err)
+		}
+		var supported *game.Report
+		for _, r := range w.ReportsOf("h3") {
+			if r.Type == "attack" {
+				supported = r
+			}
+		}
+		if supported == nil {
+			t.Fatal("a supporter gets the report of the battle his troops died in")
+		}
+		if !supported.AttackerHidden {
+			t.Fatal("the wiped-out supporter still sees what destroyed his troops")
+		}
+		if supported.Defender.Units.Total() == 0 {
+			t.Fatal("the supporter must still see his own side")
+		}
+	})
+}
+
+// A scouting mission is a battle report too, so it follows the same rule, with its own way of telling whether it
+// brought anything home: what matters is whether the scouts got through, not how many of them died.
+func TestVillageScoutFogOfWar(t *testing.T) {
+	newScoutWorld := func(scouts, defenderScouts int) (*gametest.MemWorld, *game.Command) {
+		t.Helper()
+		w, home := gametest.NewTestWorld(79)
+		w.Player("h1").ProtectedUntil = 0
+		gametest.NewHumanPlayer(w, "h2")
+		den := gametest.AddStartVillage(w, "h2", home.X+2, home.Y)
+		den.Units = game.Units{}
+		// Each defending scout counts double, so pair up the numbers to make the outcome clear either way.
+		den.Units[game.UScout] = defenderScouts
+		den.Units[game.USpear] = 120
+		home.Units[game.UScout] = scouts
+		c, err := game.SendCommand(w, "h1", home.ID, den.X, den.Y, game.UnitCounts{game.UScout: scouts}, "attack", game.SendOpts{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := gametest.Advance(w, c.ArrivesAt); err != nil {
+			t.Fatal(err)
+		}
+		return w, c
+	}
+	scoutReport := func(w *gametest.MemWorld, id game.PlayerID) *game.Report {
+		for _, r := range w.ReportsOf(id) {
+			if r.Type == "scout" {
+				return r
+			}
+		}
+		return nil
+	}
+
+	t.Run("caught scouts report no garrison to their sender", func(t *testing.T) {
+		// Three scouts against fifty defending scouts: nowhere near enough, so every one of them dies unlooked.
+		w, _ := newScoutWorld(3, 50)
+		mine := scoutReport(w, "h1")
+		if mine == nil {
+			t.Fatal("a scouting mission reports to its sender")
+		}
+		if mine.Outcome != "defenderWon" {
+			t.Fatalf("the scouts were supposed to be caught: %q", mine.Outcome)
+		}
+		if !mine.DefenderHidden {
+			t.Fatal("the sender of caught scouts was told the garrison")
+		}
+		if mine.Defender.Units.Total() != 0 || mine.Defender.Losses.Total() != 0 {
+			t.Fatalf("the garrison is still on the wire: %+v", mine.Defender)
+		}
+		if mine.Scout != nil {
+			t.Fatal("a caught scouting mission must not carry scout intel")
+		}
+		if mine.Attacker.Units.Total() != 3 || mine.Attacker.Losses.Total() != 3 {
+			t.Fatalf("the sender must still see the scouts he lost: %+v", mine.Attacker)
+		}
+	})
+
+	t.Run("a scouting mission that got through reports the garrison in full", func(t *testing.T) {
+		w, _ := newScoutWorld(400, 5)
+		mine := scoutReport(w, "h1")
+		if mine == nil || mine.Outcome != "attackerWon" {
+			t.Fatalf("the scouts were supposed to get through: %+v", mine)
+		}
+		if mine.DefenderHidden || mine.AttackerHidden {
+			t.Fatal("a scout that got through must report what it saw")
+		}
+		if mine.Defender.Units.Total() == 0 {
+			t.Fatal("the whole point of a scout is the garrison")
+		}
+		if mine.Scout == nil || mine.Scout.Units.Total() == 0 {
+			t.Fatalf("the scout intel is missing: %+v", mine.Scout)
+		}
+	})
+
+	t.Run("the village owner always knows his own garrison", func(t *testing.T) {
+		// Being scouted tells the owner nothing he did not already know, and a report that hid his own troops would
+		// be nonsense.
+		w, _ := newScoutWorld(3, 50)
+		if theirs := scoutReport(w, "h2"); theirs != nil && theirs.DefenderHidden {
+			t.Fatalf("the owner was blinded to his own village: %+v", theirs)
+		}
+	})
+
+	t.Run("a caught scout leaves no garrison in the attacker's intel", func(t *testing.T) {
+		w, c := newScoutWorld(3, 50)
+		if in := w.Intel("h1", c.TargetID); in != nil && in.Intel != nil && in.Intel.Units.Total() > 0 {
+			t.Fatalf("caught scouts still filled the intel: %+v", in.Intel.Units)
+		}
+	})
+}

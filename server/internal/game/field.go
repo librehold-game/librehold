@@ -309,7 +309,9 @@ func onFieldEvent(w World, id string) error {
 			to = append(to, p)
 		}
 	}
-	sendReports(w, to, r)
+	// A field battle is fought on the road, so each side only reports what it actually witnessed. Nobody is
+	// fighting on the defending side but the army that was met, so there is no supporter to spare.
+	sendBattleReports(w, to, r, nil)
 	if result.AttackerSurvivors.Total() > 0 && !loose {
 		ReturnFromPoint(w, at, homeID, result.AttackerSurvivors, captured)
 	}

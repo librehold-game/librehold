@@ -36,6 +36,8 @@ func ChoosePurpose(w World, botID PlayerID, k *KnownVillage) Purpose {
 	b := brainOf(w, botID)
 	v := w.Village(k.ID)
 	def, knownDef := KnownDefence(k)
+	// "Can this army take the place?" A bot only sends a train at a defence it has actually counted, and only if its
+	// army is comfortably bigger. Not knowing is a reason to look first, not a reason to give up on the idea for ever.
 	clearable := knownDef && def < 0.8*OwnOffence(w, botID)
 	payback := 1.0
 	if k.OwnerID != "" && PlayerID(k.OwnerID) == HardFarmer(w, botID) {
@@ -45,9 +47,14 @@ func ChoosePurpose(w World, botID PlayerID, k *KnownVillage) Purpose {
 	if b.Style == StyleAggressor {
 		harass = 2
 	}
+	// Harassment is always on the table: its probes are fakes, not scouting parties, so it needs no scouts and buys no
+	// intel. Gating it on a band of scouts to spare took it away from most bots and left them holding instead.
 	options := []Option[Purpose]{{"harass", harass * payback}}
-	// A player is taken only with a full train; a ready train on a clear road is the best option.
-	if noblesReady(w, botID) >= NoblesNeededFor(w.Config(), true, ConquestBalance.MaxLoyalty) && clearable && v != nil && CanBeConquered(w, v) {
+	// A player is taken only with a full train; a ready train on a clear road is the best option. Without a look inside
+	// the village there is no "clear road" to judge, so the train waits for the scouts — but a bot whose scouts keep
+	// being caught must still go eventually, or it never attacks at all.
+	if noblesReady(w, botID) >= NoblesNeededFor(w.Config(), true, ConquestBalance.MaxLoyalty) && v != nil &&
+		CanBeConquered(w, v) && (clearable || intelHopeless(w, k)) {
 		score := 3.0
 		if b.Style == StyleAggressor {
 			score = 4
@@ -67,6 +74,11 @@ func ChoosePurpose(w World, botID PlayerID, k *KnownVillage) Purpose {
 			score = 2
 		}
 		options = append(options, Option[Purpose]{"farmPlayer", score * payback})
+	}
+	// Nothing worth doing here yet: the bot is not ready to poke this player. The caller acts on the purpose, so an
+	// empty-handed answer has to be a real one rather than a panic in the weighted draw.
+	if len(options) == 0 {
+		return "hold"
 	}
 	return WeightedPick(rngFor(w, botID, "purpose", k.ID), options, b.Skill)
 }
@@ -101,8 +113,12 @@ func botSchedule(w World, botID PlayerID, in ScheduleSendInput) {
 	actSoft(w, botID, "schedule-send", in, func() error { _, err := ScheduleSend(w, botID, in); return err })
 }
 
-// LaunchHarass: 4 fakes (1 ram, else 1 axe) from different villages landing within a second; every fourth at the
-// target's night.
+// LaunchHarass: 4 fakes (1 ram, else 1 axe) from different villages landing within a second, to see whether the
+// defender is at home and to spoil his day; every fourth lands at the target's night.
+//
+// A probe is deliberately a token force. Under the fog of war a probe that dies reports nothing, so sending a full
+// scouting party instead would not teach the bot any more than a single axe — it would only cost it the scouts it
+// needs to look into a target it actually means to attack. Counting the garrison is campaignScout's job.
 func LaunchHarass(w World, botID PlayerID, k *KnownVillage) {
 	rng := rngFor(w, botID, "harass", k.ID)
 	sources := villagesByDistance(w, botID, k.X, k.Y)
@@ -122,11 +138,19 @@ func LaunchHarass(w World, botID PlayerID, k *KnownVillage) {
 				rams++
 			}
 		}
-		units := UnitCounts{UAxe: 1}
-		if v.Units[URam] > rams {
+		var units UnitCounts
+		switch {
+		case v.Units[URam] > rams:
 			units = UnitCounts{URam: 1}
+		case v.Units[UAxe] >= 1:
+			units = UnitCounts{UAxe: 1}
+		default:
+			continue // nothing to send a fake with
 		}
 		picks = append(picks, pick{v, units})
+	}
+	if len(picks) == 0 {
+		return
 	}
 	latest := int64(0)
 	for _, p := range picks {
@@ -321,6 +345,8 @@ func LaunchOperation(w World, botID PlayerID, k *KnownVillage) Purpose {
 		LaunchDemolish(w, botID, k, b)
 	case "farmPlayer":
 		LaunchFarmPlayer(w, botID, k)
+	case "hold":
+		// Nothing worth sending: the bot waits and builds instead of spending troops it cannot spare.
 	default:
 		LaunchHarass(w, botID, k)
 	}

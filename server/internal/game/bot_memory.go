@@ -18,6 +18,9 @@ type BattleSeen struct {
 	Losses       bool
 	Won          *bool
 	AttackerLost *int
+	// ScoutParty is how many scouts were sent, so a failed attempt can be followed by a bigger one. The bot knows what
+	// it sent and that it did not come back; it is not told what beat it, which is the whole point of the fog of war.
+	ScoutParty int
 }
 
 type NearTile struct {
@@ -182,7 +185,13 @@ func ObserveBattle(w World, observerID PlayerID, target *Village, seen BattleSee
 	}
 	if seen.Units != nil {
 		u := *seen.Units
-		k.Units = &u
+		k.Units, k.UnitsSeenAt = &u, ptrTo(w.Now())
+	}
+	// What the last party was and whether it came through: enough to try bigger next time, without pretending to know a
+	// garrison the scouts never saw.
+	if seen.ScoutParty > 0 {
+		won := seen.Won != nil && *seen.Won
+		k.ScoutLoss, k.LastScoutParty = ptrTo(!won), seen.ScoutParty
 	}
 	if seen.Wall != nil {
 		k.Wall = ptrTo(*seen.Wall)

@@ -168,31 +168,39 @@ type BuildingDamage struct {
 }
 
 type Report struct {
-	ID             string          `json:"id"`
-	Time           int64           `json:"time"`
-	Type           string          `json:"type"` // attack | support | scout | conquest | field | fieldScout
-	OriginID       string          `json:"originId"`
-	TargetID       string          `json:"targetId"`
-	Origin         ReportVillage   `json:"origin"`
-	Target         ReportVillage   `json:"target"`
-	Attacker       ReportSide      `json:"attacker"`
-	Defender       ReportSide      `json:"defender"`
-	Scout          *ScoutIntel     `json:"scout,omitempty"`
-	Luck           float64         `json:"luck"`
-	Morale         float64         `json:"morale"`
-	WallBefore     int             `json:"wallBefore"`
-	WallAfter      int             `json:"wallAfter"`
-	BuildingDamage *BuildingDamage `json:"buildingDamage,omitempty"`
-	Haul           *Resources      `json:"haul,omitempty"`
-	HaulCapacity   *float64        `json:"haulCapacity,omitempty"`
-	NoHome         bool            `json:"noHome,omitempty"` // the army was cut loose from its village and took nothing, having no home to carry it to
-	LoyaltyBefore  *float64        `json:"loyaltyBefore,omitempty"`
-	LoyaltyAfter   *float64        `json:"loyaltyAfter,omitempty"`
-	Conquered      bool            `json:"conquered,omitempty"`
-	Outcome        string          `json:"outcome"` // attackerWon | defenderWon
-	Read           bool            `json:"read"`
-	AutoFarm       bool            `json:"autoFarm,omitempty"`
-	Field          *FieldReport    `json:"field,omitempty"`
+	ID       string        `json:"id"`
+	Time     int64         `json:"time"`
+	Type     string        `json:"type"` // attack | support | scout | conquest | field | fieldScout
+	OriginID string        `json:"originId"`
+	TargetID string        `json:"targetId"`
+	Origin   ReportVillage `json:"origin"`
+	Target   ReportVillage `json:"target"`
+	Attacker ReportSide    `json:"attacker"`
+	Defender ReportSide    `json:"defender"`
+	// AttackerHidden/DefenderHidden withhold one side's army from this reader: in a field battle a side that was
+	// wiped out has nobody left to count the enemy, so the survivor's numbers are not in the report it receives.
+	AttackerHidden bool `json:"attackerHidden,omitempty"`
+	DefenderHidden bool `json:"defenderHidden,omitempty"`
+	// DefenderTroopsSeen tells a reader on the defending side whether the attacker got to look at his troops. Only
+	// the attacker's survivors ride away from the wall, so the report is the one place a defender can learn it. Unset
+	// for every other reader, and for reports that are not an attack on a village.
+	DefenderTroopsSeen *bool           `json:"defenderTroopsSeen,omitempty"`
+	Scout              *ScoutIntel     `json:"scout,omitempty"`
+	Luck               float64         `json:"luck"`
+	Morale             float64         `json:"morale"`
+	WallBefore         int             `json:"wallBefore"`
+	WallAfter          int             `json:"wallAfter"`
+	BuildingDamage     *BuildingDamage `json:"buildingDamage,omitempty"`
+	Haul               *Resources      `json:"haul,omitempty"`
+	HaulCapacity       *float64        `json:"haulCapacity,omitempty"`
+	NoHome             bool            `json:"noHome,omitempty"` // the army was cut loose from its village and took nothing, having no home to carry it to
+	LoyaltyBefore      *float64        `json:"loyaltyBefore,omitempty"`
+	LoyaltyAfter       *float64        `json:"loyaltyAfter,omitempty"`
+	Conquered          bool            `json:"conquered,omitempty"`
+	Outcome            string          `json:"outcome"` // attackerWon | defenderWon
+	Read               bool            `json:"read"`
+	AutoFarm           bool            `json:"autoFarm,omitempty"`
+	Field              *FieldReport    `json:"field,omitempty"`
 }
 
 type PlayerStatus string
@@ -268,21 +276,28 @@ type PartialBuildings map[BuildingID]int
 
 // KnownVillage is what a bot knows of a village, only from its own observations and the map.
 type KnownVillage struct {
-	ID           string           `json:"id"`
-	X            int              `json:"x"`
-	Y            int              `json:"y"`
-	OwnerID      PlayerRef        `json:"ownerId"`
-	Points       int              `json:"points"`
-	SeenAt       int64            `json:"seenAt"`
-	Units        *UnitCounts      `json:"units,omitempty"`
-	Wall         *int             `json:"wall,omitempty"`
-	Hide         *float64         `json:"hide,omitempty"`
-	Storage      *float64         `json:"storage,omitempty"`
-	Buildings    PartialBuildings `json:"buildings,omitempty"`
-	Hauls        []float64        `json:"hauls"`
-	LastAttackAt *int64           `json:"lastAttackAt,omitempty"`
-	Losses       *bool            `json:"losses,omitempty"`
-	DeadSince    *int64           `json:"deadSince,omitempty"`
+	ID      string    `json:"id"`
+	X       int       `json:"x"`
+	Y       int       `json:"y"`
+	OwnerID PlayerRef `json:"ownerId"`
+	Points  int       `json:"points"`
+	SeenAt  int64     `json:"seenAt"`
+	// UnitsSeenAt is when the bot last saw the garrison, as opposed to SeenAt, which moves every time the map is
+	// rediscovered. Without it a garrison looked at once would be trusted for ever.
+	UnitsSeenAt *int64      `json:"unitsSeenAt,omitempty"`
+	Units       *UnitCounts `json:"units,omitempty"`
+	Wall        *int        `json:"wall,omitempty"`
+	// ScoutLoss records whether the bot's last scouting party came through, and LastScoutParty how big it was. A party
+	// that was caught is followed by a bigger one; the bot is never told the garrison it never saw.
+	ScoutLoss      *bool            `json:"scoutLoss,omitempty"`
+	LastScoutParty int              `json:"lastScoutParty,omitempty"`
+	Hide           *float64         `json:"hide,omitempty"`
+	Storage        *float64         `json:"storage,omitempty"`
+	Buildings      PartialBuildings `json:"buildings,omitempty"`
+	Hauls          []float64        `json:"hauls"`
+	LastAttackAt   *int64           `json:"lastAttackAt,omitempty"`
+	Losses         *bool            `json:"losses,omitempty"`
+	DeadSince      *int64           `json:"deadSince,omitempty"`
 }
 
 type BotMemory struct {
