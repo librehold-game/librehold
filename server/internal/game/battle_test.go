@@ -856,3 +856,41 @@ func TestIntelIsPerAttacker(t *testing.T) {
 		t.Fatal("intel not per attacker")
 	}
 }
+
+func TestWipedOutAttackLeavesTheIntelAlone(t *testing.T) {
+	// A force that lost every man has nobody to ride home and count the enemy. What the attacker knew before the
+	// attack is all he will ever know, so a failed raid must not overwrite it with a village that looks empty.
+	w, v := gametest.NewTestWorld(101)
+	v.Units[game.UAxe] = 50
+	tx, ty := nearestBarbarianTile(w, v)
+	target := game.EnsureVillage(w, tx, ty)
+
+	// First look: a real scouting party counts the garrison and the wall.
+	v.Units[game.UScout] = 400
+	target.Units[game.USpear], target.Buildings[game.BWall] = 400, 7
+	scout := mustSend(t, w, v, tx, ty, game.UnitCounts{game.UScout: 400}, "attack")
+	advance(t, w, scout.ArrivesAt)
+	before := w.Intel("h1", target.ID)
+	if before == nil || before.Intel == nil || before.Intel.Units.Total() == 0 {
+		t.Fatalf("the scouts brought nothing home: %+v", before)
+	}
+	seenAt, seenUnits, seenWall := before.Intel.At, before.Intel.Units, before.Intel.Wall
+
+	// A raid that dies on the wall. Nobody comes home, so nothing was learned.
+	target.Units[game.USpear] = 400
+	target.Buildings[game.BWall] = 7
+	v.Units[game.UAxe] = 10
+	raid := mustSend(t, w, v, tx, ty, game.UnitCounts{game.UAxe: 10}, "attack")
+	advance(t, w, raid.ArrivesAt)
+	if lastReport(w, "h1").Outcome != "defenderWon" {
+		t.Fatalf("the raid was supposed to lose: %+v", lastReport(w, "h1"))
+	}
+	after := w.Intel("h1", target.ID)
+	if after == nil || after.Intel == nil {
+		t.Fatal("the failed raid threw away what the scouts had found")
+	}
+	if after.Intel.Units.Total() != seenUnits.Total() || after.Intel.Wall != seenWall || after.Intel.At != seenAt {
+		t.Fatalf("a wiped-out attack rewrote the intel: was %+v (units %d, wall %d), now %+v (units %d, wall %d)",
+			before.Intel, seenUnits.Total(), seenWall, after.Intel, after.Intel.Units.Total(), after.Intel.Wall)
+	}
+}

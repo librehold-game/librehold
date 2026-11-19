@@ -209,3 +209,93 @@ func TestObserveBattleStampsWhenTheGarrisonWasSeen(t *testing.T) {
 		t.Fatal("a garrison just seen is not stale")
 	}
 }
+
+func TestStaleScoutUsesTheVillageItChecked(t *testing.T) {
+	// The party has to come from the village whose scouts were counted, and the road has to be marked, or the next
+	// session in the same hour sends another party at the same target from somewhere else.
+	w, near := gametest.NewTestWorld(77)
+	w.Player("h1").ProtectedUntil = 0
+	gametest.NewBotPlayer(w, "bot_0")
+	w.PutBrain("bot_0", &game.BotBrain{Skill: 0.8, Memory: game.BotMemory{Known: map[string]*game.KnownVillage{}}})
+	// The village with the scouts is the far one, so "the nearest village that has any" is a different village.
+	far := gametest.AddStartVillage(w, "bot_0", near.X-9, near.Y)
+	far.Units[game.UScout] = 5000
+	nearby := gametest.AddStartVillage(w, "bot_0", near.X+3, near.Y)
+	nearby.Units[game.UScout] = 10
+	den := gametest.AddStartVillage(w, "h1", near.X+5, near.Y)
+	den.Units[game.USpear] = 50
+
+	// A garrison the bot no longer trusts: seen, but long enough ago to be stale.
+	stale := w.Now() - 3*int64(game.BotConfig.IntelStaleHours*float64(game.MsPerHour))
+	k := &game.KnownVillage{ID: den.ID, X: den.X, Y: den.Y, OwnerID: "h1", Points: den.Points,
+		SeenAt: w.Now(), UnitsSeenAt: &stale, Units: &game.UnitCounts{game.USpear: 10}, Wall: ptr(0), Hauls: []float64{}}
+	w.Brain("bot_0").Memory.Known[den.ID] = k
+
+	game.PlanFarming(w, "bot_0")
+	var scouting []*game.ScheduledSend
+	for _, s := range w.ScheduledSendsOf("bot_0") {
+		if s.Units[game.UScout] > 0 {
+			scouting = append(scouting, s)
+		}
+	}
+	if len(scouting) == 0 {
+		t.Fatal("a stale target was not scouted at all")
+	}
+	for _, s := range scouting {
+		if s.OriginID != far.ID {
+			t.Fatalf("the scouting party came from %s, but %s is the village whose scouts were counted",
+				w.Village(s.OriginID).Name, far.Name)
+		}
+	}
+}
+
+func TestASecondSessionDoesNotScoutTheSameTargetTwice(t *testing.T) {
+	// The party is on the road, so the garrison is being counted. The next session in the same hour must not spend a
+	// second party on the same question.
+	w, near := gametest.NewTestWorld(78)
+	w.Player("h1").ProtectedUntil = 0
+	gametest.NewBotPlayer(w, "bot_0")
+	w.PutBrain("bot_0", &game.BotBrain{Skill: 0.8, Memory: game.BotMemory{Known: map[string]*game.KnownVillage{}}})
+	home := gametest.AddStartVillage(w, "bot_0", near.X+3, near.Y)
+	home.Units[game.UScout] = 5000
+	den := gametest.AddStartVillage(w, "h1", near.X+5, near.Y)
+	den.Units[game.USpear] = 50
+	stale := w.Now() - 3*int64(game.BotConfig.IntelStaleHours*float64(game.MsPerHour))
+	w.Brain("bot_0").Memory.Known[den.ID] = &game.KnownVillage{ID: den.ID, X: den.X, Y: den.Y, OwnerID: "h1",
+		Points: den.Points, SeenAt: w.Now(), UnitsSeenAt: &stale, Units: &game.UnitCounts{game.USpear: 10},
+		Wall: ptr(0), Hauls: []float64{}}
+
+	game.PlanFarming(w, "bot_0")
+	first := len(w.ScheduledSendsOf("bot_0"))
+	if first == 0 {
+		t.Fatal("nothing was scouted")
+	}
+	game.PlanFarming(w, "bot_0")
+	if got := len(w.ScheduledSendsOf("bot_0")); got != first {
+		t.Fatalf("the second session sent %d more parties at a target already being scouted", got-first)
+	}
+}
+
+func TestHarassmentIsNotGatedOnScoutParties(t *testing.T) {
+	// A probe is a fake: one ram, else one axe. Its job is to spoil a defender's day and make him keep troops at home,
+	// not to count a garrison — and under the fog of war a probe that dies reports nothing at all, so a bigger one
+	// would buy the bot nothing. Gating harassment on four full scouting parties (3,600 scouts) took it away from
+	// almost every bot, which is the one thing the probes were good at.
+	w, a, target := warWorld(t, 0.95, "canBeLost")
+	v := game.PlayerVillages(w, a)[0]
+	// No scouts at all, and no train: harassment is the only thing this bot could still do to the player.
+	v.Units[game.UScout] = 0
+	v.Units[game.UAxe] = 40
+	v.Units[game.URam] = 0
+	v.Units[game.UNoble] = 0
+	v.Units[game.UCatapult] = 0
+	k := knownOf(w, a, target)
+	// A defence it has counted and cannot clear, so a train is out of the question on the numbers alone.
+	def := game.UnitCounts{game.USpear: 100000}
+	k.Units = &def
+	// The bot is the weaker player, so "farm the player" is not on the table either: harass is what is left.
+	target.Points = 500000
+	if got := game.ChoosePurpose(w, a, k); got != "harass" {
+		t.Fatalf("a bot with 40 axes and no scouts drew %q instead of harassing", got)
+	}
+}

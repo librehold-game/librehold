@@ -219,7 +219,6 @@ func warWorld(t *testing.T, skill float64, lastVillage string) (*gametest.MemWor
 	w.Player(d).Status = game.StatusQuit
 	v := game.PlayerVillages(w, a)[0]
 	v.Units[game.UAxe], v.Units[game.ULightCav], v.Units[game.URam] = 6000, 500, 100
-	// Four probes of a full scouting party each, since a token force reports nothing under the fog of war.
 	v.Units[game.UCatapult], v.Units[game.UNoble], v.Units[game.UScout] = 100, 5, 4*game.ScoutParty
 	b := &v.Buildings
 	b[game.BAcademy], b[game.BFarm], b[game.BWorkshop], b[game.BStable], b[game.BBarracks] = 3, 30, 10, 10, 20
@@ -261,7 +260,7 @@ func TestBotAttacks(t *testing.T) {
 		}
 	})
 
-	t.Run("probes: four scouting parties within a second", func(t *testing.T) {
+	t.Run("probes: four fakes within a second", func(t *testing.T) {
 		w, a, target := warWorld(t, 0.95, "canBeLost")
 		game.LaunchHarass(w, a, knownOf(w, a, target))
 		ats := scheduledAts(w, a)
@@ -269,9 +268,9 @@ func TestBotAttacks(t *testing.T) {
 			t.Fatalf("ats %v", ats)
 		}
 		for _, s := range w.ScheduledSendsOf(a) {
-			// A token force tells a bot nothing under the fog of war: a probe that dies reports nothing, so it has to
-			// be a real scouting party.
-			if s.Units[game.UScout] != game.ScoutParty || s.Units.Total() != s.Units[game.UScout] {
+			// A probe is a fake: one ram, else one axe. It exists to make the defender keep troops at home, not to
+			// count a garrison — a probe that dies reports nothing under the fog of war whatever its size.
+			if s.Units.Total() != 1 || (s.Units[game.URam] != 1 && s.Units[game.UAxe] != 1) {
 				t.Fatalf("probe %+v", s.Units)
 			}
 		}
@@ -786,9 +785,7 @@ func TestBotAdaptationSessions(t *testing.T) {
 		for seed := uint32(103); seed < 140; seed++ {
 			w, home := botWorld(t, seed, monday, func(c *game.WorldConfig) { c.BotCount, c.WorldSpeed, c.BeginnerProtectionDays = 1, 1, 0 })
 			w.Brain("bot_0").Skill = 0.95
-			// A probe is a scouting party now, so the bot needs scouts for one to go out at all.
 			game.PlayerVillages(w, "bot_0")[0].Units[game.UAxe] = 100
-			game.PlayerVillages(w, "bot_0")[0].Units[game.UScout] = 4 * game.ScoutParty
 			for _, dm := range [][2]int64{{0, 6*60 + 50}, {1, 7 * 60}, {2, 7*60 + 10}} {
 				game.RecordHabit(w, "bot_0", "h1", game.HabitObservation{DodgeReturnAt: ptr(dm[0]*game.MsPerDay + dm[1]*game.MsPerMinute)})
 			}

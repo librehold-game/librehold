@@ -107,15 +107,24 @@ func campaignScout(w World, botID PlayerID, x, y int) bool {
 	if best == nil {
 		return false
 	}
-	units := UnitCounts{UScout: scoutPartyFor(best.Units[UScout], w.Brain(botID).Memory.Known[VillageIDFor(x, y)])}
-	if len(CheckSend(w, botID, best.ID, x, y, units, "attack").Blockers) > 0 {
+	return sendScoutParty(w, botID, best, x, y)
+}
+
+// sendScoutParty scouts from a particular village. The caller has already decided which village can spare the scouts,
+// so this never picks another one: a caller that checked v's scouts must get a party from v or nothing at all.
+func sendScoutParty(w World, botID PlayerID, from *Village, x, y int) bool {
+	units := UnitCounts{UScout: scoutPartyFor(from.Units[UScout], w.Brain(botID).Memory.Known[VillageIDFor(x, y)])}
+	if units[UScout] <= 0 {
+		return false
+	}
+	if len(CheckSend(w, botID, from.ID, x, y, units, "attack").Blockers) > 0 {
 		return false
 	}
 	at := w.Now() + SendJitter(w, botID, "scout:"+strconv.Itoa(x)+":"+strconv.Itoa(y))
 	if pastTheBell(w, at) {
 		return false
 	}
-	in := ScheduleSendInput{OriginID: best.ID, X: x, Y: y, Units: units, Type: "attack", Mode: "sendAt", At: at}
+	in := ScheduleSendInput{OriginID: from.ID, X: x, Y: y, Units: units, Type: "attack", Mode: "sendAt", At: at}
 	return actSoft(w, botID, "schedule-send", in, func() error {
 		_, err := ScheduleSend(w, botID, in)
 		return err

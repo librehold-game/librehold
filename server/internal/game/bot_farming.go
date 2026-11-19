@@ -254,13 +254,39 @@ func scoutStaleBeforeFarming(w World, botID PlayerID, v *Village) {
 		if !isAvailable(w, k) || !intelStale(w, k) {
 			continue
 		}
+		// Already on the road from an earlier session: sending again only wastes a second party on the same question.
+		if scoutsOnTheWay(w, botID, k.ID) {
+			continue
+		}
 		if d := Distance(v.X, v.Y, k.X, k.Y); best == nil || d < bestD {
 			best, bestD = k, d
 		}
 	}
+	// The party goes from this village, not from whichever village happens to hold scouts: the caller counted v's
+	// scouts, and campaignScout's "nearest village with a scout" is a different village the moment a bot has two.
 	if best != nil {
-		campaignScout(w, botID, best.X, best.Y)
+		sendScoutParty(w, botID, v, best.X, best.Y)
 	}
+}
+
+// scoutsOnTheWay: this bot already has a scouting party heading for the village, so the garrison is being counted and
+// the next session must not send another one.
+func scoutsOnTheWay(w World, botID PlayerID, targetID string) bool {
+	for _, c := range w.CommandsTo(targetID) {
+		if c.Type == "attack" && IsScoutMission(c.Units) && commandOwner(w, c) == botID {
+			return true
+		}
+	}
+	target := w.Village(targetID)
+	if target == nil {
+		return false
+	}
+	for _, s := range w.ScheduledSendsOf(botID) {
+		if s.Type == "attack" && s.X == target.X && s.Y == target.Y && IsScoutMission(s.Units) {
+			return true
+		}
+	}
+	return false
 }
 
 // farmFrom sends up to maxRaids sized raids from v, best expected haul ÷ distance first, and returns how many went;

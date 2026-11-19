@@ -47,12 +47,9 @@ func ChoosePurpose(w World, botID PlayerID, k *KnownVillage) Purpose {
 	if b.Style == StyleAggressor {
 		harass = 2
 	}
-	// Harassment is what a bot does with a band of scouts to spend. A bot that cannot field one is not ready to poke a
-	// player and should be building instead — without this gate harass is always on the table and swallows every draw.
-	var options []Option[Purpose]
-	if harassReady(w, botID) {
-		options = append(options, Option[Purpose]{"harass", harass * payback})
-	}
+	// Harassment is always on the table: its probes are fakes, not scouting parties, so it needs no scouts and buys no
+	// intel. Gating it on a band of scouts to spare took it away from most bots and left them holding instead.
+	options := []Option[Purpose]{{"harass", harass * payback}}
 	// A player is taken only with a full train; a ready train on a clear road is the best option. Without a look inside
 	// the village there is no "clear road" to judge, so the train waits for the scouts — but a bot whose scouts keep
 	// being caught must still go eventually, or it never attacks at all.
@@ -86,16 +83,6 @@ func ChoosePurpose(w World, botID PlayerID, k *KnownVillage) Purpose {
 	return WeightedPick(rngFor(w, botID, "purpose", k.ID), options, b.Skill)
 }
 
-// harassReady: the bot has scouts to spare for a set of probes. Four parties is the most LaunchHarass can send, so a bot
-// holding less than that keeps them for looking into a target it actually means to attack.
-func harassReady(w World, botID PlayerID) bool {
-	have := 0
-	for _, v := range PlayerVillages(w, botID) {
-		have += v.Units[UScout]
-	}
-	return have >= 4*ScoutParty
-}
-
 // nightLanding is the first instant ≥ earliest in the target's local night (00:00–06:00) or offline window.
 func nightLanding(w World, owner PlayerRef, earliest float64, rng func() float64) float64 {
 	start, end := 0, 6*60
@@ -126,9 +113,12 @@ func botSchedule(w World, botID PlayerID, in ScheduleSendInput) {
 	actSoft(w, botID, "schedule-send", in, func() error { _, err := ScheduleSend(w, botID, in); return err })
 }
 
-// LaunchHarass: 4 probes from different villages landing within a second, to see what is standing at home and to
-// spoil a defender's day; every fourth lands at the target's night. A probe is a scouting party, not a token force:
-// the fog of war means a probe that dies reports nothing, so one spear would tell the bot nothing at all.
+// LaunchHarass: 4 fakes (1 ram, else 1 axe) from different villages landing within a second, to see whether the
+// defender is at home and to spoil his day; every fourth lands at the target's night.
+//
+// A probe is deliberately a token force. Under the fog of war a probe that dies reports nothing, so sending a full
+// scouting party instead would not teach the bot any more than a single axe — it would only cost it the scouts it
+// needs to look into a target it actually means to attack. Counting the garrison is campaignScout's job.
 func LaunchHarass(w World, botID PlayerID, k *KnownVillage) {
 	rng := rngFor(w, botID, "harass", k.ID)
 	sources := villagesByDistance(w, botID, k.X, k.Y)
@@ -140,15 +130,24 @@ func LaunchHarass(w World, botID PlayerID, k *KnownVillage) {
 		units UnitCounts
 	}
 	var picks []pick
-	used := map[*Village]int{}
 	for i := range 4 {
 		v := sources[i%len(sources)]
-		left := v.Units[UScout] - used[v]
-		if left < ScoutParty {
-			continue
+		rams := 0
+		for _, p := range picks {
+			if p.v == v && p.units[URam] > 0 {
+				rams++
+			}
 		}
-		used[v] += ScoutParty
-		picks = append(picks, pick{v, UnitCounts{UScout: ScoutParty}})
+		var units UnitCounts
+		switch {
+		case v.Units[URam] > rams:
+			units = UnitCounts{URam: 1}
+		case v.Units[UAxe] >= 1:
+			units = UnitCounts{UAxe: 1}
+		default:
+			continue // nothing to send a fake with
+		}
+		picks = append(picks, pick{v, units})
 	}
 	if len(picks) == 0 {
 		return

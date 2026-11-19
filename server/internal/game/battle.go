@@ -453,35 +453,42 @@ func ResolveAttackArrival(w World, c *Command, target *Village) error {
 
 	if A != "" {
 		in := intelCopy(w.Intel(A, target.ID))
-		var scouted *Scouted
-		var lastHaul *Resources
-		var lastHaulCapacity *float64
-		known := UnitCounts{}
-		if in.Intel != nil {
-			scouted, lastHaul, lastHaulCapacity = in.Intel.Scouted, in.Intel.LastHaul, in.Intel.LastHaulCapacity
-			// Without a survivor the garrison stays whatever the last witness reported, not what died today.
-			known = in.Intel.Units
+		if attackerWiped && !conquered {
+			// Nobody came home, so the attacker learned nothing at all — not the garrison, not the wall, and not that
+			// the place looks empty now. Only the fact that his own men died is new; the intel keeps the numbers, the
+			// wall and the date of the last report that actually made it back, so the map cannot pass stale troops off
+			// as today's scouting.
+			if in.Intel != nil {
+				in.Intel.LastLosses = ptrTo(attackerLost)
+				in.Intel.LastOutcome = result.Outcome
+			}
+			w.PutIntel(A, target.ID, in)
+		} else {
+			var scouted *Scouted
+			var lastHaul *Resources
+			var lastHaulCapacity *float64
+			known := defenderUnits
+			if in.Intel != nil {
+				scouted, lastHaul, lastHaulCapacity = in.Intel.Scouted, in.Intel.LastHaul, in.Intel.LastHaulCapacity
+			}
+			// An army cut loose from its village took nothing, so the last haul stays the one before it.
+			if !loose {
+				h := haul
+				lastHaul, lastHaulCapacity = &h, ptrTo(result.HaulCapacity)
+			}
+			in.Intel = &VillageIntel{At: w.Now(), Units: known, Wall: result.WallAfter, Loyalty: loyaltyAfter,
+				LastHaul: lastHaul, LastHaulCapacity: lastHaulCapacity, LastLosses: ptrTo(attackerLost), LastOutcome: result.Outcome,
+				Scouted: scouted}
+			var scoutedAt *int64
+			if in.FarmTargetFlags != nil {
+				scoutedAt = in.FarmTargetFlags.ScoutedAt
+			}
+			in.FarmTargetFlags = &FarmTargetFlags{HasWall: result.WallAfter > 0, ScoutedAt: scoutedAt}
+			if result.Outcome == "attackerWon" && !conquered && !loose {
+				in.LastFarmedAt = ptrTo(w.Now())
+			}
+			w.PutIntel(A, target.ID, in)
 		}
-		if !attackerWiped {
-			known = defenderUnits
-		}
-		// An army cut loose from its village took nothing, so the last haul stays the one before it.
-		if !loose {
-			h := haul
-			lastHaul, lastHaulCapacity = &h, ptrTo(result.HaulCapacity)
-		}
-		in.Intel = &VillageIntel{At: w.Now(), Units: known, Wall: result.WallAfter, Loyalty: loyaltyAfter,
-			LastHaul: lastHaul, LastHaulCapacity: lastHaulCapacity, LastLosses: ptrTo(attackerLost), LastOutcome: result.Outcome,
-			Scouted: scouted}
-		var scoutedAt *int64
-		if in.FarmTargetFlags != nil {
-			scoutedAt = in.FarmTargetFlags.ScoutedAt
-		}
-		in.FarmTargetFlags = &FarmTargetFlags{HasWall: result.WallAfter > 0, ScoutedAt: scoutedAt}
-		if result.Outcome == "attackerWon" && !conquered && !loose {
-			in.LastFarmedAt = ptrTo(w.Now())
-		}
-		w.PutIntel(A, target.ID, in)
 	}
 	if len(recipients) > 0 {
 		r := Report{

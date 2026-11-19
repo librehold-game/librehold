@@ -122,7 +122,10 @@ and marches in progress finish at their own times.
   wall has no wall of his own and is blinded like anyone else. Both roles can be blinded: an interception wiped out by
   the army it met is the "attacker" of its own report, and an attack that never returned leaves the defender just as
   unseen. A false report is never enough to learn a garrison: an attack that died teaches its sender nothing about
-  the defender, and a bot's memory is no fuller than a player's.
+  the defender, and a bot's memory is no fuller than a player's. What the sender already knew survives untouched: a
+  wiped-out attack leaves the troops, the wall and the date of the last report that made it home exactly as they were,
+  and only records that the raid failed, so a failed raid cannot make a village look empty or make old numbers look
+  like today's scouting.
 - **A scouting mission follows the same rule, decided by whether it got through.** Scouts that slipped past the
   defending scouts report the garrison, and the army table and the scouting panel agree. Scouts that were caught bring
   nothing home, so their sender is told only that the scouting failed, with the garrison withheld from the report just
@@ -180,13 +183,16 @@ The world is populated by bots that play like humans (`server/internal/game/bot_
   2,000 → 3,000, capped by what the village has), which is the only feedback a bot has, since a caught party learns
   nothing about what beat it. Troop plans (`TroopTargets`) give an offence village 1,400 scouts so it can climb that
   ladder and still look again, a defence village 400 (a scout defends as little as it attacks, so a fleet there is
-  wasted farm), and a single mixed village 250. Harassment probes are full parties, and a bot only harasses when it has
-  parties to spare, so a bot that cannot see spends its troops on building instead of poking. A bot opens up an unknown
+  wasted farm), and a single mixed village 250. Harassment probes are *fakes* — one ram, else one axe — and need no
+  scouts, because their job is to make a defender keep troops at home, not to count a garrison: a probe that dies
+  reports nothing whatever its size, so a full party would cost the bot the scouts it needs to look into a target it
+  actually means to attack. A bot opens up an unknown
   *barbarian* with a small group, because nobody is defending it, but never probes a player's village that way: it sends
   scouts first and plans what to do once the numbers are in. What it learnt is dated (`KnownVillage.UnitsSeenAt`) and
   re-scouted after `BotConfig.IntelStaleHours` (24), so an owner who rebuilds is looked at again rather than assumed
   unchanged. A bot whose scouts keep being caught eventually attacks on public data instead of waiting for a look it may
-  never get.
+  never get. An attack that loses every man teaches nothing at all: the intel keeps the troops, the wall and the date of
+  the last report that came home, so a failed raid cannot make a village look empty.
 - **Defence.** Stacking support when it arrives in time and will hold; otherwise a dodge; strong bots snipe noble
   trains. A weak bot "doesn't notice" some attacks.
 - **Quitting.** Being overwhelmed (village losses, attacks) fades over time; past a threshold a medium or strong
