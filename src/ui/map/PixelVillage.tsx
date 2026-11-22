@@ -5,7 +5,8 @@ import type { VillageSize } from "./MapArt";
 /**
  * A village on the classic skin's map: the pixel sprite of its point tier (`npm run assets:pixel-map`), drawn at the
  * terrain's art scale (96×64 art px per tile). Other players' roofs take the owner's colour: grey roofs of the `-tint`
- * sprite multiplied by that colour through the `-roof` mask. Banners mark the bonus and the active village.
+ * sprite multiplied by that colour through the `-roof` mask. A banner marks a bonus village; the active village is told
+ * apart by its gold outline.
  */
 const URLS = import.meta.glob<string>(
   "../../assets/pixel/map/{village-*,banner*}.png",
@@ -23,7 +24,6 @@ export const VILLAGE_SCALES: readonly number[] = [
   1.1, 1, 0.95, 0.95, 0.85, 0.85,
 ];
 const BONUS_COLOR = "#e0b23a";
-const ACTIVE_COLOR = "#2f5fa8";
 
 export interface PixelVillageProps {
   village: {
@@ -53,13 +53,11 @@ function tinted(mask: string, color: string): CSSProperties {
 }
 
 function Banner({
-  kind,
   left,
   top,
   kx,
   ky,
 }: {
-  kind: "bonus" | "active";
   left: number;
   top: number;
   kx: number;
@@ -68,7 +66,7 @@ function Banner({
   const [w, h] = sizes.banner as [number, number];
   return (
     <div
-      data-banner={kind}
+      data-banner="bonus"
       style={{
         position: "absolute",
         left,
@@ -83,12 +81,7 @@ function Banner({
         draggable={false}
         style={{ display: "block", width: "100%", height: "100%" }}
       />
-      <div
-        style={tinted(
-          "banner-cloth",
-          kind === "bonus" ? BONUS_COLOR : ACTIVE_COLOR,
-        )}
-      />
+      <div style={tinted("banner-cloth", BONUS_COLOR)} />
     </div>
   );
 }
@@ -144,18 +137,8 @@ export function PixelVillage({ village, tw, th }: PixelVillageProps) {
         />
         {tint && <div data-roof style={tinted(`village-${size}-roof`, tint)} />}
       </div>
-      {active && (
-        <Banner
-          kind="active"
-          left={left - 2}
-          top={top - Math.round(bannerH * 0.45)}
-          kx={kx}
-          ky={ky}
-        />
-      )}
       {bonus && (
         <Banner
-          kind="bonus"
           left={left + Math.round(w * 0.7)}
           top={top - Math.round(bannerH * 0.45)}
           kx={kx}

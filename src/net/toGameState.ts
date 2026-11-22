@@ -7,6 +7,7 @@ import {
   type ReportVillage,
   type WorldConfig,
 } from "../engine/types";
+import { cleanMarks } from "../engine/marks";
 import { toClientId, toClientRef } from "./ids";
 import { ONLINE_TERRAIN_SEED } from "../shared/terrain/seed";
 import type { NewsEntry, PlayerState } from "./types";
@@ -101,6 +102,7 @@ export function toGameState(
       .map(({ for: _for, ...n }: NewsEntry) => n as NewsItem),
     villageGroups: s.human.villageGroups,
     buildTemplates: s.human.buildTemplates,
+    marks: cleanMarks(s.human.marks),
     stats: s.human.stats,
     clock: { originLocalMs: s.clockOriginLocalMs },
     scheduled: s.scheduled.map((x) => ({

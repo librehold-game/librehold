@@ -29,10 +29,47 @@ export interface UiPrefs {
   showScene: boolean;
   /** The list of buildings that are not yet available is unfolded. */
   lockedOpen: boolean;
+  /**
+   * The Movements card is folded into its heading. Remembered because the card unmounts whenever the last movement
+   * lands — without this, folding it would last only until the next march ends.
+   */
+  movementsCollapsed: boolean;
+  /**
+   * The Movements card leaves out the auto-farm's marches. Remembered for the same reason as the fold: the card
+   * unmounts whenever the last movement lands.
+   */
+  movementsHideAutoFarm: boolean;
+  /** Villages, armies and command dots on the map; the route lines and their arrows stay either way. */
+  mapIcons: boolean;
+  /** Other players' armies passing within sight of the player's villages (attacks on the player always show). */
+  mapNearbyAttacks: boolean;
+  /** The player's own attacks and the armies coming home from them. */
+  mapOwnAttacks: boolean;
+  /** Support on its way: the player's, other players' to the player and other players' passing by. */
+  mapSupport: boolean;
+  /** Merchants on the road. */
+  mapMerchants: boolean;
+  /** The map's toolbar over the map is unfolded. On a phone it can take a third of the screen, so it can be put away. */
+  mapToolbarOpen: boolean;
   /** The build planner is shown on the Village tab; the Town Hall always has it. */
   showBuildPlan: boolean;
   /** Buildings that are not yet available are listed on the Village tab; the Town Hall always lists them. */
   showLockedBuildings: boolean;
+  /**
+   * Battle reports: show only the unit types the battle used, instead of all twelve. Remembered like the other
+   * preferences, so it survives a reload; a phone starts with it on, where twelve columns do not fit.
+   */
+  reportsCompactUnits: boolean;
+}
+
+/**
+ * A narrow window is a phone, where a report's twelve unit columns do not fit: the reader starts with only the
+ * units the battle used, so nothing has to be scrolled sideways.
+ */
+function narrowScreen(): boolean {
+  return (
+    typeof matchMedia === "function" && matchMedia("(max-width: 600px)").matches
+  );
 }
 
 const PREFS_KEY = "lh-ui-prefs";
@@ -46,8 +83,17 @@ function defaultPrefs(): UiPrefs {
     sound: false,
     showScene: true,
     lockedOpen: true,
+    movementsCollapsed: false,
+    movementsHideAutoFarm: false,
+    mapIcons: true,
+    mapNearbyAttacks: true,
+    mapOwnAttacks: true,
+    mapSupport: true,
+    mapMerchants: true,
+    mapToolbarOpen: true,
     showBuildPlan: true,
     showLockedBuildings: true,
+    reportsCompactUnits: narrowScreen(),
   };
 }
 
@@ -118,6 +164,12 @@ interface UiStore {
   /** Reports view: leave out the auto-farm's reports; unlike the village filter it holds while the game is open. */
   reportsHideAutoFarm: boolean;
   setReportsHideAutoFarm: (hide: boolean) => void;
+  /**
+   * Battle reports: show only the unit types the battle used, instead of all twelve. Set from the report itself and
+   * remembered, so a phone can read a report without scrolling sideways.
+   */
+  reportsCompactUnits: boolean;
+  setReportsCompactUnits: (compact: boolean) => void;
   /** Report to open on entering the Reports view (one-off). */
   reportToOpen: string | null;
   openReport: (reportId: string) => void;
@@ -176,6 +228,8 @@ export const useUiStore = create<UiStore>()((set, get) => ({
     set({ reportsVillageFilter, view: "reports" }),
   reportsHideAutoFarm: false,
   setReportsHideAutoFarm: (reportsHideAutoFarm) => set({ reportsHideAutoFarm }),
+  reportsCompactUnits: narrowScreen(),
+  setReportsCompactUnits: (reportsCompactUnits) => set({ reportsCompactUnits }),
   reportToOpen: null,
   openReport: (reportToOpen) => set({ reportToOpen, view: "reports" }),
   consumeReportToOpen: () => {

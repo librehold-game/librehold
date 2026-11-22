@@ -88,6 +88,17 @@ type hideFarmIn struct {
 	Hide bool `json:"hide"`
 }
 
+type marksIn struct {
+	Marks []game.PlayerMark `json:"marks"`
+}
+
+func (in *marksIn) validate() error {
+	if len(in.Marks) > game.MaxMarks {
+		return &ErrValidation{Field: "marks", Code: "tooMany"}
+	}
+	return nil
+}
+
 type villageIn struct {
 	VillageID string `json:"villageId"`
 }
@@ -390,6 +401,9 @@ var orders = map[string]orderSpec{
 	}),
 	"hide-farm-on-map": order(func(w WorldTx, me game.PlayerID, in hideFarmIn) error {
 		return game.HideFarmOnMap(w, me, in.Hide)
+	}),
+	"set-marks": order(func(w WorldTx, me game.PlayerID, in marksIn) error {
+		return game.SetMarks(w, me, in.Marks)
 	}),
 	"set-auto-farm": order(func(w WorldTx, me game.PlayerID, in autoFarmIn) error {
 		return game.SetAutoFarm(w, me, in.Enabled, in.VillageIDs)

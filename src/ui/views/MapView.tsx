@@ -19,7 +19,13 @@ import { UNITS } from "../../data/units.data";
 import { travelTimeMs } from "../../engine/commands";
 import { distance, type TileInfo } from "../../engine/world";
 import { tileAt } from "../map/tiles";
-import { HUMAN_ID, RESOURCES } from "../../engine/types";
+import {
+  HUMAN_ID,
+  RESOURCES,
+  type GameState,
+  type PlayerMark,
+} from "../../engine/types";
+import type { MapCache } from "../../net/mapCache";
 import {
   mapCache,
   selectActiveVillage,
@@ -51,6 +57,12 @@ import { VillageQuickActions } from "../map/VillageQuickActions";
 import { villageInfo, type VillageInfo } from "../map/villageInfo";
 import { isHumanVillage } from "../../engine/players";
 import { NumberInput } from "../../shared/NumberInput";
+import {
+  markLookup,
+  OWN_VILLAGE_COLOR,
+  type MarkLookup,
+} from "../map/playerMarks";
+import { PlayerMarksPanel } from "../map/PlayerMarksPanel";
 
 /** Selector: a compact summary of materialised villages — it changes rarely, so the map doesn't re-render every tick. */
 const selectVillageSummary = (s: GameStore): string => {
@@ -63,6 +75,50 @@ const selectVillageSummary = (s: GameStore): string => {
     );
   return parts.join(";");
 };
+
+/**
+ * The minimap's dots: the player's own villages and the barbarians from the state, as before, plus the villages of the
+ * players they marked. Other players' villages are not in the state, so the marked ones come from the loaded map
+ * chunks as well — and only those, because a chunk holds every barbarian on it and the state's own barbarians are the
+ * ones the minimap has always drawn.
+ */
+function minimapDotsOf(
+  g: GameState,
+  marks: MarkLookup,
+  cache: MapCache | null,
+): {
+  x: number;
+  y: number;
+  player: boolean;
+  color?: string;
+  own?: boolean;
+}[] {
+  const out = new Map<
+    string,
+    { x: number; y: number; player: boolean; color?: string; own?: boolean }
+  >();
+  const add = (x: number, y: number, ownerId: string | null) => {
+    const key = `${x},${y}`;
+    if (ownerId === HUMAN_ID) {
+      // Your own villages take the same yellow as their corner dot on the map.
+      out.set(key, { x, y, player: true, own: true, color: OWN_VILLAGE_COLOR });
+      return;
+    }
+    const color =
+      ownerId === null ? undefined : marks(g.players[ownerId]?.name);
+    if (color) {
+      out.set(key, { x, y, player: true, color });
+      return;
+    }
+    // An unmarked village is a small brown dot, which is what the minimap draws for everyone but the player.
+    out.set(key, { x, y, player: false });
+  };
+  for (const v of Object.values(g.villages)) add(v.x, v.y, v.ownerId);
+  for (const t of cache?.loaded() ?? []) {
+    if (t.ownerId !== null && t.ownerId !== HUMAN_ID) add(t.x, t.y, t.ownerId);
+  }
+  return [...out.values()];
+}
 
 /**
  * Tile cache — a Zustand selector must return a stable reference, otherwise React loops.
@@ -752,16 +808,17 @@ export function MapView() {
   const seed = useGameStore((s) => s.game!.worldSeed);
   const mapRev = useGameStore((s) => s.mapRev);
   const villageSummary = useGameStore(selectVillageSummary);
+  const marksJson = useGameStore((s) => JSON.stringify(s.game?.marks ?? []));
+  const marks = useMemo(
+    () => markLookup(JSON.parse(marksJson) as PlayerMark[]),
+    [marksJson],
+  );
+  // The map cache loads the world in chunks as the view moves; the minimap draws what is loaded, so a village of a
+  // marked player shows up as soon as its chunk arrives.
   const minimapDots = useMemo(
-    () =>
-      villageSummary
-        .split(";")
-        .filter(Boolean)
-        .map((p) => {
-          const [x, y, o] = p.split(",");
-          return { x: Number(x), y: Number(y), player: o === "p" };
-        }),
-    [villageSummary],
+    () => minimapDotsOf(useGameStore.getState().game!, marks, mapCache()),
+    // `mapRev` moves when a chunk arrives; the summary covers villages the state gained.
+    [villageSummary, mapRev, marks],
   );
   const isVillage = useCallback((x: number, y: number) => {
     const g = useGameStore.getState().game;
@@ -956,6 +1013,7 @@ export function MapView() {
         isVillage={isVillage}
         dots={dots}
         activeId={active.id}
+        marks={marks}
         minimapDots={minimapDots}
         armies={armies}
         clock={gameArmyClock}
@@ -1019,6 +1077,7 @@ export function MapView() {
           ) : undefined
         }
       />
+      <PlayerMarksPanel />
       <p className="text-muted text-[11px] mt-4">
         {tr("map.help1")} {tr("map.help2")} {tr("map.help3")}
       </p>

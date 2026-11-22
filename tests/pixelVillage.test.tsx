@@ -77,17 +77,25 @@ describe("pixel village on the map", () => {
     expect(castle.height).toBeLessThanOrEqual(42);
   });
 
-  it("bonus villages carry a gold banner, the active village a blue one", () => {
+  it("only a bonus village carries a banner", () => {
     expect(banners(show({ bonus: true }))).toEqual(["bonus"]);
     cleanup();
-    expect(banners(show({ active: true }))).toEqual(["active"]);
+    // The active village is told apart by its gold outline, not a second banner.
+    expect(banners(show({ active: true }))).toEqual([]);
     cleanup();
-    expect(banners(show({ active: true, bonus: true })).sort()).toEqual([
-      "active",
-      "bonus",
-    ]);
+    expect(banners(show({ active: true, bonus: true }))).toEqual(["bonus"]);
     cleanup();
     expect(banners(show({}))).toEqual([]);
+  });
+
+  it("the active village still gets its gold outline", () => {
+    const outline = (c: HTMLElement) =>
+      [...c.querySelectorAll<HTMLElement>("div")].some(
+        (d) => d.style.borderRadius === "50%" && d.style.border.includes("1.5"),
+      );
+    expect(outline(show({ active: true }))).toBe(true);
+    cleanup();
+    expect(outline(show({}))).toBe(false);
   });
 
   it("a hidden village is faded", () => {

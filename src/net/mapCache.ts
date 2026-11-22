@@ -109,6 +109,14 @@ export class MapCache {
     return out.sort((a, b) => a.x - b.x || a.y - b.y);
   }
 
+  /** Every village of the chunks loaded so far: the minimap draws the marked players from them. */
+  loaded(): MapTile[] {
+    const out: MapTile[] = [];
+    for (const c of this.chunks.values())
+      for (const t of c.tiles.values()) out.push(t);
+    return out;
+  }
+
   /** The village at a tile, 'empty' for none, or null when its chunk is not loaded. */
   tileAt(x: number, y: number): MapTile | "empty" | null {
     const chunk = this.chunks.get(

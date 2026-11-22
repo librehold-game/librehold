@@ -15,7 +15,7 @@ The village illustration is a purely presentational layer: `src/ui/scene/sceneMo
   same field (`minimap.ts`). Terrain does not affect gameplay. Art and export: `ASSETS.md`.
 - **Villages on the map have six development stages** (points thresholds in `MAP.villageSizePoints`): hut → fenced
   settlement → palisade → stone wall → stronghold → castle; pixel art sprites in `src/ui/map/PixelVillage.tsx` (roofs
-  in the owner's colour, slate for barbarians, a banner for a bonus and for the active village).
+  in the owner's colour, slate for barbarians, a banner for a bonus).
 
 ## Materials (UI chrome and fonts)
 
@@ -47,6 +47,50 @@ checks the fonts.
 - "Show farming" (on by default) takes the player's farm raids off the map, the armies and the command dots alike:
   raids sent from a farm template or by the auto-farm, and their way home. The server keeps the choice per player and
   world (`hide-farm-on-map`), and only the sender's state marks a command as a farm raid (`farm`).
+
+## Map — marked players
+
+Under the map, above the line that explains how the map works, sits the **Marked players** list (`[data-player-marks]`,
+`src/ui/map/PlayerMarksPanel.tsx`). It is the answer to "I know where they are but I cannot pick them out": pick a
+player's name and a colour, and every village of theirs gets a dot in that colour on the top-left corner of its tile,
+and their dots on the minimap take it too. The corner dot is the load-bearing mark, not the roofs: a roof is a few
+pixels at the default zoom.
+
+- The list is bare, not a panel of its own. It stacks in two parts: the **Marked players** label, then one row of
+  chips — the colour swatch in front of the name — ending in a `+` chip. The `+` opens a **Mark a player** dialog
+  holding the name field, the colour and **Cancel** / **Mark**; nothing is added until **Mark**. The label stays put
+  even with nothing marked, since it is what the `+` chip below it is for; then the `+` chip is all there is under it.
+- The row wraps when the marks outgrow it, and the `+` wraps with them: it is the row's last chip rather than a
+  sibling of the list, so it trails the last mark wherever there is room for it and only moves to the next line when
+  there is not. A list nested in the row would fill the line as soon as its chips overflowed and push the `+` down
+  even where there was room beside it. The `+` is a presentational item so the list stays a list of marked players.
+- A name in the row is a button: clicking it asks `Remove the mark on <name>?` with **Yes** / **No** before the mark
+  goes. The swatch stays a colour input, so a mark is recoloured in place.
+- Names are matched trimmed and without regard to case, since players type them from memory. The dialog's field is a
+  combobox (`role="combobox"`) over a listbox of the world's players, which stays shut until a letter is typed: an
+  untouched field gets no list, and emptying it puts the list away again. It filters as the name is typed, offers at
+  most five names (typing is what narrows it), and takes the arrow keys and Enter to pick one, Esc or a click
+  elsewhere to close it; names already marked are left out, since marking one again would only recolour it. The list
+  hangs under the field as a dropdown, but is fixed rather than absolute and placed from the field's measured box
+  (`useSuggestionBox`), because the dialog scrolls its content and a scroll box clips anything absolute inside it —
+  which left most of the list unreachable. A name no player has is refused: the dialog says so as it is typed and
+  **Mark** stays off, and the submit path checks the name again so Enter cannot slip past it. That line is laid out
+  whether or not it has anything to say (hidden rather than removed), so the dialog keeps one height while a name is
+  typed instead of growing and shrinking as it crosses between known and unknown.
+- The mark outlives "Player colours": that switch turns the owners' own colours off to calm a busy map, while a mark is
+  a player's deliberate choice, and would be useless exactly when the map is at its busiest.
+- The corner dot owns the corner; a command dot on the same village moves along (`TileArt` in `src/ui/map/MapArt.tsx`).
+- Your own villages carry the same corner dot, and are not marks — you cannot recolour or unmark them: **yellow**
+  (`OWN_VILLAGE_COLOR`) for every one of them. The village you are in is not picked out by colour, because the map
+  already gives it a gold outline. They outlive "Player colours" for the same reason a mark does, and they reach the
+  minimap (`data-minimap-own` there, `data-own-village` on the map). A marked player's circle keeps the corner and
+  yours sits beside it (`data-mark` and `data-own-village` on the same tile).
+- Marks are a display choice in `UiPrefs.mapPlayerMarks` (`src/state/uiStore.ts`), remembered per browser in
+  `lh-ui-prefs` and not tied to a world, so they follow the player between worlds. The matching is `markLookup` in
+  `src/ui/map/playerMarks.ts`; a new mark starts from a colour no other mark uses (`nextMarkColor`). The server knows
+  nothing of them: a mark changes nothing but the drawing.
+- The minimap draws marked players' villages from the map chunks as they load (`MapCache.loaded()`), because the
+  player's state carries only their own villages; that is why their dots appear as the player pans the map.
 
 ## Phone (mobile layout)
 

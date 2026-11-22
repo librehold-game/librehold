@@ -49,6 +49,7 @@ func orderBodies(d *duel) map[string]string {
 		"send-template-c":       fmt.Sprintf(`{"originId":%q,"x":%d,"y":%d}`, v, x2, y2),
 		"set-farm-filters":      `{"radius":12}`,
 		"hide-farm-on-map":      `{"hide":true}`,
+		"set-marks":             `{"marks":[{"name":"Grimgar","color":"#e6194b"}]}`,
 		"set-auto-farm":         fmt.Sprintf(`{"enabled":false,"villageIds":[%q]}`, v),
 		"save-group":            fmt.Sprintf(`{"id":"","name":"Front","villageIds":[%q]}`, v),
 		"delete-group":          `{"id":"nie_ma"}`,
