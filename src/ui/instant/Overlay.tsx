@@ -21,12 +21,14 @@ export function Overlay({
         if (e.target === e.currentTarget) onClose?.();
       }}
     >
+      {/* `pb-px` covers the 1px a button sinks while pressed (`.btn:active`), which would otherwise poke out of this
+          scroll box and flash a scrollbar whenever a dialog's content ends flush with its buttons. */}
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         aria-label={label}
-        className={`panel w-full ${wide ? "max-w-[560px]" : "max-w-[420px]"} max-h-[85vh] overflow-y-auto`}
+        className={`panel w-full ${wide ? "max-w-[560px]" : "max-w-[420px]"} max-h-[85vh] overflow-y-auto pb-px`}
       >
         {children}
       </div>

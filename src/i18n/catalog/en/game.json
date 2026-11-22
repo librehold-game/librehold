@@ -604,7 +604,22 @@
     "ptsShort": "pts",
     "help1": "Click a village to open its menu (Esc closes it). Drag the map with the mouse or a finger; zoom with the wheel or a two-finger pinch.",
     "help2": "A settlement grows with its points: hut (< 300) → fenced settlement (300) → palisade (1,000) → stone wall (3,000) → stronghold (9,000) → castle (11,000).",
-    "help3": "Dark slate roofs = barbarians · red roofs = you · roofs in a player's colour = other players · grey roofs = inactive (abandoned accounts) · gold outline and blue banner = active · gold banner = bonus · a dot in the corner = a command on the way.",
+    "help3": "Dark slate roofs = barbarians · red roofs = you · roofs in a player's colour = other players · grey roofs = inactive (abandoned accounts) · gold outline = the village you have open · gold banner = bonus · a dot in the corner = a command on the way. A yellow circle = one of your villages.",
+    "marks": {
+      "title": "Marked players",
+      "addTitle": "Mark a player",
+      "name": "Player name",
+      "suggestions": "Players",
+      "pick": "Colour",
+      "add": "Mark",
+      "cancel": "Cancel",
+      "color": "Colour for {name}",
+      "remove": "Remove the mark on {name}?",
+      "removeHint": "Their villages go back to the ordinary player colours.",
+      "yes": "Yes",
+      "no": "No",
+      "unknown": "No player called \"{name}\" in this world."
+    },
     "army": {
       "ownAttack": "Your attack",
       "ownSupport": "Your support",

@@ -8,6 +8,7 @@ import {
 import { MAP } from "../../data/world.config";
 import type { TileInfo } from "../../engine/world";
 import { t as tr } from "../../i18n/i18n";
+import { HUMAN_ID } from "../../engine/types";
 import type { AnimationMode } from "../../state/uiStore";
 import { formatCoords } from "../format";
 import type { MapArmy } from "./armies";
@@ -22,6 +23,7 @@ import {
   type TileArtProps,
 } from "./MapArt";
 import { MINIMAP_PALETTE, minimapImage } from "./minimap";
+import { OWN_VILLAGE_COLOR, type MarkLookup } from "./playerMarks";
 import { TerrainLayer } from "./TerrainLayer";
 import {
   FRAME_H,
@@ -67,7 +69,17 @@ export interface TileMapProps {
   isVillage: (x: number, y: number) => boolean;
   dots?: Record<string, Dot>;
   activeId?: string;
-  minimapDots: { x: number; y: number; player: boolean }[];
+  /** Other players the player picked out by name, and the colour each is drawn in. */
+  marks?: MarkLookup;
+  minimapDots: {
+    x: number;
+    y: number;
+    player: boolean;
+    /** A marked player's colour, or the yellow of the player's own village circle. */
+    color?: string;
+    /** The dot is one of the player's own villages rather than a marked player's. */
+    own?: boolean;
+  }[];
   armies: MapArmy[];
   clock: ArmyClock;
   animations: AnimationMode;
@@ -117,6 +129,7 @@ function Tile({
   seed,
   activeId,
   dot,
+  marks,
   useTile,
   onSelect,
 }: {
@@ -132,11 +145,20 @@ function Tile({
   seed: number;
   activeId?: string;
   dot?: Dot;
+  marks?: MarkLookup;
   useTile: TileMapProps["useTile"];
   onSelect: (x: number, y: number, village: boolean) => void;
 }) {
   const t = useTile(x, y);
   const ownerColor = colors ? villageTint(t) : undefined;
+  const mark = t.kind === "village" ? marks?.(t.ownerName) : undefined;
+  // Your own villages are found the same way as a marked player's: a corner dot, yellow for every village of yours.
+  // The village you are in needs no dot of its own — it already carries a gold outline. It outlives "Player colours"
+  // for the same reason a mark does.
+  const own =
+    t.kind === "village" && t.ownerId === HUMAN_ID
+      ? OWN_VILLAGE_COLOR
+      : undefined;
   const hidden =
     t.kind === "village" && t.ownerId === null && t.points > maxPoints;
   const village: TileArtProps["village"] =
@@ -163,7 +185,14 @@ function Tile({
       data-tile-village={t.kind === "village" ? t.id : undefined}
       onClick={() => onSelect(x, y, t.kind === "village")}
     >
-      <TileArt village={village} dot={dot} tw={tw} th={th} />
+      <TileArt
+        village={village}
+        dot={dot}
+        mark={mark}
+        own={own}
+        tw={tw}
+        th={th}
+      />
     </div>
   );
 }
@@ -226,18 +255,27 @@ function Minimap({
         ))}
       {dots
         .filter((d) => d.player)
-        .map((d) => (
-          <rect
-            key={`p${d.x},${d.y}`}
-            x={d.x * k - 2}
-            y={d.y * k - 2}
-            width={4}
-            height={4}
-            fill="#2f5fa8"
-            stroke="#fff"
-            strokeWidth={0.5}
-          />
-        ))}
+        .map((d) => {
+          // Own villages and marked players are told apart by their attribute, so a test can ask for one or the other.
+          const tagged = d.own
+            ? { "data-minimap-own": d.color }
+            : d.color
+              ? { "data-minimap-dot": d.color }
+              : {};
+          return (
+            <rect
+              key={`p${d.x},${d.y}`}
+              {...tagged}
+              x={d.x * k - (d.color ? 2.5 : 2)}
+              y={d.y * k - (d.color ? 2.5 : 2)}
+              width={d.color ? 5 : 4}
+              height={d.color ? 5 : 4}
+              fill={d.color ?? "#2f5fa8"}
+              stroke="#fff"
+              strokeWidth={d.color ? 1 : 0.5}
+            />
+          );
+        })}
       <rect
         x={(center.x - cols / 2) * k}
         y={(center.y - rows / 2) * k}
@@ -445,6 +483,7 @@ export function TileMap(p: TileMapProps) {
           seed={seed}
           activeId={p.activeId}
           dot={p.dots?.[`v:${x}:${y}`]}
+          marks={p.marks}
           useTile={p.useTile}
           onSelect={(sx, sy, village) => {
             if (!drag.current?.moved) p.onSelectTile(sx, sy, village);

@@ -38,6 +38,13 @@ export interface TileArtProps {
   /** `owner` picks the sprite (player or barbarian); `ownerColor` colours other players' roofs. */
   village?: PixelVillageProps["village"];
   dot?: "i" | "a" | "s" | "r" | "t";
+  /** A colour the player gave this village's owner: a dot in it sits on the tile's corner, see `TileArt`. */
+  mark?: string;
+  /**
+   * The colour of the player's own village circle — yellow for every village of theirs. A village of theirs is never
+   * also a marked player's, but the two circles share the corner so a mark can sit beside.
+   */
+  own?: string;
   tw: number;
   th: number;
 }
@@ -50,10 +57,48 @@ const DOT_COLOR = {
   t: "#d4af37",
 } as const;
 
-export function TileArt({ village, dot, tw, th }: TileArtProps) {
+/** A circle on the tile's top-left corner: the mark of a marked player, or the player's own village circle. */
+function CornerDot({
+  color,
+  cx,
+  attr,
+}: {
+  color: string;
+  cx: number;
+  attr: string;
+}) {
+  return (
+    <circle
+      {...{ [attr]: color }}
+      cx={cx}
+      cy="5"
+      r="2.8"
+      fill={color}
+      stroke={INK}
+      strokeWidth="0.8"
+    />
+  );
+}
+
+export function TileArt({ village, dot, mark, own, tw, th }: TileArtProps) {
+  // The corner holds both circles when they meet, so a command dot has to clear whichever are drawn.
+  const corners = (mark ? 1 : 0) + (own ? 1 : 0);
   return (
     <div style={{ position: "relative", width: tw, height: th }} aria-hidden>
       {village && <PixelVillage village={village} tw={tw} th={th} />}
+      {(mark || own) && (
+        <svg
+          width={tw}
+          height={th}
+          viewBox="0 0 53 38"
+          style={{ position: "absolute", inset: 0 }}
+        >
+          {mark && <CornerDot color={mark} cx={5} attr="data-mark" />}
+          {own && (
+            <CornerDot color={own} cx={mark ? 13 : 5} attr="data-own-village" />
+          )}
+        </svg>
+      )}
       {dot && (
         <svg
           width={tw}
@@ -62,7 +107,8 @@ export function TileArt({ village, dot, tw, th }: TileArtProps) {
           style={{ position: "absolute", inset: 0 }}
         >
           <circle
-            cx="6"
+            // The corner circles own the corner; a command dot on the same village moves along to stay readable.
+            cx={corners === 0 ? 6 : corners === 1 ? 12 : 20}
             cy="6"
             r="3.2"
             fill={DOT_COLOR[dot]}

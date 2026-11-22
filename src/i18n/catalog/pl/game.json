@@ -636,7 +636,22 @@
     "ptsShort": "pkt",
     "help1": "Kliknij wioskę, by otworzyć jej menu (Esc zamyka). Mapę przeciągasz myszą lub palcem, przybliżasz kółkiem albo szczyptą dwoma palcami.",
     "help2": "Osada rośnie z punktami: chata (< 300) → osada z płotem (300) → palisada (1 000) → mur kamienny (3 000) → warownia (9 000) → zamek (11 000).",
-    "help3": "Ciemne łupkowe dachy = barbarzyńcy · czerwone dachy = ty · dachy w kolorze gracza = inni gracze · szare dachy = nieaktywni (porzucone konta) · złota obwódka i niebieska chorągiew = aktywna · złota chorągiew = bonusowa · kropka w rogu = komenda w drodze.",
+    "help3": "Ciemne łupkowe dachy = barbarzyńcy · czerwone dachy = ty · dachy w kolorze gracza = inni gracze · szare dachy = nieaktywni (porzucone konta) · złota obwódka = wioska, którą masz otwartą · złota chorągiew = bonusowa · kropka w rogu = komenda w drodze. Żółte kółko = twoja wioska.",
+    "marks": {
+      "title": "Oznaczeni gracze",
+      "addTitle": "Oznacz gracza",
+      "name": "Nazwa gracza",
+      "suggestions": "Gracze",
+      "pick": "Kolor",
+      "add": "Oznacz",
+      "cancel": "Anuluj",
+      "color": "Kolor dla {name}",
+      "remove": "Usunąć oznaczenie gracza {name}?",
+      "removeHint": "Ich wioski wrócą do zwykłych kolorów graczy.",
+      "yes": "Tak",
+      "no": "Nie",
+      "unknown": "W tym świecie nie ma gracza o nazwie „{name}”."
+    },
     "army": {
       "ownAttack": "Twój atak",
       "ownSupport": "Twoje wsparcie",

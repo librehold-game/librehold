@@ -220,6 +220,111 @@
   .profile-swatch {
     @apply inline-block w-3 h-3 rounded-sm border border-ink;
   }
+  /* Marked players under the map: the label, then a row of colour-coded chips ending in a `+` that asks for a new one
+     in a dialog. The dot is the colour input itself, so a mark is recoloured where it is read. */
+  .marks-strip {
+    @apply flex flex-col items-start gap-1.5 mt-3 text-[12px];
+  }
+  .marks-label {
+    @apply font-display font-semibold text-[11px] uppercase tracking-wide pt-1;
+    color: var(--color-muted);
+  }
+  /* One wrapping row of chips, the `+` among them: it trails the last mark when there is room and wraps to the next
+     line like any other chip when there is not. The list is the row itself rather than a nested flex item, because a
+     nested list fills the line when its chips overflow and pushes the `+` down even where there is room beside it. */
+  .marks-row {
+    @apply flex flex-wrap items-center gap-1.5;
+  }
+  .mark-chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-wood-border pl-1 pr-2 py-0.5;
+    background-color: var(--color-panel);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 252, 240, 0.5),
+      0 1px 2px rgba(20, 10, 0, 0.28);
+  }
+  .mark-name {
+    @apply font-semibold leading-none cursor-pointer;
+    color: var(--color-ink);
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+  .mark-name:hover {
+    color: var(--color-bad);
+  }
+  /* The `+` chip that asks for a new mark, sized like a chip so it sits at the end of the row. */
+  .mark-add {
+    @apply font-display font-semibold leading-none cursor-pointer px-2 py-1;
+    color: var(--color-muted);
+  }
+  .mark-add:hover {
+    color: var(--color-ink);
+  }
+  /* The map puts a circle in this colour on the player's villages, so the swatch is a circle too. */
+  .mark-dot {
+    @apply shrink-0 rounded-full border border-border-dark cursor-pointer;
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    background: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .mark-dot-pick {
+    width: 18px;
+    height: 18px;
+  }
+  .mark-dot::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  .mark-dot::-webkit-color-swatch {
+    border: 0;
+    border-radius: 50%;
+  }
+  .mark-dot::-moz-color-swatch {
+    border: 0;
+    border-radius: 50%;
+  }
+  .marks-add {
+    @apply flex flex-col items-start gap-2 mt-3;
+  }
+  .marks-add-row {
+    @apply flex items-center gap-1;
+  }
+  .marks-field {
+    @apply flex flex-col items-start;
+  }
+  /* The suggestion list hangs under the name field, over the dialog. It is fixed rather than absolute because the
+     dialog scrolls its content and a scroll box clips anything absolute inside it, which left most of the list
+     unreachable; its place is measured from the field instead (`useSuggestionBox`), so it follows the field. It takes
+     the field's width but may grow past it for a long name, up to `--marks-menu-max`. */
+  .marks-menu {
+    @apply fixed z-40 overflow-y-auto rounded-[3px] border border-wood-border py-0.5;
+    max-width: var(--marks-menu-max, 240px);
+    background-color: var(--color-panel);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 252, 240, 0.5),
+      0 3px 8px rgba(20, 10, 0, 0.45);
+  }
+  .marks-option {
+    @apply cursor-pointer whitespace-nowrap px-2 py-0.5;
+    color: var(--color-ink);
+  }
+  .marks-option[aria-selected="true"] {
+    background-color: var(--color-wood-border);
+    color: var(--ink-light);
+  }
+  /* Two lines are held for the "no player called…" note whether or not it says anything: a long name wraps to two on a
+     phone and one on a desktop, so a fixed two lines is the height that never changes as the name is typed. */
+  .marks-note {
+    @apply w-full;
+    min-height: 2lh;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
   .profile-body {
     @apply space-y-2 text-[12px];
   }

@@ -15,6 +15,13 @@ export type ViewId =
   | "settings";
 export type AnimationMode = "full" | "limited" | "off";
 
+/** Another player the player wants to see at a glance: their villages are marked in this colour on the map and minimap. */
+export interface PlayerMark {
+  /** The player's name as it shows on the map; matched without regard to case or surrounding spaces. */
+  name: string;
+  color: string;
+}
+
 export interface RallyPrefill {
   x: number;
   y: number;
@@ -33,6 +40,12 @@ export interface UiPrefs {
   showBuildPlan: boolean;
   /** Buildings that are not yet available are listed on the Village tab; the Town Hall always lists them. */
   showLockedBuildings: boolean;
+  /**
+   * Other players picked out by name, each in a colour of the player's choosing: a dot in that colour sits on the
+   * corner of their villages on the map, and their dots on the minimap take it. Remembered per browser, so the marks
+   * survive a reload and follow the player to another world.
+   */
+  mapPlayerMarks: PlayerMark[];
 }
 
 const PREFS_KEY = "lh-ui-prefs";
@@ -48,7 +61,30 @@ function defaultPrefs(): UiPrefs {
     lockedOpen: true,
     showBuildPlan: true,
     showLockedBuildings: true,
+    mapPlayerMarks: [],
   };
+}
+
+/** Marks read back from storage: only a name and a hex colour survive, so a hand-edited entry cannot break the map. */
+export function cleanMarks(raw: unknown): PlayerMark[] {
+  if (!Array.isArray(raw)) return [];
+  const out: PlayerMark[] = [];
+  const seen = new Set<string>();
+  for (const m of raw) {
+    if (!m || typeof m !== "object") continue;
+    const { name, color } = m as Partial<PlayerMark>;
+    if (typeof name !== "string" || typeof color !== "string") continue;
+    const key = markKey(name);
+    if (!key || seen.has(key) || !/^#[0-9a-f]{6}$/i.test(color)) continue;
+    seen.add(key);
+    out.push({ name: name.trim(), color });
+  }
+  return out;
+}
+
+/** A name as marks are compared: trimmed and case-folded, since players type it from memory. */
+export function markKey(name: string): string {
+  return name.trim().toLowerCase();
 }
 
 function loadPrefs(): UiPrefs {
@@ -57,7 +93,11 @@ function loadPrefs(): UiPrefs {
     const raw = localStorage.getItem(PREFS_KEY);
     if (!raw) return base;
     const parsed = JSON.parse(raw) as Partial<UiPrefs>;
-    return { ...base, ...parsed };
+    return {
+      ...base,
+      ...parsed,
+      mapPlayerMarks: cleanMarks(parsed.mapPlayerMarks),
+    };
   } catch {
     return base;
   }
