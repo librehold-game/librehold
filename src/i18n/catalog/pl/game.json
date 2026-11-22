@@ -650,7 +650,8 @@
       "removeHint": "Ich wioski wrócą do zwykłych kolorów graczy.",
       "yes": "Tak",
       "no": "Nie",
-      "unknown": "W tym świecie nie ma gracza o nazwie „{name}”."
+      "unknown": "W tym świecie nie ma gracza o nazwie „{name}”.",
+      "already": "Gracz „{name}” jest już oznaczony."
     },
     "army": {
       "ownAttack": "Twój atak",

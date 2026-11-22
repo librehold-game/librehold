@@ -618,7 +618,8 @@
       "removeHint": "Their villages go back to the ordinary player colours.",
       "yes": "Yes",
       "no": "No",
-      "unknown": "No player called \"{name}\" in this world."
+      "unknown": "No player called \"{name}\" in this world.",
+      "already": "Player \"{name}\" is already marked."
     },
     "army": {
       "ownAttack": "Your attack",

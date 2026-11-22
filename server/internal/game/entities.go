@@ -420,6 +420,9 @@ type HumanState struct {
 	Groups         []VillageGroup     `json:"villageGroups"`
 	BuildTemplates []BuildTemplate    `json:"buildTemplates"`
 	AggressorUntil int64              `json:"aggressorUntil"`
+	// Marks are other players the player wants to pick out on the map, kept here so they follow the player to
+	// another device rather than living in one browser.
+	Marks []PlayerMark `json:"marks,omitempty"`
 }
 
 // ---- per-player records ----

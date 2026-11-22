@@ -15,6 +15,7 @@ import type {
   BuildTemplate,
   FarmFilters,
   GameState,
+  PlayerMark,
   Report,
   Resource,
   ResourceSet,
@@ -198,6 +199,8 @@ export interface GameStore {
   deleteBuildTemplate: (id: string) => Promise<string | null>;
   setFarmFilters: (patch: Partial<FarmFilters>) => Promise<string | null>;
   hideFarmOnMap: (hide: boolean) => Promise<string | null>;
+  /** Replaces the players the player marked on the map; the server keeps them with the rest of their state. */
+  setMarks: (marks: PlayerMark[]) => Promise<string | null>;
   setAutoFarm: (
     enabled: boolean,
     villageIds?: string[],
@@ -865,6 +868,7 @@ export const useGameStore = create<GameStore>()(
       deleteBuildTemplate: (id) => run("delete-build-template", { id }),
       setFarmFilters: (patch) => run("set-farm-filters", patch),
       hideFarmOnMap: (hide) => run("hide-farm-on-map", { hide }),
+      setMarks: (marks) => run("set-marks", { marks }),
       setAutoFarm: (enabled, villageIds) =>
         run("set-auto-farm", {
           enabled,

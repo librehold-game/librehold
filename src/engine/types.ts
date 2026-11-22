@@ -565,6 +565,16 @@ export interface BuildTemplate {
   steps: BuildingId[];
 }
 
+/**
+ * Another player the player wants to pick out on the map, in a colour of their choosing. It changes nothing in the
+ * world: the server keeps it in the player's state so it follows them to another device.
+ */
+export interface PlayerMark {
+  /** The player's name as it shows on the map; matched without regard to case or surrounding spaces. */
+  name: string;
+  color: string;
+}
+
 export interface PlayerStats {
   attacksSent: number;
   /** Daily counters of the farm assistant. */
@@ -623,6 +633,8 @@ export interface GameState {
   news: NewsItem[];
   villageGroups: VillageGroup[];
   buildTemplates: BuildTemplate[];
+  /** Other players picked out on the map, kept by the server with the player's other choices. */
+  marks: PlayerMark[];
   stats: PlayerStats;
   /** Local wall-clock time (ms since epoch, with the zone offset) corresponding to world time 0. */
   clock: { originLocalMs: number };

@@ -1,8 +1,8 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { HUMAN_ID } from "../../engine/types";
+import { markKey } from "../../engine/marks";
+import { HUMAN_ID, type PlayerMark } from "../../engine/types";
 import { t as tr } from "../../i18n/i18n";
 import { useGameStore } from "../../state/gameStore";
-import { markKey, useUiStore, type PlayerMark } from "../../state/uiStore";
 import { Overlay } from "../instant/Overlay";
 import { nextMarkColor } from "./playerMarks";
 
@@ -67,13 +67,15 @@ function useSuggestionBox(
 
 /**
  * Other players picked out by name, each in a colour the player chooses: a dot in that colour sits on the corner of
- * their villages and on their dots on the minimap. The marks are a display choice kept in the browser, so this sits
- * bare under the map, above the hint about how the map works: a row of chips, each with its colour in front of the
- * name, and a `+` chip at the end of the row that asks for a new one in a dialog.
+ * their villages and on their dots on the minimap. The marks are the player's, kept by the server with the rest of
+ * their state so they follow them to another device, so this sits bare under the map, above the hint about how the
+ * map works: a row of chips, each with its colour in front of the name, and a `+` chip at the end of the row that
+ * asks for a new one in a dialog.
  */
 export function PlayerMarksPanel() {
-  const marks = useUiStore((s) => s.prefs.mapPlayerMarks);
-  const setPrefs = useUiStore((s) => s.setPrefs);
+  // The default sits outside the selector: a fresh `[]` on every store tick would re-render the row each second.
+  const marks = useGameStore((s) => s.game?.marks) ?? [];
+  const setMarks = useGameStore((s) => s.setMarks);
   const [name, setName] = useState("");
   const [picked, setPicked] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
@@ -96,13 +98,18 @@ export function PlayerMarksPanel() {
     [known],
   );
   const typed = name.trim();
-  const unknown =
-    typed.length > 0 && !names.some((n) => markKey(n) === markKey(typed));
+  const knownName =
+    typed.length > 0 && names.some((n) => markKey(n) === markKey(typed));
+  // Marking a player twice would only recolour them, which the swatch on their chip already does, so the dialog
+  // refuses it the way it refuses a name no player has: with the reason and Mark off.
+  const already =
+    knownName && marks.some((m) => markKey(m.name) === markKey(typed));
+  const unknown = typed.length > 0 && !knownName;
   // The list waits for a letter: a full list over an untouched field is noise, and typing is what narrows it.
   const suggesting = open && typed.length > 0;
   const box = useSuggestionBox(field, suggesting);
-  // Names already marked are not offered again: marking one again would only recolour it. Only a few are offered:
-  // enough to pick from without pushing the dialog's buttons off the screen, and typing narrows them anyway.
+  // Names already marked are not offered again, since the dialog refuses them. Only a few are offered: enough to
+  // pick from without pushing the dialog's buttons off the screen, and typing narrows them anyway.
   const matches = useMemo(() => {
     const taken = new Set(marks.map((m) => markKey(m.name)));
     const q = markKey(typed);
@@ -134,11 +141,10 @@ export function PlayerMarksPanel() {
   useEffect(() => setActive(0), [typed]);
 
   const add = () => {
-    // Only a name some player has can be marked: the dialog says so as it is typed, and Mark stays off meanwhile.
-    if (!typed || unknown) return;
-    const key = markKey(typed);
-    const rest = marks.filter((m) => markKey(m.name) !== key);
-    setPrefs({ mapPlayerMarks: [...rest, { name: typed, color }] });
+    // Only a name some player has, and not one already marked: the dialog says why as it is typed and Mark stays off,
+    // so neither can be marked even by a form submitted another way.
+    if (!typed || unknown || already) return;
+    void setMarks([...marks, { name: typed, color }]);
     closeAdd();
   };
   const openAdd = () => {
@@ -155,15 +161,13 @@ export function PlayerMarksPanel() {
   };
   const remove = (mark: PlayerMark) => {
     const key = markKey(mark.name);
-    setPrefs({ mapPlayerMarks: marks.filter((m) => markKey(m.name) !== key) });
+    void setMarks(marks.filter((m) => markKey(m.name) !== key));
     setRemoving(null);
   };
   const recolor = (key: string, c: string) =>
-    setPrefs({
-      mapPlayerMarks: marks.map((m) =>
-        markKey(m.name) === key ? { ...m, color: c } : m,
-      ),
-    });
+    void setMarks(
+      marks.map((m) => (markKey(m.name) === key ? { ...m, color: c } : m)),
+    );
 
   return (
     <section
@@ -310,13 +314,20 @@ export function PlayerMarksPanel() {
             </div>
             {/* The note's space is held whether or not it says anything: it is laid out for the name being typed and
                 hidden while that name is fine, so the dialog keeps one height instead of growing the moment a name
-                turns out to be unknown. Hidden text is out of the accessibility tree, so nothing is announced. */}
+                turns out to be unknown or already marked. Hidden text is out of the accessibility tree, so nothing
+                is announced. */}
             <p
-              className={`text-muted marks-note${unknown ? "" : " invisible"}`}
-              data-mark-unknown={unknown ? "" : undefined}
-              aria-hidden={unknown ? undefined : true}
+              className={`text-muted marks-note${unknown || already ? "" : " invisible"}`}
+              data-mark-problem={
+                unknown ? "unknown" : already ? "already" : undefined
+              }
+              aria-hidden={unknown || already ? undefined : true}
             >
-              {unknown ? tr("map.marks.unknown", { name: typed }) : ""}
+              {unknown
+                ? tr("map.marks.unknown", { name: typed })
+                : already
+                  ? tr("map.marks.already", { name: typed })
+                  : ""}
             </p>
             <div className="flex justify-end gap-1 w-full">
               <button className="btn" type="button" onClick={closeAdd}>
@@ -325,7 +336,7 @@ export function PlayerMarksPanel() {
               <button
                 className="btn"
                 type="submit"
-                disabled={!typed || unknown}
+                disabled={!typed || unknown || already}
               >
                 {tr("map.marks.add")}
               </button>

@@ -1,8 +1,10 @@
-import { markKey, type PlayerMark } from "../../state/uiStore";
+import { markKey } from "../../engine/marks";
+import type { PlayerMark } from "../../engine/types";
 
 /**
- * Other players picked out by name (`UiPrefs.mapPlayerMarks`) so their villages stand out on the map and the minimap.
- * The marks are a display choice kept in the browser, so they are matched against the names the world shows.
+ * Other players picked out by name (`GameState.marks`) so their villages stand out on the map and the minimap. The
+ * marks are a display choice kept by the server with the player's state, so they are matched against the names the
+ * world shows.
  */
 
 /** The colour a player is marked with, by the player's name; undefined for anyone unmarked. */
@@ -10,7 +12,8 @@ export type MarkLookup = (ownerName: string | undefined) => string | undefined;
 
 /**
  * A lookup from a player's name to the colour the player marked them with. Names are compared the way a player types
- * them — trimmed and without regard to case — because the mark is remembered separately from the world it was made in.
+ * them — trimmed and without regard to case — because a mark is a name, not a player id: the player picks it from
+ * memory and it has to keep working while the world's players come and go.
  */
 export function markLookup(marks: readonly PlayerMark[]): MarkLookup {
   if (!marks.length) return () => undefined;

@@ -11,24 +11,50 @@ import {
 import { setLocale } from "../src/i18n/i18n";
 import { MapView } from "../src/ui/views/MapView";
 import { useGameStore } from "../src/state/gameStore";
-import { cleanMarks, markKey, useUiStore } from "../src/state/uiStore";
+import { cleanMarks, markKey } from "../src/engine/marks";
+import { useUiStore } from "../src/state/uiStore";
 import {
   MARK_COLORS,
   OWN_VILLAGE_COLOR,
   nextMarkColor,
 } from "../src/ui/map/playerMarks";
-import { HUMAN_ID, type GameState, type Village } from "../src/engine/types";
+import {
+  HUMAN_ID,
+  type GameState,
+  type PlayerMark,
+  type Village,
+} from "../src/engine/types";
 import {
   activeVillage,
   addOwnVillage,
   barbarianVillage,
   makeBotVillage,
   newTestGame,
+  stateFixture,
 } from "./helpers";
 import { stubServer } from "./serverStub";
 
 let g: GameState;
 let bot: Village;
+/** Every body the client sent to `set-marks`, in order. */
+let sent: PlayerMark[][];
+
+/**
+ * Answers `set-marks` the way the server does: it replaces the marks in the world's state and hands the state back,
+ * which is what the map then draws.
+ */
+function stubMarks() {
+  stubServer(g, {
+    routes: {
+      "POST /api/v1/worlds/1/orders/set-marks": (body) => {
+        const { marks } = body as { marks: PlayerMark[] };
+        sent.push(marks);
+        g.marks = marks;
+        return { status: 200, body: stateFixture(g) };
+      },
+    },
+  });
+}
 
 /** The map loads its chunks after the first paint, and the minimap draws what is loaded. */
 async function showMap() {
@@ -52,6 +78,13 @@ const openAdd = () =>
     within(panel()).getByRole("button", { name: "Mark a player" }),
   );
 
+/** Lets the order's answer arrive and the map redraw, as it does a moment after a click. */
+async function settle() {
+  await act(async () => {
+    await new Promise((res) => setTimeout(res, 0));
+  });
+}
+
 /** The test world holds one other player; the suggestion list needs a few to filter between. */
 function addPlayers(...names: string[]) {
   for (const name of names) {
@@ -65,10 +98,14 @@ function addPlayers(...names: string[]) {
   }
 }
 
-function mark(name: string) {
+/** The marks the map holds, as the server last answered them. */
+const marksNow = () => useGameStore.getState().game?.marks ?? [];
+
+async function mark(name: string) {
   openAdd();
   fireEvent.change(nameField(), { target: { value: name } });
   fireEvent.click(screen.getByRole("button", { name: "Mark" }));
+  await settle();
 }
 
 beforeEach(() => {
@@ -76,11 +113,8 @@ beforeEach(() => {
   localStorage.clear();
   g = newTestGame();
   bot = makeBotVillage(g);
-  useUiStore.setState({
-    view: "map",
-    mapCenter: null,
-    prefs: { ...useUiStore.getState().prefs, mapPlayerMarks: [] },
-  });
+  sent = [];
+  useUiStore.setState({ view: "map", mapCenter: null });
 });
 afterEach(() => {
   cleanup();
@@ -90,9 +124,9 @@ afterEach(() => {
 
 describe("marking other players", () => {
   it("puts the marked names straight under the map, above the hint", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
-    mark(g.players.bot_test!.name);
+    await mark(g.players.bot_test!.name);
     const hint = screen.getByText(/Click a village to open its menu/);
     expect(
       panel().compareDocumentPosition(hint) & Node.DOCUMENT_POSITION_FOLLOWING,
@@ -102,10 +136,10 @@ describe("marking other players", () => {
   });
 
   it("shows a mark's colour in front of its name", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     const name = g.players.bot_test!.name;
-    mark(name);
+    await mark(name);
     const row = within(panel()).getByRole("listitem");
     const swatch = within(row).getByLabelText(`Colour for ${name}`);
     const label = within(row).getByRole("button", { name });
@@ -115,12 +149,12 @@ describe("marking other players", () => {
   });
 
   it("puts the + chip after the last mark, in the same wrapping row", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     const first = g.players.bot_test!.name;
     addPlayers("Grimgar");
-    mark(first);
-    mark("Grimgar");
+    await mark(first);
+    await mark("Grimgar");
     const add = within(panel()).getByRole("button", { name: "Mark a player" });
     const chips = [...panel().querySelectorAll(".mark-chip")];
     // The `+` is the row's last chip...
@@ -135,7 +169,7 @@ describe("marking other players", () => {
   });
 
   it("keeps the label with only the + chip until a player is marked", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     // No mark to list, but the row is there for the `+` it holds.
     expect(within(panel()).queryAllByRole("listitem")).toHaveLength(0);
@@ -149,9 +183,9 @@ describe("marking other players", () => {
   });
 
   it("puts the label above the row of marks", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
-    mark(g.players.bot_test!.name);
+    await mark(g.players.bot_test!.name);
     const label = panel().querySelector(".marks-label")!;
     const list = within(panel()).getByRole("list");
     expect(
@@ -162,7 +196,7 @@ describe("marking other players", () => {
   });
 
   it("asks for the name and colour in a dialog, not in the row", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     // Nothing to type into until the + chip is pressed.
     expect(within(panel()).queryByRole("combobox")).toBeNull();
@@ -176,20 +210,21 @@ describe("marking other players", () => {
   });
 
   it("adds nothing until Mark is pressed, and closes the dialog after", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     fireEvent.change(nameField(), {
       target: { value: g.players.bot_test!.name },
     });
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toEqual([]);
+    expect(marksNow()).toEqual([]);
     fireEvent.click(markButton());
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toHaveLength(1);
     expect(screen.queryByRole("dialog")).toBeNull();
+    await settle();
+    expect(marksNow()).toHaveLength(1);
   });
 
   it("closes the dialog on Cancel without marking anyone", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     fireEvent.change(nameField(), {
@@ -197,17 +232,17 @@ describe("marking other players", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toEqual([]);
+    expect(marksNow()).toEqual([]);
     // Reopening starts from an empty field rather than the abandoned name.
     openAdd();
     expect((nameField() as HTMLInputElement).value).toBe("");
   });
 
   it("draws a circle in the marked player's colour on the corner of their villages", async () => {
-    stubServer(g);
+    stubMarks();
     const { container } = await showMap();
     expect(container.querySelector("[data-mark]")).toBeNull();
-    mark(g.players.bot_test!.name);
+    await mark(g.players.bot_test!.name);
     const circle = container.querySelector(
       `[data-mark="${nextMarkColor([])}"]`,
     );
@@ -217,17 +252,17 @@ describe("marking other players", () => {
   });
 
   it("marks the player's villages on the minimap too", async () => {
-    stubServer(g);
+    stubMarks();
     const { container } = await showMap();
     expect(container.querySelector("[data-minimap-dot]")).toBeNull();
-    mark(g.players.bot_test!.name);
+    await mark(g.players.bot_test!.name);
     expect(
       container.querySelector(`[data-minimap-dot="${nextMarkColor([])}"]`),
     ).toBeTruthy();
   });
 
   it("keeps the barbarians' dots on the minimap", async () => {
-    stubServer(g);
+    stubMarks();
     const barb = barbarianVillage(g);
     const { container } = await showMap();
     // A barbarian is not a player and cannot be marked, but it has always had its small brown dot.
@@ -239,62 +274,61 @@ describe("marking other players", () => {
   });
 
   it("matches the name without regard to case or surrounding spaces", async () => {
-    stubServer(g);
+    stubMarks();
     const { container } = await showMap();
     const name = g.players.bot_test!.name;
-    mark(`  ${name.toUpperCase()}  `);
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toEqual([
+    await mark(`  ${name.toUpperCase()}  `);
+    expect(marksNow()).toEqual([
       { name: name.toUpperCase(), color: nextMarkColor([]) },
     ]);
     expect(container.querySelector("[data-mark]")).toBeTruthy();
   });
 
   it("takes the mark off again once the removal is confirmed", async () => {
-    stubServer(g);
+    stubMarks();
     const { container } = await showMap();
     const name = g.players.bot_test!.name;
-    mark(name);
+    await mark(name);
     expect(container.querySelector("[data-mark]")).toBeTruthy();
     // The name itself is the button that asks to remove it.
     fireEvent.click(within(panel()).getByRole("button", { name }));
     fireEvent.click(screen.getByRole("button", { name: "Yes" }));
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toEqual([]);
+    await settle();
+    expect(marksNow()).toEqual([]);
     expect(container.querySelector("[data-mark]")).toBeNull();
     expect(container.querySelector("[data-minimap-dot]")).toBeNull();
   });
 
   it("keeps the mark when the removal is turned down", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     const name = g.players.bot_test!.name;
-    mark(name);
+    await mark(name);
     fireEvent.click(within(panel()).getByRole("button", { name }));
     fireEvent.click(screen.getByRole("button", { name: "No" }));
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toEqual([
-      { name, color: nextMarkColor([]) },
-    ]);
+    expect(marksNow()).toEqual([{ name, color: nextMarkColor([]) }]);
     expect(within(panel()).queryByRole("dialog")).toBeNull();
   });
 
   it("asks before removing, and does nothing until then", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     const name = g.players.bot_test!.name;
-    mark(name);
+    await mark(name);
     expect(screen.queryByRole("dialog")).toBeNull();
     fireEvent.click(within(panel()).getByRole("button", { name }));
     const dialog = screen.getByRole("dialog");
     expect(
       within(dialog).getByText(`Remove the mark on ${name}?`),
     ).toBeTruthy();
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toHaveLength(1);
+    expect(marksNow()).toHaveLength(1);
   });
 
   it("leaves room under the buttons, so pressing one does not flash a scrollbar", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     const name = g.players.bot_test!.name;
-    mark(name);
+    await mark(name);
     fireEvent.click(within(panel()).getByRole("button", { name }));
     // `.btn:active` sinks a button 1px, which pokes out of the dialog's scroll box and grows a scrollbar for a moment.
     expect(screen.getByRole("dialog").className).toMatch(/\bpb-px\b/);
@@ -302,7 +336,7 @@ describe("marking other players", () => {
 
   it("keeps the dropdown shut until a letter is typed", async () => {
     addPlayers("Grimgar", "Wenard");
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     // The field has focus (the dialog focuses it), but an untouched field gets no list.
@@ -327,7 +361,7 @@ describe("marking other players", () => {
       "Corric",
       "Bran",
     );
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     fireEvent.change(nameField(), { target: { value: "r" } });
@@ -344,7 +378,7 @@ describe("marking other players", () => {
 
   it("offers the world's players in a dropdown that filters as the name is typed", async () => {
     addPlayers("Grimgar", "Wenard");
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     fireEvent.change(nameField(), { target: { value: "e" } });
@@ -361,9 +395,9 @@ describe("marking other players", () => {
 
   it("leaves names already marked out of the dropdown", async () => {
     addPlayers("Grimgar", "Wenard");
-    stubServer(g);
+    stubMarks();
     await showMap();
-    mark("Grimgar");
+    await mark("Grimgar");
     openAdd();
     fireEvent.change(nameField(), { target: { value: "r" } });
     const list = screen.getByRole("listbox", { name: "Players" });
@@ -376,7 +410,7 @@ describe("marking other players", () => {
 
   it("walks the dropdown with the arrow keys and takes the highlighted name with Enter", async () => {
     addPlayers("Grimgar", "Wenard");
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     fireEvent.change(nameField(), { target: { value: "e" } });
@@ -393,7 +427,7 @@ describe("marking other players", () => {
 
   it("closes the dropdown on Esc without closing the map's own menus", async () => {
     addPlayers("Grimgar");
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     fireEvent.change(nameField(), { target: { value: "G" } });
@@ -403,30 +437,70 @@ describe("marking other players", () => {
   });
 
   it("refuses a name no player has, and says so while it is typed", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     fireEvent.change(nameField(), { target: { value: "Nobody" } });
-    expect(panel().querySelector("[data-mark-unknown]")).toBeTruthy();
+    expect(panel().querySelector('[data-mark-problem="unknown"]')).toBeTruthy();
     // The warning is not the only guard: there is nothing to mark, so Mark is off and does nothing.
     expect(markButton().disabled).toBe(true);
     fireEvent.click(markButton());
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toEqual([]);
+    expect(marksNow()).toEqual([]);
     expect(screen.getByRole("dialog")).toBeTruthy();
     // Correcting the name to one a player has clears the warning and lets the mark through.
     fireEvent.change(nameField(), {
       target: { value: g.players.bot_test!.name },
     });
-    expect(panel().querySelector("[data-mark-unknown]")).toBeNull();
+    expect(panel().querySelector("[data-mark-problem]")).toBeNull();
     expect(markButton().disabled).toBe(false);
     fireEvent.click(markButton());
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toEqual([
+    await settle();
+    expect(marksNow()).toEqual([
       { name: g.players.bot_test!.name, color: nextMarkColor([]) },
     ]);
   });
 
+  it("refuses a player who is already marked, and says so while it is typed", async () => {
+    // The world's players come in with the state, so a second one has to be there before the map loads.
+    addPlayers("Grimgar");
+    stubMarks();
+    await showMap();
+    const name = g.players.bot_test!.name;
+    await mark(name);
+    openAdd();
+    fireEvent.change(nameField(), { target: { value: name.toUpperCase() } });
+    // The reason is the same line the unknown name gets, so the dialog keeps its one height.
+    const note = screen.getByRole("dialog").querySelector("p.marks-note")!;
+    expect(note.getAttribute("data-mark-problem")).toBe("already");
+    expect(note.textContent).toContain(
+      `Player "${name.toUpperCase()}" is already marked.`,
+    );
+    expect(markButton().disabled).toBe(true);
+    fireEvent.click(markButton());
+    await settle();
+    // Nothing changed: still one mark, in the colour it had, and the dialog is still open.
+    expect(marksNow()).toEqual([{ name, color: nextMarkColor([]) }]);
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    // A different player is fine again.
+    fireEvent.change(nameField(), { target: { value: "Grimgar" } });
+    expect(note.getAttribute("data-mark-problem")).toBeNull();
+    expect(markButton().disabled).toBe(false);
+  });
+
+  it("does not add an already-marked player when the form is submitted anyway", async () => {
+    stubMarks();
+    await showMap();
+    const name = g.players.bot_test!.name;
+    await mark(name);
+    openAdd();
+    fireEvent.change(nameField(), { target: { value: name } });
+    fireEvent.submit(screen.getByRole("dialog").querySelector("form")!);
+    await settle();
+    expect(marksNow()).toEqual([{ name, color: nextMarkColor([]) }]);
+  });
+
   it("keeps the warning's space whether or not it says anything, so the dialog holds one height", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     const note = () =>
@@ -448,45 +522,59 @@ describe("marking other players", () => {
   });
 
   it("does not mark an unknown name even when the form is submitted anyway", async () => {
-    stubServer(g);
+    stubMarks();
     await showMap();
     openAdd();
     fireEvent.change(nameField(), { target: { value: "Nobody" } });
     // Enter in the field reaches the form even with Mark disabled, so the submit path checks the name too.
     const form = screen.getByRole("dialog").querySelector("form")!;
     fireEvent.submit(form);
-    expect(useUiStore.getState().prefs.mapPlayerMarks).toEqual([]);
+    expect(marksNow()).toEqual([]);
     expect(screen.getByRole("dialog")).toBeTruthy();
   });
 
   it("recolours a mark", async () => {
-    stubServer(g);
+    stubMarks();
     const { container } = await showMap();
     const name = g.players.bot_test!.name;
-    mark(name);
+    await mark(name);
     const picker = within(panel()).getByLabelText(`Colour for ${name}`);
     fireEvent.change(picker, { target: { value: "#123456" } });
-    expect(useUiStore.getState().prefs.mapPlayerMarks[0]!.color).toBe(
-      "#123456",
-    );
+    await settle();
+    expect(marksNow()[0]!.color).toBe("#123456");
     expect(container.querySelector('[data-mark="#123456"]')).toBeTruthy();
   });
 
   it("keeps the mark when the owner's own colours are switched off", async () => {
-    stubServer(g);
+    stubMarks();
     const { container } = await showMap();
-    mark(g.players.bot_test!.name);
+    await mark(g.players.bot_test!.name);
     fireEvent.click(screen.getByRole("checkbox", { name: "Player colours" }));
     expect(container.querySelector("[data-mark]")).toBeTruthy();
     expect(container.querySelector("[data-minimap-dot]")).toBeTruthy();
   });
 
-  it("remembers the marks in the browser", async () => {
-    stubServer(g);
+  it("sends the marks to the player's record, not to this browser", async () => {
+    stubMarks();
     await showMap();
-    mark(g.players.bot_test!.name);
-    const saved = JSON.parse(localStorage.getItem("lh-ui-prefs")!);
-    expect(saved.mapPlayerMarks).toHaveLength(1);
+    await mark(g.players.bot_test!.name);
+    // The server keeps them, so the same player on another device gets them back with the state; nothing about
+    // them is written to this browser.
+    expect(sent).toEqual([
+      [{ name: g.players.bot_test!.name, color: nextMarkColor([]) }],
+    ]);
+    expect(localStorage.getItem("lh-ui-prefs")).toBeNull();
+  });
+
+  it("draws the marks the server sends, so another device shows the same ones", async () => {
+    g.marks = [{ name: g.players.bot_test!.name, color: "#e6194b" }];
+    stubMarks();
+    const { container } = await showMap();
+    // Nothing was marked in this browser: the mark came in with the state.
+    expect(container.querySelector('[data-mark="#e6194b"]')).toBeTruthy();
+    expect(
+      within(panel()).getByRole("button", { name: g.players.bot_test!.name }),
+    ).toBeTruthy();
   });
 
   it("drops a stored mark that is not a name and a hex colour", () => {
@@ -519,7 +607,7 @@ describe("your own villages", () => {
       ?.getAttribute(attr);
 
   it("marks every village of yours yellow, the one you are in too", async () => {
-    stubServer(g);
+    stubMarks();
     const home = activeVillage(g);
     const other = addOwnVillage(g, home.x + 2, home.y, "Second village");
     const { container } = await showMap();
@@ -534,22 +622,17 @@ describe("your own villages", () => {
   });
 
   it("leaves other players' villages to the marks", async () => {
-    stubServer(g);
+    stubMarks();
     const { container } = await showMap();
     expect(circleAt(container, bot, "data-own-village")).toBeUndefined();
     expect(circleAt(container, bot, "data-mark")).toBeUndefined();
   });
 
   it("draws both circles when a mark and your own village meet on one tile", async () => {
-    stubServer(g);
+    stubMarks();
     const home = activeVillage(g);
     // Marking your own name is pointless in the panel, but a mark on the same name must not eat your circle.
-    useUiStore.setState({
-      prefs: {
-        ...useUiStore.getState().prefs,
-        mapPlayerMarks: [{ name: g.players[HUMAN_ID]!.name, color: "#e6194b" }],
-      },
-    });
+    g.marks = [{ name: g.players[HUMAN_ID]!.name, color: "#e6194b" }];
     const { container } = await showMap();
     expect(circleAt(container, home, "data-mark")).toBe("#e6194b");
     expect(circleAt(container, home, "data-own-village")).toBe(
@@ -558,7 +641,7 @@ describe("your own villages", () => {
   });
 
   it("still draws them with Player colours off", async () => {
-    stubServer(g);
+    stubMarks();
     const home = activeVillage(g);
     const { container } = await showMap();
     fireEvent.click(screen.getByRole("checkbox", { name: "Player colours" }));
@@ -568,7 +651,7 @@ describe("your own villages", () => {
   });
 
   it("marks them on the minimap too", async () => {
-    stubServer(g);
+    stubMarks();
     const home = activeVillage(g);
     const { container } = await showMap();
     expect(

@@ -19,7 +19,12 @@ import { UNITS } from "../../data/units.data";
 import { travelTimeMs } from "../../engine/commands";
 import { distance, type TileInfo } from "../../engine/world";
 import { tileAt } from "../map/tiles";
-import { HUMAN_ID, RESOURCES, type GameState } from "../../engine/types";
+import {
+  HUMAN_ID,
+  RESOURCES,
+  type GameState,
+  type PlayerMark,
+} from "../../engine/types";
 import type { MapCache } from "../../net/mapCache";
 import {
   mapCache,
@@ -803,8 +808,11 @@ export function MapView() {
   const seed = useGameStore((s) => s.game!.worldSeed);
   const mapRev = useGameStore((s) => s.mapRev);
   const villageSummary = useGameStore(selectVillageSummary);
-  const playerMarks = useUiStore((s) => s.prefs.mapPlayerMarks);
-  const marks = useMemo(() => markLookup(playerMarks), [playerMarks]);
+  const marksJson = useGameStore((s) => JSON.stringify(s.game?.marks ?? []));
+  const marks = useMemo(
+    () => markLookup(JSON.parse(marksJson) as PlayerMark[]),
+    [marksJson],
+  );
   // The map cache loads the world in chunks as the view moves; the minimap draws what is loaded, so a village of a
   // marked player shows up as soon as its chunk arrives.
   const minimapDots = useMemo(

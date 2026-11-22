@@ -24,6 +24,7 @@ describe("the browser keeps no simulation", () => {
       "fieldGeometry.ts",
       "incoming.ts",
       "market.ts",
+      "marks.ts",
       "modifiers.ts",
       "players.ts",
       "quests.ts",
